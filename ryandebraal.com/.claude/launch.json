@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "resume",
+      "runtimeExecutable": "C:\Users\ryand\AppData\Local\Programs\Python\Python311\python.exe",
+      "runtimeArgs": ["-m", "http.server", "3456", "-d", "D:/Projects/Resume"],
+      "port": 3456
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__Claude_Preview__preview_start",
+      "Bash(ls *.js *.html *.htm)",
+      "Bash(node -c \"D:/Projects/Resume/techTips.js\")",
+      "Bash(node -e \"require\\(''fs''\\).readFileSync\\(''D:/Projects/Resume/techTips.js'',''utf8''\\); eval\\(require\\(''fs''\\).readFileSync\\(''D:/Projects/Resume/techTips.js'',''utf8''\\)\\); console.log\\(''Syntax OK''\\);\")",
+      "Bash(where.exe node:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:louisabraham.github.io)",
+      "Bash(python3 -c \"from PIL import Image; im=Image.open\\(''D:/Projects/Resume/ryan.png''\\); print\\(im.size, im.mode\\)\")",
+      "Bash(identify D:/Projects/Resume/ryan.png)",
+      "Bash(magick D:/Projects/Resume/ryan.png -resize 64x64 -quality 85 /tmp/ryan-small.png)",
+      "Read(//tmp/**)",
+      "Bash(base64 -w0 \"D:\\\\Projects\\\\Resume\\\\ryan64x64.png\")",
+      "Bash(where python:*)",
+      "Bash(where py:*)",
+      "Bash(\"C:\\\\Users\\\\ryand\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" -c \":*)",
+      "Bash(ls -la \"D:/Projects/Resume/neko/\"*.ico)"
+    ]
+  }
+}

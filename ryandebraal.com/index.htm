@@ -109,18 +109,19 @@ select.tb-sel:hover{border-color:var(--accent);}
 /* Flashlight overlay — punches a radial hole in solid black */
 #horror-overlay{
   display:none;
-  position:fixed;inset:0;z-index:5;pointer-events:none;
+  position:fixed;inset:0;z-index:190;pointer-events:none;
   --lx:50vw;--ly:50vh;
   background:radial-gradient(circle 140px at var(--lx) var(--ly),
     transparent 0%,
-    rgba(0,0,0,0.15) 60%,
-    rgba(0,0,0,0.7) 90%,
-    rgba(0,0,0,0.97) 100%);
+    rgba(0,0,0,0.05) 40%,
+    rgba(0,0,0,0.6) 70%,
+    rgba(0,0,0,0.92) 85%,
+    #000 100%);
   transition:background 0.05s;
 }
 /* Custom cursor crosshair for horror */
 #horror-cursor{
-  display:none;position:fixed;z-index:6;pointer-events:none;
+  display:none;position:fixed;z-index:191;pointer-events:none;
   width:24px;height:24px;margin:-12px 0 0 -12px;
 }
 [data-theme="horror"] #horror-overlay{display:block;}
@@ -141,6 +142,7 @@ select.tb-sel:hover{border-color:var(--accent);}
 [data-theme="spring"] .r-contact a{border-bottom-color:rgba(46,125,79,0.2);}
 [data-theme="summer"] .r-contact a{border-bottom-color:rgba(196,122,0,0.2);}
 [data-theme="autumn"] .r-contact a{border-bottom-color:rgba(232,118,42,0.25);}
+[data-theme="autumn"] body{background:linear-gradient(180deg, #3d2008 0%, #2a1508 25%, #1c1008 60%, #1c1008 100%);}
 [data-theme="winter"] .r-contact a{border-bottom-color:rgba(26,90,140,0.2);}
 [data-theme="matrix"] .r-contact a{border-bottom-color:rgba(0,255,65,0.2);}
 
@@ -158,8 +160,11 @@ select.tb-sel:hover{border-color:var(--accent);}
 /* ── TAG ── */
 .tag{display:inline-flex;align-items:center;font-family:var(--font-resume);font-size:11px;padding:2px 9px;background:var(--tag-bg);color:var(--tag-text);border:1px solid var(--tag-border);border-radius:20px;cursor:default;transition:all 0.12s;position:relative;white-space:nowrap;}
 .tag:hover{background:var(--tag-hover-bg);color:var(--tag-hover-text);border-color:var(--tag-hover-bg);transform:translateY(-1px);z-index:20;}
-.tag[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:11px;padding:4px 10px;border-radius:5px;white-space:nowrap;pointer-events:none;z-index:999;font-family:var(--font-resume);}
-.tag[data-tip]:hover::before{content:'';position:absolute;bottom:calc(100% + 1px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--text);pointer-events:none;z-index:999;}
+.tag-tooltip{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:11px;padding:8px 12px;border-radius:6px;pointer-events:none;z-index:999;font-family:var(--font-resume);width:280px;white-space:normal;line-height:1.5;box-shadow:0 4px 12px rgba(0,0,0,0.25);}
+.tag-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--text);}
+.tag-tooltip .tip-desc{font-weight:400;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid rgba(128,128,128,0.3);}
+.tag-tooltip .tip-ryan{font-style:italic;opacity:0.85;}
+.tag:hover .tag-tooltip{display:block;}
 [data-theme="matrix"] .tag{text-shadow:0 0 8px currentColor;}
 
 /* ── EXPERIENCE ── */
@@ -210,7 +215,7 @@ select.tb-sel:hover{border-color:var(--accent);}
   #resume{margin:0;border:none;border-radius:0;padding:32px 44px;max-width:100%;background:#fff;box-shadow:none;}
   :root{--bg:#fff;--bg2:#fff;--text:#1a1a2e;--text2:#4a5568;--text3:#718096;--accent:#1b4f8c;--rule:#2c5f8a;--tag-bg:#eef2f8;--tag-text:#1b4f8c;--tag-border:#c5d5eb;--border:#e2e6ea;}
   .tag:hover{transform:none;}
-  .tag[data-tip]:hover::after,.tag[data-tip]:hover::before{display:none;}
+  .tag:hover .tag-tooltip{display:none!important;}
 }
 </style>
 </head>
@@ -230,12 +235,13 @@ select.tb-sel:hover{border-color:var(--accent);}
 
 <!-- ── TOOLBAR ── -->
 <div id="toolbar">
+  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAFyWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgOS4xLWMwMDMgNzkuOTY5MGE4NywgMjAyNS8wMy8wNi0xOToxMjowMyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI3LjEgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyNi0wMy0yMFQxNjowNTozOC0wNTowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjYtMDMtMjBUMTY6MzI6MDgtMDU6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjYtMDMtMjBUMTY6MzI6MDgtMDU6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmRkNzQ0ZGViLWQxYjYtMGM0OS05OGUxLWFiYTllZmJmYzkwYSIgeG1wTU06RG9jdW1lbnRJRD0i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" alt="Ryan DeBraal" style="width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0;">
   <span id="toolbar-name">Ryan DeBraal</span>
 
   <div class="tb-sep"></div>
   <span class="tb-label">Profile</span>
   <select class="tb-sel" id="profile-picker" onchange="setProfile(this.value)">
-    <option value="classic">Classic Two Page</option>
+    <option value="classic">Classic — Two Pages</option>
     <option value="pitch">Elevator Pitch — One Page</option>
     <option value="complete">Complete — Everything</option>
   </select>
@@ -255,22 +261,6 @@ select.tb-sel:hover{border-color:var(--accent);}
   </select>
 
   <div class="tb-sep"></div>
-  <span class="tb-label">Font</span>
-  <select class="tb-sel" id="font-picker" onchange="setFont(this.value)">
-    <option value="'Outfit',system-ui,sans-serif" style="font-family:'Outfit',sans-serif" selected>Outfit</option>
-    <option value="'Times New Roman',Times,serif" style="font-family:'Times New Roman',serif">Times New Roman</option>
-    <option value="Arial,Helvetica,sans-serif" style="font-family:Arial,sans-serif">Arial</option>
-    <option value="Aptos,Calibri,sans-serif" style="font-family:Aptos,Calibri,sans-serif">Aptos</option>
-    <option value="Calibri,sans-serif" style="font-family:Calibri,sans-serif">Calibri</option>
-    <option value="'Roboto',sans-serif" style="font-family:'Roboto',sans-serif">Roboto</option>
-    <option value="'Lato',sans-serif" style="font-family:'Lato',sans-serif">Lato</option>
-    <option value="Georgia,serif" style="font-family:Georgia,serif">Georgia</option>
-  </select>
-  <button class="tb-btn" onclick="adjustFontSize(-1)" title="Decrease font size" style="padding:5px 9px;font-size:15px;line-height:1;">A−</button>
-  <span id="font-size-label" style="font-size:11px;color:var(--text3);min-width:28px;text-align:center;">14px</span>
-  <button class="tb-btn" onclick="adjustFontSize(1)" title="Increase font size" style="padding:5px 9px;font-size:15px;line-height:1;">A+</button>
-
-  <div class="tb-sep"></div>
   <div style="position:relative;display:inline-block;" id="export-wrap">
     <button class="tb-btn primary" onclick="toggleExportMenu()" id="export-btn">
       <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
@@ -280,18 +270,49 @@ select.tb-sel:hover{border-color:var(--accent);}
     <div id="export-menu" style="display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--bg);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.15);min-width:160px;z-index:999;overflow:hidden;">
       <button onclick="exportPDF()" style="display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;background:none;border:none;color:var(--text);font-family:var(--font-resume);font-size:13px;cursor:pointer;text-align:left;transition:background 0.1s;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='none'">
         <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--accent);flex-shrink:0"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
-        Export as PDF
-      </button>
-      <div style="height:1px;background:var(--border);margin:0 10px;"></div>
-      <button onclick="exportDOCX()" style="display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;background:none;border:none;color:var(--text);font-family:var(--font-resume);font-size:13px;cursor:pointer;text-align:left;transition:background 0.1s;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='none'">
-        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#2b5eb0;flex-shrink:0"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
-        Export as DOCX
+        PDF
       </button>
       <div style="height:1px;background:var(--border);margin:0 10px;"></div>
       <button onclick="exportMD()" style="display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;background:none;border:none;color:var(--text);font-family:var(--font-resume);font-size:13px;cursor:pointer;text-align:left;transition:background 0.1s;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='none'">
         <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--text2);flex-shrink:0"><path d="M20.56 18H3.44C2.65 18 2 17.37 2 16.59V7.41C2 6.63 2.65 6 3.44 6h17.12C21.35 6 22 6.63 22 7.41v9.18c0 .78-.65 1.41-1.44 1.41zM6.81 15.19v-3.66l1.92 2.35 1.92-2.35v3.66h1.93V8.81h-1.93l-1.92 2.35-1.92-2.35H4.88v6.38h1.93zm10.38-2.55h1.93v-3.83h-1.93V9.84h-3.84v4.8h3.84v.97z"/></svg>
-        Export as Markdown
+        Markdown
       </button>
+      <div style="height:1px;background:var(--border);margin:0 10px;"></div>
+      <button onclick="exportHTML()" style="display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;background:none;border:none;color:var(--text);font-family:var(--font-resume);font-size:13px;cursor:pointer;text-align:left;transition:background 0.1s;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='none'">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--text2);flex-shrink:0"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>
+        HTML
+      </button>
+    </div>
+  </div>
+
+  <button class="tb-btn" onclick="printResume()" title="Print">
+    <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+    Print
+  </button>
+
+  <div class="tb-sep"></div>
+  <div style="position:relative;display:inline-block;" id="more-wrap">
+    <button class="tb-btn" onclick="toggleMoreMenu()" id="more-btn" title="More options" style="padding:5px 10px;font-size:16px;font-weight:700;letter-spacing:1px;line-height:1;">&#8230;</button>
+    <div id="more-menu" style="display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--bg);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.15);padding:12px 14px;z-index:999;white-space:nowrap;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+        <span class="tb-label">Font</span>
+        <select class="tb-sel" id="font-picker" onchange="setFont(this.value)">
+          <option value="'Outfit',system-ui,sans-serif" style="font-family:'Outfit',sans-serif" selected>Outfit</option>
+          <option value="'Times New Roman',Times,serif" style="font-family:'Times New Roman',serif">Times New Roman</option>
+          <option value="Arial,Helvetica,sans-serif" style="font-family:Arial,sans-serif">Arial</option>
+          <option value="Aptos,Calibri,sans-serif" style="font-family:Aptos,Calibri,sans-serif">Aptos</option>
+          <option value="Calibri,sans-serif" style="font-family:Calibri,sans-serif">Calibri</option>
+          <option value="'Roboto',sans-serif" style="font-family:'Roboto',sans-serif">Roboto</option>
+          <option value="'Lato',sans-serif" style="font-family:'Lato',sans-serif">Lato</option>
+          <option value="Georgia,serif" style="font-family:Georgia,serif">Georgia</option>
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;width:100%;">
+        <span class="tb-label">Size</span>
+        <button class="tb-btn" onclick="adjustFontSize(-1)" title="Decrease font size" style="padding:5px 9px;font-size:15px;line-height:1;">A−</button>
+        <span id="font-size-label" style="font-size:11px;color:var(--text3);flex:1;text-align:center;">14px</span>
+        <button class="tb-btn" onclick="adjustFontSize(1)" title="Increase font size" style="padding:5px 9px;font-size:15px;line-height:1;margin-left:auto;">A+</button>
+      </div>
     </div>
   </div>
 </div>
@@ -303,7 +324,9 @@ select.tb-sel:hover{border-color:var(--accent);}
   <div class="r-contact">
     <a href="mailto:ryandebraal@mindattic.com">ryandebraal@mindattic.com</a> &nbsp;·&nbsp;
     <a href="https://github.com/mindattic" target="_blank">github.com/mindattic</a> &nbsp;·&nbsp;
-    <a href="https://mindattic.com" target="_blank">mindattic.com</a>
+    <a href="https://www.linkedin.com/in/ryandebraal/" target="_blank">linkedin.com/in/ryandebraal</a> &nbsp;·&nbsp;
+    <a href="https://mindattic.com" target="_blank">mindattic.com</a> &nbsp;·&nbsp;
+    <a href="https://mindatticcares.com" target="_blank">mindatticcares.com</a>
   </div>
   <div id="resume-body"></div>
 </div>
@@ -423,7 +446,11 @@ const D = {
 // ═══════════════════════════════════════════════════════════════════════════════
 function tag(text) {
   const tip = techTips[text]||'';
-  return `<span class="tag"${tip?` data-tip="${tip.replace(/"/g,'&quot;')}"`:''}>${text}</span>`;
+  if (!tip) return `<span class="tag">${text}</span>`;
+  const parts = tip.split('\n\n');
+  const desc = parts[0]||'';
+  const ryan = parts[1]||'';
+  return `<span class="tag">${text}<span class="tag-tooltip"><div class="tip-desc">${desc}</div><div class="tip-ryan">${ryan}</div></span></span>`;
 }
 
 function secHTML(label){ return `<div class="r-sec">${label}</div>`; }
@@ -569,6 +596,19 @@ function setFont(f) {
   try{ localStorage.setItem('resume-font',f); }catch(e){}
 }
 
+let currentFontSize = 14;
+function adjustFontSize(delta) {
+  currentFontSize = Math.max(10, Math.min(20, currentFontSize + delta));
+  document.documentElement.style.fontSize = currentFontSize + 'px';
+  document.getElementById('font-size-label').textContent = currentFontSize + 'px';
+  try{ localStorage.setItem('resume-fontsize', currentFontSize); }catch(e){}
+}
+function initFontSize() {
+  try{ const s = localStorage.getItem('resume-fontsize'); if(s) currentFontSize = parseInt(s,10)||14; }catch(e){}
+  document.documentElement.style.fontSize = currentFontSize + 'px';
+  document.getElementById('font-size-label').textContent = currentFontSize + 'px';
+}
+
 // ═══════════════════════════════════════════════════════════════════════════════
 // CANVAS FX
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -588,6 +628,13 @@ function stopFX() {
   ctx.clearRect(0,0,canvas.width,canvas.height);
   particles = [];
   stopHorror();
+  // Clean up neko immediately
+  if (typeof nekoInstance !== 'undefined' && nekoInstance) {
+    nekoInstance.stop(); nekoInstance.destroy(); nekoInstance = null;
+  }
+  // Clean up snow pile SVG
+  const snowSvg = document.getElementById('snow-pile-svg');
+  if (snowSvg) snowSvg.remove();
   // Reset horror overlay when switching away
   const overlay=document.getElementById('horror-overlay');
   if(overlay) overlay.style.background='';
@@ -606,10 +653,11 @@ function startSpring() {
     grown: 0,
   }));
   // Floating pollen dots
-  const pollen = Array.from({length:25},()=>({
+  const pollen = Array.from({length:60},()=>({
     x:Math.random()*canvas.width, y:Math.random()*canvas.height,
-    r:1+Math.random()*2, vy:-0.3-Math.random()*0.4,
-    vx:(Math.random()-0.5)*0.5, alpha:0.4+Math.random()*0.4,
+    r:1+Math.random()*2.5, vy:-0.2-Math.random()*0.5,
+    vx:(Math.random()-0.5)*0.7, alpha:0.3+Math.random()*0.5,
+    drift:Math.random()*Math.PI*2, driftSpeed:0.01+Math.random()*0.02,
   }));
   function draw() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -627,12 +675,22 @@ function startSpring() {
       ctx.stroke();
     });
     pollen.forEach(p=>{
-      p.y += p.vy; p.x += p.vx;
+      p.drift += p.driftSpeed;
+      p.y += p.vy; p.x += p.vx + Math.sin(p.drift)*0.4;
       if(p.y<-10) { p.y=canvas.height+10; p.x=Math.random()*canvas.width; }
+      if(p.x<-10) p.x=canvas.width+10;
+      if(p.x>canvas.width+10) p.x=-10;
       ctx.beginPath();
       ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-      ctx.fillStyle = `rgba(200,220,100,${p.alpha})`;
+      ctx.fillStyle = `rgba(210,225,90,${p.alpha})`;
       ctx.fill();
+      // Soft glow for larger pollen
+      if(p.r>2){
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,p.r*2.5,0,Math.PI*2);
+        ctx.fillStyle = `rgba(200,220,100,${p.alpha*0.12})`;
+        ctx.fill();
+      }
     });
     fxAnim = requestAnimationFrame(draw);
   }
@@ -735,9 +793,8 @@ function startSummer() {
     flowers.forEach(f=>{
       f.age++;
       if(f.phase==='fadein')  { f.alpha=Math.min(1,f.alpha+0.012); if(f.alpha>=1){f.phase='bloom';} }
-      else if(f.phase==='bloom')  { if(f.age>400&&!f.claimedBy){ f.phase='fadeout'; } }
-      else if(f.phase==='visited'){ f.alpha=Math.max(0,f.alpha-0.005); if(f.alpha<=0) f.phase='done'; }
-      else if(f.phase==='fadeout'){ f.alpha=Math.max(0,f.alpha-0.007); if(f.alpha<=0) f.phase='done'; }
+      else if(f.phase==='bloom')  { /* flowers persist until a bee visits them */ }
+      else if(f.phase==='visited'){ f.alpha=Math.max(0,f.alpha-0.008); if(f.alpha<=0) f.phase='done'; }
       drawFlower(f);
     });
 
@@ -816,27 +873,70 @@ function startAutumn() {
     vx:(Math.random()-0.5)*1.5, vy:0.8+Math.random()*1.2,
     rotation:Math.random()*Math.PI*2, rotSpeed:(Math.random()-0.5)*0.05,
     swing:Math.random()*Math.PI*2, swingSpeed:0.03+Math.random()*0.03,
+    flipAngle:Math.random()*Math.PI*2, flipSpeed:0.02+Math.random()*0.04,
+    tiltAngle:Math.random()*Math.PI*2, tiltSpeed:0.015+Math.random()*0.03,
+    baseRotSpeed:(Math.random()-0.5)*0.05, baseFlipSpeed:0.02+Math.random()*0.04,
+    baseTiltSpeed:0.015+Math.random()*0.03,
+    spinActive:1, // 0=paused, 1=spinning — lerps smoothly
+    spinTimer: 60+Math.random()*200, // frames until next toggle
   }));
   function drawLeaf(l) {
+    const scaleX = Math.cos(l.flipAngle);
+    const scaleY = Math.cos(l.tiltAngle);
     ctx.save(); ctx.translate(l.x,l.y); ctx.rotate(l.rotation);
+    ctx.scale(scaleX, scaleY);
+    const s = l.size;
     ctx.beginPath();
-    ctx.moveTo(0,-l.size);
-    ctx.bezierCurveTo(l.size*0.8,-l.size*0.5, l.size*0.9,l.size*0.2, 0,l.size*0.6);
-    ctx.bezierCurveTo(-l.size*0.9,l.size*0.2, -l.size*0.8,-l.size*0.5, 0,-l.size);
+    ctx.moveTo(0,-s);
+    ctx.bezierCurveTo(s*0.8,-s*0.5, s*0.9,s*0.2, 0,s*0.6);
+    ctx.bezierCurveTo(-s*0.9,s*0.2, -s*0.8,-s*0.5, 0,-s);
     ctx.fillStyle=l.color; ctx.fill();
-    // stem
-    ctx.beginPath(); ctx.moveTo(0,l.size*0.6); ctx.lineTo(0,l.size);
+    ctx.beginPath(); ctx.moveTo(0,s*0.6); ctx.lineTo(0,s);
     ctx.strokeStyle='#8b4513'; ctx.lineWidth=1.5; ctx.stroke();
     ctx.restore();
   }
+  // Natural wind: layered sine waves at different frequencies for organic feel
+  let t = Math.random() * 1000; // offset so it doesn't start the same each time
+  function getWind() {
+    // Slow base breeze + medium variation + occasional gust-like surges
+    const base  = Math.sin(t * 0.0007) * 0.8;          // slow drift, ~15s period
+    const mid   = Math.sin(t * 0.003) * 0.4;            // medium sway, ~3.5s
+    const fast  = Math.sin(t * 0.011 + 2.1) * 0.2;      // quick flutter
+    const gust  = Math.pow(Math.sin(t * 0.0004), 5) * 2; // rare strong gust
+    return base + mid + fast + gust;
+  }
+
   function draw() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
+    t++;
+    const wind = getWind();
+
     leaves.forEach(l=>{
       l.swing += l.swingSpeed;
-      l.x += l.vx + Math.sin(l.swing)*0.8;
+
+      // Randomly pause/resume spinning
+      l.spinTimer--;
+      if (l.spinTimer <= 0) {
+        l.spinActive = l.spinActive ? 0 : 1;
+        l.spinTimer = 80 + Math.random() * 300; // random duration for next state
+      }
+      // Smooth lerp spin speeds toward active or zero
+      const spinTarget = l.spinActive ? 1 : 0;
+      const spinMix = l.spinActive ? 0.02 : 0.04; // ease out faster than ease in
+      l.rotSpeed += (l.baseRotSpeed * spinTarget - l.rotSpeed) * spinMix;
+      l.flipSpeed += (l.baseFlipSpeed * spinTarget - l.flipSpeed) * spinMix;
+      l.tiltSpeed += (l.baseTiltSpeed * spinTarget - l.tiltSpeed) * spinMix;
+
+      l.flipAngle += l.flipSpeed;
+      l.tiltAngle += l.tiltSpeed;
+      l.x += l.vx + Math.sin(l.swing)*0.8 + wind;
       l.y += l.vy;
-      l.rotation += l.rotSpeed;
-      if(l.y>canvas.height+40){ l.y=-40; l.x=Math.random()*canvas.width; }
+      l.rotation += l.rotSpeed + wind * 0.01;
+      // Flip faster when wind is strong (leaves tumble in gusts)
+      l.flipAngle += Math.abs(wind) * 0.008;
+      if(l.y>canvas.height+40){ l.y=-40; l.x=Math.random()*canvas.width; l.spinActive=1; l.spinTimer=60+Math.random()*200; }
+      if(l.x<-60) l.x=canvas.width+30;
+      if(l.x>canvas.width+60) l.x=-30;
       drawLeaf(l);
     });
     fxAnim = requestAnimationFrame(draw);
@@ -846,24 +946,146 @@ function startAutumn() {
 
 // ── WINTER: white snowflakes ──────────────────────────────────────────────────
 function startWinter() {
+  const W = canvas.width, H = canvas.height;
+
+  // ── Snow accumulation: array of height values across screen width ──
+  const SEGMENTS = 80; // number of control points for the snow drift
+  const snowHeight = new Float32Array(SEGMENTS + 1); // current snow pile height at each segment
+  const snowTarget = new Float32Array(SEGMENTS + 1);  // target heights (smoothed)
+  const MAX_SNOW = H * 0.32; // max snow can pile up to 32% of viewport height
+  const PILE_RATE = 1;        // how much snow each flake adds (px)
+  const SMOOTH_SPEED = 0.03; // how fast actual height lerps to target
+  const SPREAD = 2.5;        // how many segments each flake's impact spreads across
+
+  // Seed with a small initial snow drift (gentle rolling hills)
+  for (let i = 0; i <= SEGMENTS; i++) {
+    const t = i / SEGMENTS;
+    const base = 8 + Math.sin(t * Math.PI * 2.3) * 4 + Math.sin(t * Math.PI * 5.1) * 2.5 + Math.random() * 1.5;
+    snowHeight[i] = base;
+    snowTarget[i] = base;
+  }
+
+  // Create SVG overlay for snow pile
+  let snowSVG = document.getElementById('snow-pile-svg');
+  if (!snowSVG) {
+    snowSVG = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    snowSVG.id = 'snow-pile-svg';
+    snowSVG.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    snowSVG.style.cssText = 'position:fixed;bottom:0;left:0;width:100%;height:100%;pointer-events:none;z-index:1;';
+    snowSVG.setAttribute('preserveAspectRatio','none');
+    // Gradient: sparkly white top → slightly blue-white bottom
+    snowSVG.innerHTML = `
+      <defs>
+        <linearGradient id="snow-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(255,255,255,0.95)"/>
+          <stop offset="40%" stop-color="rgba(240,248,255,0.97)"/>
+          <stop offset="100%" stop-color="rgba(220,235,250,1)"/>
+        </linearGradient>
+        <filter id="snow-shadow">
+          <feDropShadow dx="0" dy="-2" stdDeviation="3" flood-color="rgba(180,210,240,0.4)"/>
+        </filter>
+      </defs>
+      <path id="snow-drift-back" d="" fill="rgba(200,220,240,0.3)" filter="url(#snow-shadow)"/>
+      <path id="snow-drift" d="" fill="url(#snow-grad)"/>
+      <path id="snow-drift-highlight" d="" fill="none" stroke="rgba(255,255,255,0.8)" stroke-width="1.5"/>
+    `;
+    document.body.appendChild(snowSVG);
+  }
+  const driftPath = document.getElementById('snow-drift');
+  const driftBack = document.getElementById('snow-drift-back');
+  const driftHighlight = document.getElementById('snow-drift-highlight');
+
+  function updateSVGViewBox() {
+    const w = window.innerWidth, h = window.innerHeight;
+    snowSVG.setAttribute('viewBox', `0 0 ${w} ${h}`);
+  }
+  updateSVGViewBox();
+  window.addEventListener('resize', updateSVGViewBox);
+
+  // Build a smooth SVG path from snow height array
+  function buildSnowPath(heights, offsetY) {
+    const w = window.innerWidth, h = window.innerHeight;
+    const segW = w / SEGMENTS;
+    const off = offsetY || 0;
+    // Start at bottom-left
+    let d = `M 0,${h} L 0,${h - heights[0] + off}`;
+    // Use catmull-rom → cubic bezier for smooth curves
+    for (let i = 0; i <= SEGMENTS; i++) {
+      const x = i * segW;
+      const y = h - heights[i] + off;
+      if (i === 0) continue;
+      // Simple smooth: cubic bezier with control points from neighbors
+      const prevX = (i - 1) * segW;
+      const prevY = h - heights[i - 1] + off;
+      const cp1x = prevX + segW * 0.4;
+      const cp1y = prevY;
+      const cp2x = x - segW * 0.4;
+      const cp2y = y;
+      d += ` C ${cp1x},${cp1y} ${cp2x},${cp2y} ${x},${y}`;
+    }
+    d += ` L ${w},${h} Z`;
+    return d;
+  }
+
+  // Build just the top edge path (for highlight stroke)
+  function buildHighlightPath(heights) {
+    const w = window.innerWidth, h = window.innerHeight;
+    const segW = w / SEGMENTS;
+    let d = `M 0,${h - heights[0]}`;
+    for (let i = 1; i <= SEGMENTS; i++) {
+      const x = i * segW;
+      const y = h - heights[i];
+      const prevX = (i - 1) * segW;
+      const prevY = h - heights[i - 1];
+      const cp1x = prevX + segW * 0.4;
+      const cp2x = x - segW * 0.4;
+      d += ` C ${cp1x},${prevY} ${cp2x},${y} ${x},${y}`;
+    }
+    return d;
+  }
+
+  // Add snow at a given x position (when a flake lands)
+  function addSnow(x) {
+    const w = window.innerWidth;
+    const seg = (x / w) * SEGMENTS;
+    const center = Math.round(seg);
+    // Gaussian-ish spread across nearby segments
+    for (let i = Math.max(0, center - 3); i <= Math.min(SEGMENTS, center + 3); i++) {
+      const dist = Math.abs(i - seg);
+      const weight = Math.exp(-(dist * dist) / (SPREAD * SPREAD));
+      snowTarget[i] = Math.min(MAX_SNOW, snowTarget[i] + PILE_RATE * weight);
+    }
+  }
+
+  // Natural settling: snow very slowly spreads to neighbors (simulates settling)
+  let settleTimer = 0;
+  function settleSnow() {
+    settleTimer++;
+    if (settleTimer % 8 !== 0) return; // only settle every 8th frame
+    for (let i = 1; i < SEGMENTS; i++) {
+      const avg = (snowTarget[i - 1] + snowTarget[i] * 2 + snowTarget[i + 1]) / 4;
+      snowTarget[i] = snowTarget[i] * 0.97 + avg * 0.03;
+    }
+  }
+
+  // ── Snowflakes ──
   const flakes = Array.from({length:140},()=>({
     x:Math.random()*canvas.width, y:Math.random()*canvas.height,
     size:1.5+Math.random()*4.5, speed:0.4+Math.random()*1.4,
     drift:Math.random()*Math.PI*2, driftSpeed:0.008+Math.random()*0.018,
     alpha:0.55+Math.random()*0.45, spin:Math.random()*Math.PI*2,
     spinSpeed:(Math.random()-0.5)*0.04,
-    arms: Math.random()>0.5, // some are star-shaped, some are dots
+    arms: Math.random()>0.5,
   }));
+
   function drawFlake(f) {
     ctx.save(); ctx.translate(f.x,f.y); ctx.rotate(f.spin);
     ctx.globalAlpha = f.alpha;
     if (f.arms && f.size > 3) {
-      // 6-pointed snowflake
       ctx.strokeStyle='#ffffff'; ctx.lineWidth=1.2;
       for(let i=0;i<6;i++){
         ctx.beginPath(); ctx.moveTo(0,0);
         ctx.lineTo(0,-f.size*1.8);
-        // tiny cross arms
         ctx.moveTo(-f.size*0.5,-f.size*0.9); ctx.lineTo(f.size*0.5,-f.size*0.9);
         ctx.stroke(); ctx.rotate(Math.PI/3);
       }
@@ -873,161 +1095,841 @@ function startWinter() {
     }
     ctx.globalAlpha=1; ctx.restore();
   }
+
   function draw() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
+    const h = window.innerHeight;
+
     flakes.forEach(f=>{
       f.drift += f.driftSpeed;
       f.spin += f.spinSpeed;
       f.x += Math.sin(f.drift)*0.6;
       f.y += f.speed;
-      if(f.y>canvas.height+10){ f.y=-10; f.x=Math.random()*canvas.width; }
+
+      // Check if flake has reached the snow pile surface
+      const seg = Math.round((f.x / window.innerWidth) * SEGMENTS);
+      const segClamped = Math.max(0, Math.min(SEGMENTS, seg));
+      const pileTop = h - snowHeight[segClamped];
+
+      if (f.y >= pileTop - 2) {
+        // Flake lands — add to snow pile
+        addSnow(f.x);
+        f.y = -10 - Math.random() * 40;
+        f.x = Math.random() * canvas.width;
+      }
       drawFlake(f);
     });
+
+    // Smooth snow height towards target
+    for (let i = 0; i <= SEGMENTS; i++) {
+      snowHeight[i] += (snowTarget[i] - snowHeight[i]) * SMOOTH_SPEED;
+    }
+    settleSnow();
+
+    // Update SVG paths
+    const anySnow = snowHeight.some(h => h > 0.5);
+    if (anySnow) {
+      driftPath.setAttribute('d', buildSnowPath(snowHeight, 0));
+      driftBack.setAttribute('d', buildSnowPath(snowHeight, -4)); // shadow layer slightly above
+      driftHighlight.setAttribute('d', buildHighlightPath(snowHeight));
+    }
+
     fxAnim = requestAnimationFrame(draw);
   }
   draw();
 }
 
 
-// ── NEKO: classic cat chases cursor ──────────────────────────────────────────
-function startNeko() {
-  // All 32 sprites as base64 PNGs (extracted from nekojs live instance)
-  // State mapping: STOP=0, WASH=1, SCRATCH=2, YAWN=3, SLEEP=4, AWAKE=5
-  // U_MOVE=6, D_MOVE=7, L_MOVE=8, R_MOVE=9, UL_MOVE=10, UR_MOVE=11
-  // DL_MOVE=12, DR_MOVE=13, U_CLAW=14, D_CLAW=15 (2 frames each = 32 total)
-  const B = 'data:image/png;base64,';
-  const S = [
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABIklEQVR4nO1WSQ7EMAiDUf//ZeYwoguYLdVIPdSnqklsB0gI0QsMeQJntKAiQuPLG7ILRUQkIUTjqfinMMCI4KcBzUUcpYFsV0oQCTgEBi9TdFwNMB27bakYka455Vc9l4LISCYAB6xBK6zYAtI0b0akg5CvKkLMxpgv+p9hIx/COUsfTmv7s6CF01pKQZT7QU3siIoQ4pxjFWPmy/fUzCT87YvoZKbkn6SAu1XeFW9PMtjDcI6IMWd5BfwjorUidLdZMSZZb1g6BQTqYdghbxkISaMGldXEtAZaJwEczVu9oN2ikZEKlQERkfSBkTWmam1l4BJudNtlhsDa+6dg+CRrIe0FaDdTVBGLIiAqnIkreSZiOBxZtHKyZfh0L+a/eA6+YR662bT+YjsAAAAASUVORK5CYII=',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA40lEQVR4nO1XyxLDIAiUTv7/l+mhsfUBsogZM233ZkZ2F2SIUpoHN2uaIUGDWrHEXH8iEqlMfq9rboU7wpcRmPeBCpfiUrb527mHk1C1iIGu5Kv2wgauAnJW5rmr5EA/QAYERyNBl8b2CiA9QG1m1hoVhzacqEogVeTqQcSasEj6MRM2oCqCo9jUGUVVWRORqwLC1BS1hk04I57jmtGsYvskNA14s88oqxAyMDuE0NiRgW4AzcAaSPfvgZ83EOqDVfeBlDb+C0Qj74V+SYV5D6eBknjJw+T2Tfj9BqKAX0B/aHgCdIBeOO78F8UAAAAASUVORK5CYII=',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABDklEQVR4nO1Wyw4DIQiEpv//y/TQuEVXmBG3ySbtnFQQRuWhSh02zLViBG0anXwE1otUU1Oh8JE5907a2MxOzsf1yb7wIBmBzpiq3AOQ8GsNJdkgSkA2UGPJCYRJzZpgkBgRWJAFd+3d/mEWZDFq5SknFCCUzU2a7GWY30rqnGD8MDvIDiCsVKGz2k3yqF+GLWBF2YmjOd0f4sJvvF8AqhwJSjYqp6V0DJL8XHJagBN2c0WjI5xMVAmpyF1NWIF/HxjChN8rrAW5FbqBTIMxQixSHCUiVtJsJEBr0K0HBgPJXv/lHfC6FsY6mSSf7RqvkzZpn4oFhXkTaDAB2SHJz2JYJDaIBxQiYGcWFhWL0YoL3bDHnR5YA3V8fYAAAAASUVORK5CYII=',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABF0lEQVR4nO1WSw7DIAxEqHr/K9uLVIkQ82usJFUXnSUYPN8YY6LlQ8rLiXf2pZBrXJHHVOk3lDJXOgUn9wsgHRHsxmCAMUAeRlxQoAvQKVGBGMqxeIcQ0VNqghUhBjFVGYdM6ixFiT7AYnGNMgYRVDNBkHILiAv/JZuEfmcBaJKNBGQQGBpNIYAfpGqCRGADMLXCECQJAoSSEQCMTJuYIEAlIQE8FLDBVAUFECqIAlhpBQAPYACAgAgE0AACIC4AQAHpgAGAVgRBgBBqBIFALgFqAEqABNAFaABWAAI4BZgBVoAYgBLkAHYAI0AAUAAAAIAm0AQYoFAEAEAIABACAAMIAAAAAAAAAAAAAAAQA9AAAAAfqQlIAAAAABJRU5ErkJggg==',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABJ0lEQVR4nO1Wyw7CMAiGYfv/L7MXkygp5VJcTHrhxRiO9gOFUuqhSb8jfXLNRYRE5AOSxqjxcB8DMGdiswBOkDqIsSmAdwYQ8+j+RlVCCGMbMXyuHCwU1moJBiGKYSgkIDRbqChfEFFgAwQF6hnqBi7EeoBJjnM3xT8u3ABqSAAsVElVAqKVCWAoJKaKVCQAAFRIRNaGSBJKhVWYsAOQTAmEAoBRKyRORlhkGwHzBhGCIiwBNRUSNiISIBdQM3IDRQAiJBpOQHQQYQHxUNHQAQSUNBNQVJIVoMAUUAUFcBAAAAQYAUEHgDAoQAHGAFAIAQHAIUAMQZDAAdDoAyAIIAAAABAAAAAAAAAAAAAAAYAAAAdYFD4gAAAABJRU5ErkJggg==',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABEklEQVR4nO1WSw7DIAxEqHr/K9uLVIkQ82usJFUXnSUHPN8YY6LlQ8rLiXf2pZBrXJHHVOk3lDJXOgUn9wsgHRHsxmCAMUAeRlxQoAvQKVGBGMqxeIcQ0VNqghUhBjFVGYdM6ixFiT7AYnGNMgYRVDNBkHILiAv/JZuEfmcBaJKNBGQQGBpNIYAfpGqCRGADMLXCECQJAoSSEQCMTJuYIEAlIQE8FLDBVAUFECqIAlhpBQAPYACAgAgE0AACIC4AQAHpgAGAVgRBgBBqBIFALgFqAEqABNAFaABWAAI4BZgBVoAYgBLkAHYAI0AAUAAAAIAm0AQYoFAEAEAIABACAAMIAAAAAAAAAAAAAAAQA9AAAAAfqQlIAAAAABJRU5ErkJggg==',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABDklEQVR4nO2WSxLDIAxDUaf3v7K7aEKJI/8I7abRMjHWsw0Mrf27kIiRYvwSgG4q8vEHDuFLYFgSGU3pIlDvKaCwA6cfBtwGVYaIFtBRmMkmILxgyRpfgXBHUDVXEMxD9LeHleSqOVlPN7cJ4CWPlDUvA4iICwGgZF4G8CCYuYiEoywDMBmVp2QBIDvvq1rSASZdgDodvV1fA8jqWV2g571X5px/SzIFcMpiGLIToYTWfjgCa1N7AKeTYLU/o9mbMH0coxtS7ZUenHoT6qr321BXFcCivTfeISizCQEgfKYNtCzBCHHQ1Cmwqnc6Yramct/2Loxmuu3qe5i/BLAbkFm7r55VAGPymbW3blG9AHEphjo0CJF9AAAAAElFTkSuQmCC',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA80lEQVR4nO2WwRLDIAhEoZP//2V6qHZMdHGRNL24M7kosi+IjiI5WfmW9cqYm5mYWQV5HOAWbYC/AxzBeK/Z2jllE9KBUrqeSqpK52a3gDYvwSLk0WQAQuZRiBnAknkEInwKyv7S8zOIEICqiplBiNl8FACWf2RSzVG8gCrQFfAMGECk5ZuwNYnALQF4BuhP2SpEr+LOJCtUgXxmMi8C+FzmgePkqcnTJYQVqM+tEYR3D4zGvKeb24Q/qEAnCFAXZRutrkcQXg98V1y3ooXyxi/wp5zt4EynLExFBn8LfUIvom4AVCKSP9Nlo1Lc07VbW0/qDae6gB08t42YAAAAAElFTkSuQmCC',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABJ0lEQVR4nOWW2xLDIAhEl0z//5fpQ6NFJCAa04cy0+klsnsELwX+PWhgDN+gMZ3MzK0/EZUH9fMKhJfIygQaRkMltMNB7BlKU2vM+WwI4GUZn8mdsq6GNfOMuQUQJnpVmYkCoFVNkMg8O3sAOKS4MGAhuDUqgFxUo2WW44iofE/1qACQhJDiRJSqRBZCK4fbzxT5zr75TejLh43ngTa6Slhm+t0CFpVgr63hSbgaEtDaJeFdcJJsMQf6FnQan9zbtmM3kwiggmQh9OyvqjgKkIaIFmYVTQAInXsWJwDKVCArPhRbAK6u6scAMhCz+2toHWgA67jeVgHpA+c8mQWYPZy6PP2XLCvW9SG7RVdbQPo1UJlmzBNrwIVYacEyBPC7CmyP5sLx4g2TyYdbcQVdwQAAAABJRU5ErkJggg==',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABH0lEQVR4nOVX0RLCIAwrnv//y/EFbgVaGjp2emdedFLSUCCrIhzgfI7j7fs47uLFBpIAAAEwinLxjgiTYzQKGTclq6u8iIpLtcxBCwAgpZQp8USoYqqoZQ76DBjE03hVuqpGSgAaMYsdEadvwTYYmdhZfUdOnIFIgJnZE5S5CZSAJysQnYHSiPTqxpVaz0xyKkCUB6gfZqJh/KgAL+mS+BJ0xgm7B/4QHqlAzZmqQMhPOWHmFrCv5EhA2oRYEV+34p8UsNXTbcDkHQXoPYfI0t9DqLlur2j2hPrgNVvNGlHYQdn5n9gB2xu8+l77MFSjC3JatMWcfauUfs90POA3n96cCdH/Ao8g2ib65GZ8AEaJ01fllhHdTX4HT5nVH+IDSk+VHrQ/yTUAAAAASUVORK5CYII=',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABIUlEQVR4nO1Wyw7DIAxEU///ZXYRKRLhPbGnSHvqKTHYHmMMkfo4pL2ceGVfSriOK/KYKv2GUuZKp+DkXgGkI4LdGAwwBsjDiAsKdAE6JSowhmIsXiFE9JSaYEWIQUxVxiGTOktRog+wWFyjjEEE1UwQpNwC4sJ/ySahX1kAmWQjARkEhkZTCOAHqZogEdgADK1wBEkCQKEkBAAjEybmCBAJSEBPBSwwVQEBRAqiAJYaQUAD2AAiIAIBNAAAiAuAEAB6YABgFYEQYAQagSBQC4BagBKgATQBWgAVgACOAWYAVaAGIAS5AB2ACNAAFAAAACAABJtAEGKBQBABACAAgADCAAAAAAAAAAAAAAACQA4AAAAAfqKAlgAAAABJRU5ErkJggg==',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABJ0lEQVR4nO1WSwrCQAxN1ft/2e5EKkJ+MxnFhbvMhGCeJCl1jqbS3eRKv6GUudIpOLlXAOmIYDcGA4wB8jDiggJdgE6JCsRQjsU7hIieUhOsCDGIqco4ZFJnKUr0ARaLa5QxiKCaCYKUW0Bc+C/ZJPQrCyCTbCQgg8DQaAoBfCNVEyQCG4ChFY4gSRQoJEkBAIzkmZgTQCQgAT0VsMBUBQUQKogCWGkFAA9gAIiACAXQAAIgLgBAAemAAYBWBEGAEGoEgUAuAWoASoAE0AVoAFYAAjgFmAFWgBiAEuQAdgAjQABQAAAAgAAQbQBBigUAQAQAgAEAIwAAAAAAAAAAAAAAAAkAOAAAAAfqxuoQAAAABJRU5ErkJggg==',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABQElEQVR4nO2WywrCMBCFk9//y+5EqkJ+MxnFhbvMhGCeJCl1jqbS3eRKv6GUudIpOLlXAOmIYDcGA4wB8jDiggJdgE6JCoxBjMU7hIieUhOsCDGIqco4ZFJnKUr0ARaLa5QxiKCaCYKUW0Bc+C/ZJPQrCyCTbCQgg8DQaAoBfCNVEyQCG4ChFY4gSRQoJEkBAIzkmZgTQCQgAT0VsMBUBQUQKogCWGkFAA9gAIiACAXQAAIgLgBAAemAAYBWBEGAEGoEgUAuAWoASoAE0AVoAFYAAjgFmAFWgBiAEuQAdgAjQABQAAAAgAAQbQBBigUAQAQAgAEAIwAAAAAAAAAAAAAAAAkAOAAAAAfqxuoQAAAABJRU5ErkJggg==',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABQElEQVR4nO2WywrCMBCFk77/y+5EqkJ+MxnFhbvMhGCeJCl1jqbS3eRKv6GUudIpOLlXAOmIYDcGA4wB8jDiggJdgE6JCoxBjMU7hIieUhOsCDGIqco4ZFJnKUr0ARaLa5QxiKCaCYKUW0Bc+C/ZJPQrCyCTbCQgg8DQaAoBfCNVEyQCG4ChFY4gSRQoJEkBAIzkmZgTQCQgAT0VsMBUBQUQKogCWGkFAA9gAIiACAXQAAIgLgBAAemAAYBWBEGAEGoEgUAuAWoASoAE0AVoAFYAAjgFmAFWgBiAEuQAdgAjQABQAAAAgAAQbQBBigUAQAQAgAEAIwAAAAAAAAAAAAAAAAkAOAAAAAfqxuoQAAAABJRU5ErkJggg==',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABJ0lEQVR4nOWW2xLDIAhEl0z//5fpQ6NFJCAa04cy0+klsnsELwX+PWhgDN+gMZ3MzK0/EZUH9fMKhJfIygQaRkMltMNB7BlKU2vM+WwI4GUZn8mdsq6GNfOMuQUQJnpVmYkCoFVNkMg8O3sAOKS4MGAhuDUqgFxUo2WW44iofE/1qACQhJDiRJSqRBZCK4fbzxT5zr75TejLh43ngTa6Slhm+t0CFpVgr63hSbgaEtDaJeFdcJJsMQf6FnQan9zbtmM3kwiggmQh9OyvqjgKkIaIFmYVTQAInXsWJwDKVCArPhRbAK6u6scAMhCz+2toHWgA67jeVgHpA+c8mQWYPZy6PP2XLCvW9SG7RVdbQPo1UJlmzBNrwIVYacEyBPC7CmyP5sLx4g2TyYdbcQVdwQAAAABJRU5ErkJggg==',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABH0lEQVR4nOVX0RLCIAwrnv//y/EFbgVaGjp2emdedFLSUCCrIhzgfI7j7fs47uLFBpIAAAEwinLxjgiTYzQKGTclq6u8iIpLtcxBCwAgpZQp8USoYqqoZQ76DBjE03hVuqpGSgAaMYsdEadvwTYYmdhZfUdOnIFIgJnZE5S5CZSAJysQnYHSiPTqxpVaz0xyKkCUB6gfZqJh/KgAL+mS+BJ0xgm7B/4QHqlAzZmqQMhPOWHmFrCv5EhA2oRYEV+34p8UsNXTbcDkHQXoPYfI0t9DqLlur2j2hPrgNVvNGlHYQdn5n9gB2xu8+l77MFSjC3JatMWcfauUfs90POA3n96cCdH/Ao8g2ib65GZ8AEaJ01fllhHdTX4HT5nVH+IDSk+VHrQ/yTUAAAAASUVORK5CYII=',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABJ0lEQVR4nOWW2xLDIAhEl0z//5fpQ6NFJCAa04cy0+klsnsELwX+PWhgDN+gMZ3MzK0/EZUH9fMKhJfIygQaRkMltMNB7BlKU2vM+WwI4GUZn8mdsq6GNfOMuQUQJnpVmYkCoFVNkMg8O3sAOKS4MGAhuDUqgFxUo2WW44iofE/1qACQhJDiRJSqRBZCK4fbzxT5zr75TejLh43ngTa6Slhm+t0CFpVgr63hSbgaEtDaJeFdcJJsMQf6FnQan9zbtmM3kwiggmQh9OyvqjgKkIaIFmYVTQAInXsWJwDKVCArPhRbAK6u6scAMhCz+2toHWgA67jeVgHpA+c8mQWYPZy6PP2XLCvW9SG7RVdbQPo1UJlmzBNrwIVYacEyBPC7CmyP5sLx4g2TyYdbcQVdwQAAAABJRU5ErkJggg==',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABH0lEQVR4nOVX0RLCIAwrnv//y/EFbgVaGjp2emdedFLSUCCrIhzgfI7j7fs47uLFBpIAAAEwinLxjgiTYzQKGTclq6u8iIpLtcxBCwAgpZQp8USoYqqoZQ76DBjE03hVuqpGSgAaMYsdEadvwTYYmdhZfUdOnIFIgJnZE5S5CZSAJysQnYHSiPTqxpVaz0xyKkCUB6gfZqJh/KgAL+mS+BJ0xgm7B/4QHqlAzZmqQMhPOWHmFrCv5EhA2oRYEV+34p8UsNXTbcDkHQXoPYfI0t9DqLlur2j2hPrgNVvNGlHYQdn5n9gB2xu8+l77MFSjC3JatMWcfauUfs90POA3n96cCdH/Ao8g2ib65GZ8AEaJ01fllhHdTX4HT5nVH+IDSk+VHrQ/yTUAAAAASUVORK5CYII=',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCklEQVR4nNWX4Q7DIAiEYdn7vzL7MW3QgnLIlvSSJUus3KcopUQPlrTfkV5ZcxEhEekgaTFq3NzHIMyZWCmAC6QKIpsCbobHeoPP7/Ktx0OEyDJu274MHExJNAWQeZtAFLghEQDYHIHYAaTNoxDwLdidfvR2QADMTCLimuzGUQB32yyTbo7GswCEVK3vRgEDE7DPU2dhCDID6JfMFSxq4j2n/8+Hck7Wcttn6TTsxg0x0b0UezNMsGBKlhTZl1GZngmwqgN/AahUGKCqAUkDaOnT713F6n7ArfGJ+z8IaslmCG8n6LvyUJFAe8LBwFhp2PgUQBt2pToXuB+oVhSAsx8eVQAZ/aZwVOsDqwuPItm/Ur4AAAAASUVORK5CYII=',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCklEQVR4nO2WSw7DMAhEcdX7X9ldJFQO5jfYirLISFmkJcOTwcZEr3D189miT4mg920gJQCGGEDuBxhBViAsgE7AEq+UpNmeh1drl5DGSfj/yfCIt3xxAMXcTF6B8IJUCC2ZAxtCbGlCUSZIywAMwUJhIIDI3CpHFaDJhNpyj+9ocqK4SVKNKEGS3ukg9UyQdVf6YBvABcI0KkIgLTsRJLo/9P8CANKsAjSpeg70lb0/ClkBNfn5QxkARU81I+KdKUFqzhuTMvw2KsF4BqhGzoiW38LbZFpuLVn2/LfOBWgXrDQbW5Aoi1uC7A2IY71blPThsphXMivxmAiZhNawcgGS+l9UgfhXz9EPsSqlDRy22m8AAAAASUVORK5CYII=',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCUlEQVR4nO2W0a7EIAhAnZv9/1/2vpRdtB0YXLtPnaRJExEPKGhrjx5p6se3XX8yQe+bQEoADDGA3A8wgqxAWACdgCVeKUmzPQ+vrlZBGifh/yfDId7xxQEUczN5BcILUiG0ZA5sCLGlCUWZIC0DMKRkgghiajGqZN0E7mYiVDYpqBdPHD6ZIsMRrAdHYJJIiJSSmkzXKXEAJxJpK9QcniOlgNZaTnTBfR1a4mqdQHNIDTkRqfD9f1fYCWJxJBQFP8S3CzHMPKuNAbZhOsGQaELJ3SfIZDK+VJbGZJVJDYVUhgASn/M1CXx8MoJCp03dNJWIbGwxBKUaRWZAKAHKZEIW0gqvK3BCIY09pEYvhJEgAAAABJRU5ErkJggg==',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA8ElEQVR4nO2WQRKDIAxFQzr3v3J3YVxByCerBjvdZlLIIy8JiJoeJH2O+GbNRYRE5AOSxqixuY8BmDOxUgAnSBVEtgS8MwCfR/s3qhJCGNuI4XPlYKGwVkswCFEMQyEBodmCIvQgBuwzAEEFg6X5gByMKdUEuoBCoCuJR+6DSOvKuSBNjY5lT5O6pCIjpirIR0lbOeqBGNHyh6gKsgSrX2RMFSBZFZzRamISqCJViBVFq0n4RVE3KBioR3yqVRiAcBUY4AQvqDaTXcjNO+i0lQFiMYpHy0KSaUVpkqn5BUpK5KmSOlFJb+R3GJWI2jAiS0Q9kHCaiFCAAAAAgAAAAAAAAAAAAAAAQAnQAAAACXRSTlMAAAAAAAAAAAAAAAAAAAAAAA7YvHQAAAAASUVORK5CYII=',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCUlEQVR4nO2W0a7EIAhAnZv9/1/2vpRdtB0YXLtPnaRJExEPKGhrjx5p6se3XX8yQe+bQEoADDGA3A8wgqxAWACdgCVeKUmzPQ+vrlZBGifh/yfDId7xxQEUczN5BcILUiG0ZA5sCLGlCUWZIC0DMKRkgghiajGqZN0E7mYiVDYpqBdPHD6ZIsMRrAdHYJJIiJSSmkzXKXEAJxJpK9QcniOlgNZaTnTBfR1a4mqdQHNIDTkRqfD9f1fYCWJxJBQFP8S3CzHMPKuNAbZhOsGQaELJ3SfIZDK+VJbGZJVJDYVUhgASn/M1CXx8MoJCp03dNJWIbGwxBKUaRWZAKAHKZEIW0gqvK3BCIY09pEYvhJEgAAAABJRU5ErkJggg==',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA8ElEQVR4nO2WQRKDIAxFQzr3v3J3YVxByCerBjvdZlLIIy8JiJoeJH2O+GbNRYRE5AOSxqixuY8BmDOxUgAnSBVEtgS8MwCfR/s3qhJCGNuI4XPlYKGwVkswCFEMQyEBodmCIvQgBuwzAEEFg6X5gByMKdUEuoBCoCuJR+6DSOvKuSBNjY5lT5O6pCIjpirIR0lbOeqBGNHyh6gKsgSrX2RMFSBZFZzRamISqCJViBVFq0n4RVE3KBioR3yqVRiAcBUY4AQvqDaTXcjNO+i0lQFiMYpHy0KSaUVpkqn5BUpK5KmSOlFJb+R3GJWI2jAiS0Q9kHCaiFCAAAAAgAAAAAAAAAAAAAAAQAnQAAAACXRSTlMAAAAAAAAAAAAAAAAAAAAAAA7YvHQAAAAASUVORK5CYII=',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCklEQVR4nNWX4Q7DIAiEYdn7vzL7MW3QgnLIlvSSJUus3KcopUQPlrTfkV5ZcxEhEekgaTFq3NzHIMyZWCmAC6QKIpsCbobHeoPP7/Ktx0OEyDJu274MHExJNAWQeZtAFLghEQDYHIHYAaTNoxDwLdidfvR2QADMTCLimuzGUQB32yyTbo7GswCEVK3vRgEDE7DPU2dhCDID6JfMFSxq4j2n/8+Hck7Wcttn6TTsxg0x0b0UezNMsGBKlhTZl1GZngmwqgN/AahUGKCqAUkDaOnT713F6n7ArfGJ+z8IaslmCG8n6LvyUJFAe8LBwFhp2PgUQBt2pToXuB+oVhSAsx8eVQAZ/aZwVOsDqwuPItm/Ur4AAAAASUVORK5CYII=',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCklEQVR4nO2WSw7DMAhEcdX7X9ldJFQO5jfYirLISFmkJcOTwcZEr3D189miT4mg920gJQCGGEDuBxhBViAsgE7AEq+UpNmeh1drl5DGSfj/yfCIt3xxAMXcTF6B8IJUCC2ZAxtCbGlCUSZIywAMwUJhIIDI3CpHFaDJhNpyj+9ocqK4SVKNKEGS3ukg9UyQdVf6YBvABcI0KkIgLTsRJLo/9P8CANKsAjSpeg70lb0/ClkBNfn5QxkARU81I+KdKUFqzhuTMvw2KsF4BqhGzoiW38LbZFpuLVn2/LfOBWgXrDQbW5Aoi1uC7A2IY71blPThsphXMivxmAiZhNawcgGS+l9UgfhXz9EPsSqlDRy22m8AAAAASUVORK5CYII=',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCklEQVR4nNWX4Q7DIAiEYdn7vzL7MW3QgnLIlvSSJUus3KcopUQPlrTfkV5ZcxEhEekgaTFq3NzHIMyZWCmAC6QKIpsCbobHeoPP7/Ktx0OEyDJu274MHExJNAWQeZtAFLghEQDYHIHYAaTNoxDwLdidfvR2QADMTCLimuzGUQB32yyTbo7GswCEVK3vRgEDE7DPU2dhCDID6JfMFSxq4j2n/8+Hck7Wcttn6TTsxg0x0b0UezNMsGBKlhTZl1GZngmwqgN/AahUGKCqAUkDaOnT713F6n7ArfGJ+z8IaslmCG8n6LvyUJFAe8LBwFhp2PgUQBt2pToXuB+oVhSAsx8eVQAZ/aZwVOsDqwuPItm/Ur4AAAAASUVORK5CYII=',
-    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCklEQVR4nO2WSw7DMAhEcdX7X9ldJFQO5jfYirLISFmkJcOTwcZEr3D189miT4mg920gJQCGGEDuBxhBViAsgE7AEq+UpNmeh1drl5DGSfj/yfCIt3xxAMXcTF6B8IJUCC2ZAxtCbGlCUSZIywAMwUJhIIDI3CpHFaDJhNpyj+9ocqK4SVKNKEGS3ukg9UyQdVf6YBvABcI0KkIgLTsRJLo/9P8CANKsAjSpeg70lb0/ClkBNfn5QxkARU81I+KdKUFqzhuTMvw2KsF4BqhGzoiW38LbZFpuLVn2/LfOBWgXrDQbW5Aoi1uC7A2IY71blPThsphXMivxmAiZhNawcgGS+l9UgfhXz9EPsSqlDRy22m8AAAAASUVORK5CYII=',
-  ];
+// ── NEKO: classic cat chases cursor (based on Neko98 by David Harvey) ─────────
+// Full nekojs implementation with ico sprites as base64
+// https://github.com/louisabraham/nekojs (GPL v3)
 
-  // State frame pairs: [frame1, frame2]
-  // STOP=0,WASH=1,SCRATCH=2,YAWN=3,SLEEP=4,AWAKE=5
-  // U=6,D=7,L=8,R=9,UL=10,UR=11,DL=12,DR=13,U_CLAW=14,D_CLAW=15
-  const FRAMES = {
-    stop:[0,0], wash:[1,2], scratch:[3,4], yawn:[5,0], sleep:[6,7],
-    awake:[0,0], u:[8,9], d:[10,11], l:[12,13], r:[14,15],
-    ul:[16,17], ur:[18,19], dl:[20,21], dr:[22,23],
-    uclaw:[24,25], dclaw:[26,27], lclaw:[28,29], rclaw:[30,31],
+// Neko sprite data URIs (32 ico files, indices 0-31 matching Neko98 LoadImages order)
+const NEKO_SPRITES = [
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA///w/wAP8P//8AAAAAAAAAD/8P/w//D/8AAAAAAAAAD///D/8P/w///wAAAAAAAA//8A//D/8A//8AAAAAAAAA/wD//w//8A/wAAAAAAAAAAAA//////DwAAAAAAAAAAAAAP/////w/wAAAAAAAAAAAAAP////AA/wAAAAAAAAAAAAAP//8AAA/wAAAAAAAAAAAAAP/wAAAA8AAAAAAAAAAAAAD/8AAAAAAAAAAAAAAAAA//////AAAAAAAAAAAAAAD///////AAAAAAAAAAAAAPAA/w/wAPAAAAAAAAAAAAD////////wAAAAAAAAAAAA//D///D/8AAAAAAAAAAAAP/w///w//AAAAAAAAAAAAD/8P//8P/wAAAAAAAAAAAA////////8AAAAAAAAAAAAP//8AD///AAAAAAAAAAAAAP//AA//8AAAAAAAAAAAAAD/8AAA//AAAAAAAAAAAAAAD/AAAP8AAAAAAAAAAAAAAA8AAAAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////////4AIAP+AAAD/wAAB/8AAAf/AAAH/4AAD//IAB//+AAf//wBD//+A4f//wfH//wB7//4AP//8AB//+AAP//gAD//4AA/w+AAOH/gAD//4AA//mAAJ/nwIHnn8HB+f9hw//+4+N//ff3v/v//9///////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAA//////8AAAAAAAAAAAAA/////////wAAAAAAAAAAD//////////wAAAAAAAAAA//////////8AAAAAAAAAAP//////////AAAAAAAAAAD//////////wAAAAAAAAAP///////////wAAAAAAAADw/////////w8AAAAAAAAA/w////////D/AAAAAAAAAP8P///////w/wAAAAAAAAAP8P//////D/AAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAA//////8AAAAAAAAAAAAAAAD///AAAAAAAAAAAAAAAA//D/8P//AAAAAAAAAAAAD/////////AAAAAAAAAAAAAAD///8AAAAAAAAAAAAAAP////////8AAAAAAAAAAAAP/w//8P/wAAAAAAAAAAAAD/8P//D/8AAAAAAAAAAAAAD/D//w/wAAAAAAAAAAAAAAD/////AAAAAAAAAAAAAAAAAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////+f////D////w////8P////D///+AH//+AAf//AAD//gAAf/4AAH/+AAB//gAAf/wAAD/8AAA//AAAP/wAAD/8AAA//gAAf/+AAf//gAH//4AB//8AAP//AAD//wAA//+AAf//gAH//4AB///gB///gAH///w//w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAAAAA/wAAAAAAAAAAAP/wAAAAD/8AAAAAAAAAAAD//wAAAP//AAAAAAAAAAAA///wAA///wAAAAAAAAAAD///8AAP///wAAAAAAAAAA//////////8AAAAAAAAAAP///w/w////AAAAAAAAAAD///8P8P///wAAAAAAAAAA////D/D///8AAAAAAAAAAP///w/w////AAAAAAAAAAD///8P8P///wAAAAAAAAAAD///D/D///AAAAAAAAAAAAD///AP//8AAAAAAAAAAAAPAP////8A8AAAAAAAAAAAD/////////AAAAAAAAAAAP//////////AAAAAAAAAAD/8AD//wAP/wAAAAAAAAAA/w//////8P8AAAAAAAAAAPAAD///AAAPAAAAAAAAAA/w//D/8P//D/AAAAAAAAAPD/////////DwAAAAAAAADwAAD///8AAA8AAAAAAAAA8P////////8PAAAAAAAAAP8P/w//8P/w/wAAAAAAAAD/D/8P//D/8P8AAAAAAAAA/wD/D//w/wD/AAAAAAAAAPAPD/////DwDwAAAAAAAAAAAAAP//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////+f+f//D/D//wfg//8DwP//AYD//gAAf/4AAH/+AAB//gAAf/4AAH/+AAB//gAAf/8AAP//AAD//wAA//8AAP/+AAB//gAAf/4AAH/+AAB//AAAP/wAAD/8AAA//AAAP/wAAD/8AAA//AAAP/wAAD/+AAB///w//w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAAAAAAAAD/AAAAAA///wAAAAAAAAAA/wAA/w//8ADwAAAAAAAAAA/wAA8P//8A/wAAAAAAAAAA/w/wD///8A8AAAAAAAAAAP////////8A/wAAAAAAAAAP////////8P8AAAAAAAAAD/////////D/8AAAAAAAAP/////////wD/AAAAAAAAD/////////8P/wAAAAAAAA////////8A//8AAAAAAAAP////////////8AAAAAAAAP////////////AAAAAAAAAP///////////wAAAAAAAAD///////////8AAAAAAAAAD///////////8AAAAAAAAAD////////////wAAAAAAAAAA///w//////8AAAAAAAAAAAAAD///////8AAAAAAAAAAAAP////////AAAAAAAAAAAAD//w/////wAAAAAAAAAAAA//8P//D/8AAAAAAAAAAAAP//D/8P/wAAAAAAAAAAAAD//w/w8AAAAAAAAAAAAAAA//AAD//wAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////wP/5/gD/8MAA//BAAP/4AAD/+AAAf/wAAD/8AAA//AAAH/wAAB/8AAAf/AAAD/wAAA/+AAAP/wAAD/8AAA//gAAD/8AAAf/gAAH//AAA//+AAP//gAD//4AAf/+AAJ//gAH//4AD//+AB///j//w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAA8AAAAP8AAAAAAAAAAAAAAP8AAAD/8AAAAAAAAAAAAAD/AAAA/////wAAAAAAAAAA//AAAP/////wAAAAAAAAAP//AAD/////8AAAAAAAAAAP///w//////8AAAAAAAAAD////w//////AAAAAAAAAA/////w/////wAAAAAAAAAP//////////8AAAAAAAAAAA/w////////8AAAAAAAAAAA8P8P//////8AAAAAAAAAAA/w////////8AAAAAAAAAAP8P////////8AAAAAAAAA/w///////////wAAAAAAAP8A////Dw8P///wAAAAAAAAAA//8P///////wAAAAAAAAAA/w/////wAP/wAAAAAAAAAA8P//////AP/wAAAAAAAAAA//D////wAA/wAAAAAAAAAP/w/////wAAAAAAAAAAAA//8P/w//8AAAAAAAAAAAAP//DwAP//AAAAAAAAAAAA///wD////wAAAAAAAAAAAAAA////AA8AAAAAAAAAAAAAAADwD//wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/n////w////8P//8/D///Hw///w8Af/8PAD//BwAf/wAAH/+AAA//gAAP/4AAD/+AAA//wAAH//AAA//wAAH/+AAAf/AAAD/wAAAP8YAAB//AAAP/4AAB//AAAf/wACH/4AA//+AAJ//AAB//wAA///4Af///AP///////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAADwAAAP8AAAAAAAAAAAAPAP8P//8A8AAAAAAAAAAAD/D/AA///wAAAAAAAAAAAAAP8P/w////AP//8AAAAAAAD/AADw////////8AAAAAAP///wDw////////8AAAAAD/////D/8P8AD//wAAAAAP/////w//8AD/8P8ADwAA///////w//////D/AA/wAA//////8P/////w/wAA/wAA//////D///////AAAP/wAP////8P//////8AAAAP/wD/////D//w////AAAAAP8P////8P///wAP/wAAAAAP//////////8AAA/wAAAAAP/////////wAAAA8AAAAAAP////////8AAAAAAAAAAAAP///////wAAAAAAAAAAAAD///////AAAAAAAAAAAAAAAP////AAAAAAAAAAAAAAAAAA//AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////////////////////nH///xw///MAH//wAA//8AAEH/gAAA/4AAAH+AAAA/gAAADwAAAEYAAABDAAAAYYAAAOCAAAHwAAAB+AAAAfwAAGD+AAD4/wAA/P+AAf//gAP//8AH///wH////H//////////////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wD/8AAADwAAAAAAAAAADwD//wAADwDwAAAAAAAAAPD///AAAA/wAA/wAP////AP//AAAAAP///wAP////////8AAAAAAP////8A///////wAAAAAAAP/////w//////8AAAAAAAD//////////////wAAAAAAD////////////////wAAAA/////////////////wAAAP///////////wAA//8AAAD///////8A////////AAAA///////wAP////8P8AAAAA/////wAAAP////D/AAAAAP//8AAAAAAP///w/wAAAAD/8AAAAAAAD/////AAAAAP/wAAAAAAAAAP//AAAAAA//AAAAAAAAAAAP/wAAAAD/8AAAAAAAAAAAAP8AAAAP8AAAAAAAAAAAAAAPAAAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////////////////zHz//4Awf/wAcAYAAPAAAAHwAAAD8AAAB/wAAAf8AAAAfgAAAD4AAAAeAAAAHgAAAB4ACAA/ABwAPwB8AD8D/gB+D/8A/B//wfg//+Hwf//x8P//+fH///3////////////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAA/wAAAAAAAAAAAAAA//AAAP8AAAAAAAAAAAAAAP/wAA//AAAAAAAAAAAAAA//8AAA8AAAAAAAAAAAAAD/8AAP/wAAAAAAAAAAAAAP8A////DwAAAAAAAAAAAA/w///////wAAAAAAAAAAD/D///8P/w8AAAAAAAAAAA////D/D/8PAAAAAAAAAAD//wAP/w//DwAAAAAAAAAA//////////8AAAAAAAAAD///D///////AAAAAAAAAP///w///////wAAAAAAAP////8P////8P8AAAAAAA//////8A////D/8AAAAAD////////w//8A//AAAAAP/////////w/wAADwAAAAD/////////8A8AAAAAAAAA//////////AAAAAAAAAAAP////////8AAAAAAAAAAAD///AA/w/wAAAAAAAAAAAA//AA/w/wAAAAAAAAAAAAD/8AAA/w/wAAAAAAAAAA///wAAAP/w/wAAAAAAAAAAAAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////////////8ef//+HD///Bw///wYP//4AH//8AB//+AAP//AAD//gAA//4AAH/8AAC//AAA//gAAP/gAAD/wAAA/4AAAH8AAAB+AAAIfgAAHn4AAJ/+AAH//gAD//4AB//wHAf/4DAD//BgB///8B//////////////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAAAAAAP8P8AAP8AAAAAAAAAAAAA/wD//w//8AAAAAAAAAAAAP8PD//w///wAAAAAAAAAA//Dw//8AAAAAAAAAAAAAAP8P/w/w////APAAAAAAAA//D/8P////////AAAAAAD///D////////w/wAAAAAA///w//////////8AAAAAAP//8P/wAA/w//D/AAAAAAD///8P/w//8P/w/wAAAAAA////D/8P//D/8P8AAAAAAP///w//D//////wAAAAAA////8P/w//////8AAAAAAP////D//w//////AAAAAAD///8P///w//AP/wAAAAAA///w/////w/wAP8AAAAAAP////////8A8AAPAAAAAAAP////////8AAAAAAAAAAAAP///////wAAAAAAAAAAAAAA//////AAAAAAAAAAAAAAAAD///8AAAAAAAAAAAAP////8AAAAAAAAAAAAAAAAAD/8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////////////////+P////Ac///wAH//4AAf/+AAD//AAAv/wAAB/4AAAP8AAAD/AAAA/wAAAD8AAAD/AAAA/wAAAf4AAAH+AAAB/gAAAf4AACH+AAAx/gAAOf8AAf//gAP//gAH//wAD//+AP///8f/////////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA//AAAAAAAAAAAAAAAAAP/////wAAAAAAAAAAAA/w///w///w/wAAAAAAAAAPD/8P//8P/w8AAAAAAAAPAA//D///D/8ADwAAAAAAD/AP/w///w//AP8AAAAAAAAPD////////w8AAAAAAAAA/w////////8P8AAAAAAAAP8P////////D/AAAAAAAAD/D///AA///w/wAAAAAAAA//D//w8P//D/8AAAAAAAAP/w//D/8P/w//AAAAAAAAD//w/w//D/D//wAAAAAAAAD/8PD///Dw//AAAAAAAAAA//8P////D//wAAAAAAAAAP//////////AAAAAAAAAAAP////////8AAAAAAAAAAAAP///////wAAAAAAAAAAAAAP//////AAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////////////////////8H///wAH//wAAf/4AAD/4AAAP+AAAD/gAAA/8AAAf+AAAD/wAAB/8AAAf/AAAH/wAAB/8AAAf/gAAP/4AAD/+AAB//wAA//+AAf//wAP//+AH///8P////D////w////8P////D////5//w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8AAAAADwAAAAAAAAAAAAAP8AAAAP8AAAAAAAAAAAAAD/AAAAD/AAAAAAAAAAAAAP//AAAP//AAAAAAAAAAAAD/AA//AA/wAAAAAAAAAAAA8P/////w8AAAAAAAAAAAAA///w///wAAAAAAAAAAAAD/8P//8P/wAAAAAAAAAAAA//D///D/8AAAAAAAAAAAAP/w///w//AAAAAAAAAAAAD////////wAAAAAAAAAAAA////////8AAAAAAAAAAAAP////////AAAAAAAAAAAAD///AA///wAAAAAAAAAAAPD//w8P//DwAAAAAAAAAADw//D/8P/w8AAAAAAAAAAA/w/w//D/D/AAAAAAAAAAAP8PD///Dw/wAAAAAAAAAAAP8P////D/AAAAAAAAAAAAD////////wAAAAAAAAAAAP/////////wAAAAAAAAAAD/////////8AAAAAAAAAAA//////////AAAAAAAAAAAP/////////wAAAAAAAAAAD//wD/AP//8AAAAAAAAAAA//8A/wAP//AAAAAAAAAAAA/wAP8AAP8AAAAAAAAAAAAP8AD/AAD/AAAAAAAAAAAADwAA/wAADwAAAAAAAAAAAAAAAAAAAAAAAAAAD//////+fz///D4f//w+H//8Ph//+AAP//gAD//4AA//+AAP//gAD//wAAf/8AAH/+AAA/+QAAT/8AAH//AAB//wAAf/8AAH//AAB//wAAf/+AAP//gAD//wAAf/8AAH//AAB//wAAf/8AAH//ACB//4Qw//+EMP//hDD//855/w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wAAD/AAAAAAAAAAAAAAAP8AAA//AAAAAAAAAAAAAAAP8AAP/wAAAAAAAAAAAAAADwAAD//wAAAAAAAAAAAAAAD/8AAP/wAAAAAAAAAAAAAPD///8A/wAAAAAAAAAAAA///////w/wAAAAAAAAAAAPD/8P///w/wAAAAAAAAAADw//D/D///8AAAAAAAAAAA8P/w//AA//8AAAAAAAAAAP//////////AAAAAAAAAAD///////D///AAAAAAAAAA///////w////AAAAAAAAAP//////8P////8AAAAAAA//D///8A//////8AAAAAAP8AD//w////////8AAAAADwAA//D/////////8AAAAAAAAPAA//////////AAAAAAAAAAAA/////////wAAAAAAAAAAAP////////8AAAAAAAAAAAAP8P8AD///AAAAAAAAAAAAAA/w/wAP/wAAAAAAAAAAAAD/D/AAAP/wAAAAAAAAAAAP8P/wAAAP//8AAAAAAAAAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////////+eP///Dh///w4P//8GD///gAf//4AD//8AAf//AAD//wAAf/4AAH/9AAA//wAAP/8AAB//AAAH/wAAA/4AAAH+AAAA/hAAAH5wAAB/8wAAf/+AAH//wAB//+AAf//gOA//wAwH/+AGD//4D/////////////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAAAAAAAAAAAAAAD/AAD/D/AAAAAAAAAAAAAP//D//wD/AAAAAAAAAAAA//8P//Dw/wAAAAAAAAAAAAAAD//w8P/wAAAAAAAA8A////D/D/8P8AAAAAAAD////////w//D/8AAAAAAA/w////////8P//8AAAAAAP//////////D///AAAAAAD/D/8P8AAP/w///wAAAAAA/w//D//w//D///8AAAAAAP8P/w//8P/w////AAAAAAAP//////D/8P///wAAAAAAD//////w//D////wAAAAAA//////D//w////8AAAAAAP/wD/8P///w////AAAAAAD/AA/w/////w///wAAAAAA8AAPAP////////8AAAAAAAAAAA/////////wAAAAAAAAAAAA////////AAAAAAAAAAAAAA//////AAAAAAAAAAAAAAAA////AAAAAAAAAAAAAAAAAAAAD/////AAAAAAAAAAAAAAAAAP/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////////////////H///OA///gAP//wAB//4AAf/wAAD/4AAA/8AAAH/AAAA/wAAAPwAAAD/AAAA/wAAAP+AAAD/gAAAf4AAAH+AAAB/hAAAf4wAAH+cAAB//4AA///AA///4AB///AAP///AH///+P///////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAAAAAP8AAADwAAAAAAAAAAAAAA8A///w/wDwAAAAAAAAAAAA///wAP8P8AAAAAAP//8A////D/8P8AAAAAAA////////8PAAD/AAAAAAD////////w8A////AAAAAAD//wAP///w/////wAAAAAA/w//AA//8P/////wAAAAAP8P/////w///////wAA8AD/D/////8P//////AAD/AAD///////D/////8AAP8AAAD///////D/////AA//AAAA////D//w/////wD/8AAAAP/wAP///w/////w/wAAAA/wAAD///////////AAAAAPAAAAD/////////8AAAAAAAAAAA/////////wAAAAAAAAAAAA////////AAAAAAAAAAAAAA///////wAAAAAAAAAAAAAAD////wAAAAAAAAAAAAAAAAAP/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////////////////////45///8OP//+ADP//AAD/ggAA/wAAAf4AAAH8AAAB/AAAAf4AAADyAAAAYgAAAMMAAAGHgAABB4AAAA+AAAAfBgAAPx8AAH8/AAD//4AB///AAf//4AP///gP///+P/////////////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP/wD/AAAAAAAAAAAAAAAAAP//APAAAAAAAAAAAP8AAAAP//8PAAAAAAAAAA/w8AAAAA//8A////AAD/AAD/AAAAAA/////////wAP///wAAAAAP///////wD/////AAAAAAAAD/////D/////8AAAAAAP//////////////AAAA////////////////8AAAD/////////////////AAAA//8AAP///////////wAAAP///////wD///////8AAAAP8P////8AD///////AAAAD/D////wAAAP////8AAAAA/w////AAAAAAD///AAAAAA/////wAAAAAAAP/wAAAAAAD//wAAAAAAAAAP/wAAAAAA//AAAAAAAAAAAP/wAAAAAP8AAAAAAAAAAAAP/wAAAADwAAAAAAAAAAAAAP/wAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////////////////////////jP///wB//8+AD/+DwAB4A+AAAAPwAAAD+AAAA/gAAA+AAAAPAAAAHgAAAB4AAAAeAAAAHwAEAB8ADgA/AA+AP4Af8D/AP/wf4P/+D+H//wfj//+D5///w+///+P///////////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP//AAAAAAAAAAAAAAAAAAAA///wAAAAAP8AAAAAAAAADwAP//D/AAD/AAAAAAAAAA8A///w8AAP8AAAAAAAAADwD///8A/w/wAAAAAAAAD/AP////////8AAAAAAAAA/w/////////wAAAAAAAAD/8P////////8AAAAAAAAA/wD/////////8AAAAAAAAP/w//////////AAAAAAAAD//wD////////wAAAAAAAP////////////8AAAAAAAD////////////wAAAAAAAA////////////AAAAAAAAAP///////////wAAAAAAAA////////////AAAAAAAA////////////8AAAAAAAAP//////D///AAAAAAAAAA////////AAAAAAAAAAAAAP////////AAAAAAAAAAAAD/////D//wAAAAAAAAAAAA//D//w//8AAAAAAAAAAAAA//D/8P//AAAAAAAAAAAAAAAPD/D//wAAAAAAAAAAAAAP//AAD/8AAAAAAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////A////wB/n/8AAw//AAIP/wAAH/4AAB/8AAA//AAAP/gAAD/4AAA/+AAAP/AAAD/wAAA/8AAAf/AAAP/wAAD/wAAB/4AAA/+AAAf/AAA//wAB//8AAf/+AAH/+QAB//+AAf//wAH//+AB////8f/w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAP8AAAAPAAAAAAAAAAAAAA//AAAA/wAAAAAAAAAA/////wAAAP8AAAAAAAAAD/////8AAA//AAAAAAAAAA//////AAD//wAAAAAAAAD//////w////AAAAAAAAAA//////D////wAAAAAAAAAP////8P////8AAAAAAAAAD///////////AAAAAAAAAP////////D/AAAAAAAAAA///////w/w8AAAAAAAAAD////////w/wAAAAAAAAAP////////8P8AAAAAAAAP//////////8P8AAAAAAA////Dw8P///wD/AAAAAAD///////8P//AAAAAAAAAP/wAP////8P8AAAAAAAAA//AP//////DwAAAAAAAAD/AAD////w//AAAAAAAAAAAAAP////8P/wAAAAAAAAAAAAD//w//D//wAAAAAAAAAAAA//8ADw//8AAAAAAAAAAAAP////AP//8AAAAAAAAAAADwAP///wAAAAAAAAAAAAAAD//wDwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///n////w////8P////D8///w+P/+APD//ADw//gA4P/4AAD/8AAB//AAAf/wAAH/8AAB/+AAA//AAA//gAAP/gAAH/wAAA/wAAAP4AABj8AAA/+AAAf/gAAP/4QAD//8AAf/5AAH//gAA//8AAP//gB///8A/////////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAAAAAA//AAAAAAAAAAAAAAAAAAAA//AAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAD/8AAP8AAP/wAAAAAAAA//////////////8AAAAAD//wD///////8A//8AAAAA8AAP////////8AD/AAAAAAAA//////////8AAAAAAAAAAP//////////AAAAAAAAAAD//////////wAAAAAAAAAA//////////8AAAAAAAAAAA/////////wAAAAAAAAAAAA////////AAAAAAAAAAAAAAAP///wAAAAAAAAAAAAAAD///////8AAAAAAAAAAAAPAA///wAPAAAAAAAAAAAAAA/w//D/8AAAAAAAAAAAAA/////////wAAAAAAAAAAAAAA////AAAAAAAAAAAAAAD/////////AAAAAAAAAAAAD/8P//D/8AAAAAAAAAAAAA//D//w//AAAAAAAAAAAAAA/w//8P8PAAAAAAAAAAAADw/////w/wAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////5////8P////B////4P///HDj/+AAAH/AAAA/gAAAH4AAAB/IAAE/+AAB//gAAf/4AAH//AAD//4AB//+AAf//AAD//wAB//8AAf/+AAD//gAAf/8AAP//AAD//wAA//+AAP//gAD//4AA//4oIf//q6H//6uz/w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAA//AAAAAAAAAAAAAAAAAAD/8AAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAD/8AAP8AAP/wAAAAAAAA//////////////8AAAAAD//wD///////8A//8AAAAA8AAP////////8AD/AAAAAAAA//////////8AAAAAAAAAAP//////////AAAAAAAAAAD//////////wAAAAAAAAAA//////////8AAAAAAAAAAA/////////wAAAAAAAAAAAA////////AAAAAAAAAAAAAAAP///wAAAAAAAAAAAAAAD///////8AAAAAAAAAAAAPAA///wAPAAAAAAAAAAAAAA/w//D/8AAAAAAAAAAAAP/////////wAAAAAAAAAAAAAA////AAAAAAAAAAAAAAD/////////AAAAAAAAAAAAD/8P//D/8AAAAAAAAAAAAA//D//w//AAAAAAAAAAAADw/w//8P/wAAAAAAAAAAAA/w/////wAAAAAAAAAAAAAPAAD//wAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD/////////////n////w////4P///8H///HDj/+AAAH/AAAA/gAAAH4AAAB/IAAE/+AAB//gAAf/4AAH//AAD//4AB//+AAf//AAD//wAB//8AAf/+AAD//gAAf/8AAP//AAH//wAB//8AAf//AAP//wAD//8IKP//C6v//5ur/w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////w8AAAAAAAAAAAAAD///D/8PAAAAAAAAAAAA////8AAAAAAAAAAAAAAAD////wD/AAAAAAAAAAAP//////////AAAAAAAAAA////////////AAAAAAAAD/8A/////////wAAAAAAAA/wAP////////8P8AAA/wAPAAAP////////D//wAAAAAAAAD///////8P//////8AAAAAD//////w//////AAAAAAAAD////wD/////AAAAAAAAAAD////////wAA8AAAAAAAAAAP//////////8AAAAAAAAAAAAA8P///wD/AAAAAAAAAAAAAA///wD///AAAAAAAAAAAAAP////8P/wAAAAAAAAAAAAD/////D/AAAAAAAAAAAAAA/////w/wAAAAAAAAAAAAAP//////AAAAAAAAAAAAAAAP////AAAAAAAAAAAAAAAAAA//8AAAAAAAAAAAAAAAAAAA//AAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAAAAAAAAAAAAD////////////////////////////gAf//4AD//wAA//4AAf/gAA//wAAH/4AAA/8AAADzCAAAARwAAAE8AAAA/gAAAP8AAA7/gAAG/8AAAv/wAAL//4AA//+AAP//gAL//4AC//+ABv//wA7//+A+///4P////D////4/////Pw==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/////wDwAAAAAAAAAAAAD///D/8A8AAAAAAP/wAA////8AAAAAAAAAAAAP/wD////wD/AAAAAAAAAAAP//////////AAAAAAAAAAAP//////////AAAAAAAAAAAA/////////wAAAAAAAAAAAP////////8P8AAAAAAAAAAP////////D//wAAAAAAAAD///////8P//8AAAAAAAAAD//////w////AAAAAAAAAAD////wD/////AAAAAAAAAAD///////////8AAAAAAAAAAP///////////wAAAAAAAAAAAA8P//8A///wAAAAAAAAAAAA/////wD/8AAAAAAAAAAAAP////8PAPAAAAAAAAAAAAD/////D/DwAAAAAAAAAAAA/////w/wAAAAAAAAAAAAAP//////8AAAAAAAAAAAAAAP/////wAAAAAAAAAAAAAAAA///wAAAAAAAAAAAAAAAAAA//AAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAAAAAAAAAAAAD////////////////////////////gAf//4AD/jwAA/wIAAf+AAA//wAAH/+AAA//wAAD/+AAAf/wAAD/8AAA//gAAD/8AAAf/gAAC/8AAAP/wAAD//4AA//+AAP//gAD//4AA//+AAP//wAD//+AI///4PP///D////4/////Pw==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8A/////wAAAAAAAAAAAAAPAP/w///wAAAAAAAAAAAAAAAAAA////8AAAAAAAAAAAAAAP8A////8AAAAAAAAAAAAA//////////8AAAAAAAAAD///////////8AAAAAAAAA/////////wD/8AD/AAAP8P////////8AD/AAAAAP//D////////wAADwD///////D///////8AAAAAAA//////D//////wAAAAAAAAD/////AP////AAAAAAAADwAA////////8AAAAAAAAP//////////8AAAAAAAAAD/AP///w8AAAAAAAAAAAAP//8A///wAAAAAAAAAAAAD/8P////8AAAAAAAAAAAAAD/D/////AAAAAAAAAAAAAA/w/////wAAAAAAAAAAAAAA//////8AAAAAAAAAAAAAAAD////wAAAAAAAAAAAAAAAAD//wAAAAAAAAAAAAAAAAAA//AAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////////+AB///AAf//wAA//+AAH//8AAH/+AAA//AAAHPAAAAgAAAEIAAADgAAAA8AAAAf3AAAP9gAAH/QAAD/0AAD/8AAf//AAH//0AB//9AAf//YAH//3AD//98B////B////w////8f////P///w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8A/////wAAAAAAAAAAAAAPAP/w///wAAAAAAAAAAAAAAAAAA////8AAP/wAAAAAAAA8P8A////8A//AAAAAAAADw//////////8AAAAAAAAAD//////////wAAAAAAAAAA/////////wAAAAAAAAAP8P////////8AAAAAAAAP//D////////wAAAAAAAAD///D///////8AAAAAAAAA////D//////wAAAAAAAAD/////AP////AAAAAAAAD///////////8AAAAAAAD///////////8AAAAAAAAP//8A///w8AAAAAAAAAAAD/8A/////wAAAAAAAAAAAA8A8P////8AAAAAAAAAAAAPD/D/////AAAAAAAAAAAAAA/w/////wAAAAAAAAAAAAAP//////8AAAAAAAAAAAAAAP/////wAAAAAAAAAAAAAAAA///wAAAAAAAAAAAAAAAAAA//AAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////////+AB///AAf//wAA8f+AAED/4AAB/8AAA//AAAf/AAAP/gAAH/wAAD/8AAA/8AAAf+AAAP9AAAH/AAAD/wAAD/8AAf//AAH//wAB//8AAf//AAH//wAD//8QB///PB////w////8f////P///w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAA//AA/wAAAAAAAAAAAAAP/////w8AAAAAAAAAAAAA///w///wAAAAAAAAAAAAD/8P//8P8AAAAAAAAAAAAA//D///D/8AAAAAAAAAAAAP/w///w//AAAAAAAAAAAAD////////wAAAAAAAAAAAA////////8AAAAAAAAAAAAP////////AAAAAAAAAAAAD///AA///wAAAAAAAA////D//w8P//D///8AAAAAD/Dw//D/8P/w8P8AAAAAAAAP/w/w//D/D/8AAAAAAAAAD/8PD///Dw//AAAAAAAAAA//8P////D//wAAAAAAAAAA//////////8AAAAAAAAAAA/////////wAAAAAAAAAAAA////////AAAAAAAAAAAAAA//////8AAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAD/8AAAAAAAAAAAAAAAAAAAD/8AAAAAAAAAAAAAAAAAAAD/AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////XV///V1f//1dD//9XQ///UEP//0AD//8AA///AAP//gAD//4AA//+AAP//gAD//4AA//+AAP/gAAAD4AAAA/AAAAf8AAAf/gAAP/4AAD//AAA//4AAf//AAP//4AH///AD///+H////g////8H////h////8///////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwAAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAP8AAAAAAAAAAAAAAAAAAAD/AA//AAAAAAAAAAAAAAAA8P/////wAAAAAAAAAAAAAA///w///wAAAAAAAAAAAAAP8P//8P/wAAAAAAAAAAAA//D///D/8AAAAAAAAAAAAP/w///w//AAAAAAAAAAAAD////////wAAAAAAAAAAAA////////8AAAAAAAAAAAAP////////AAAAAAAAAAAAD///AA///wAAAAAAAA////D//w8P//D///8AAAAAD/Dw//D/8P/w8P8AAAAAAAAP/w/w//D/D/8AAAAAAAAAD/8PD///Dw//AAAAAAAAAA//8P////D//wAAAAAAAAAP//////////8AAAAAAAAAAP/////////wAAAAAAAAAAAP////////AAAAAAAAAAAAAP//////8AAAAAAAAAAAAAAAAP/wAAAAAAAAAAAAAAAAAAD/8AAAAAAAAAAAAAAAAAAP//AAAAAAAAAAAAAAAAAA//8AAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//////9XX///V1f//hdX//4XV//+EFf//gAX//4AB//+AAf//gAD//4AA//+AAP//gAD//4AA//+AAP/gAAAD4AAAA/AAAAf8AAAf/gAAP/4AAD/+AAA//wAAf/+AAP//wAH//+AD///8H///+B///+A////4f////P///////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA///w/wAP////8AAAAAAAAAD/8P/w8P//8AD/8AAAAAD///D/8P/////wAAAAAAAA//8A//D/////8AAAAAAAAA/wD//wD/8A/wAAAAAAAAAAAA////D/AAAAAAAAAAAAAAAP////8AAAAAAAAAAAAAAAAP/////wAAAAAAAAAAAAAAAP/wD/8AAAAAAAAAAAAAAAAP/w//AAAAAAAAAAAAAAAAD/8AAAAAAAAAAAAAAAD/////D/8AAAAAAAAAAAAP8AD/8P/wAAAAAAAAAAAA//////8AAAAAAAAAAAAAAP//D/8P//8AAAAAAAAAAA//8P////D/AAAAAAAAAAAP////////DwAAAAAAAAAAD//////w//8AAAAAAAAAAA//////D///AAAAAAAAAAD///AP////8AAAAAAAAAAA/wAAAP///wAAAAAAAAAAAAAAAA///wAAAAAAAAAAAAAAAAAP//AAAAAAAAAAAAAAAAAAD/8AAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////////4AIAP+AAAA/wAAAH8AAAD/AAAH/4AAD//IAJ//+AD///wAf//+AH///wB///AAf//gAH//wAD//4AA//+AAH//AAB//wAAf/8AAH//AAB//gAA//4EAf/+PAP///wP///8H////D////z/////////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA///w/wAP8AAP////AAAAAAD/8P/w//D/AAAAAAAAAAD///D/8P/w//8AAAAAAAAA//8A//D/8A//8AAAAAAAAA/wD//w//8P//AAAAAAAAAAAA//////D///AAAAAAAAAAAP/////w///wAAAAAAAAAAAP////D///8AAAAAAAAP//8A//8AD///AAAAAAAAAPD////w/w///wAAAAAAD///////8PAP//8AAAAAAAAA//8P//8A///wAAAAAAAP//8P8A//AP//AAAAAAAAD///D////wD/8AAAAAAAAP////D///8A8AAAAAAAAA//////D///APAAAAAAAAAP/////////wDwAAAAAAAA//AAD/////8A8AAAAAAAAAAAAA/////wAAAAAAAAAAAAAAAP///wAAAAAAAAAAAAAAAAD///AAAAAAAAAAAAAAAAAA//AAAAAAAAAAAAAAAAAAAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////////4AIAB+AAAAPwAAAH8AAA//AAAH/4AAA//IAAP/+AAD/8AAA/8AAAP+AAAD/gAAA/4AAAf+AAAP/gAAH/wAAD/4AAB/+AAAf/AAAH/w4AT//+AP///gP///4H///+H////n////////////////////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA///w/wAP8AAP////AAAAAAD/8P/w//D/AAAAAAAAAAD///D/8P/w///wAAAAAAAA//8A//D/8A//8AAAAAAAAA/wD//w//8P//8AAAAAAAAAAA//////D///AAAAAAAAAAAP//8ADw///wAAAAAAAAAAAP8A//D///8AAAAAAAAP//8AD///////AAAAAAAAAPD/8AAAD////wAAAAAAD////wD//wD///AAAAAAAAAA////AP8AAAAAAAAAAAAP///w////AAAAAAAAAAAAD////wD///AAAAAAAAAAAA//////D//wAAAAAAAAAAAP////////8AAAAAAAAAAA/////////wAAAAAAAAAAAP//AP////8AAAAAAAAAAAD/8AAP///wAAAAAAAAAAAA/wAAD///AAAAAAAAAAAAAPAAAAD/8AAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////////4AIAB+AAAAPwAAAH8AAAf/AAAH/4AAA//IAAP/+AAD/8AAA/8AAAP+AAAD/gAAB/4AAA/+AAP//gAB//4AAf/+AAH//AAD//wAA//8GAf//DgP//x8H//+/D////x////+////////////////////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA///w/wAP8P//8P//AAAAAAD/8P/w//D/8AAAAAAAAAD///D/8P/w///wAAAAAAAA//8A//D/8A//8AAAAAAAAA/wD//w//8A/wAAAAAAAAAAAA//////AAAAAAAAAAAAAAAP/////wAAAAAAAAAAAAAAAP////AAAAAAAAAAAAAAAAAP//8AAAAAAAAAAAAAAAAAAP/wAAAAAAAAAAAAAAAAAAD/8AAAAAAAAAAAAAAAAA//////AAAAAAAAAAAAAAD///////AAAAAAAAAAAAAPAA/w/wAPAAAAAAAAAAAAD////////wAAAAAAAAAAAA//D///D/8AAAAAAAAAAAAP/w///w//AAAAAAAAAAAAD/8P//8P/wAAAAAAAAAAAA////////8AAAAAAAAAAAAP//8AD///AAAAAAAAAAAAAP//AA//8AAAAAAAAAAAAAD/8AAA//AAAAAAAAAAAAAAD/AAAP8AAAAAAAAAAAAAAA8AAAAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////////4AIAB+AAAAPwAAAH8AAAf/AAAH/4AAD//IAJ//+AD///wB///+A////wf///wB///4AP//8AB//+AAP//gAD//4AA//+AAP//gAD//4AA//+AAP//wIH//8HB///hw///4+P///f3/////////////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA///w/wAP8P//8P//AAAAAAD/8P/w//D/8AAAAAAAAAD///D/8P/w///wAAAAAAAA//8A//D/8A//8AAAAAAAAA/wD//w//8A/wAAAAAAAAAAAA//////AAAAAAAAAAAAAAAP/////wAAAAAAAAAAAAAAAP////AAAAAAAAAAAAAAAAAP//8AAAAAAAAAAAAAAAAAAP/wAAAAAAAAAAAAAAAAAAD/8AAAAAAAAAAAAAAAAA//AP//AAAAAAAAAAAAAAD/8JkP//AAAAAAAAAAAAAP//ARD///AAAAAAAAAAAAD//wEQ///wAAAAAAAAAAAAAP8BEP/wAAAAAAAAAAAAAP8P8A//D/AAAAAAAAAAAAD//w8PD//wAAAAAAAAAAAA8AD///AA8AAAAAAAAAAAAP//8AD///AAAAAAAAAAAAAP//AA//8AAAAAAAAAAAAAD/8AAA//AAAAAAAAAAAAAAD/AAAP8AAAAAAAAAAAAAAA8AAAAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////////4AIAB+AAAAPwAAAH8AAAf/AAAH/4AAD//IAJ//+AD///wB///+A////wf///wB///4AP//8AB//+AAP//gAD//4AA//+AAP//gAD//4AA//+AAP//wIH//8HB///hw///4+P///f3/////////////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///wAA/w/wAAAAAAD/////AAAAAP8A/wAAAAAP////8P///w8A8A8AAAAAD////w///w///w8PAAAAAA////D/8AD/8P/w8AAAAAAP///w8A////8A8PAAAAAAD///D////////wDwAAAAAAD//w/////////wAAAAAAAAD/8P////////8AAAAAAAAA//D/////////AAAAAAAAAAD/D///AP//8PAAAAAAAAAAAA//8PD//w8AAAAAAAAAAAAA/wAAD/8AAAAAAAAAAAAAAA8AAA//AAAAAAAAAAAAAAAAAAAA/wAAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////4BgP/AAAB/gAAAfwAAAH8AAAB/AAAAfwAAAP8AAAD/gAAA/8AAAf/AAAH/4AAB//gAA///AAf//44P///fD////4/////f////////////////////////////////////////////////////////////////w==",
+    "data:image/x-icon;base64,AAABAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAwMDAAICAgAAAAP8AAP8AAAD//wD/AAAA/wD/AP//AAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP///wAA/w/wAAAAAAD/////AAAAAP8A/wAAAAAP////8P///w8A8A8AAAAAD////w///w///w8PAAAAAA////D//wD/8P/w8AAAAAAP///w8AD///8P8PAAAAAAD///D///////8PDwAAAAAAD//w/////////wAAAAAAAA//8P////////8AAAAAAAAP//D/////////AAAAAAAAAP//D//wD///8PAAAAAAAAAA/w//D/D//w8AAAAAAAAAAAAA8AAAD/8AAAAAAAAAAAAAAAAAAA//AAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAAAAAAAPAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD////////////4BgP/AAAB/gAAAfwAAAH8AAAB/AAAAfwAAAP8AAAD/gAAA/4AAAf+AAAH/wAAB/+AAA//4AAf//x4P//++H////x////+f////////////////////////////////////////////////////////////////w=="
+];
+
+/**
+ * Neko.js - A JavaScript implementation of the classic Neko desktop pet
+ *
+ * Based on Neko98 by David Harvey (1998)
+ * Original Neko by Masayuki Koba
+ *
+ * This JavaScript implementation created by AI (Claude) from the original C++ source
+ * Licensed under GPL v3 (see LICENSE.md)
+ */
+
+(function () {
+  "use strict";
+
+  // Animation states (matching original Neko.h enum)
+  const NekoState = {
+    STOP: 0,
+    WASH: 1,
+    SCRATCH: 2,
+    YAWN: 3,
+    SLEEP: 4,
+    AWAKE: 5,
+    U_MOVE: 6, // Up
+    D_MOVE: 7, // Down
+    L_MOVE: 8, // Left
+    R_MOVE: 9, // Right
+    UL_MOVE: 10, // Up-Left
+    UR_MOVE: 11, // Up-Right
+    DL_MOVE: 12, // Down-Left
+    DR_MOVE: 13, // Down-Right
+    U_CLAW: 14, // Clawing upward (at top boundary)
+    D_CLAW: 15, // Clawing downward (at bottom boundary)
+    L_CLAW: 16, // Clawing left (at left boundary)
+    R_CLAW: 17, // Clawing right (at right boundary)
   };
 
-  const SIZE = 40;
-  const SPEED = 4;
-  const IDLE_TICKS = 60;
-  const SLEEP_TICKS = 200;
+  // Behavior modes (matching original Action enum)
+  const BehaviorMode = {
+    CHASE_MOUSE: 0,
+    RUN_AWAY_FROM_MOUSE: 1,
+    RUN_AROUND_RANDOMLY: 2,
+    PACE_AROUND_SCREEN: 3,
+    RUN_AROUND: 4,
+  };
 
-  let nx = window.innerWidth/2, ny = window.innerHeight/2;
-  let mx = nx, my = ny;
-  let frame = 0, tick = 0, idle = 0, sleeping = false;
-  let state = 'stop', animTick = 0;
+  // Animation timing constants (in frames)
+  const STOP_TIME = 4;
+  const WASH_TIME = 10;
+  const SCRATCH_TIME = 4;
+  const YAWN_TIME = 3;
+  const AWAKE_TIME = 3;
+  const CLAW_TIME = 10;
 
-  // Create neko element
-  const el = document.createElement('div');
-  el.id = 'neko-el';
-  el.style.cssText = `position:fixed;z-index:9999;width:${SIZE}px;height:${SIZE}px;
-    image-rendering:pixelated;pointer-events:none;
-    left:${nx}px;top:${ny}px;transform:translate(-50%,-50%);
-    transition:none;`;
-  const img = document.createElement('img');
-  img.style.cssText = `width:100%;height:100%;image-rendering:pixelated;`;
-  el.appendChild(img);
-  document.body.appendChild(el);
+  // Sprite size
+  const SPRITE_SIZE = 32;
 
-  function setSprite(state, f) {
-    const pair = FRAMES[state] || FRAMES.stop;
-    img.src = S[pair[f % 2]];
-  }
+  class Neko {
+    constructor(options = {}) {
+      // Configuration
+      this.fps = options.fps || 120; // Target FPS (default 120 for smooth movement)
+      // Original used 16 pixels/tick for 640x480 screens (~2.5% of width)
+      // Modern screens are ~3x larger, so default to 24 for similar feel
+      this.speed = options.speed || 24;
+      this.behaviorMode = options.behaviorMode || BehaviorMode.CHASE_MOUSE;
+      this.idleThreshold = options.idleThreshold || 6; // Original m_dwIdleSpace = 6
 
-  function onMouseMove(e) {
-    mx = e.clientX; my = e.clientY;
-    if(sleeping){ sleeping=false; idle=0; }
-  }
-  document.addEventListener('mousemove', onMouseMove);
+      // State
+      this.state = NekoState.STOP;
+      this.tickCount = 0; // Increments every frame (like m_uTickCount)
+      this.stateCount = 0; // Increments every 2 original ticks (like m_uStateCount)
 
-  let nekoInterval = setInterval(() => {
-    if(document.documentElement.getAttribute('data-theme') !== 'neko'){
-      clearInterval(nekoInterval);
-      document.removeEventListener('mousemove', onMouseMove);
-      el.remove();
-      return;
+      // Position (display position for smooth rendering)
+      this.x = options.startX || 0;
+      this.y = options.startY || 0;
+      // Logic position (updated at original 5 FPS tick rate)
+      this.logicX = this.x;
+      this.logicY = this.y;
+      // Previous logic position (for interpolation)
+      this.prevLogicX = this.x;
+      this.prevLogicY = this.y;
+      // Target tracking
+      this.targetX = this.x;
+      this.targetY = this.y;
+      this.oldTargetX = this.x;
+      this.oldTargetY = this.y;
+      // Movement deltas (preserved like m_nDX, m_nDY in original)
+      this.moveDX = 0;
+      this.moveDY = 0;
+
+      // Bounds - clientWidth excludes scrollbar, innerHeight is viewport height
+      this.boundsWidth = document.documentElement.clientWidth - SPRITE_SIZE;
+      this.boundsHeight = window.innerHeight - SPRITE_SIZE;
+
+      // Mouse tracking - null until first mouse event
+      // This prevents neko from running somewhere before user moves mouse
+      this.mouseX = null;
+      this.mouseY = null;
+      this.hasMouseMoved = false;
+
+      // DOM element
+      this.element = null;
+      this.spriteImages = [];
+      this.allowBehaviorChange = options.allowBehaviorChange !== false; // Default true
+
+      // Animation lookup table (maps state to sprite indices)
+      // Format: [frame1_index, frame2_index]
+      // These MUST match the original C++ m_nAnimation table EXACTLY
+      // From Neko.cpp lines 40-57:
+      this.animationTable = [
+        [28, 28], // STOP: m_nAnimation[STOP][0]=28, [1]=28
+        [25, 28], // WASH: m_nAnimation[WASH][0]=25, [1]=28
+        [26, 27], // SCRATCH: m_nAnimation[SCRATCH][0]=26, [1]=27
+        [29, 29], // YAWN: m_nAnimation[YAWN][0]=29, [1]=29
+        [30, 31], // SLEEP: m_nAnimation[SLEEP][0]=30, [1]=31
+        [0, 0], // AWAKE: m_nAnimation[AWAKE][0]=0, [1]=0
+        [1, 2], // U_MOVE: m_nAnimation[U_MOVE][0]=1, [1]=2
+        [9, 10], // D_MOVE: m_nAnimation[D_MOVE][0]=9, [1]=10
+        [13, 14], // L_MOVE: m_nAnimation[L_MOVE][0]=13, [1]=14
+        [5, 6], // R_MOVE: m_nAnimation[R_MOVE][0]=5, [1]=6
+        [15, 16], // UL_MOVE: m_nAnimation[UL_MOVE][0]=15, [1]=16
+        [3, 4], // UR_MOVE: m_nAnimation[UR_MOVE][0]=3, [1]=4
+        [11, 12], // DL_MOVE: m_nAnimation[DL_MOVE][0]=11, [1]=12
+        [7, 8], // DR_MOVE: m_nAnimation[DR_MOVE][0]=7, [1]=8
+        [17, 18], // U_CLAW: m_nAnimation[U_CLAW][0]=17, [1]=18
+        [23, 24], // D_CLAW: m_nAnimation[D_CLAW][0]=23, [1]=24
+        [21, 22], // L_CLAW: m_nAnimation[L_CLAW][0]=21, [1]=22
+        [19, 20], // R_CLAW: m_nAnimation[R_CLAW][0]=19, [1]=20
+      ];
+
+      // Additional state for behaviors
+      this.cornerIndex = 0;
+      this.ballX = 0;
+      this.ballY = 0;
+      this.ballVX = 0;
+      this.ballVY = 0;
+
+      this.init();
     }
 
-    animTick++;
-    const dx = mx - nx, dy = my - ny;
-    const dist = Math.sqrt(dx*dx + dy*dy);
+    init() {
+      // Create the neko element with defensive styles to prevent global CSS interference
+      this.element = document.createElement("div");
+      this.element.className = "neko";
+      this.element.style.cssText = `
+        position: fixed;
+        width: ${SPRITE_SIZE}px;
+        height: ${SPRITE_SIZE}px;
+        image-rendering: pixelated;
+        pointer-events: ${this.allowBehaviorChange ? "auto" : "none"};
+        cursor: ${this.allowBehaviorChange ? "pointer" : "default"};
+        z-index: 999999;
+        left: ${this.x}px;
+        top: ${this.y}px;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent;
+        overflow: visible;
+        box-sizing: border-box;
+        user-select: none;
+        -webkit-user-select: none;
+      `;
 
-    if(dist < 8) {
-      // Near cursor — idle
-      idle++;
-      if(idle < IDLE_TICKS) {
-        state = 'stop'; setSprite('stop', 0);
-      } else if(idle < IDLE_TICKS + 30) {
-        state = 'wash'; setSprite('wash', animTick);
-      } else if(idle < IDLE_TICKS + 60) {
-        state = 'scratch'; setSprite('scratch', animTick);
-      } else if(idle < IDLE_TICKS + 80) {
-        state = 'yawn'; setSprite('yawn', 0);
-      } else {
-        sleeping = true; state = 'sleep'; setSprite('sleep', animTick);
+      // Create image element with defensive styles to prevent global CSS interference
+      const img = document.createElement("img");
+      img.style.cssText = `
+        width: 100%;
+        height: 100%;
+        background: transparent;
+        border: none;
+        margin: 0;
+        padding: 0;
+        max-width: none;
+        max-height: none;
+        display: block;
+        box-sizing: border-box;
+        user-select: none;
+        -webkit-user-select: none;
+        -webkit-user-drag: none;
+        pointer-events: none;
+      `;
+      this.element.appendChild(img);
+
+      document.body.appendChild(this.element);
+
+      // Click to cycle through behaviors
+      // Use mousedown instead of click - click requires mouseup on same element,
+      // which fails if the cat moves between mousedown and mouseup
+      if (this.allowBehaviorChange) {
+        this.element.addEventListener("mousedown", (e) => {
+          e.stopPropagation();
+          e.preventDefault(); // Prevent text selection
+          // Make cat appear surprised/awake
+          this.setState(NekoState.AWAKE);
+          this.cycleBehavior();
+        });
       }
-    } else {
-      // Chase cursor
-      idle = 0; sleeping = false;
-      const angle = Math.atan2(dy, dx);
-      const deg = angle * 180 / Math.PI;
 
-      // Pick movement sprite based on direction
-      let moveState;
-      if     (deg > -22.5  && deg <= 22.5)  moveState = 'r';
-      else if(deg > 22.5   && deg <= 67.5)  moveState = 'dr';
-      else if(deg > 67.5   && deg <= 112.5) moveState = 'd';
-      else if(deg > 112.5  && deg <= 157.5) moveState = 'dl';
-      else if(deg > 157.5  || deg <= -157.5)moveState = 'l';
-      else if(deg > -157.5 && deg <= -112.5)moveState = 'ul';
-      else if(deg > -112.5 && deg <= -67.5) moveState = 'u';
-      else                                   moveState = 'ur';
+      // Track mouse position - set flag on first move
+      document.addEventListener("mousemove", (e) => {
+        this.mouseX = e.clientX;
+        this.mouseY = e.clientY;
+        this.hasMouseMoved = true;
+      });
 
-      state = moveState;
-      setSprite(moveState, animTick);
+      // Update bounds on resize
+      window.addEventListener("resize", () => {
+        this.boundsWidth = document.documentElement.clientWidth - SPRITE_SIZE;
+        this.boundsHeight = window.innerHeight - SPRITE_SIZE;
+      });
 
-      const step = Math.min(SPEED, dist);
-      nx += (dx/dist)*step;
-      ny += (dy/dist)*step;
+      // Random starting position within viewport
+      this.x = Math.random() * this.boundsWidth;
+      this.y = Math.random() * this.boundsHeight;
+      this.logicX = this.x;
+      this.logicY = this.y;
+      this.prevLogicX = this.x;
+      this.prevLogicY = this.y;
+      // Initialize target to current position (so no initial movement)
+      this.targetX = this.x + SPRITE_SIZE / 2;
+      this.targetY = this.y + SPRITE_SIZE - 1;
+      this.oldTargetX = this.targetX;
+      this.oldTargetY = this.targetY;
+      this.updatePosition();
 
-      // Keep within viewport
-      nx = Math.max(SIZE/2, Math.min(window.innerWidth-SIZE/2, nx));
-      ny = Math.max(SIZE/2, Math.min(window.innerHeight-SIZE/2, ny));
+      // Animation loop
+      this.running = false;
+      this.intervalId = null;
     }
 
-    el.style.left = nx + 'px';
-    el.style.top  = ny + 'px';
-  }, 1000/16); // ~16fps like original
+    start() {
+      if (this.running) return;
+      this.running = true;
+
+      // Calculate interval from FPS
+      // Higher FPS = smoother movement while maintaining same speed
+      const interval = 1000 / this.fps;
+      this.intervalId = setInterval(() => {
+        this.update();
+      }, interval);
+    }
+
+    stop() {
+      this.running = false;
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+      }
+    }
+
+    setSprites(sprites) {
+      this.spriteImages = sprites;
+      this.updateSprite();
+    }
+
+    updateSprite() {
+      if (this.spriteImages.length === 0) return;
+
+      // Get the current animation frame index
+      // Uses tickCount which is scaled to match original 5 FPS timing
+      let frameIndex;
+      if (this.state === NekoState.SLEEP) {
+        // Slower animation for sleep (toggles every 4 ticks in original = 800ms)
+        frameIndex =
+          this.animationTable[this.state][(this.tickCount >> 2) & 0x1];
+      } else {
+        // Normal animation speed (toggles every tick in original = 200ms)
+        frameIndex = this.animationTable[this.state][this.tickCount & 0x1];
+      }
+
+      // Update the image
+      const img = this.element.querySelector("img");
+      if (img && this.spriteImages[frameIndex]) {
+        img.src = this.spriteImages[frameIndex];
+      }
+    }
+
+    updatePosition() {
+      this.element.style.left = Math.round(this.x) + "px";
+      this.element.style.top = Math.round(this.y) + "px";
+    }
+
+    update() {
+      // Track time accumulator for original tick timing
+      // Original runs at 5 FPS (200ms per tick), we run at this.fps
+      // We need to accumulate fractional ticks and process when we hit a full tick
+      if (this.tickAccumulator === undefined) this.tickAccumulator = 0;
+
+      const originalFPS = 5;
+      this.tickAccumulator += originalFPS / this.fps;
+
+      // Process as many original ticks as have accumulated
+      while (this.tickAccumulator >= 1) {
+        this.tickAccumulator -= 1;
+        // Save previous position before processing tick
+        this.prevLogicX = this.logicX;
+        this.prevLogicY = this.logicY;
+        this.processOriginalTick();
+      }
+
+      // Smooth interpolation between logic positions
+      // tickAccumulator represents progress (0-1) towards next tick
+      const t = this.tickAccumulator;
+      this.x = this.prevLogicX + (this.logicX - this.prevLogicX) * t;
+      this.y = this.prevLogicY + (this.logicY - this.prevLogicY) * t;
+
+      // Update display position every frame
+      this.updatePosition();
+    }
+
+    processOriginalTick() {
+      // This runs at the original 5 FPS equivalent timing
+      // Increment tick counter (like m_uTickCount)
+      this.tickCount++;
+      if (this.tickCount >= 9999) this.tickCount = 0;
+
+      // Increment state counter every 2 ticks (like original)
+      if (this.tickCount % 2 === 0) {
+        this.stateCount++;
+      }
+
+      // Update behavior based on mode
+      switch (this.behaviorMode) {
+        case BehaviorMode.CHASE_MOUSE:
+          this.chaseMouse();
+          break;
+        case BehaviorMode.RUN_AWAY_FROM_MOUSE:
+          this.runAwayFromMouse();
+          break;
+        case BehaviorMode.RUN_AROUND_RANDOMLY:
+          this.runRandomly();
+          break;
+        case BehaviorMode.PACE_AROUND_SCREEN:
+          this.paceAroundScreen();
+          break;
+        case BehaviorMode.RUN_AROUND:
+          this.runAround();
+          break;
+      }
+
+      // Update animation frame
+      this.updateSprite();
+    }
+
+    chaseMouse() {
+      // Don't chase until mouse has moved at least once
+      if (!this.hasMouseMoved) {
+        // Just idle in place - pass target that results in zero movement
+        this.runTowards(
+          this.logicX + SPRITE_SIZE / 2,
+          this.logicY + SPRITE_SIZE - 1
+        );
+        return;
+      }
+      this.runTowards(this.mouseX, this.mouseY);
+    }
+
+    runAwayFromMouse() {
+      // Don't run away until mouse has moved
+      if (!this.hasMouseMoved) {
+        this.runTowards(
+          this.logicX + SPRITE_SIZE / 2,
+          this.logicY + SPRITE_SIZE - 1
+        );
+        return;
+      }
+
+      // Original uses m_dwIdleSpace * 16 as the trigger distance
+      const dwLimit = this.idleThreshold * 16;
+      const xdiff = this.logicX + SPRITE_SIZE / 2 - this.mouseX;
+      const ydiff = this.logicY + SPRITE_SIZE / 2 - this.mouseY;
+
+      if (Math.abs(xdiff) < dwLimit && Math.abs(ydiff) < dwLimit) {
+        // Mouse cursor is too close - run away
+        const dLength = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+        let targetX, targetY;
+        if (dLength !== 0) {
+          targetX = this.logicX + (xdiff / dLength) * dwLimit;
+          targetY = this.logicY + (ydiff / dLength) * dwLimit;
+        } else {
+          targetX = targetY = 32;
+        }
+        this.runTowards(targetX, targetY);
+        // Skip awake animation like original
+        if (this.state === NekoState.AWAKE) {
+          this.calcDirection(targetX - this.logicX, targetY - this.logicY);
+        }
+      } else {
+        // Keep running to current target (idle in place)
+        this.runTowards(this.targetX, this.targetY);
+      }
+    }
+
+    runRandomly() {
+      // Original: increments actionCount while sleeping, picks new target after idleSpace*10
+      if (this.state === NekoState.SLEEP) {
+        this.actionCount = (this.actionCount || 0) + 1;
+      }
+      if ((this.actionCount || 0) > this.idleThreshold * 10) {
+        this.actionCount = 0;
+        this.targetX = Math.random() * this.boundsWidth;
+        this.targetY = Math.random() * this.boundsHeight;
+        this.runTowards(this.targetX, this.targetY);
+      } else {
+        this.runTowards(this.targetX, this.targetY);
+      }
+    }
+
+    paceAroundScreen() {
+      // Original checks if neko has stopped moving (m_nDX == 0 && m_nDY == 0)
+      // We track this via lastMoveDX/DY
+      if (this.lastMoveDX === 0 && this.lastMoveDY === 0) {
+        this.cornerIndex = ((this.cornerIndex || 0) + 1) % 4;
+      }
+
+      // Corners offset by sprite size (matching original)
+      // Target positions that result in neko stopping at the corners
+      const corners = [
+        [SPRITE_SIZE + SPRITE_SIZE / 2, SPRITE_SIZE + SPRITE_SIZE - 1],
+        [
+          SPRITE_SIZE + SPRITE_SIZE / 2,
+          this.boundsHeight - SPRITE_SIZE + SPRITE_SIZE - 1,
+        ],
+        [
+          this.boundsWidth - SPRITE_SIZE + SPRITE_SIZE / 2,
+          this.boundsHeight - SPRITE_SIZE + SPRITE_SIZE - 1,
+        ],
+        [
+          this.boundsWidth - SPRITE_SIZE + SPRITE_SIZE / 2,
+          SPRITE_SIZE + SPRITE_SIZE - 1,
+        ],
+      ];
+
+      const target = corners[this.cornerIndex || 0];
+      this.runTowards(target[0], target[1]);
+    }
+
+    runAround() {
+      // Original ball physics with repelling from edges
+      const dwBoundingBox = this.speed * 8;
+
+      // Initialize ball if needed (matching original constructor)
+      if (this.ballX === 0 && this.ballY === 0) {
+        this.ballX = Math.random() * (this.boundsWidth - dwBoundingBox);
+        this.ballY = Math.random() * (this.boundsHeight - dwBoundingBox);
+        this.ballVX = (Math.random() < 0.5 ? 1 : -1) * (this.speed / 2) + 1;
+        this.ballVY = (Math.random() < 0.5 ? 1 : -1) * (this.speed / 2) + 1;
+      }
+
+      // Move invisible ball
+      this.ballX += this.ballVX;
+      this.ballY += this.ballVY;
+
+      // Repel from edges (original logic)
+      if (this.ballX < dwBoundingBox) {
+        if (this.ballX > 0) this.ballVX++;
+        else this.ballVX = -this.ballVX;
+      } else if (this.ballX > this.boundsWidth - dwBoundingBox) {
+        if (this.ballX < this.boundsWidth) this.ballVX--;
+        else this.ballVX = -this.ballVX;
+      }
+
+      if (this.ballY < dwBoundingBox) {
+        if (this.ballY > 0) this.ballVY++;
+        else this.ballVY = -this.ballVY;
+      } else if (this.ballY > this.boundsHeight - dwBoundingBox) {
+        if (this.ballY < this.boundsHeight) this.ballVY--;
+        else this.ballVY = -this.ballVY;
+      }
+
+      this.runTowards(this.ballX, this.ballY);
+    }
+
+    setState(newState) {
+      // Reset counters on state change (like original SetState)
+      this.tickCount = 0;
+      this.stateCount = 0;
+      this.state = newState;
+    }
+
+    runTowards(targetX, targetY) {
+      // Store old target for MoveStart check
+      this.oldTargetX = this.targetX;
+      this.oldTargetY = this.targetY;
+      this.targetX = targetX;
+      this.targetY = targetY;
+
+      // Calculate distance to target (using logic position, not display position)
+      const dx = targetX - this.logicX - SPRITE_SIZE / 2; // Stop in middle of cursor
+      const dy = targetY - this.logicY - SPRITE_SIZE + 1; // Just above cursor
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      // Calculate movement delta (like original m_nDX, m_nDY)
+      // Store as instance variables so they persist across ticks
+      // IMPORTANT: Use integers like original to prevent direction flickering
+      // which causes state resets and prevents wall clawing
+      if (distance !== 0) {
+        if (distance <= this.speed) {
+          // Less than top speed - jump the gap
+          this.moveDX = Math.trunc(dx);
+          this.moveDY = Math.trunc(dy);
+        } else {
+          // More than top speed - run at top speed
+          this.moveDX = Math.trunc((this.speed * dx) / distance);
+          this.moveDY = Math.trunc((this.speed * dy) / distance);
+        }
+      } else {
+        this.moveDX = 0;
+        this.moveDY = 0;
+      }
+
+      // Store for paceAroundScreen check
+      this.lastMoveDX = this.moveDX;
+      this.lastMoveDY = this.moveDY;
+
+      // Check if target moved (MoveStart equivalent)
+      const moveStart = !(
+        this.oldTargetX >= this.targetX - this.idleThreshold &&
+        this.oldTargetX <= this.targetX + this.idleThreshold &&
+        this.oldTargetY >= this.targetY - this.idleThreshold &&
+        this.oldTargetY <= this.targetY + this.idleThreshold
+      );
+
+      // State machine (matching original RunTowards switch)
+      switch (this.state) {
+        case NekoState.STOP:
+          if (moveStart) {
+            this.setState(NekoState.AWAKE);
+          } else if (this.stateCount >= STOP_TIME) {
+            // Check for wall scratching using preserved moveDX/moveDY
+            if (this.moveDX < 0 && this.logicX <= 0) {
+              this.setState(NekoState.L_CLAW);
+            } else if (this.moveDX > 0 && this.logicX >= this.boundsWidth) {
+              this.setState(NekoState.R_CLAW);
+            } else if (this.moveDY < 0 && this.logicY <= 0) {
+              this.setState(NekoState.U_CLAW);
+            } else if (this.moveDY > 0 && this.logicY >= this.boundsHeight) {
+              this.setState(NekoState.D_CLAW);
+            } else {
+              this.setState(NekoState.WASH);
+            }
+          }
+          break;
+
+        case NekoState.WASH:
+          if (moveStart) {
+            this.setState(NekoState.AWAKE);
+          } else if (this.stateCount >= WASH_TIME) {
+            this.setState(NekoState.SCRATCH);
+          }
+          break;
+
+        case NekoState.SCRATCH:
+          if (moveStart) {
+            this.setState(NekoState.AWAKE);
+          } else if (this.stateCount >= SCRATCH_TIME) {
+            this.setState(NekoState.YAWN);
+          }
+          break;
+
+        case NekoState.YAWN:
+          if (moveStart) {
+            this.setState(NekoState.AWAKE);
+          } else if (this.stateCount >= YAWN_TIME) {
+            this.setState(NekoState.SLEEP);
+          }
+          break;
+
+        case NekoState.SLEEP:
+          if (moveStart) {
+            this.setState(NekoState.AWAKE);
+          }
+          break;
+
+        case NekoState.AWAKE:
+          if (this.stateCount >= AWAKE_TIME + Math.floor(Math.random() * 20)) {
+            this.calcDirection(this.moveDX, this.moveDY);
+          }
+          break;
+
+        case NekoState.U_MOVE:
+        case NekoState.D_MOVE:
+        case NekoState.L_MOVE:
+        case NekoState.R_MOVE:
+        case NekoState.UL_MOVE:
+        case NekoState.UR_MOVE:
+        case NekoState.DL_MOVE:
+        case NekoState.DR_MOVE:
+          // Calculate new position using preserved moveDX/moveDY
+          let newX = this.logicX + this.moveDX;
+          let newY = this.logicY + this.moveDY;
+          const wasOutside =
+            newX <= 0 ||
+            newX >= this.boundsWidth ||
+            newY <= 0 ||
+            newY >= this.boundsHeight;
+
+          // Update direction
+          this.calcDirection(this.moveDX, this.moveDY);
+
+          // Clamp position
+          newX = Math.max(0, Math.min(this.boundsWidth, newX));
+          newY = Math.max(0, Math.min(this.boundsHeight, newY));
+          const notMoved = newX === this.logicX && newY === this.logicY;
+
+          // Stop if we can't go further
+          if (wasOutside && notMoved) {
+            this.setState(NekoState.STOP);
+          } else {
+            this.logicX = newX;
+            this.logicY = newY;
+          }
+          break;
+
+        case NekoState.U_CLAW:
+        case NekoState.D_CLAW:
+        case NekoState.L_CLAW:
+        case NekoState.R_CLAW:
+          if (moveStart) {
+            this.setState(NekoState.AWAKE);
+          } else if (this.stateCount >= CLAW_TIME) {
+            this.setState(NekoState.SCRATCH);
+          }
+          break;
+
+        default:
+          this.setState(NekoState.STOP);
+          break;
+      }
+    }
+
+    calcDirection(dx, dy) {
+      // Calculate direction based on movement delta (like original CalcDirection)
+      let newState;
+
+      if (dx === 0 && dy === 0) {
+        newState = NekoState.STOP;
+      } else {
+        const largeX = dx;
+        const largeY = -dy; // Y is inverted
+        const length = Math.sqrt(largeX * largeX + largeY * largeY);
+        const sinTheta = largeY / length;
+
+        const sinPiPer8 = 0.3826834323651;
+        const sinPiPer8Times3 = 0.9238795325113;
+
+        if (dx > 0) {
+          if (sinTheta > sinPiPer8Times3) {
+            newState = NekoState.U_MOVE;
+          } else if (sinTheta > sinPiPer8) {
+            newState = NekoState.UR_MOVE;
+          } else if (sinTheta > -sinPiPer8) {
+            newState = NekoState.R_MOVE;
+          } else if (sinTheta > -sinPiPer8Times3) {
+            newState = NekoState.DR_MOVE;
+          } else {
+            newState = NekoState.D_MOVE;
+          }
+        } else {
+          if (sinTheta > sinPiPer8Times3) {
+            newState = NekoState.U_MOVE;
+          } else if (sinTheta > sinPiPer8) {
+            newState = NekoState.UL_MOVE;
+          } else if (sinTheta > -sinPiPer8) {
+            newState = NekoState.L_MOVE;
+          } else if (sinTheta > -sinPiPer8Times3) {
+            newState = NekoState.DL_MOVE;
+          } else {
+            newState = NekoState.D_MOVE;
+          }
+        }
+      }
+
+      if (this.state !== newState) {
+        this.setState(newState);
+      }
+    }
+
+    isIdle() {
+      return (
+        this.state === NekoState.STOP ||
+        this.state === NekoState.WASH ||
+        this.state === NekoState.SCRATCH ||
+        this.state === NekoState.YAWN ||
+        this.state === NekoState.SLEEP ||
+        this.state === NekoState.AWAKE
+      );
+    }
+
+    cycleBehavior() {
+      // Cycle through behaviors: Chase -> Run Away -> Random -> Pace -> Run Around -> back to Chase
+      const behaviors = [
+        BehaviorMode.CHASE_MOUSE,
+        BehaviorMode.RUN_AWAY_FROM_MOUSE,
+        BehaviorMode.RUN_AROUND_RANDOMLY,
+        BehaviorMode.PACE_AROUND_SCREEN,
+        BehaviorMode.RUN_AROUND,
+      ];
+      const currentIndex = behaviors.indexOf(this.behaviorMode);
+      const nextIndex = (currentIndex + 1) % behaviors.length;
+      this.behaviorMode = behaviors[nextIndex];
+
+      // Reset state to wake the cat up if sleeping
+      if (this.state === NekoState.SLEEP) {
+        this.setState(NekoState.AWAKE);
+      }
+
+      // Show behavior name (optional - can be removed if you don't want this)
+      const behaviorNames = [
+        "Chase Mouse",
+        "Run Away From Mouse",
+        "Run Around Randomly",
+        "Pace Around Screen",
+        "Run Around",
+      ];
+      console.log(`Neko behavior: ${behaviorNames[nextIndex]}`);
+    }
+
+    destroy() {
+      if (this.element && this.element.parentNode) {
+        this.element.parentNode.removeChild(this.element);
+      }
+    }
+  }
+
+  // Export to global scope
+  window.Neko = Neko;
+  window.NekoState = NekoState;
+  window.BehaviorMode = BehaviorMode;
+})();
+
+
+// startNeko: create and launch a Neko instance
+let nekoInstance = null;
+function startNeko() {
+  if (nekoInstance) { nekoInstance.stop(); nekoInstance.destroy(); }
+  nekoInstance = new Neko({ fps: 120, speed: 24 });
+  nekoInstance.setSprites(NEKO_SPRITES);
+  nekoInstance.start();
+
+  // Poll to stop when theme changes away from neko
+  const checkTheme = setInterval(() => {
+    if (document.documentElement.getAttribute('data-theme') !== 'neko') {
+      clearInterval(checkTheme);
+      if (nekoInstance) {
+        nekoInstance.stop();
+        nekoInstance.destroy();
+        nekoInstance = null;
+      }
+    }
+  }, 500);
 }
 
 // ── SURVIVAL HORROR: flashlight + ambient flicker ────────────────────────────
@@ -1051,9 +1953,10 @@ function startHorror() {
     const r = 130 + Math.sin(flicker)*8 + (Math.random()-0.5)*6;
     overlay.style.background=`radial-gradient(circle ${r}px at ${horrorMX}px ${horrorMY}px,
       transparent 0%,
-      rgba(0,0,0,0.08) 55%,
-      rgba(0,0,0,0.65) 82%,
-      rgba(0,0,0,0.97) 100%)`;
+      rgba(0,0,0,0.05) 40%,
+      rgba(0,0,0,0.6) 70%,
+      rgba(0,0,0,0.92) 85%,
+      #000 100%)`;
     cursor.style.left=horrorMX+'px';
     cursor.style.top=horrorMY+'px';
   }
@@ -1108,10 +2011,25 @@ function startMatrix() {
 function toggleExportMenu() {
   const menu = document.getElementById('export-menu');
   menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+  document.getElementById('more-menu').style.display = 'none';
 }
 document.addEventListener('click', e => {
   if (!document.getElementById('export-wrap').contains(e.target)) {
     document.getElementById('export-menu').style.display = 'none';
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MORE MENU
+// ═══════════════════════════════════════════════════════════════════════════════
+function toggleMoreMenu() {
+  const menu = document.getElementById('more-menu');
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+  document.getElementById('export-menu').style.display = 'none';
+}
+document.addEventListener('click', e => {
+  if (!document.getElementById('more-wrap').contains(e.target)) {
+    document.getElementById('more-menu').style.display = 'none';
   }
 });
 
@@ -1144,7 +2062,7 @@ function exportMD() {
   const skills = currentProfile === 'complete' ? h.skillsComplete : h.skillsCore;
   let md = `# Ryan DeBraal\n\n`;
   md += `**Principal Full-Stack Engineer · UI/UX · Security · Remote**\n\n`;
-  md += `ryandebraal@mindattic.com · github.com/mindattic · mindattic.com\n\n---\n\n`;
+  md += `ryandebraal@mindattic.com · github.com/mindattic · linkedin.com/in/ryandebraal · mindattic.com · mindatticcares.com\n\n---\n\n`;
 
   if (currentProfile === 'pitch') {
     md += `## Who I Am\n\n${h.pitchSummary}\n\n`;
@@ -1184,6 +2102,51 @@ function exportMD() {
   h.patents.forEach(p => { md += `**${p.title}** (${p.num}) — ${p.desc}\n\n`; });
 
   download('RyanDeBraal_Resume.md', md, 'text/markdown');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PRINT
+// ═══════════════════════════════════════════════════════════════════════════════
+function printResume() {
+  const html = document.documentElement;
+  const wasTheme = currentTheme;
+  stopFX();
+  html.setAttribute('data-theme','light');
+  document.getElementById('toolbar').style.display='none';
+  setTimeout(()=>{
+    window.print();
+    setTimeout(()=>{
+      document.getElementById('toolbar').style.display='';
+      html.setAttribute('data-theme', wasTheme);
+      setTheme(wasTheme);
+    }, 600);
+  },120);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HTML EXPORT
+// ═══════════════════════════════════════════════════════════════════════════════
+function exportHTML() {
+  document.getElementById('export-menu').style.display='none';
+  // Clone the entire document and strip the toolbar
+  const clone = document.documentElement.cloneNode(true);
+  const tb = clone.querySelector('#toolbar');
+  if(tb) tb.remove();
+  // Remove canvas and overlays
+  const fx = clone.querySelector('#fx-canvas');
+  if(fx) fx.remove();
+  const ho = clone.querySelector('#horror-overlay');
+  if(ho) ho.remove();
+  const hc = clone.querySelector('#horror-cursor');
+  if(hc) hc.remove();
+  const sp = clone.querySelector('#snow-pile-svg');
+  if(sp) sp.remove();
+  // Remove all script tags
+  clone.querySelectorAll('script').forEach(s => s.remove());
+  // Force light theme
+  clone.setAttribute('data-theme','light');
+  const htmlStr = '<!DOCTYPE html>\n' + clone.outerHTML;
+  download('RyanDeBraal_Resume.html', htmlStr, 'text/html');
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1237,7 +2200,7 @@ async function exportDOCX() {
   const children = [
     new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:40},children:[new TextRun({text:'RYAN DeBRAAL',bold:true,size:52,font:'Calibri',color:DARK,characterSpacing:60})]}),
     new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:40},border:{bottom:{style:BorderStyle.SINGLE,size:4,color:ACCENT,space:6}},children:[new TextRun({text:'Principal Full-Stack Engineer  ·  UI/UX  ·  Security  ·  Remote',size:22,font:'Calibri',color:ACCENT})]}),
-    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:60,after:120},children:[new TextRun({text:'ryandebraal@mindattic.com   ·   github.com/mindattic   ·   mindattic.com',size:19,font:'Calibri',color:MID})]}),
+    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:60,after:120},children:[new TextRun({text:'ryandebraal@mindattic.com   ·   github.com/mindattic   ·   linkedin.com/in/ryandebraal   ·   mindattic.com   ·   mindatticcares.com',size:19,font:'Calibri',color:MID})]}),
   ];
 
   if(currentProfile==='pitch'){
