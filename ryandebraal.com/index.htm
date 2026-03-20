@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" data-profile="classic">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ryan DeBraal — Resume</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Roboto:wght@300;400;500;700&family=Lato:wght@300;400;700&display=swap');
+
+:root {
+  --bg:#0d0f12; --bg2:#13161b; --bg3:#1a1e25; --border:#2a2f3a;
+  --accent:#6ba3e8; --accent2:#90bbf0;
+  --text:#e8eaf0; --text2:#9aa0b0; --text3:#5c6275;
+  --tag-bg:#1a2030; --tag-text:#6ba3e8; --tag-border:#2a3a54;
+  --tag-hover-bg:#6ba3e8; --tag-hover-text:#0d0f12;
+  --rule:#3d6fa3; --font-resume:'Outfit',system-ui,sans-serif;
+}
+[data-theme="light"] {
+  --bg:#fff; --bg2:#f8f9fb; --bg3:#f0f2f5; --border:#e2e6ea;
+  --accent:#1b4f8c; --accent2:#2563b0;
+  --text:#1a1a2e; --text2:#4a5568; --text3:#718096;
+  --tag-bg:#eef2f8; --tag-text:#1b4f8c; --tag-border:#c5d5eb;
+  --tag-hover-bg:#1b4f8c; --tag-hover-text:#fff;
+  --rule:#2c5f8a;
+}
+[data-theme="spring"] {
+  --bg:#f0faf2; --bg2:#e6f7ea; --bg3:#d4f0da; --border:#b2d9bc;
+  --accent:#2e7d4f; --accent2:#3a9e63;
+  --text:#1a3325; --text2:#3d6b52; --text3:#6a9a7c;
+  --tag-bg:#d4f0da; --tag-text:#1e6b3a; --tag-border:#90c9a0;
+  --tag-hover-bg:#2e7d4f; --tag-hover-text:#fff;
+  --rule:#4caf70;
+}
+[data-theme="summer"] {
+  --bg:#fffdf0; --bg2:#fff9e0; --bg3:#fff3c4; --border:#fad97a;
+  --accent:#c47a00; --accent2:#e69500;
+  --text:#2d1f00; --text2:#5c4010; --text3:#9a7030;
+  --tag-bg:#fff3c4; --tag-text:#8a5600; --tag-border:#fad97a;
+  --tag-hover-bg:#c47a00; --tag-hover-text:#fff;
+  --rule:#f0b429;
+}
+[data-theme="autumn"] {
+  --bg:#1c1008; --bg2:#231408; --bg3:#2d1a0c; --border:#5c3010;
+  --accent:#e8762a; --accent2:#f0943c;
+  --text:#f5dfc0; --text2:#c4a070; --text3:#8a6040;
+  --tag-bg:#2d1a0c; --tag-text:#e8762a; --tag-border:#5c3010;
+  --tag-hover-bg:#e8762a; --tag-hover-text:#1c1008;
+  --rule:#c05c18;
+}
+[data-theme="winter"] {
+  --bg:#e8f4fc; --bg2:#d8ecf8; --bg3:#c4e0f4; --border:#90c4e8;
+  --accent:#1a5a8c; --accent2:#2272b0;
+  --text:#0a1828; --text2:#2a4860; --text3:#507898;
+  --tag-bg:#c4e0f4; --tag-text:#1a5a8c; --tag-border:#90c4e8;
+  --tag-hover-bg:#1a5a8c; --tag-hover-text:#e8f4fc;
+  --rule:#3a80b0;
+}
+[data-theme="matrix"] {
+  --bg:#000; --bg2:#000d00; --bg3:#001400; --border:#003800;
+  --accent:#00ff41; --accent2:#00cc33;
+  --text:#00ff41; --text2:#00cc33; --text3:#007a1e;
+  --tag-bg:#001400; --tag-text:#00ff41; --tag-border:#003800;
+  --tag-hover-bg:#00ff41; --tag-hover-text:#000;
+  --rule:#00aa2a;
+}
+[data-theme="neko"] {
+  --bg:#fff8f0; --bg2:#fff0e0; --bg3:#ffe8d0; --border:#f0c8a0;
+  --accent:#d4608a; --accent2:#e87aaa;
+  --text:#2a1a10; --text2:#6a3a28; --text3:#b07050;
+  --tag-bg:#ffe0f0; --tag-text:#c0407a; --tag-border:#f0a0c0;
+  --tag-hover-bg:#d4608a; --tag-hover-text:#fff;
+  --rule:#e8809a;
+}
+[data-theme="horror"] {
+  --bg:#0a0000; --bg2:#0a0000; --bg3:#100000; --border:#2a0000;
+  --accent:#cc2200; --accent2:#ff3300;
+  --text:#c8b8a8; --text2:#907060; --text3:#503020;
+  --tag-bg:#150000; --tag-text:#cc2200; --tag-border:#3a0000;
+  --tag-hover-bg:#cc2200; --tag-hover-text:#0a0000;
+  --rule:#500000;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{font-size:14px;-webkit-font-smoothing:antialiased;}
+body{font-family:var(--font-resume);background:var(--bg2);color:var(--text);min-height:100vh;transition:background 0.3s,color 0.3s;position:relative;overflow-x:hidden;}
+
+/* ── CANVAS (animations live here, behind everything) ── */
+#fx-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+
+/* ── TOOLBAR ── */
+#toolbar{position:sticky;top:0;z-index:200;background:var(--bg);border-bottom:1px solid var(--border);padding:8px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+#toolbar-name{font-size:14px;font-weight:500;color:var(--text);margin-right:auto;white-space:nowrap;}
+.tb-sep{width:1px;height:24px;background:var(--border);flex-shrink:0;}
+.tb-label{font-size:11px;color:var(--text3);white-space:nowrap;}
+select.tb-sel{font-family:var(--font-resume);font-size:12px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--text);cursor:pointer;outline:none;transition:all 0.15s;}
+select.tb-sel:hover{border-color:var(--accent);}
+.tb-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--text2);font-family:var(--font-resume);font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.tb-btn:hover{background:var(--bg3);color:var(--text);border-color:var(--accent);}
+.tb-btn.primary{background:var(--accent);color:var(--bg);border-color:var(--accent);}
+.tb-btn.primary:hover{opacity:0.85;}
+.tb-btn svg{width:13px;height:13px;fill:currentColor;flex-shrink:0;}
+
+/* Matrix font override */
+[data-theme="matrix"] .tb-btn,[data-theme="matrix"] select.tb-sel,[data-theme="matrix"] #toolbar-name{font-family:'Courier New',monospace;}
+/* Horror styles */
+[data-theme="horror"] #resume{border-color:#3a0000;box-shadow:0 0 60px rgba(150,0,0,0.12);}
+[data-theme="horror"] .r-name{color:#c8b8a8;text-shadow:0 0 20px rgba(180,0,0,0.4);}
+[data-theme="horror"] body{cursor:none;}
+/* Flashlight overlay — punches a radial hole in solid black */
+#horror-overlay{
+  display:none;
+  position:fixed;inset:0;z-index:5;pointer-events:none;
+  --lx:50vw;--ly:50vh;
+  background:radial-gradient(circle 140px at var(--lx) var(--ly),
+    transparent 0%,
+    rgba(0,0,0,0.15) 60%,
+    rgba(0,0,0,0.7) 90%,
+    rgba(0,0,0,0.97) 100%);
+  transition:background 0.05s;
+}
+/* Custom cursor crosshair for horror */
+#horror-cursor{
+  display:none;position:fixed;z-index:6;pointer-events:none;
+  width:24px;height:24px;margin:-12px 0 0 -12px;
+}
+[data-theme="horror"] #horror-overlay{display:block;}
+[data-theme="horror"] #horror-cursor{display:block;}
+
+/* ── RESUME DOC ── */
+#resume{max-width:820px;margin:28px auto;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:52px 60px;font-family:var(--font-resume);position:relative;z-index:10;transition:background 0.3s,border-color 0.3s;}
+[data-theme="matrix"] #resume{border-color:#00ff41;box-shadow:0 0 30px rgba(0,255,65,0.15);}
+
+/* ── HEADER ── */
+.r-name{font-family:var(--font-resume);font-size:36px;font-weight:400;text-align:center;color:var(--text);letter-spacing:-0.01em;margin-bottom:5px;}
+.r-title{text-align:center;font-size:13px;color:var(--accent);letter-spacing:0.03em;margin-bottom:5px;font-family:var(--font-resume);}
+.r-contact{text-align:center;font-size:12px;color:var(--text3);font-family:var(--font-resume);border-bottom:1.5px solid var(--rule);padding-bottom:14px;}
+.r-contact a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(107,163,232,0.2);transition:border-color 0.2s,color 0.2s;}
+.r-contact a:hover{border-bottom-color:var(--accent);}
+[data-theme="light"] .r-contact a{border-bottom-color:rgba(27,79,140,0.2);}
+[data-theme="light"] .r-contact a:hover{border-bottom-color:#1b4f8c;}
+[data-theme="spring"] .r-contact a{border-bottom-color:rgba(46,125,79,0.2);}
+[data-theme="summer"] .r-contact a{border-bottom-color:rgba(196,122,0,0.2);}
+[data-theme="autumn"] .r-contact a{border-bottom-color:rgba(232,118,42,0.25);}
+[data-theme="winter"] .r-contact a{border-bottom-color:rgba(26,90,140,0.2);}
+[data-theme="matrix"] .r-contact a{border-bottom-color:rgba(0,255,65,0.2);}
+
+/* ── SECTION RULE ── */
+.r-sec{font-family:var(--font-resume);font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.14em;color:var(--accent);border-bottom:1px solid var(--rule);padding-bottom:4px;margin:22px 0 11px;}
+
+/* ── SUMMARY ── */
+.r-summary{font-size:13px;line-height:1.75;color:var(--text2);}
+
+/* ── SKILLS ── */
+.r-skill-row{display:flex;gap:8px;margin-bottom:5px;align-items:baseline;flex-wrap:wrap;}
+.r-skill-label{font-family:var(--font-resume);font-size:11px;font-weight:500;color:var(--text);white-space:nowrap;min-width:155px;}
+.r-skill-tags{display:flex;flex-wrap:wrap;gap:4px;}
+
+/* ── TAG ── */
+.tag{display:inline-flex;align-items:center;font-family:var(--font-resume);font-size:11px;padding:2px 9px;background:var(--tag-bg);color:var(--tag-text);border:1px solid var(--tag-border);border-radius:20px;cursor:default;transition:all 0.12s;position:relative;white-space:nowrap;}
+.tag:hover{background:var(--tag-hover-bg);color:var(--tag-hover-text);border-color:var(--tag-hover-bg);transform:translateY(-1px);z-index:20;}
+.tag[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:11px;padding:4px 10px;border-radius:5px;white-space:nowrap;pointer-events:none;z-index:999;font-family:var(--font-resume);}
+.tag[data-tip]:hover::before{content:'';position:absolute;bottom:calc(100% + 1px);left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--text);pointer-events:none;z-index:999;}
+[data-theme="matrix"] .tag{text-shadow:0 0 8px currentColor;}
+
+/* ── EXPERIENCE ── */
+.r-job{margin-bottom:20px;}
+.r-job:last-child{margin-bottom:0;}
+.r-job-header{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px;margin-bottom:2px;}
+.r-job-title{font-size:14px;font-weight:600;color:var(--text);}
+.r-job-company{font-size:14px;font-weight:400;color:var(--accent);}
+.r-job-dates{font-family:var(--font-resume);font-size:11px;color:var(--text3);}
+.r-job-meta{font-size:12px;color:var(--text3);margin-bottom:5px;}
+.r-job-tech{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:7px;}
+.r-job-bullets{list-style:none;padding:0;}
+.r-job-bullets li{font-size:13px;line-height:1.65;color:var(--text2);padding-left:15px;position:relative;margin-bottom:4px;}
+.r-job-bullets li::before{content:'▸';position:absolute;left:0;color:var(--accent);font-size:10px;top:3px;}
+.r-job-bullets li strong{color:var(--text);font-weight:500;}
+
+/* ── PROJECTS ── */
+.r-project{margin-bottom:9px;}
+.r-project-name{font-weight:500;font-size:13px;color:var(--text);}
+.r-project-desc{font-size:13px;color:var(--text2);line-height:1.65;}
+
+/* ── EDUCATION ── */
+.r-edu-row{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px;margin-bottom:4px;}
+.r-edu-degree{font-size:13px;font-weight:500;color:var(--text);}
+.r-edu-school{font-size:13px;color:var(--text2);}
+.r-edu-dates{font-family:var(--font-resume);font-size:11px;color:var(--text3);}
+.r-edu-note{font-size:12px;color:var(--accent);font-style:italic;}
+
+/* ── PATENTS ── */
+.r-patent{margin-bottom:8px;}
+.r-patent-title{font-size:13px;font-weight:500;color:var(--text);}
+.r-patent-num{font-family:var(--font-resume);font-size:11px;color:var(--accent);margin-left:6px;}
+.r-patent-desc{font-size:13px;color:var(--text2);line-height:1.6;}
+
+/* ── PITCH PROFILE ── */
+.pitch-summary-box{background:var(--tag-bg);border:1px solid var(--tag-border);border-radius:10px;padding:20px 24px;margin-bottom:16px;}
+.pitch-summary-box p{font-size:14px;line-height:1.8;color:var(--text);}
+.pitch-highlights{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px;}
+.pitch-highlight{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px 14px;}
+.pitch-highlight .ph-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);margin-bottom:4px;}
+.pitch-highlight .ph-body{font-size:12px;color:var(--text2);line-height:1.5;}
+
+/* ── PRINT ── */
+@media print{
+  body{background:#fff;}
+  #toolbar{display:none!important;}
+  #fx-canvas{display:none!important;}
+  #resume{margin:0;border:none;border-radius:0;padding:32px 44px;max-width:100%;background:#fff;box-shadow:none;}
+  :root{--bg:#fff;--bg2:#fff;--text:#1a1a2e;--text2:#4a5568;--text3:#718096;--accent:#1b4f8c;--rule:#2c5f8a;--tag-bg:#eef2f8;--tag-text:#1b4f8c;--tag-border:#c5d5eb;--border:#e2e6ea;}
+  .tag:hover{transform:none;}
+  .tag[data-tip]:hover::after,.tag[data-tip]:hover::before{display:none;}
+}
+</style>
+</head>
+<body>
+<canvas id="fx-canvas"></canvas>
+
+<!-- Horror flashlight overlay -->
+<div id="horror-overlay"></div>
+<svg id="horror-cursor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="12" cy="12" r="10" fill="none" stroke="rgba(200,180,160,0.6)" stroke-width="1.5"/>
+  <line x1="12" y1="2" x2="12" y2="7" stroke="rgba(200,180,160,0.6)" stroke-width="1.5"/>
+  <line x1="12" y1="17" x2="12" y2="22" stroke="rgba(200,180,160,0.6)" stroke-width="1.5"/>
+  <line x1="2" y1="12" x2="7" y2="12" stroke="rgba(200,180,160,0.6)" stroke-width="1.5"/>
+  <line x1="17" y1="12" x2="22" y2="12" stroke="rgba(200,180,160,0.6)" stroke-width="1.5"/>
+  <circle cx="12" cy="12" r="2" fill="rgba(200,100,80,0.7)"/>
+</svg>
+
+<!-- ── TOOLBAR ── -->
+<div id="toolbar">
+  <span id="toolbar-name">Ryan DeBraal</span>
+
+  <div class="tb-sep"></div>
+  <span class="tb-label">Profile</span>
+  <select class="tb-sel" id="profile-picker" onchange="setProfile(this.value)">
+    <option value="classic">Classic Two Page</option>
+    <option value="pitch">Elevator Pitch — One Page</option>
+    <option value="complete">Complete — Everything</option>
+  </select>
+
+  <div class="tb-sep"></div>
+  <span class="tb-label">Theme</span>
+  <select class="tb-sel" id="theme-picker" onchange="setTheme(this.value)">
+    <option value="light" selected>Light</option>
+    <option value="dark">Dark</option>
+    <option value="spring">Spring</option>
+    <option value="summer">Summer</option>
+    <option value="autumn">Autumn</option>
+    <option value="winter">Winter</option>
+    <option value="matrix">Matrix</option>
+    <option value="horror">Survival Horror</option>
+    <option value="neko">Neko</option>
+  </select>
+
+  <div class="tb-sep"></div>
+  <span class="tb-label">Font</span>
+  <select class="tb-sel" id="font-picker" onchange="setFont(this.value)">
+    <option value="'Outfit',system-ui,sans-serif" style="font-family:'Outfit',sans-serif" selected>Outfit</option>
+    <option value="'Times New Roman',Times,serif" style="font-family:'Times New Roman',serif">Times New Roman</option>
+    <option value="Arial,Helvetica,sans-serif" style="font-family:Arial,sans-serif">Arial</option>
+    <option value="Aptos,Calibri,sans-serif" style="font-family:Aptos,Calibri,sans-serif">Aptos</option>
+    <option value="Calibri,sans-serif" style="font-family:Calibri,sans-serif">Calibri</option>
+    <option value="'Roboto',sans-serif" style="font-family:'Roboto',sans-serif">Roboto</option>
+    <option value="'Lato',sans-serif" style="font-family:'Lato',sans-serif">Lato</option>
+    <option value="Georgia,serif" style="font-family:Georgia,serif">Georgia</option>
+  </select>
+  <button class="tb-btn" onclick="adjustFontSize(-1)" title="Decrease font size" style="padding:5px 9px;font-size:15px;line-height:1;">A−</button>
+  <span id="font-size-label" style="font-size:11px;color:var(--text3);min-width:28px;text-align:center;">14px</span>
+  <button class="tb-btn" onclick="adjustFontSize(1)" title="Increase font size" style="padding:5px 9px;font-size:15px;line-height:1;">A+</button>
+
+  <div class="tb-sep"></div>
+  <div style="position:relative;display:inline-block;" id="export-wrap">
+    <button class="tb-btn primary" onclick="toggleExportMenu()" id="export-btn">
+      <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:currentColor"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+      Export
+      <svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor;margin-left:2px"><path d="M7 10l5 5 5-5z"/></svg>
+    </button>
+    <div id="export-menu" style="display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--bg);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,0.15);min-width:160px;z-index:999;overflow:hidden;">
+      <button onclick="exportPDF()" style="display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;background:none;border:none;color:var(--text);font-family:var(--font-resume);font-size:13px;cursor:pointer;text-align:left;transition:background 0.1s;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='none'">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--accent);flex-shrink:0"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"/></svg>
+        Export as PDF
+      </button>
+      <div style="height:1px;background:var(--border);margin:0 10px;"></div>
+      <button onclick="exportDOCX()" style="display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;background:none;border:none;color:var(--text);font-family:var(--font-resume);font-size:13px;cursor:pointer;text-align:left;transition:background 0.1s;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='none'">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#2b5eb0;flex-shrink:0"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+        Export as DOCX
+      </button>
+      <div style="height:1px;background:var(--border);margin:0 10px;"></div>
+      <button onclick="exportMD()" style="display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;background:none;border:none;color:var(--text);font-family:var(--font-resume);font-size:13px;cursor:pointer;text-align:left;transition:background 0.1s;" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='none'">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--text2);flex-shrink:0"><path d="M20.56 18H3.44C2.65 18 2 17.37 2 16.59V7.41C2 6.63 2.65 6 3.44 6h17.12C21.35 6 22 6.63 22 7.41v9.18c0 .78-.65 1.41-1.44 1.41zM6.81 15.19v-3.66l1.92 2.35 1.92-2.35v3.66h1.93V8.81h-1.93l-1.92 2.35-1.92-2.35H4.88v6.38h1.93zm10.38-2.55h1.93v-3.83h-1.93V9.84h-3.84v4.8h3.84v.97z"/></svg>
+        Export as Markdown
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ── RESUME ── -->
+<div id="resume">
+  <div class="r-name">Ryan DeBraal</div>
+  <div class="r-title">Principal Full-Stack Engineer · UI/UX · Security · Remote</div>
+  <div class="r-contact">
+    <a href="mailto:ryandebraal@mindattic.com">ryandebraal@mindattic.com</a> &nbsp;·&nbsp;
+    <a href="https://github.com/mindattic" target="_blank">github.com/mindattic</a> &nbsp;·&nbsp;
+    <a href="https://mindattic.com" target="_blank">mindattic.com</a>
+  </div>
+  <div id="resume-body"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════════════════════
+const techTips = {
+  'C#':'Primary language — 20+ years','React':'Hooks, Context, Router, modern patterns',
+  'Angular':'Used at Bank of America','.NET / ASP.NET Core':'Full ecosystem expertise',
+  'JavaScript':'ES6+ vanilla & frameworks','TypeScript':'Typed JS for large-scale apps',
+  'SQL':'SQL Server, T-SQL, stored procs, optimization','GraphQL (HotChocolate)':'GraphQL server for .NET',
+  'Elasticsearch':'Used in Graphite cross-SOR platform','RAG pipelines':'Used in Tutor AI platform',
+  'LSH/SimHash':'Nearest-neighbor concept matching in Tutor','Genetic algorithms':'Used in IdiotProof trading optimizer',
+  'Neural networks':'Per-ticker weight calibration in IdiotProof','LLM integration':'OpenAI + Anthropic API integration',
+  'Force-layout graph engines':'Custom engine — Datastrology (Patent Pending)',
+  'Bidirectional push/pull sync':'Core of Graphite architecture',
+  'Unity':'GridGame2026 — active development','ShaderLab':'Custom shaders in GridGame2026',
+  'Interactive Brokers API':'Live trading — Ahab, Gappy, IdiotProof',
+  'NIST frameworks':'Used in Continuous Monitoring platform',
+  'PHP':'Used at Bag of Games (3 years)','VB.NET':'Kimberly-Clark contract work',
+  'PowerShell':'Scripting & automation','.NET MAUI':'Cross-platform — Tutor app',
+  'Backtesting frameworks':'Built custom engine in IdiotProof & Ahab',
+};
+
+const D = {
+  summary: `Principal-level full-stack engineer with 20+ years architecting high-impact systems for Fortune 500 organizations. Inventor with three patents across UI innovation, security platforms, and data visualization. Depth across the entire stack — from pixel-perfect UI/UX and component library design to distributed backend architecture, multi-threaded data engines, and machine learning pipelines. Equally fluent designing systems and implementing them. Driven by craft: clean, self-documenting, performant code that solves hard problems elegantly. Currently completing an M.S. in Information Security (B.B.A. Computer Science, Summa Cum Laude).`,
+
+  pitchSummary: `Principal full-stack engineer with 20+ years building systems most teams would call ambitious. Two US patents. ML-driven security platforms. Real-time cross-source data engines. Autonomous AI trading systems. Force-layout knowledge graphs. I code — I don't manage. Looking for a remote principal or staff IC role where my vision shapes the product.`,
+
+  skillsCore: [
+    {label:'Languages', items:['C#','JavaScript','TypeScript','PHP','VB.NET','SQL','T-SQL','PowerShell','XML','HTML5','CSS3','ShaderLab']},
+    {label:'Frontend & UI/UX', items:['React','Angular','jQuery','Bootstrap','Tailwind CSS','Component library design','Responsive design','Force-layout graph engines','Real-time UI','.NET MAUI','Blazor']},
+    {label:'Backend & Systems', items:['ASP.NET Core','REST APIs','GraphQL (HotChocolate)','WebSockets','Microservices','Event-driven architecture','Multi-threading','SignalR','CQRS']},
+    {label:'Data & Sync', items:['Cross-source real-time data unification','Bidirectional push/pull sync','Elasticsearch','SQL Server','Vector embeddings','Backtesting frameworks']},
+    {label:'AI / ML', items:['RAG pipelines','LLM integration','LSH/SimHash','Genetic algorithms','Neural networks','Phishing correlation','NLP','OpenAI API','Anthropic API']},
+    {label:'Security', items:['Vulnerability management','Threat detection','NIST frameworks','OWASP Top 10','OAuth 2.0','JWT','Active Directory','Penetration testing concepts']},
+    {label:'Game Dev', items:['Unity','ShaderLab','HLSL','Shader Graph','Procedural generation','Pathfinding (A*)','Custom render pipelines']},
+    {label:'Finance & Trading', items:['Interactive Brokers API','Algorithmic trading','DSL design','Backtesting engines','Position sizing','Gap trading','Technical indicators']},
+    {label:'Tools & Practices', items:['Git','CI/CD','Agile/Scrum','TDD','QA/UAT','Azure DevOps','Docker','Visual Studio','Postman','Performance tuning']},
+  ],
+
+  skillsComplete: [
+    {label:'Languages', items:['C#','JavaScript','TypeScript','PHP','VB.NET','VB6','SQL','T-SQL','PL/SQL','HTML5','CSS3','XML','XSLT','XPath','JSON','YAML','PowerShell','Bash','Python','Lua','ShaderLab','HLSL','GLSL','Markdown','Regex']},
+    {label:'C# / .NET Ecosystem', items:['.NET Framework','.NET Core','.NET 5–10','ASP.NET Web Forms','ASP.NET MVC','ASP.NET Core','ASP.NET Web API','WCF','SignalR','MAUI','Blazor Server','Blazor WASM','WPF','WinForms','Worker Services','Quartz.NET','Hangfire','LINQ','Entity Framework 6','EF Core','Dapper','ADO.NET','AutoMapper','MediatR','FluentValidation','Polly','Serilog','Newtonsoft.Json','System.Text.Json','RestSharp','HttpClient','gRPC','Protobuf','GraphQL (HotChocolate)','OData','xUnit','NUnit','MSTest','Moq','FluentAssertions']},
+    {label:'Frontend Frameworks', items:['React','React Hooks','React Router','Next.js','Angular','AngularJS','Vue.js','Svelte','jQuery','jQuery UI','Backbone.js','Knockout.js','Alpine.js','Htmx','Redux','Zustand','MobX','Tanstack Query','SWR','Axios','Socket.io','Lodash','Moment.js','Day.js','Zod','Formik','React Hook Form','Framer Motion','GSAP','Three.js','D3.js','Chart.js','Recharts','Leaflet']},
+    {label:'Styling & Design', items:['CSS3','CSS Grid','Flexbox','CSS Variables','CSS Animations','Tailwind CSS','Bootstrap 3–5','Material UI','Ant Design','Chakra UI','Radix UI','shadcn/ui','Styled Components','CSS Modules','SASS / SCSS','Less','PostCSS','BEM','Figma','Adobe XD','Sketch','Storybook','Design tokens','Responsive design','Mobile-first','Accessibility (WCAG 2.1)']},
+    {label:'Build Tools', items:['Webpack','Vite','Parcel','Rollup','esbuild','Babel','ESLint','Prettier','npm','Yarn','pnpm','Grunt','Gulp','MSBuild','Cake','Nx','Turborepo','Lerna']},
+    {label:'Backend & Architecture', items:['REST APIs','GraphQL','WebSockets','gRPC','WebRTC','SSE','Webhooks','Microservices','Event-driven architecture','CQRS','Event Sourcing','DDD','Hexagonal architecture','Clean architecture','Repository pattern','SOLID','Pub/Sub','Message queues','Saga pattern','Outbox pattern','Circuit breaker','API Gateway','BFF pattern','Feature flags','Rate limiting','API versioning']},
+    {label:'Databases & Storage', items:['SQL Server 2005–2022','T-SQL','Stored procedures','Views','Triggers','CTEs','Window functions','Full-text search','SQLite','PostgreSQL','MySQL','MariaDB','Redis','Elasticsearch','OpenSearch','Azure Cosmos DB','Azure Blob Storage','MongoDB (concepts)','Database design','Normalization','Indexing strategies','Query optimization','EF Core migrations']},
+    {label:'AI / ML & Data Science', items:['LLM integration','RAG pipelines','Vector embeddings','Vector databases','LSH (Locality-Sensitive Hashing)','SimHash','MinHash','Semantic search','Cosine similarity','TF-IDF','BM25','Tokenization','Chunking strategies','Prompt engineering','Few-shot prompting','Chain-of-thought','Tool use / function calling','OpenAI API','Anthropic API','Azure OpenAI','Semantic Kernel','Genetic algorithms','Neural networks','Gradient descent','Backpropagation','NLP','Phishing detection','Anomaly detection','Backtesting','Technical indicators (RSI, MACD, ADX, VWAP, EMA, Bollinger Bands, ATR)','Position sizing','Monte Carlo simulation']},
+    {label:'Data & Visualization', items:['D3.js','Force-layout graphs','Graph algorithms','BFS / DFS','A* pathfinding','Canvas API','SVG','WebGL','Real-time data pipelines','Cross-SOR data unification','Bidirectional push/pull sync','CDC','Azure Service Bus','RabbitMQ','ETL concepts','Excel generation (EPPlus)','PDF generation','CSV parsing','XSLT transformation']},
+    {label:'Security & Infosec', items:['OWASP Top 10','SQL injection prevention','XSS prevention','CSRF protection','CSP','CORS','HTTPS / TLS','OAuth 2.0','OpenID Connect','SAML 2.0','JWT','RBAC','ABAC','Active Directory','LDAP','Windows Authentication','AES encryption','RSA encryption','bcrypt','Argon2','HMAC','Azure Key Vault','Vulnerability scanning','Pen testing concepts','SAST / DAST','NIST frameworks','CIS benchmarks','Threat modeling','STRIDE','MFA','SIEM concepts','Log analysis']},
+    {label:'Finance & Trading', items:['Interactive Brokers API (IBKR)','TWS API','IB Gateway','Algorithmic trading','Automated order execution','Market/Limit/Stop/OCO orders','Paper trading','Live trading','Position management','Risk management','Drawdown analysis','Sharpe ratio','Gap trading','Momentum strategies','Mean reversion','Trend following','Backtesting engines','Walk-forward optimization','DSL design','IdiotScript','Candlestick patterns','Support & resistance','Volume analysis','OHLCV data','TradingView','Pine Script']},
+    {label:'Game Development', items:['Unity','Unity C# scripting','Unity Physics','Unity Animator','Unity Canvas UI','Unity Input System','Unity Profiler','ShaderLab','HLSL','Shader Graph','Compute Shaders','Post-processing','Procedural generation','Perlin noise','Pathfinding (A*)','NavMesh','State machines','ECS (concepts)','Tilemaps','Sprite rendering','Particle systems','Level design','World building','Narrative design','URP / HDRP','Performance optimization']},
+    {label:'Cloud & Infrastructure', items:['Azure','Azure App Service','Azure Functions','Azure DevOps','Azure Pipelines','Azure Blob Storage','Azure Service Bus','Azure Event Grid','Azure Cosmos DB','Azure SQL','Azure Cache for Redis','Azure API Management','Azure Key Vault','Azure Monitor','Azure Application Insights','Azure Active Directory','Docker','Docker Compose','Kubernetes (concepts)','Terraform (concepts)','Nginx','IIS','Windows Server','Linux (Ubuntu)','CI/CD','GitHub Actions']},
+    {label:'CMS & Content', items:['WordPress','WordPress plugin dev','WordPress theme dev','WordPress REST API','PHP CMS development','Custom CMS development','SEO optimization','Structured data','Open Graph','Sitemap generation','Page speed optimization','Core Web Vitals','Content strategy','Social media integration']},
+    {label:'Testing & Quality', items:['Unit testing','Integration testing','E2E testing','TDD','BDD','xUnit','NUnit','MSTest','Moq','FluentAssertions','Bogus','SpecFlow','Playwright (concepts)','Selenium (concepts)','k6 (concepts)','Code coverage','Static analysis','SonarQube (concepts)','QA process management','UAT']},
+    {label:'Tools & Workflow', items:['Visual Studio 2005–2022','VS Code','JetBrains Rider','LinqPad','SSMS','Azure Data Studio','Postman','Swagger / OpenAPI','Fiddler','Charles Proxy','Chrome DevTools','Git','GitHub','GitKraken','Beyond Compare','PowerShell ISE','Windows Terminal','WSL2','FileZilla','WinSCP','Sysinternals']},
+    {label:'Engineering Practices', items:['Agile / Scrum','Kanban','Sprint planning','Backlog grooming','Technical debt management','Architecture decision records','Self-documenting code','Clean code','DRY / KISS / YAGNI','Code review','Pair programming','Documentation','Patent filing','API design','SDK design','Mentoring','Stakeholder communication']},
+  ],
+
+  experience: [
+    {title:'Senior Software Engineer',company:'Bank of America',location:'Chicago, IL',dates:'Oct 2013 – Present',
+     tech:['C#','.NET','React','Angular','JavaScript','TypeScript','HTML/CSS3','SQL Server','Elasticsearch','SignalR','REST APIs','GraphQL'],
+     bullets:[
+      '<strong>Datastrology</strong> — Designed and built a data-agnostic, multi-threaded force-layout graph visualization engine mapping relationships across complex business entities at enterprise scale. <em>Patent Pending.</em>',
+      '<strong>Graphite</strong> — Architected a cross-SOR data unification platform connecting heterogeneous sources (SQL, REST APIs, Elasticsearch, Excel) into a single live document. Bidirectional push/pull sync, no caching, no UI reload.',
+      '<strong>Trident</strong> — Engineered an ML-driven phishing correlation engine identifying and clustering multi-vector threat actors across global infrastructure.',
+      '<strong>Continuous Monitoring</strong> — Architected an enterprise-wide vulnerability identification and remediation platform deployed across global systems.',
+      '<strong>Bonsai Menu</strong> — Invented a novel hierarchical navigation paradigm. <em>US Patent #US-9933917-B2.</em>',
+      '<strong>Gamified Training App</strong> — Co-invented an associate training platform with unique gamification mechanics. <em>US Patent #US-9747636-B2.</em>',
+      '<strong>GDS</strong> — Designed a responsive UI/UX component library standardized across all GIS projects.',
+      '<strong>INSTINCT / Canary</strong> — Modernized multiple legacy applications delivering significant performance improvements.',
+      '<strong>InfoPass</strong> — Developed a corporate-wide traveler analytics and tracking dashboard.',
+    ]},
+    {title:'CMS Developer / Managing Editor',company:'Bag of Games',location:'Helsinki, Finland (Remote)',dates:'Dec 2011 – Oct 2013',
+     tech:['PHP','WordPress','JavaScript','jQuery','HTML','CSS','SEO'],
+     bullets:[
+      'Rebuilt site frontend in PHP with a modern UI and tighter social media integration.',
+      'Promoted to Managing Editor — led a team of 10 writers, owned all CMS technical operations.',
+      'Authored 90+ articles; developed content strategy optimized for longevity, SEO, and readership growth.',
+    ]},
+    {title:'.NET Developer (Contract)',company:'Kimberly-Clark',location:'Neenah, WI',dates:'Dec 2007 – Oct 2010',
+     tech:['C#','ASP.NET','VB.NET','SQL Server','XML','Active Directory','QA/UAT'],
+     bullets:[
+      '<strong>RADAR X</strong> — Led ground-up C#/SQL Server replacement of a legacy regulatory document management platform.',
+      'Built CSAS (access management), RIM (tag-based CMS), and KC Portal (dynamic internal link portal).',
+      'Managed full QA lifecycle; facilitated user acceptance testing and training sessions.',
+    ]},
+  ],
+
+  projects: [
+    {name:'Tutor', desc:'AI-powered adaptive learning platform (C#/.NET MAUI). Full RAG pipeline with LSH/SimHash concept matching, force-layout knowledge graphs, and an evolving textbook that retroactively layers new knowledge into earlier chapters. Adaptive quizzes, live news injection, user progress tracking. Cross-platform.'},
+    {name:'IdiotProof', desc:'Autonomous AI trading system (C#/.NET 10) with custom DSL (IdiotScript), genetic algorithm optimizer, and neural network weight learning. Dual ML methods self-calibrate per-ticker indicator weights. Live IBKR order execution with comprehensive backtesting.'},
+    {name:'Ahab', desc:'Full-featured algorithmic trading platform (C#/.NET 8). Core engine, backtesting, broker integration, multi-strategy framework, and UI.'},
+    {name:'Gappy', desc:'Live gap-trading system (C#) connected to Interactive Brokers. Real-time indicator pipeline, modular strategy framework, GUI dashboard.'},
+    {name:'GridGame2026', desc:'Original grid-based strategy game in Unity with custom ShaderLab shaders and self-authored world lore. Active development since 2025.'},
+    {name:'ChatGPT_To_Claude', desc:'JavaScript migration tool exporting full ChatGPT conversation history into Claude Projects via the Anthropic API.'},
+  ],
+
+  education:[
+    {degree:'M.S. Information Security',school:'Southern New Hampshire University',dates:'In Progress',note:''},
+    {degree:'B.B.A. Computer Science',school:'Southern New Hampshire University',dates:'Graduated',note:'Summa Cum Laude'},
+  ],
+
+  patents:[
+    {title:'Hierarchical Navigation System (Bonsai Menu)',num:'US-9933917-B2',desc:'Novel hierarchical data navigation methodology eliminating depth limitations of traditional menus.'},
+    {title:'Gamified Training Platform',num:'US-9747636-B2',desc:'Associate training application implementing unique gamification mechanics for engagement and retention.'},
+    {title:'Datastrology — Force-Layout Visualization Engine',num:'Patent Pending',desc:'Data-agnostic multi-threaded force-layout visualization engine for mapping business entity relationships.'},
+  ],
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════════════════════════
+function tag(text) {
+  const tip = techTips[text]||'';
+  return `<span class="tag"${tip?` data-tip="${tip.replace(/"/g,'&quot;')}"`:''}>${text}</span>`;
+}
+
+function secHTML(label){ return `<div class="r-sec">${label}</div>`; }
+
+function expHTML(jobs){
+  return jobs.map(j=>`<div class="r-job">
+    <div class="r-job-header">
+      <div><span class="r-job-title">${j.title}</span><span style="color:var(--text3);margin:0 6px">·</span><span class="r-job-company">${j.company}</span></div>
+      <span class="r-job-dates">${j.dates}</span>
+    </div>
+    <div class="r-job-meta">${j.location}</div>
+    <div class="r-job-tech">${j.tech.map(tag).join('')}</div>
+    <ul class="r-job-bullets">${j.bullets.map(b=>`<li>${b}</li>`).join('')}</ul>
+  </div>`).join('');
+}
+
+function projHTML(projects){
+  return projects.map(p=>`<div class="r-project">
+    <span class="r-project-name">${p.name}</span>
+    <span style="color:var(--text3)"> — </span>
+    <span class="r-project-desc">${p.desc}</span>
+  </div>`).join('');
+}
+
+function eduHTML(){
+  return D.education.map(e=>`<div class="r-edu-row">
+    <div><span class="r-edu-degree">${e.degree}</span>
+    <span style="color:var(--text3);margin:0 8px">·</span>
+    <span class="r-edu-school">${e.school}</span>
+    ${e.note?`<span style="color:var(--text3);margin:0 8px">·</span><span class="r-edu-note">${e.note}</span>`:''}
+    </div><span class="r-edu-dates">${e.dates}</span>
+  </div>`).join('');
+}
+
+function patHTML(){
+  return D.patents.map(p=>`<div class="r-patent">
+    <span class="r-patent-title">${p.title}</span><span class="r-patent-num">(${p.num})</span>
+    <div class="r-patent-desc">${p.desc}</div>
+  </div>`).join('');
+}
+
+function skillsHTML(list){
+  return list.map(s=>`<div class="r-skill-row">
+    <span class="r-skill-label">${s.label}</span>
+    <div class="r-skill-tags">${s.items.map(tag).join('')}</div>
+  </div>`).join('');
+}
+
+function render(profile) {
+  const body = document.getElementById('resume-body');
+  if (profile === 'pitch') {
+    body.innerHTML = `
+      <div class="r-sec">Who I Am</div>
+      <div class="pitch-summary-box">
+        <p>${D.pitchSummary}</p>
+      </div>
+      <div class="pitch-highlights">
+        <div class="pitch-highlight"><div class="ph-title">Patents</div><div class="ph-body">3 patents — navigation UX, gamified training, force-layout visualization engine</div></div>
+        <div class="pitch-highlight"><div class="ph-title">Employer</div><div class="ph-body">Bank of America — 12+ years, Senior SWE, Fortune 500 scale</div></div>
+        <div class="pitch-highlight"><div class="ph-title">Currently Building</div><div class="ph-body">Tutor (RAG + knowledge graphs), IdiotProof (autonomous AI trading), GridGame2026</div></div>
+        <div class="pitch-highlight"><div class="ph-title">What I Want</div><div class="ph-body">Remote Principal / Staff IC — hands-on coding, no management track</div></div>
+      </div>
+      ${secHTML('Core Technologies')}
+      <div class="r-skill-tags" style="gap:5px;flex-wrap:wrap;display:flex;">
+        ${['C#','.NET','React','Angular','TypeScript','SQL Server','Elasticsearch','GraphQL','RAG pipelines','LLM integration','Genetic algorithms','Neural networks','Interactive Brokers API','Unity','ShaderLab','Azure','Docker'].map(tag).join('')}
+      </div>
+      ${secHTML('Select Achievements')}
+      <ul class="r-job-bullets">
+        <li><strong>Graphite</strong> — Real-time cross-SOR data unification across SQL, REST APIs, Elasticsearch, Excel. Bidirectional push/pull sync, no caching.</li>
+        <li><strong>Datastrology</strong> — Multi-threaded force-layout visualization engine. <em>Patent Pending.</em></li>
+        <li><strong>Trident</strong> — ML phishing correlation engine clustering multi-vector threat actors.</li>
+        <li><strong>Tutor</strong> — Full RAG pipeline, LSH/SimHash concept matching, force-layout knowledge graphs, retroactive knowledge layering.</li>
+        <li><strong>IdiotProof</strong> — Autonomous trading system with custom DSL, genetic optimizer, and live IBKR execution.</li>
+      </ul>
+      ${secHTML('Education')}
+      ${eduHTML()}
+      ${secHTML('Patents & Inventions')}
+      ${patHTML()}
+    `;
+  } else if (profile === 'complete') {
+    body.innerHTML = `
+      ${secHTML('Summary')}
+      <div class="r-summary">${D.summary}</div>
+      ${secHTML('Complete Technology Stack')}
+      ${skillsHTML(D.skillsComplete)}
+      ${secHTML('Professional Experience')}
+      ${expHTML(D.experience)}
+      ${secHTML('Personal Projects')}
+      ${projHTML(D.projects)}
+      ${secHTML('Education')}
+      ${eduHTML()}
+      ${secHTML('Patents & Inventions')}
+      ${patHTML()}
+    `;
+  } else {
+    body.innerHTML = `
+      ${secHTML('Summary')}
+      <div class="r-summary">${D.summary}</div>
+      ${secHTML('Core Skills')}
+      ${skillsHTML(D.skillsCore)}
+      ${secHTML('Professional Experience')}
+      ${expHTML(D.experience)}
+      ${secHTML('Personal Projects')}
+      ${projHTML(D.projects)}
+      ${secHTML('Education')}
+      ${eduHTML()}
+      ${secHTML('Patents & Inventions')}
+      ${patHTML()}
+    `;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PROFILE / THEME / FONT
+// ═══════════════════════════════════════════════════════════════════════════════
+let currentProfile = 'classic';
+let currentTheme = 'dark';
+let fxAnim = null;
+
+function setProfile(p) {
+  currentProfile = p;
+  render(p);
+  try{ localStorage.setItem('resume-profile',p); }catch(e){}
+}
+
+function setTheme(t) {
+  currentTheme = t;
+  document.documentElement.setAttribute('data-theme', t);
+  stopFX();
+  if (t==='spring')  startSpring();
+  else if(t==='summer') startSummer();
+  else if(t==='autumn') startAutumn();
+  else if(t==='winter') startWinter();
+  else if(t==='matrix') startMatrix();
+  else if(t==='horror') startHorror();
+  else if(t==='neko') startNeko();
+  try{ localStorage.setItem('resume-theme',t); }catch(e){}
+}
+
+function setFont(f) {
+  document.documentElement.style.setProperty('--font-resume', f);
+  document.getElementById('font-picker').style.fontFamily = f;
+  try{ localStorage.setItem('resume-font',f); }catch(e){}
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CANVAS FX
+// ═══════════════════════════════════════════════════════════════════════════════
+const canvas = document.getElementById('fx-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+function stopFX() {
+  if (fxAnim) { cancelAnimationFrame(fxAnim); fxAnim = null; }
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  particles = [];
+  stopHorror();
+  // Reset horror overlay when switching away
+  const overlay=document.getElementById('horror-overlay');
+  if(overlay) overlay.style.background='';
+}
+
+// ── SPRING: growing grass blades ──────────────────────────────────────────────
+function startSpring() {
+  const blades = Array.from({length:80},(_,i)=>({
+    x: (i/80)*canvas.width + Math.random()*20-10,
+    height: 20 + Math.random()*60,
+    maxH: 40 + Math.random()*80,
+    width: 2 + Math.random()*3,
+    color: `hsl(${110+Math.random()*30},${60+Math.random()*20}%,${30+Math.random()*20}%)`,
+    sway: Math.random()*Math.PI*2,
+    swaySpeed: 0.02 + Math.random()*0.02,
+    grown: 0,
+  }));
+  // Floating pollen dots
+  const pollen = Array.from({length:25},()=>({
+    x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+    r:1+Math.random()*2, vy:-0.3-Math.random()*0.4,
+    vx:(Math.random()-0.5)*0.5, alpha:0.4+Math.random()*0.4,
+  }));
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const base = canvas.height;
+    blades.forEach(b=>{
+      b.grown = Math.min(b.grown+0.3, b.maxH);
+      b.sway += b.swaySpeed;
+      const lean = Math.sin(b.sway)*8;
+      ctx.beginPath();
+      ctx.moveTo(b.x, base);
+      ctx.quadraticCurveTo(b.x+lean/2, base-b.grown*0.6, b.x+lean, base-b.grown);
+      ctx.lineWidth = b.width;
+      ctx.strokeStyle = b.color;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+    });
+    pollen.forEach(p=>{
+      p.y += p.vy; p.x += p.vx;
+      if(p.y<-10) { p.y=canvas.height+10; p.x=Math.random()*canvas.width; }
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle = `rgba(200,220,100,${p.alpha})`;
+      ctx.fill();
+    });
+    fxAnim = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── SUMMER: wandering bees that compete for flowers ───────────────────────────
+function startSummer() {
+  const W = ()=>canvas.width, H = ()=>canvas.height;
+  const FLOWER_DETECT = 120; // radius in which a bee notices a flower
+
+  // Flowers only spawn in left/right thirds (center is resume)
+  function flowerX() {
+    return Math.random()<0.5
+      ? 30 + Math.random()*(W()*0.28)          // left third
+      : W()*0.72 + Math.random()*(W()*0.28-30); // right third
+  }
+
+  const COLORS = ['#ff6b8a','#ff9f43','#ffd32a','#ff6348','#eccc68','#ff4757','#a29bfe','#fd79a8'];
+  const flowers = [];
+  function spawnFlower() {
+    flowers.push({
+      x: flowerX(), y: 60 + Math.random()*(H()-100),
+      r: 18+Math.random()*14,
+      color: COLORS[Math.floor(Math.random()*COLORS.length)],
+      alpha:0, phase:'fadein', age:0,
+      petalAngle:Math.random()*Math.PI,
+      claimedBy:null,  // bee reference that has claimed this flower
+    });
+  }
+  for(let i=0;i<7;i++) spawnFlower();
+
+  // Bees: wander randomly with smooth steering, detect flowers within range
+  const bees = Array.from({length:10},()=>{
+    const side = Math.random()<0.5;
+    return {
+      x: side ? Math.random()*W()*0.3 : W()*0.7+Math.random()*W()*0.3,
+      y: 60+Math.random()*(H()-80),
+      vx:(Math.random()-0.5)*2, vy:(Math.random()-0.5)*2,
+      // smooth wander via angle
+      angle:Math.random()*Math.PI*2,
+      speed:1.2+Math.random()*1.2,
+      wobble:0, wobbleS:0.13+Math.random()*0.1,
+      size:10+Math.random()*6,
+      wanderTimer:0,
+      state:'wander',  // wander | chase | land | onflower | liftoff
+      target:null, lx:0, ly:0, landTimer:0,
+    };
+  });
+
+  let fc=0;
+
+  function drawFlower(f) {
+    if(f.alpha<=0) return;
+    ctx.save(); ctx.globalAlpha=f.alpha;
+    const isHarvested = f.claimedBy && f.phase==='visited';
+    for(let i=0;i<6;i++){
+      const a=f.petalAngle+(i/6)*Math.PI*2;
+      ctx.beginPath();
+      ctx.ellipse(f.x+Math.cos(a)*f.r*0.65,f.y+Math.sin(a)*f.r*0.65,f.r*0.5,f.r*0.3,a,0,Math.PI*2);
+      ctx.fillStyle=isHarvested?'#ccc':f.color; ctx.fill();
+    }
+    ctx.beginPath(); ctx.arc(f.x,f.y,f.r*0.38,0,Math.PI*2);
+    ctx.fillStyle=isHarvested?'#aaa':'#fff176'; ctx.fill();
+    ctx.beginPath(); ctx.arc(f.x,f.y,f.r*0.22,0,Math.PI*2);
+    ctx.fillStyle=isHarvested?'#999':'#f9a825'; ctx.fill();
+    ctx.restore();
+  }
+
+  function drawBee(b,facing) {
+    ctx.save(); ctx.translate(b.x,b.y);
+    if(b.state==='onflower') ctx.translate(0,Math.sin(b.wobble*3)*2);
+    ctx.rotate(facing+Math.PI/2);
+    ctx.beginPath(); ctx.ellipse(0,0,b.size*0.45,b.size*0.7,0,0,Math.PI*2);
+    ctx.fillStyle='#f5c400'; ctx.fill();
+    [-4,-1,2].forEach(off=>{
+      ctx.beginPath(); ctx.fillStyle='rgba(20,10,0,0.75)';
+      ctx.ellipse(0,off*b.size*0.18,b.size*0.44,b.size*0.13,0,0,Math.PI*2);
+      ctx.fill();
+    });
+    const fs=b.state==='onflower'?1.5:5;
+    [[-1,-1],[1,-1]].forEach(([sx,sy])=>{
+      ctx.beginPath();
+      ctx.ellipse(sx*b.size*0.65,sy*b.size*0.2,b.size*0.55,b.size*0.28,Math.PI*0.18,0,Math.PI*2);
+      ctx.fillStyle=`rgba(200,240,255,${0.45+Math.sin(b.wobble*fs)*0.3})`; ctx.fill();
+    });
+    ctx.restore();
+  }
+
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    fc++;
+
+    // Spawn new flowers periodically in side thirds only
+    if(fc%200===0 && flowers.filter(f=>f.phase!=='done').length<9) spawnFlower();
+    // Clean up done flowers
+    for(let i=flowers.length-1;i>=0;i--) if(flowers[i].phase==='done') flowers.splice(i,1);
+
+    // Update flowers
+    flowers.forEach(f=>{
+      f.age++;
+      if(f.phase==='fadein')  { f.alpha=Math.min(1,f.alpha+0.012); if(f.alpha>=1){f.phase='bloom';} }
+      else if(f.phase==='bloom')  { if(f.age>400&&!f.claimedBy){ f.phase='fadeout'; } }
+      else if(f.phase==='visited'){ f.alpha=Math.max(0,f.alpha-0.005); if(f.alpha<=0) f.phase='done'; }
+      else if(f.phase==='fadeout'){ f.alpha=Math.max(0,f.alpha-0.007); if(f.alpha<=0) f.phase='done'; }
+      drawFlower(f);
+    });
+
+    // Update bees
+    bees.forEach(b=>{
+      b.wobble+=b.wobbleS;
+      const prevX=b.x, prevY=b.y;
+
+      if(b.state==='wander') {
+        // Smooth random steering
+        b.wanderTimer++;
+        if(b.wanderTimer>30+Math.random()*60) {
+          b.angle += (Math.random()-0.5)*1.2;
+          b.wanderTimer=0;
+          // Slightly bias toward side thirds
+          const inCenter = b.x>W()*0.3 && b.x<W()*0.7;
+          if(inCenter) b.angle += (b.x<W()*0.5 ? -0.3 : 0.3); // nudge outward
+        }
+        b.x += Math.cos(b.angle)*b.speed + Math.sin(b.wobble*1.5)*0.5;
+        b.y += Math.sin(b.angle)*b.speed + Math.cos(b.wobble*2.1)*0.5;
+        // Bounce off edges
+        if(b.x<20||b.x>W()-20){ b.angle=Math.PI-b.angle; b.x=Math.max(20,Math.min(W()-20,b.x)); }
+        if(b.y<20||b.y>H()-20){ b.angle=-b.angle; b.y=Math.max(20,Math.min(H()-20,b.y)); }
+
+        // Scan for unclaimed bloom flowers in range
+        const blooms=flowers.filter(f=>f.phase==='bloom'&&f.alpha>0.7&&!f.claimedBy);
+        let nearest=null, nearDist=Infinity;
+        blooms.forEach(f=>{ const d=Math.hypot(f.x-b.x,f.y-b.y); if(d<FLOWER_DETECT&&d<nearDist){nearDist=d;nearest=f;} });
+        if(nearest) {
+          // Claim it — first bee to detect wins
+          nearest.claimedBy=b;
+          b.target=nearest; b.state='chase';
+        }
+        drawBee(b, b.angle);
+
+      } else if(b.state==='chase') {
+        const tf=b.target;
+        // If flower was stolen or gone, go back to wandering
+        if(!tf||tf.phase==='done'||(tf.claimedBy&&tf.claimedBy!==b)) {
+          b.state='wander'; b.target=null;
+          return;
+        }
+        const dx=tf.x-b.x, dy=tf.y-b.y;
+        const dist=Math.hypot(dx,dy);
+        // Fly directly toward flower at higher speed
+        b.x+=dx/dist*2.8; b.y+=dy/dist*2.8;
+        b.angle=Math.atan2(dy,dx);
+        drawBee(b,b.angle);
+        if(dist<8) {
+          b.state='land'; b.lx=tf.x; b.ly=tf.y; b.landTimer=0;
+          tf.phase='visited';
+        }
+      } else if(b.state==='land') {
+        b.x=b.lx; b.y=b.ly; b.landTimer++;
+        drawBee(b,-Math.PI*0.5);
+        if(b.landTimer>140){ b.state='liftoff'; b.landTimer=0; }
+      } else if(b.state==='liftoff') {
+        b.y-=1.8; b.x+=(Math.random()-0.5)*0.8; b.landTimer++;
+        b.angle=-Math.PI*0.5+(Math.random()-0.5)*0.5;
+        drawBee(b,b.angle);
+        if(b.landTimer>80){ b.state='wander'; b.target=null; b.angle=Math.random()*Math.PI*2; }
+      }
+    });
+
+    fxAnim=requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── AUTUMN: falling leaves ────────────────────────────────────────────────────
+function startAutumn() {
+  const colors=['#c05c18','#e8762a','#d4380a','#f0943c','#8b3a10','#f5b942'];
+  const leaves = Array.from({length:40},()=>({
+    x:Math.random()*canvas.width, y:-40-Math.random()*canvas.height,
+    size:12+Math.random()*20, color:colors[Math.floor(Math.random()*colors.length)],
+    vx:(Math.random()-0.5)*1.5, vy:0.8+Math.random()*1.2,
+    rotation:Math.random()*Math.PI*2, rotSpeed:(Math.random()-0.5)*0.05,
+    swing:Math.random()*Math.PI*2, swingSpeed:0.03+Math.random()*0.03,
+  }));
+  function drawLeaf(l) {
+    ctx.save(); ctx.translate(l.x,l.y); ctx.rotate(l.rotation);
+    ctx.beginPath();
+    ctx.moveTo(0,-l.size);
+    ctx.bezierCurveTo(l.size*0.8,-l.size*0.5, l.size*0.9,l.size*0.2, 0,l.size*0.6);
+    ctx.bezierCurveTo(-l.size*0.9,l.size*0.2, -l.size*0.8,-l.size*0.5, 0,-l.size);
+    ctx.fillStyle=l.color; ctx.fill();
+    // stem
+    ctx.beginPath(); ctx.moveTo(0,l.size*0.6); ctx.lineTo(0,l.size);
+    ctx.strokeStyle='#8b4513'; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.restore();
+  }
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    leaves.forEach(l=>{
+      l.swing += l.swingSpeed;
+      l.x += l.vx + Math.sin(l.swing)*0.8;
+      l.y += l.vy;
+      l.rotation += l.rotSpeed;
+      if(l.y>canvas.height+40){ l.y=-40; l.x=Math.random()*canvas.width; }
+      drawLeaf(l);
+    });
+    fxAnim = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── WINTER: white snowflakes ──────────────────────────────────────────────────
+function startWinter() {
+  const flakes = Array.from({length:140},()=>({
+    x:Math.random()*canvas.width, y:Math.random()*canvas.height,
+    size:1.5+Math.random()*4.5, speed:0.4+Math.random()*1.4,
+    drift:Math.random()*Math.PI*2, driftSpeed:0.008+Math.random()*0.018,
+    alpha:0.55+Math.random()*0.45, spin:Math.random()*Math.PI*2,
+    spinSpeed:(Math.random()-0.5)*0.04,
+    arms: Math.random()>0.5, // some are star-shaped, some are dots
+  }));
+  function drawFlake(f) {
+    ctx.save(); ctx.translate(f.x,f.y); ctx.rotate(f.spin);
+    ctx.globalAlpha = f.alpha;
+    if (f.arms && f.size > 3) {
+      // 6-pointed snowflake
+      ctx.strokeStyle='#ffffff'; ctx.lineWidth=1.2;
+      for(let i=0;i<6;i++){
+        ctx.beginPath(); ctx.moveTo(0,0);
+        ctx.lineTo(0,-f.size*1.8);
+        // tiny cross arms
+        ctx.moveTo(-f.size*0.5,-f.size*0.9); ctx.lineTo(f.size*0.5,-f.size*0.9);
+        ctx.stroke(); ctx.rotate(Math.PI/3);
+      }
+    } else {
+      ctx.beginPath(); ctx.arc(0,0,f.size,0,Math.PI*2);
+      ctx.fillStyle='#ffffff'; ctx.fill();
+    }
+    ctx.globalAlpha=1; ctx.restore();
+  }
+  function draw() {
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    flakes.forEach(f=>{
+      f.drift += f.driftSpeed;
+      f.spin += f.spinSpeed;
+      f.x += Math.sin(f.drift)*0.6;
+      f.y += f.speed;
+      if(f.y>canvas.height+10){ f.y=-10; f.x=Math.random()*canvas.width; }
+      drawFlake(f);
+    });
+    fxAnim = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+
+// ── NEKO: classic cat chases cursor ──────────────────────────────────────────
+function startNeko() {
+  // All 32 sprites as base64 PNGs (extracted from nekojs live instance)
+  // State mapping: STOP=0, WASH=1, SCRATCH=2, YAWN=3, SLEEP=4, AWAKE=5
+  // U_MOVE=6, D_MOVE=7, L_MOVE=8, R_MOVE=9, UL_MOVE=10, UR_MOVE=11
+  // DL_MOVE=12, DR_MOVE=13, U_CLAW=14, D_CLAW=15 (2 frames each = 32 total)
+  const B = 'data:image/png;base64,';
+  const S = [
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABIklEQVR4nO1WSQ7EMAiDUf//ZeYwoguYLdVIPdSnqklsB0gI0QsMeQJntKAiQuPLG7ILRUQkIUTjqfinMMCI4KcBzUUcpYFsV0oQCTgEBi9TdFwNMB27bakYka455Vc9l4LISCYAB6xBK6zYAtI0b0akg5CvKkLMxpgv+p9hIx/COUsfTmv7s6CF01pKQZT7QU3siIoQ4pxjFWPmy/fUzCT87YvoZKbkn6SAu1XeFW9PMtjDcI6IMWd5BfwjorUidLdZMSZZb1g6BQTqYdghbxkISaMGldXEtAZaJwEczVu9oN2ikZEKlQERkfSBkTWmam1l4BJudNtlhsDa+6dg+CRrIe0FaDdTVBGLIiAqnIkreSZiOBxZtHKyZfh0L+a/eA6+YR662bT+YjsAAAAASUVORK5CYII=',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA40lEQVR4nO1XyxLDIAiUTv7/l+mhsfUBsogZM233ZkZ2F2SIUpoHN2uaIUGDWrHEXH8iEqlMfq9rboU7wpcRmPeBCpfiUrb527mHk1C1iIGu5Kv2wgauAnJW5rmr5EA/QAYERyNBl8b2CiA9QG1m1hoVhzacqEogVeTqQcSasEj6MRM2oCqCo9jUGUVVWRORqwLC1BS1hk04I57jmtGsYvskNA14s88oqxAyMDuE0NiRgW4AzcAaSPfvgZ83EOqDVfeBlDb+C0Qj74V+SYV5D6eBknjJw+T2Tfj9BqKAX0B/aHgCdIBeOO78F8UAAAAASUVORK5CYII=',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABDklEQVR4nO1Wyw4DIQiEpv//y/TQuEVXmBG3ySbtnFQQRuWhSh02zLViBG0anXwE1otUU1Oh8JE5907a2MxOzsf1yb7wIBmBzpiq3AOQ8GsNJdkgSkA2UGPJCYRJzZpgkBgRWJAFd+3d/mEWZDFq5SknFCCUzU2a7GWY30rqnGD8MDvIDiCsVKGz2k3yqF+GLWBF2YmjOd0f4sJvvF8AqhwJSjYqp6V0DJL8XHJagBN2c0WjI5xMVAmpyF1NWIF/HxjChN8rrAW5FbqBTIMxQixSHCUiVtJsJEBr0K0HBgPJXv/lHfC6FsY6mSSf7RqvkzZpn4oFhXkTaDAB2SHJz2JYJDaIBxQiYGcWFhWL0YoL3bDHnR5YA3V8fYAAAAASUVORK5CYII=',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABF0lEQVR4nO1WSw7DIAxEqHr/K9uLVIkQ82usJFUXnSUYPN8YY6LlQ8rLiXf2pZBrXJHHVOk3lDJXOgUn9wsgHRHsxmCAMUAeRlxQoAvQKVGBGMqxeIcQ0VNqghUhBjFVGYdM6ixFiT7AYnGNMgYRVDNBkHILiAv/JZuEfmcBaJKNBGQQGBpNIYAfpGqCRGADMLXCECQJAoSSEQCMTJuYIEAlIQE8FLDBVAUFECqIAlhpBQAPYACAgAgE0AACIC4AQAHpgAGAVgRBgBBqBIFALgFqAEqABNAFaABWAAI4BZgBVoAYgBLkAHYAI0AAUAAAAIAm0AQYoFAEAEAIABACAAMIAAAAAAAAAAAAAAAQA9AAAAAfqQlIAAAAABJRU5ErkJggg==',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABJ0lEQVR4nO1Wyw7CMAiGYfv/L7MXkygp5VJcTHrhxRiO9gOFUuqhSb8jfXLNRYRE5AOSxqjxcB8DMGdiswBOkDqIsSmAdwYQ8+j+RlVCCGMbMXyuHCwU1moJBiGKYSgkIDRbqChfEFFgAwQF6hnqBi7EeoBJjnM3xT8u3ABqSAAsVElVAqKVCWAoJKaKVCQAAFRIRNaGSBJKhVWYsAOQTAmEAoBRKyRORlhkGwHzBhGCIiwBNRUSNiISIBdQM3IDRQAiJBpOQHQQYQHxUNHQAQSUNBNQVJIVoMAUUAUFcBAAAAQYAUEHgDAoQAHGAFAIAQHAIUAMQZDAAdDoAyAIIAAAABAAAAAAAAAAAAAAAYAAAAdYFD4gAAAABJRU5ErkJggg==',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABEklEQVR4nO1WSw7DIAxEqHr/K9uLVIkQ82usJFUXnSUHPN8YY6LlQ8rLiXf2pZBrXJHHVOk3lDJXOgUn9wsgHRHsxmCAMUAeRlxQoAvQKVGBGMqxeIcQ0VNqghUhBjFVGYdM6ixFiT7AYnGNMgYRVDNBkHILiAv/JZuEfmcBaJKNBGQQGBpNIYAfpGqCRGADMLXCECQJAoSSEQCMTJuYIEAlIQE8FLDBVAUFECqIAlhpBQAPYACAgAgE0AACIC4AQAHpgAGAVgRBgBBqBIFALgFqAEqABNAFaABWAAI4BZgBVoAYgBLkAHYAI0AAUAAAAIAm0AQYoFAEAEAIABACAAMIAAAAAAAAAAAAAAAQA9AAAAAfqQlIAAAAABJRU5ErkJggg==',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABDklEQVR4nO2WSxLDIAxDUaf3v7K7aEKJI/8I7abRMjHWsw0Mrf27kIiRYvwSgG4q8vEHDuFLYFgSGU3pIlDvKaCwA6cfBtwGVYaIFtBRmMkmILxgyRpfgXBHUDVXEMxD9LeHleSqOVlPN7cJ4CWPlDUvA4iICwGgZF4G8CCYuYiEoywDMBmVp2QBIDvvq1rSASZdgDodvV1fA8jqWV2g571X5px/SzIFcMpiGLIToYTWfjgCa1N7AKeTYLU/o9mbMH0coxtS7ZUenHoT6qr321BXFcCivTfeISizCQEgfKYNtCzBCHHQ1Cmwqnc6Yramct/2Loxmuu3qe5i/BLAbkFm7r55VAGPymbW3blG9AHEphjo0CJF9AAAAAElFTkSuQmCC',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA80lEQVR4nO2WwRLDIAhEoZP//2V6qHZMdHGRNL24M7kosi+IjiI5WfmW9cqYm5mYWQV5HOAWbYC/AxzBeK/Z2jllE9KBUrqeSqpK52a3gDYvwSLk0WQAQuZRiBnAknkEInwKyv7S8zOIEICqiplBiNl8FACWf2RSzVG8gCrQFfAMGECk5ZuwNYnALQF4BuhP2SpEr+LOJCtUgXxmMi8C+FzmgePkqcnTJYQVqM+tEYR3D4zGvKeb24Q/qEAnCFAXZRutrkcQXg98V1y3ooXyxi/wp5zt4EynLExFBn8LfUIvom4AVCKSP9Nlo1Lc07VbW0/qDae6gB08t42YAAAAAElFTkSuQmCC',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABJ0lEQVR4nOWW2xLDIAhEl0z//5fpQ6NFJCAa04cy0+klsnsELwX+PWhgDN+gMZ3MzK0/EZUH9fMKhJfIygQaRkMltMNB7BlKU2vM+WwI4GUZn8mdsq6GNfOMuQUQJnpVmYkCoFVNkMg8O3sAOKS4MGAhuDUqgFxUo2WW44iofE/1qACQhJDiRJSqRBZCK4fbzxT5zr75TejLh43ngTa6Slhm+t0CFpVgr63hSbgaEtDaJeFdcJJsMQf6FnQan9zbtmM3kwiggmQh9OyvqjgKkIaIFmYVTQAInXsWJwDKVCArPhRbAK6u6scAMhCz+2toHWgA67jeVgHpA+c8mQWYPZy6PP2XLCvW9SG7RVdbQPo1UJlmzBNrwIVYacEyBPC7CmyP5sLx4g2TyYdbcQVdwQAAAABJRU5ErkJggg==',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABH0lEQVR4nOVX0RLCIAwrnv//y/EFbgVaGjp2emdedFLSUCCrIhzgfI7j7fs47uLFBpIAAAEwinLxjgiTYzQKGTclq6u8iIpLtcxBCwAgpZQp8USoYqqoZQ76DBjE03hVuqpGSgAaMYsdEadvwTYYmdhZfUdOnIFIgJnZE5S5CZSAJysQnYHSiPTqxpVaz0xyKkCUB6gfZqJh/KgAL+mS+BJ0xgm7B/4QHqlAzZmqQMhPOWHmFrCv5EhA2oRYEV+34p8UsNXTbcDkHQXoPYfI0t9DqLlur2j2hPrgNVvNGlHYQdn5n9gB2xu8+l77MFSjC3JatMWcfauUfs90POA3n96cCdH/Ao8g2ib65GZ8AEaJ01fllhHdTX4HT5nVH+IDSk+VHrQ/yTUAAAAASUVORK5CYII=',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABIUlEQVR4nO1Wyw7DIAxEU///ZXYRKRLhPbGnSHvqKTHYHmMMkfo4pL2ceGVfSriOK/KYKv2GUuZKp+DkXgGkI4LdGAwwBsjDiAsKdAE6JSowhmIsXiFE9JSaYEWIQUxVxiGTOktRog+wWFyjjEEE1UwQpNwC4sJ/ySahX1kAmWQjARkEhkZTCOAHqZogEdgADK1wBEkCQKEkBAAjEybmCBAJSEBPBSwwVQEBRAqiAJYaQUAD2AAiIAIBNAAAiAuAEAB6YABgFYEQYAQagSBQC4BagBKgATQBWgAVgACOAWYAVaAGIAS5AB2ACNAAFAAAACAABJtAEGKBQBABACAAgADCAAAAAAAAAAAAAAACQA4AAAAAfqKAlgAAAABJRU5ErkJggg==',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABJ0lEQVR4nO1WSwrCQAxN1ft/2e5EKkJ+MxnFhbvMhGCeJCl1jqbS3eRKv6GUudIpOLlXAOmIYDcGA4wB8jDiggJdgE6JCsRQjsU7hIieUhOsCDGIqco4ZFJnKUr0ARaLa5QxiKCaCYKUW0Bc+C/ZJPQrCyCTbCQgg8DQaAoBfCNVEyQCG4ChFY4gSRQoJEkBAIzkmZgTQCQgAT0VsMBUBQUQKogCWGkFAA9gAIiACAXQAAIgLgBAAemAAYBWBEGAEGoEgUAuAWoASoAE0AVoAFYAAjgFmAFWgBiAEuQAdgAjQABQAAAAgAAQbQBBigUAQAQAgAEAIwAAAAAAAAAAAAAAAAkAOAAAAAfqxuoQAAAABJRU5ErkJggg==',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABQElEQVR4nO2WywrCMBCFk9//y+5EqkJ+MxnFhbvMhGCeJCl1jqbS3eRKv6GUudIpOLlXAOmIYDcGA4wB8jDiggJdgE6JCoxBjMU7hIieUhOsCDGIqco4ZFJnKUr0ARaLa5QxiKCaCYKUW0Bc+C/ZJPQrCyCTbCQgg8DQaAoBfCNVEyQCG4ChFY4gSRQoJEkBAIzkmZgTQCQgAT0VsMBUBQUQKogCWGkFAA9gAIiACAXQAAIgLgBAAemAAYBWBEGAEGoEgUAuAWoASoAE0AVoAFYAAjgFmAFWgBiAEuQAdgAjQABQAAAAgAAQbQBBigUAQAQAgAEAIwAAAAAAAAAAAAAAAAkAOAAAAAfqxuoQAAAABJRU5ErkJggg==',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABQElEQVR4nO2WywrCMBCFk77/y+5EqkJ+MxnFhbvMhGCeJCl1jqbS3eRKv6GUudIpOLlXAOmIYDcGA4wB8jDiggJdgE6JCoxBjMU7hIieUhOsCDGIqco4ZFJnKUr0ARaLa5QxiKCaCYKUW0Bc+C/ZJPQrCyCTbCQgg8DQaAoBfCNVEyQCG4ChFY4gSRQoJEkBAIzkmZgTQCQgAT0VsMBUBQUQKogCWGkFAA9gAIiACAXQAAIgLgBAAemAAYBWBEGAEGoEgUAuAWoASoAE0AVoAFYAAjgFmAFWgBiAEuQAdgAjQABQAAAAgAAQbQBBigUAQAQAgAEAIwAAAAAAAAAAAAAAAAkAOAAAAAfqxuoQAAAABJRU5ErkJggg==',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABJ0lEQVR4nOWW2xLDIAhEl0z//5fpQ6NFJCAa04cy0+klsnsELwX+PWhgDN+gMZ3MzK0/EZUH9fMKhJfIygQaRkMltMNB7BlKU2vM+WwI4GUZn8mdsq6GNfOMuQUQJnpVmYkCoFVNkMg8O3sAOKS4MGAhuDUqgFxUo2WW44iofE/1qACQhJDiRJSqRBZCK4fbzxT5zr75TejLh43ngTa6Slhm+t0CFpVgr63hSbgaEtDaJeFdcJJsMQf6FnQan9zbtmM3kwiggmQh9OyvqjgKkIaIFmYVTQAInXsWJwDKVCArPhRbAK6u6scAMhCz+2toHWgA67jeVgHpA+c8mQWYPZy6PP2XLCvW9SG7RVdbQPo1UJlmzBNrwIVYacEyBPC7CmyP5sLx4g2TyYdbcQVdwQAAAABJRU5ErkJggg==',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABH0lEQVR4nOVX0RLCIAwrnv//y/EFbgVaGjp2emdedFLSUCCrIhzgfI7j7fs47uLFBpIAAAEwinLxjgiTYzQKGTclq6u8iIpLtcxBCwAgpZQp8USoYqqoZQ76DBjE03hVuqpGSgAaMYsdEadvwTYYmdhZfUdOnIFIgJnZE5S5CZSAJysQnYHSiPTqxpVaz0xyKkCUB6gfZqJh/KgAL+mS+BJ0xgm7B/4QHqlAzZmqQMhPOWHmFrCv5EhA2oRYEV+34p8UsNXTbcDkHQXoPYfI0t9DqLlur2j2hPrgNVvNGlHYQdn5n9gB2xu8+l77MFSjC3JatMWcfauUfs90POA3n96cCdH/Ao8g2ib65GZ8AEaJ01fllhHdTX4HT5nVH+IDSk+VHrQ/yTUAAAAASUVORK5CYII=',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABJ0lEQVR4nOWW2xLDIAhEl0z//5fpQ6NFJCAa04cy0+klsnsELwX+PWhgDN+gMZ3MzK0/EZUH9fMKhJfIygQaRkMltMNB7BlKU2vM+WwI4GUZn8mdsq6GNfOMuQUQJnpVmYkCoFVNkMg8O3sAOKS4MGAhuDUqgFxUo2WW44iofE/1qACQhJDiRJSqRBZCK4fbzxT5zr75TejLh43ngTa6Slhm+t0CFpVgr63hSbgaEtDaJeFdcJJsMQf6FnQan9zbtmM3kwiggmQh9OyvqjgKkIaIFmYVTQAInXsWJwDKVCArPhRbAK6u6scAMhCz+2toHWgA67jeVgHpA+c8mQWYPZy6PP2XLCvW9SG7RVdbQPo1UJlmzBNrwIVYacEyBPC7CmyP5sLx4g2TyYdbcQVdwQAAAABJRU5ErkJggg==',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABH0lEQVR4nOVX0RLCIAwrnv//y/EFbgVaGjp2emdedFLSUCCrIhzgfI7j7fs47uLFBpIAAAEwinLxjgiTYzQKGTclq6u8iIpLtcxBCwAgpZQp8USoYqqoZQ76DBjE03hVuqpGSgAaMYsdEadvwTYYmdhZfUdOnIFIgJnZE5S5CZSAJysQnYHSiPTqxpVaz0xyKkCUB6gfZqJh/KgAL+mS+BJ0xgm7B/4QHqlAzZmqQMhPOWHmFrCv5EhA2oRYEV+34p8UsNXTbcDkHQXoPYfI0t9DqLlur2j2hPrgNVvNGlHYQdn5n9gB2xu8+l77MFSjC3JatMWcfauUfs90POA3n96cCdH/Ao8g2ib65GZ8AEaJ01fllhHdTX4HT5nVH+IDSk+VHrQ/yTUAAAAASUVORK5CYII=',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCklEQVR4nNWX4Q7DIAiEYdn7vzL7MW3QgnLIlvSSJUus3KcopUQPlrTfkV5ZcxEhEekgaTFq3NzHIMyZWCmAC6QKIpsCbobHeoPP7/Ktx0OEyDJu274MHExJNAWQeZtAFLghEQDYHIHYAaTNoxDwLdidfvR2QADMTCLimuzGUQB32yyTbo7GswCEVK3vRgEDE7DPU2dhCDID6JfMFSxq4j2n/8+Hck7Wcttn6TTsxg0x0b0UezNMsGBKlhTZl1GZngmwqgN/AahUGKCqAUkDaOnT713F6n7ArfGJ+z8IaslmCG8n6LvyUJFAe8LBwFhp2PgUQBt2pToXuB+oVhSAsx8eVQAZ/aZwVOsDqwuPItm/Ur4AAAAASUVORK5CYII=',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCklEQVR4nO2WSw7DMAhEcdX7X9ldJFQO5jfYirLISFmkJcOTwcZEr3D189miT4mg920gJQCGGEDuBxhBViAsgE7AEq+UpNmeh1drl5DGSfj/yfCIt3xxAMXcTF6B8IJUCC2ZAxtCbGlCUSZIywAMwUJhIIDI3CpHFaDJhNpyj+9ocqK4SVKNKEGS3ukg9UyQdVf6YBvABcI0KkIgLTsRJLo/9P8CANKsAjSpeg70lb0/ClkBNfn5QxkARU81I+KdKUFqzhuTMvw2KsF4BqhGzoiW38LbZFpuLVn2/LfOBWgXrDQbW5Aoi1uC7A2IY71blPThsphXMivxmAiZhNawcgGS+l9UgfhXz9EPsSqlDRy22m8AAAAASUVORK5CYII=',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCUlEQVR4nO2W0a7EIAhAnZv9/1/2vpRdtB0YXLtPnaRJExEPKGhrjx5p6se3XX8yQe+bQEoADDGA3A8wgqxAWACdgCVeKUmzPQ+vrlZBGifh/yfDId7xxQEUczN5BcILUiG0ZA5sCLGlCUWZIC0DMKRkgghiajGqZN0E7mYiVDYpqBdPHD6ZIsMRrAdHYJJIiJSSmkzXKXEAJxJpK9QcniOlgNZaTnTBfR1a4mqdQHNIDTkRqfD9f1fYCWJxJBQFP8S3CzHMPKuNAbZhOsGQaELJ3SfIZDK+VJbGZJVJDYVUhgASn/M1CXx8MoJCp03dNJWIbGwxBKUaRWZAKAHKZEIW0gqvK3BCIY09pEYvhJEgAAAABJRU5ErkJggg==',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA8ElEQVR4nO2WQRKDIAxFQzr3v3J3YVxByCerBjvdZlLIIy8JiJoeJH2O+GbNRYRE5AOSxqixuY8BmDOxUgAnSBVEtgS8MwCfR/s3qhJCGNuI4XPlYKGwVkswCFEMQyEBodmCIvQgBuwzAEEFg6X5gByMKdUEuoBCoCuJR+6DSOvKuSBNjY5lT5O6pCIjpirIR0lbOeqBGNHyh6gKsgSrX2RMFSBZFZzRamISqCJViBVFq0n4RVE3KBioR3yqVRiAcBUY4AQvqDaTXcjNO+i0lQFiMYpHy0KSaUVpkqn5BUpK5KmSOlFJb+R3GJWI2jAiS0Q9kHCaiFCAAAAAgAAAAAAAAAAAAAAAQAnQAAAACXRSTlMAAAAAAAAAAAAAAAAAAAAAAA7YvHQAAAAASUVORK5CYII=',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCUlEQVR4nO2W0a7EIAhAnZv9/1/2vpRdtB0YXLtPnaRJExEPKGhrjx5p6se3XX8yQe+bQEoADDGA3A8wgqxAWACdgCVeKUmzPQ+vrlZBGifh/yfDId7xxQEUczN5BcILUiG0ZA5sCLGlCUWZIC0DMKRkgghiajGqZN0E7mYiVDYpqBdPHD6ZIsMRrAdHYJJIiJSSmkzXKXEAJxJpK9QcniOlgNZaTnTBfR1a4mqdQHNIDTkRqfD9f1fYCWJxJBQFP8S3CzHMPKuNAbZhOsGQaELJ3SfIZDK+VJbGZJVJDYVUhgASn/M1CXx8MoJCp03dNJWIbGwxBKUaRWZAKAHKZEIW0gqvK3BCIY09pEYvhJEgAAAABJRU5ErkJggg==',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAA8ElEQVR4nO2WQRKDIAxFQzr3v3J3YVxByCerBjvdZlLIIy8JiJoeJH2O+GbNRYRE5AOSxqixuY8BmDOxUgAnSBVEtgS8MwCfR/s3qhJCGNuI4XPlYKGwVkswCFEMQyEBodmCIvQgBuwzAEEFg6X5gByMKdUEuoBCoCuJR+6DSOvKuSBNjY5lT5O6pCIjpirIR0lbOeqBGNHyh6gKsgSrX2RMFSBZFZzRamISqCJViBVFq0n4RVE3KBioR3yqVRiAcBUY4AQvqDaTXcjNO+i0lQFiMYpHy0KSaUVpkqn5BUpK5KmSOlFJb+R3GJWI2jAiS0Q9kHCaiFCAAAAAgAAAAAAAAAAAAAAAQAnQAAAACXRSTlMAAAAAAAAAAAAAAAAAAAAAAA7YvHQAAAAASUVORK5CYII=',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCklEQVR4nNWX4Q7DIAiEYdn7vzL7MW3QgnLIlvSSJUus3KcopUQPlrTfkV5ZcxEhEekgaTFq3NzHIMyZWCmAC6QKIpsCbobHeoPP7/Ktx0OEyDJu274MHExJNAWQeZtAFLghEQDYHIHYAaTNoxDwLdidfvR2QADMTCLimuzGUQB32yyTbo7GswCEVK3vRgEDE7DPU2dhCDID6JfMFSxq4j2n/8+Hck7Wcttn6TTsxg0x0b0UezNMsGBKlhTZl1GZngmwqgN/AahUGKCqAUkDaOnT713F6n7ArfGJ+z8IaslmCG8n6LvyUJFAe8LBwFhp2PgUQBt2pToXuB+oVhSAsx8eVQAZ/aZwVOsDqwuPItm/Ur4AAAAASUVORK5CYII=',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCklEQVR4nO2WSw7DMAhEcdX7X9ldJFQO5jfYirLISFmkJcOTwcZEr3D189miT4mg920gJQCGGEDuBxhBViAsgE7AEq+UpNmeh1drl5DGSfj/yfCIt3xxAMXcTF6B8IJUCC2ZAxtCbGlCUSZIywAMwUJhIIDI3CpHFaDJhNpyj+9ocqK4SVKNKEGS3ukg9UyQdVf6YBvABcI0KkIgLTsRJLo/9P8CANKsAjSpeg70lb0/ClkBNfn5QxkARU81I+KdKUFqzhuTMvw2KsF4BqhGzoiW38LbZFpuLVn2/LfOBWgXrDQbW5Aoi1uC7A2IY71blPThsphXMivxmAiZhNawcgGS+l9UgfhXz9EPsSqlDRy22m8AAAAASUVORK5CYII=',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCklEQVR4nNWX4Q7DIAiEYdn7vzL7MW3QgnLIlvSSJUus3KcopUQPlrTfkV5ZcxEhEekgaTFq3NzHIMyZWCmAC6QKIpsCbobHeoPP7/Ktx0OEyDJu274MHExJNAWQeZtAFLghEQDYHIHYAaTNoxDwLdidfvR2QADMTCLimuzGUQB32yyTbo7GswCEVK3vRgEDE7DPU2dhCDID6JfMFSxq4j2n/8+Hck7Wcttn6TTsxg0x0b0UezNMsGBKlhTZl1GZngmwqgN/AahUGKCqAUkDaOnT713F6n7ArfGJ+z8IaslmCG8n6LvyUJFAe8LBwFhp2PgUQBt2pToXuB+oVhSAsx8eVQAZ/aZwVOsDqwuPItm/Ur4AAAAASUVORK5CYII=',
+    B+'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABCklEQVR4nO2WSw7DMAhEcdX7X9ldJFQO5jfYirLISFmkJcOTwcZEr3D189miT4mg920gJQCGGEDuBxhBViAsgE7AEq+UpNmeh1drl5DGSfj/yfCIt3xxAMXcTF6B8IJUCC2ZAxtCbGlCUSZIywAMwUJhIIDI3CpHFaDJhNpyj+9ocqK4SVKNKEGS3ukg9UyQdVf6YBvABcI0KkIgLTsRJLo/9P8CANKsAjSpeg70lb0/ClkBNfn5QxkARU81I+KdKUFqzhuTMvw2KsF4BqhGzoiW38LbZFpuLVn2/LfOBWgXrDQbW5Aoi1uC7A2IY71blPThsphXMivxmAiZhNawcgGS+l9UgfhXz9EPsSqlDRy22m8AAAAASUVORK5CYII=',
+  ];
+
+  // State frame pairs: [frame1, frame2]
+  // STOP=0,WASH=1,SCRATCH=2,YAWN=3,SLEEP=4,AWAKE=5
+  // U=6,D=7,L=8,R=9,UL=10,UR=11,DL=12,DR=13,U_CLAW=14,D_CLAW=15
+  const FRAMES = {
+    stop:[0,0], wash:[1,2], scratch:[3,4], yawn:[5,0], sleep:[6,7],
+    awake:[0,0], u:[8,9], d:[10,11], l:[12,13], r:[14,15],
+    ul:[16,17], ur:[18,19], dl:[20,21], dr:[22,23],
+    uclaw:[24,25], dclaw:[26,27], lclaw:[28,29], rclaw:[30,31],
+  };
+
+  const SIZE = 40;
+  const SPEED = 4;
+  const IDLE_TICKS = 60;
+  const SLEEP_TICKS = 200;
+
+  let nx = window.innerWidth/2, ny = window.innerHeight/2;
+  let mx = nx, my = ny;
+  let frame = 0, tick = 0, idle = 0, sleeping = false;
+  let state = 'stop', animTick = 0;
+
+  // Create neko element
+  const el = document.createElement('div');
+  el.id = 'neko-el';
+  el.style.cssText = `position:fixed;z-index:9999;width:${SIZE}px;height:${SIZE}px;
+    image-rendering:pixelated;pointer-events:none;
+    left:${nx}px;top:${ny}px;transform:translate(-50%,-50%);
+    transition:none;`;
+  const img = document.createElement('img');
+  img.style.cssText = `width:100%;height:100%;image-rendering:pixelated;`;
+  el.appendChild(img);
+  document.body.appendChild(el);
+
+  function setSprite(state, f) {
+    const pair = FRAMES[state] || FRAMES.stop;
+    img.src = S[pair[f % 2]];
+  }
+
+  function onMouseMove(e) {
+    mx = e.clientX; my = e.clientY;
+    if(sleeping){ sleeping=false; idle=0; }
+  }
+  document.addEventListener('mousemove', onMouseMove);
+
+  let nekoInterval = setInterval(() => {
+    if(document.documentElement.getAttribute('data-theme') !== 'neko'){
+      clearInterval(nekoInterval);
+      document.removeEventListener('mousemove', onMouseMove);
+      el.remove();
+      return;
+    }
+
+    animTick++;
+    const dx = mx - nx, dy = my - ny;
+    const dist = Math.sqrt(dx*dx + dy*dy);
+
+    if(dist < 8) {
+      // Near cursor — idle
+      idle++;
+      if(idle < IDLE_TICKS) {
+        state = 'stop'; setSprite('stop', 0);
+      } else if(idle < IDLE_TICKS + 30) {
+        state = 'wash'; setSprite('wash', animTick);
+      } else if(idle < IDLE_TICKS + 60) {
+        state = 'scratch'; setSprite('scratch', animTick);
+      } else if(idle < IDLE_TICKS + 80) {
+        state = 'yawn'; setSprite('yawn', 0);
+      } else {
+        sleeping = true; state = 'sleep'; setSprite('sleep', animTick);
+      }
+    } else {
+      // Chase cursor
+      idle = 0; sleeping = false;
+      const angle = Math.atan2(dy, dx);
+      const deg = angle * 180 / Math.PI;
+
+      // Pick movement sprite based on direction
+      let moveState;
+      if     (deg > -22.5  && deg <= 22.5)  moveState = 'r';
+      else if(deg > 22.5   && deg <= 67.5)  moveState = 'dr';
+      else if(deg > 67.5   && deg <= 112.5) moveState = 'd';
+      else if(deg > 112.5  && deg <= 157.5) moveState = 'dl';
+      else if(deg > 157.5  || deg <= -157.5)moveState = 'l';
+      else if(deg > -157.5 && deg <= -112.5)moveState = 'ul';
+      else if(deg > -112.5 && deg <= -67.5) moveState = 'u';
+      else                                   moveState = 'ur';
+
+      state = moveState;
+      setSprite(moveState, animTick);
+
+      const step = Math.min(SPEED, dist);
+      nx += (dx/dist)*step;
+      ny += (dy/dist)*step;
+
+      // Keep within viewport
+      nx = Math.max(SIZE/2, Math.min(window.innerWidth-SIZE/2, nx));
+      ny = Math.max(SIZE/2, Math.min(window.innerHeight-SIZE/2, ny));
+    }
+
+    el.style.left = nx + 'px';
+    el.style.top  = ny + 'px';
+  }, 1000/16); // ~16fps like original
+}
+
+// ── SURVIVAL HORROR: flashlight + ambient flicker ────────────────────────────
+let horrorMX=window.innerWidth/2, horrorMY=window.innerHeight/2;
+let horrorHandlers=null;
+function startHorror() {
+  const overlay=document.getElementById('horror-overlay');
+  const cursor=document.getElementById('horror-cursor');
+  let flicker=0;
+
+  function onMove(e) {
+    const x=e.clientX||e.touches?.[0]?.clientX||horrorMX;
+    const y=e.clientY||e.touches?.[0]?.clientY||horrorMY;
+    horrorMX=x; horrorMY=y;
+    cursor.style.left=x+'px'; cursor.style.top=y+'px';
+    updateOverlay();
+  }
+  function updateOverlay() {
+    flicker+=0.08;
+    // Radius breathes slightly for that unstable flashlight feel
+    const r = 130 + Math.sin(flicker)*8 + (Math.random()-0.5)*6;
+    overlay.style.background=`radial-gradient(circle ${r}px at ${horrorMX}px ${horrorMY}px,
+      transparent 0%,
+      rgba(0,0,0,0.08) 55%,
+      rgba(0,0,0,0.65) 82%,
+      rgba(0,0,0,0.97) 100%)`;
+    cursor.style.left=horrorMX+'px';
+    cursor.style.top=horrorMY+'px';
+  }
+
+  // Ambient flicker loop
+  function flickerLoop() {
+    if(document.documentElement.getAttribute('data-theme')!=='horror') return;
+    updateOverlay();
+    fxAnim=requestAnimationFrame(flickerLoop);
+  }
+
+  document.addEventListener('mousemove',onMove);
+  document.addEventListener('touchmove',onMove);
+  horrorHandlers={onMove};
+  flickerLoop();
+}
+function stopHorror() {
+  if(horrorHandlers) {
+    document.removeEventListener('mousemove',horrorHandlers.onMove);
+    document.removeEventListener('touchmove',horrorHandlers.onMove);
+    horrorHandlers=null;
+  }
+}
+function startMatrix() {
+  const cols = Math.floor(canvas.width/16);
+  const drops = Array.from({length:cols},()=>Math.random()*-50);
+  const chars='アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホ01アイウエオ';
+  function draw() {
+    ctx.fillStyle='rgba(0,0,0,0.05)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    drops.forEach((y,i)=>{
+      const ch = chars[Math.floor(Math.random()*chars.length)];
+      const x = i*16;
+      // bright leading char
+      ctx.fillStyle='#aaffaa'; ctx.font='bold 14px monospace';
+      ctx.fillText(ch,x,y*16);
+      // trail
+      ctx.fillStyle='#00cc33'; ctx.font='13px monospace';
+      ctx.fillText(chars[Math.floor(Math.random()*chars.length)],x,(y-1)*16);
+      ctx.fillStyle='rgba(0,180,40,0.5)';
+      ctx.fillText(chars[Math.floor(Math.random()*chars.length)],x,(y-2)*16);
+      if(y*16>canvas.height && Math.random()>0.975) drops[i]=0;
+      else drops[i]+=0.4;
+    });
+    fxAnim = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// EXPORT MENU
+// ═══════════════════════════════════════════════════════════════════════════════
+function toggleExportMenu() {
+  const menu = document.getElementById('export-menu');
+  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+document.addEventListener('click', e => {
+  if (!document.getElementById('export-wrap').contains(e.target)) {
+    document.getElementById('export-menu').style.display = 'none';
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// PDF EXPORT
+// ═══════════════════════════════════════════════════════════════════════════════
+function exportPDF() {
+  document.getElementById('export-menu').style.display='none';
+  const html = document.documentElement;
+  const wasTheme = currentTheme;
+  stopFX();
+  html.setAttribute('data-theme','light');
+  document.getElementById('toolbar').style.display='none';
+  setTimeout(()=>{
+    window.print();
+    setTimeout(()=>{
+      document.getElementById('toolbar').style.display='';
+      html.setAttribute('data-theme', wasTheme);
+      setTheme(wasTheme);
+    }, 600);
+  },120);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MARKDOWN EXPORT
+// ═══════════════════════════════════════════════════════════════════════════════
+function exportMD() {
+  document.getElementById('export-menu').style.display='none';
+  const h = D;
+  const skills = currentProfile === 'complete' ? h.skillsComplete : h.skillsCore;
+  let md = `# Ryan DeBraal\n\n`;
+  md += `**Principal Full-Stack Engineer · UI/UX · Security · Remote**\n\n`;
+  md += `ryandebraal@mindattic.com · github.com/mindattic · mindattic.com\n\n---\n\n`;
+
+  if (currentProfile === 'pitch') {
+    md += `## Who I Am\n\n${h.pitchSummary}\n\n`;
+    md += `## Key Facts\n\n`;
+    md += `- **Patents:** 3 — navigation UX, gamified training, force-layout visualization\n`;
+    md += `- **Employer:** Bank of America — 12+ years, Fortune 500 scale\n`;
+    md += `- **Building:** Tutor, IdiotProof, GridGame2026\n`;
+    md += `- **Looking for:** Remote Principal / Staff IC — hands-on coding\n\n`;
+  } else {
+    md += `## Summary\n\n${h.summary}\n\n`;
+  }
+
+  md += `## Core Skills\n\n`;
+  skills.forEach(s => { md += `**${s.label}:** ${s.items.join(', ')}\n\n`; });
+
+  md += `## Professional Experience\n\n`;
+  h.experience.forEach(j => {
+    md += `### ${j.title} · ${j.company}\n`;
+    md += `*${j.location} · ${j.dates}*\n\n`;
+    md += `**Tech:** ${j.tech.join(', ')}\n\n`;
+    j.bullets.forEach(b => {
+      const clean = b.replace(/<[^>]+>/g,'');
+      md += `- ${clean}\n`;
+    });
+    md += '\n';
+  });
+
+  md += `## Personal Projects\n\n`;
+  h.projects.forEach(p => { md += `**${p.name}** — ${p.desc}\n\n`; });
+
+  md += `## Education\n\n`;
+  h.education.forEach(e => {
+    md += `**${e.degree}** · ${e.school} · ${e.dates}${e.note ? ' · *'+e.note+'*' : ''}\n\n`;
+  });
+
+  md += `## Patents & Inventions\n\n`;
+  h.patents.forEach(p => { md += `**${p.title}** (${p.num}) — ${p.desc}\n\n`; });
+
+  download('RyanDeBraal_Resume.md', md, 'text/markdown');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DOCX EXPORT
+// ═══════════════════════════════════════════════════════════════════════════════
+async function exportDOCX() {
+  document.getElementById('export-menu').style.display='none';
+  const btn = document.getElementById('export-btn');
+  btn.textContent = 'Building...';
+
+  if (!window.docx) {
+    await loadScript('https://unpkg.com/docx@9.5.3/build/index.js');
+  }
+
+  const { Document, Packer, Paragraph, TextRun, AlignmentType, LevelFormat, BorderStyle, TabStopType } = window.docx;
+  const ACCENT = '1B4F8C', DARK = '1A1A2E', MID = '4A5568', RULE = '2C5F8A';
+
+  function rule(label) {
+    return new Paragraph({
+      spacing:{before:240,after:80},
+      border:{bottom:{style:BorderStyle.SINGLE,size:6,color:RULE,space:1}},
+      children:[new TextRun({text:label.toUpperCase(),bold:true,size:20,color:ACCENT,font:'Calibri',characterSpacing:60})]
+    });
+  }
+  function jobHdr(title,company,location,dates) {
+    return new Paragraph({
+      spacing:{before:180,after:40},
+      tabStops:[{type:TabStopType.RIGHT,position:9360}],
+      children:[
+        new TextRun({text:title,bold:true,size:22,font:'Calibri',color:DARK}),
+        new TextRun({text:'   ·   ',size:20,font:'Calibri',color:MID}),
+        new TextRun({text:company,bold:true,size:21,font:'Calibri',color:ACCENT}),
+        new TextRun({text:'   ·   '+location,size:19,font:'Calibri',color:MID}),
+        new TextRun({text:'\t'+dates,size:19,font:'Calibri',color:MID,italics:true}),
+      ]
+    });
+  }
+  function bul(text) {
+    const clean = text.replace(/<[^>]+>/g,'');
+    return new Paragraph({numbering:{reference:'bullets',level:0},spacing:{before:30,after:30},children:[new TextRun({text:clean,size:20,font:'Calibri',color:DARK})]});
+  }
+  function skillRow(label,value) {
+    return new Paragraph({spacing:{before:36,after:36},children:[
+      new TextRun({text:label+':  ',bold:true,size:20,font:'Calibri',color:DARK}),
+      new TextRun({text:value,size:20,font:'Calibri',color:MID}),
+    ]});
+  }
+  function sp(n=80){return new Paragraph({spacing:{before:n,after:0},children:[new TextRun('')]});}
+
+  const skills = currentProfile==='complete' ? D.skillsComplete : D.skillsCore;
+  const children = [
+    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:40},children:[new TextRun({text:'RYAN DeBRAAL',bold:true,size:52,font:'Calibri',color:DARK,characterSpacing:60})]}),
+    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:40},border:{bottom:{style:BorderStyle.SINGLE,size:4,color:ACCENT,space:6}},children:[new TextRun({text:'Principal Full-Stack Engineer  ·  UI/UX  ·  Security  ·  Remote',size:22,font:'Calibri',color:ACCENT})]}),
+    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:60,after:120},children:[new TextRun({text:'ryandebraal@mindattic.com   ·   github.com/mindattic   ·   mindattic.com',size:19,font:'Calibri',color:MID})]}),
+  ];
+
+  if(currentProfile==='pitch'){
+    children.push(rule('Who I Am'), sp(60));
+    children.push(new Paragraph({spacing:{before:0,after:0},children:[new TextRun({text:D.pitchSummary,size:20,font:'Calibri',color:DARK})]}));
+  } else {
+    children.push(rule('Summary'), sp(60));
+    children.push(new Paragraph({spacing:{before:0,after:0},children:[new TextRun({text:D.summary,size:20,font:'Calibri',color:DARK})]}));
+  }
+
+  children.push(sp(60), rule('Core Skills'), sp(60));
+  skills.forEach(s => children.push(skillRow(s.label, s.items.join(', '))));
+
+  children.push(sp(60), rule('Professional Experience'));
+  D.experience.forEach(j => {
+    children.push(sp(80));
+    children.push(jobHdr(j.title,j.company,j.location,j.dates));
+    new Paragraph({spacing:{before:0,after:60},children:[new TextRun({text:j.tech.join(' · '),size:18,font:'Calibri',color:MID,italics:true})]});
+    children.push(new Paragraph({spacing:{before:0,after:60},children:[new TextRun({text:j.tech.join(' · '),size:18,font:'Calibri',color:MID,italics:true})]}));
+    j.bullets.forEach(b => children.push(bul(b)));
+  });
+
+  children.push(sp(60), rule('Personal Projects'), sp(60));
+  D.projects.forEach(p => {
+    children.push(new Paragraph({spacing:{before:30,after:30},children:[
+      new TextRun({text:p.name+' — ',bold:true,size:20,font:'Calibri',color:DARK}),
+      new TextRun({text:p.desc,size:20,font:'Calibri',color:MID}),
+    ]}));
+  });
+
+  children.push(sp(60), rule('Education'), sp(60));
+  D.education.forEach(e => {
+    children.push(new Paragraph({spacing:{before:0,after:40},tabStops:[{type:TabStopType.RIGHT,position:9360}],children:[
+      new TextRun({text:e.degree,bold:true,size:22,font:'Calibri',color:DARK}),
+      new TextRun({text:'  ·  '+e.school,size:20,font:'Calibri',color:MID}),
+      new TextRun({text:'\t'+e.dates+(e.note?' · '+e.note:''),size:20,font:'Calibri',color:MID,italics:!!e.note}),
+    ]}));
+  });
+
+  children.push(sp(60), rule('Patents & Inventions'), sp(60));
+  D.patents.forEach(p => {
+    children.push(new Paragraph({spacing:{before:30,after:30},children:[
+      new TextRun({text:p.title,bold:true,size:20,font:'Calibri',color:DARK}),
+      new TextRun({text:' ('+p.num+') — ',size:19,font:'Calibri',color:ACCENT}),
+      new TextRun({text:p.desc,size:20,font:'Calibri',color:MID}),
+    ]}));
+  });
+
+  const doc = new Document({
+    numbering:{config:[{reference:'bullets',levels:[{level:0,format:LevelFormat.BULLET,text:'\u2022',alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:480,hanging:240}}}}]}]},
+    sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1080,right:1260,bottom:1080,left:1260}}},children}]
+  });
+
+  const blob = await Packer.toBlob(doc);
+  downloadBlob(blob,'RyanDeBraal_Resume.docx','application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+  btn.innerHTML = 'Export <svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor;margin-left:2px"><path d="M7 10l5 5 5-5z"/></svg>';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════════════════
+function download(filename, content, mime) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content],{type:mime}));
+  a.download = filename; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function downloadBlob(blob, filename, mime) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename; a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+function loadScript(src) {
+  return new Promise((resolve,reject)=>{
+    const s = document.createElement('script');
+    s.src=src; s.onload=resolve; s.onerror=reject;
+    document.head.appendChild(s);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════════════════════
+function init() {
+  let p='classic', t='light', f="'Outfit',system-ui,sans-serif";
+  try{ p=localStorage.getItem('resume-profile')||'classic'; }catch(e){}
+  try{ t=localStorage.getItem('resume-theme')||'light'; }catch(e){}
+  try{ f=localStorage.getItem('resume-font')||f; }catch(e){}
+
+  document.getElementById('profile-picker').value = p;
+  document.getElementById('theme-picker').value = t;
+  document.getElementById('font-picker').value = f;
+
+  render(p); currentProfile=p;
+  setFont(f);
+  setTheme(t);
+  initFontSize();
+}
+init();
+</script>
+</body>
+</html>
