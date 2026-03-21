@@ -2042,7 +2042,8 @@ function toggleNeko() {
   // Brief startle pause, then neko runs away
   setTimeout(() => {
     icon.style.visibility = 'hidden';
-    const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    // Use coarse pointer detection (actual phone/tablet) not just touch capability (touchscreen laptops)
+    const isMobile = window.matchMedia('(pointer: coarse)').matches && !window.matchMedia('(hover: hover)').matches;
     const behavior = isMobile ? BehaviorMode.RUN_AROUND_RANDOMLY : BehaviorMode.CHASE_MOUSE;
     nekoInstance = new Neko({ fps: 120, speed: 24, startX: startX, startY: startY, behaviorMode: behavior, allowBehaviorChange: false });
     nekoInstance.setSprites(NEKO_SPRITE_COUNT);
@@ -2052,13 +2053,6 @@ function toggleNeko() {
     nekoInstance.mouseX = window.innerWidth / 2 + (Math.random() - 0.5) * 200;
     nekoInstance.mouseY = window.innerHeight / 2 + (Math.random() - 0.5) * 200;
     nekoInstance.start();
-    console.log('SPAWN: x='+startX+' y='+startY+' mx='+Math.round(nekoInstance.mouseX)+' my='+Math.round(nekoInstance.mouseY)+' beh='+nekoInstance.behaviorMode+' state='+nekoInstance.state);
-    let _dc=0;
-    const _ot=nekoInstance.processOriginalTick.bind(nekoInstance);
-    nekoInstance.processOriginalTick=function(){
-      _ot();
-      if(_dc++<30) console.log('T'+_dc+': s='+nekoInstance.state+' mx='+Math.round(nekoInstance.mouseX)+' my='+Math.round(nekoInstance.mouseY)+' tx='+Math.round(nekoInstance.targetX)+' ty='+Math.round(nekoInstance.targetY)+' otx='+Math.round(nekoInstance.oldTargetX)+' oty='+Math.round(nekoInstance.oldTargetY)+' dx='+nekoInstance.moveDX+' dy='+nekoInstance.moveDY+' lx='+Math.round(nekoInstance.logicX)+' ly='+Math.round(nekoInstance.logicY)+' sc='+nekoInstance.stateCount+' beh='+nekoInstance.behaviorMode);
-    };
     // Disable bed click for 5 seconds after waking
     btn.style.pointerEvents = 'none';
     setTimeout(() => { btn.style.pointerEvents = ''; }, 5000);
