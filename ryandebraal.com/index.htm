@@ -1360,11 +1360,12 @@ const NEKO_SPRITE_COUNT = 32;
       // Previous logic position (for interpolation)
       this.prevLogicX = this.x;
       this.prevLogicY = this.y;
-      // Target tracking
+      // Target tracking — set oldTarget far away so first moveStart check is true
+      // This ensures neko immediately starts running toward mouse on spawn
       this.targetX = this.x;
       this.targetY = this.y;
-      this.oldTargetX = this.x;
-      this.oldTargetY = this.y;
+      this.oldTargetX = -99999;
+      this.oldTargetY = -99999;
       // Movement deltas (preserved like m_nDX, m_nDY in original)
       this.moveDX = 0;
       this.moveDY = 0;
