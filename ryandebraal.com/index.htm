@@ -1476,11 +1476,10 @@ const NEKO_SPRITE_COUNT = 32;
       this.logicY = this.y;
       this.prevLogicX = this.x;
       this.prevLogicY = this.y;
-      // Initialize target to current position (so no initial movement)
+      // Initialize target to current position but keep oldTarget far away
+      // so first moveStart check is true and neko starts running immediately
       this.targetX = this.x + SPRITE_SIZE / 2;
       this.targetY = this.y + SPRITE_SIZE - 1;
-      this.oldTargetX = this.targetX;
-      this.oldTargetY = this.targetY;
       this.updatePosition();
 
       // Animation loop
