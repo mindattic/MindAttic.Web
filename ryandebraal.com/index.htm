@@ -176,10 +176,21 @@ select.tb-sel:hover{border-color:var(--accent);}
 /* ── TAG ── */
 .tag{display:inline-flex;align-items:center;font-family:var(--font-resume);font-size:11px;padding:2px 9px;background:var(--tag-bg);color:var(--tag-text);border:1px solid var(--tag-border);border-radius:20px;cursor:default;transition:all 0.12s;position:relative;white-space:nowrap;}
 .tag:hover{background:var(--tag-hover-bg);color:var(--tag-hover-text);border-color:var(--tag-hover-bg);transform:translateY(-1px);z-index:20;}
-.tag-tooltip{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:11px;padding:8px 12px;border-radius:6px;pointer-events:none;z-index:999;font-family:var(--font-resume);width:280px;white-space:normal;line-height:1.5;box-shadow:0 4px 12px rgba(0,0,0,0.25);}
-.tag-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--text);}
+.tag-tooltip{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:11px;padding:8px 12px;border-radius:6px;pointer-events:auto;z-index:999;font-family:var(--font-resume);width:280px;white-space:normal;line-height:1.5;box-shadow:0 4px 12px rgba(0,0,0,0.25);}
+.tag-tooltip::after{content:'';position:absolute;top:100%;left:var(--tt-arrow-x,50%);transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--text);}
+.tag-tooltip.tt-below{bottom:auto;top:calc(100% + 8px);}
+.tag-tooltip.tt-below::after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:var(--text);}
+.tag-tooltip .tip-label{display:block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;opacity:0.55;margin-bottom:2px;}
 .tag-tooltip .tip-desc{display:block;font-weight:400;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid rgba(128,128,128,0.3);}
 .tag-tooltip .tip-ryan{display:block;font-style:italic;opacity:0.85;}
+.tag-tooltip .tip-bar{display:block;margin-top:7px;padding-top:7px;margin-bottom:0;padding-bottom:0;border-top:1px solid rgba(128,128,128,0.25);}
+.tip-bar-header{display:flex;justify-content:space-between;align-items:center;font-size:9px;opacity:0.75;margin-bottom:4px;letter-spacing:0.04em;}
+.tip-bar-header span:first-child{text-transform:uppercase;font-weight:600;}
+.tip-bar-level{cursor:pointer;font-weight:600;user-select:none;}
+.tip-bar-level:hover{opacity:1;}
+.tip-bar-track{display:block;flex:1;height:5px;background:rgba(128,128,128,0.2);border-radius:3px;overflow:hidden;}
+.tip-bar-fill{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#5b8dee 0%,#00c9a7 100%);}
+.tip-bar-pct{font-size:9px;opacity:0.65;white-space:nowrap;flex-shrink:0;}
 .tag:hover .tag-tooltip{display:block;}
 [data-theme="matrix"] .tag{text-shadow:0 0 8px currentColor;}
 
@@ -362,7 +373,7 @@ select.tb-sel:hover{border-color:var(--accent);}
   <button id="theme-swatch" onclick="cycleTheme()" title="Cycle theme" style="display:none;width:28px;height:28px;border-radius:5px;border:1px solid rgba(128,128,128,0.3);cursor:pointer;flex-shrink:0;padding:0;margin:0 2px;overflow:hidden;position:relative;"></button>
   <div class="tb-sep"></div>
   <div style="position:relative;display:inline-block;" id="more-wrap">
-    <button class="tb-btn" onclick="toggleMoreMenu()" id="more-btn" title="More options" style="padding:5px 10px;font-size:16px;font-weight:700;letter-spacing:1px;line-height:1;">…</button>
+    <button class="tb-btn" onclick="toggleMoreMenu()" id="more-btn" title="More options" style="padding:5px 10px;font-size:16px;font-weight:700;letter-spacing:1px;line-height:1;display:flex;align-items:center;justify-content:center;">…</button>
     <div id="more-menu" style="display: none; position: absolute; top: calc(100% + 4px); right: 0px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 16px; padding: 12px 14px; z-index: 999; white-space: nowrap;">
       <div class="tb-mobile-only" style="display:none;flex-direction:column;gap:8px;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:10px;">
         <div style="display:flex;align-items:center;gap:8px;width:100%;">
@@ -494,6 +505,7 @@ const SETTINGS_DEFAULTS = {
   snow_spread:2.5, snow_max_height:0.32, snow_flake_count:140,
   leaf_count:40,
   plant_grow_fast:0.3, plant_grow_slow:0.15,
+  skill_bar_fill_ms:500,
 };
 let AppSettings = Object.assign({}, SETTINGS_DEFAULTS);
 try {
@@ -989,6 +1001,22 @@ const tooltips = {
   'Sketch':'macOS vector design tool for UI/UX prototyping and design systems\n\nBank of America — GDS component library',
 };
 
+// ── SKILLS ──────────────────────────────────────────────────────────────────
+// Structured skill data: built from tooltips strings + persisted familiarity.
+// Shape: { [tagText]: { desc: string, impl: string, fam: number (10-100) } }
+// Edit skill metadata here — tooltip template in buildTooltip().
+const _savedFam = (() => { try { return JSON.parse(localStorage.getItem('tag-familiarity')||'{}'); } catch(e){ return {}; } })();
+const SKILLS = {};
+Object.entries(tooltips).forEach(([k, v]) => {
+  const [desc='', impl=''] = v.split('\n\n');
+  SKILLS[k] = { desc, impl, fam: _savedFam[k] !== undefined ? _savedFam[k] : 80 };
+});
+function saveSkillFam() {
+  const out = {};
+  Object.entries(SKILLS).forEach(([k,s]) => { if (s.fam !== 80) out[k] = s.fam; });
+  try { localStorage.setItem('tag-familiarity', JSON.stringify(out)); } catch(e) {}
+}
+
 const D = {
   summary: `Principal-level full-stack engineer with 20+ years architecting high-impact systems for Fortune 500 organizations. Inventor with three patents across UI innovation, security platforms, and data visualization. Depth across the entire stack — from pixel-perfect UI/UX and component library design to distributed backend architecture, multi-threaded data engines, and machine learning pipelines. Equally fluent designing systems and implementing them. Driven by craft: clean, self-documenting, performant code that solves hard problems elegantly. Currently completing an M.S. in Information Security (B.B.A. Computer Science, Summa Cum Laude).`,
 
@@ -1079,13 +1107,59 @@ const D = {
 // ║  RENDER ENGINE                                                              ║
 // ║  Template functions for resume sections, profile-based rendering            ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
+// ── SKILL TOOLTIP TEMPLATE ──────────────────────────────────────────────────
+// famLevel: maps 0-100 pct to one of 10 named tiers
+function famLevel(pct) {
+  if (pct <=  9) return 'Unaware';
+  if (pct <= 18) return 'Exposed';
+  if (pct <= 27) return 'Dabbled';
+  if (pct <= 36) return 'Novice';
+  if (pct <= 45) return 'Apprentice';
+  if (pct <= 54) return 'Familiar';
+  if (pct <= 63) return 'Competent';
+  if (pct <= 72) return 'Proficient';
+  if (pct <= 81) return 'Adept';
+  if (pct <= 90) return 'Expert';
+  return 'Mastery';
+}
+// buildTooltip: pure template — receives skill data, returns HTML string
+function buildTooltip(key) {
+  const s = SKILLS[key];
+  if (!s) return '';
+  const pct = s.fam;
+  const level = famLevel(pct);
+  const safeKey = key.replace(/'/g, "\\'");
+  const implBlock = s.impl
+    ? `<span class="tip-label">Experience</span><span class="tip-ryan">${s.impl}</span>`
+    : '';
+  return `<span class="tag-tooltip">`
+    + `<span class="tip-label">Overview</span><span class="tip-desc">${s.desc}</span>`
+    + implBlock
+    + `<span class="tip-bar">`
+    +   `<span class="tip-bar-header"><span>Familiarity</span>`
+    +   `<span class="tip-bar-level" onclick="cycleTagLevel(this,'${safeKey}')">${level} <span class="tip-bar-pct">(${pct}%)</span></span></span>`
+    +   `<span class="tip-bar-track"><span class="tip-bar-fill" style="width:${pct}%"></span></span>`
+    + `</span>`
+    + `</span>`;
+}
+// cycleTagLevel: advances fam for a skill, updates UI, persists to SKILLS + localStorage
+function cycleTagLevel(el, key) {
+  const s = SKILLS[key];
+  if (!s) return;
+  s.fam = s.fam >= 100 ? 10 : s.fam + 10;
+  saveSkillFam();
+  const bar = el.closest('.tip-bar');
+  if (!bar) return;
+  const pctSpan = el.querySelector('.tip-bar-pct');
+  el.firstChild.textContent = famLevel(s.fam) + ' ';
+  if (pctSpan) pctSpan.textContent = `(${s.fam}%)`;
+  const fill = bar.querySelector('.tip-bar-fill');
+  if (fill) fill.style.width = s.fam + '%';
+}
+// tag: minimal markup — tooltip injected lazily on first mouseenter
 function tag(text) {
-  const tip = tooltips[text]||'';
-  if (!tip) return `<span class="tag">${text}</span>`;
-  const parts = tip.split('\n\n');
-  const desc = parts[0]||'';
-  const ryan = parts[1]||'';
-  return `<span class="tag">${text}<span class="tag-tooltip"><span class="tip-desc">${desc}</span><span class="tip-ryan">${ryan}</span></span></span>`;
+  if (!SKILLS[text]) return `<span class="tag">${text}</span>`;
+  return `<span class="tag" data-skill="${text.replace(/"/g,'&quot;')}">${text}</span>`;
 }
 
 function secHTML(label){ return `<div class="r-sec">${label}</div>`; }
@@ -1138,7 +1212,7 @@ function render(profile) {
   const body = document.getElementById('resume-body');
   if (profile === 'pitch') {
     body.innerHTML = `
-      <div class="r-sec">Who I Am</div>
+      <div class="r-sec">Snapshot</div>
       <div class="pitch-summary-box">
         <p>${D.pitchSummary}</p>
       </div>
@@ -2879,7 +2953,7 @@ function exportMD() {
   md += `ryandebraal@mindattic.com · github.com/mindattic · linkedin.com/in/ryandebraal · mindattic.com · mindatticcares.com\n\n---\n\n`;
 
   if (currentProfile === 'pitch') {
-    md += `## Who I Am\n\n${h.pitchSummary}\n\n`;
+    md += `## Snapshot\n\n${h.pitchSummary}\n\n`;
     md += `## Key Facts\n\n`;
     md += `- **Patents:** 3 — navigation UX, gamified training, force-layout visualization\n`;
     md += `- **Employer:** Bank of America — 12+ years, Fortune 500 scale\n`;
@@ -3018,7 +3092,7 @@ async function exportDOCX() {
   ];
 
   if(currentProfile==='pitch'){
-    children.push(rule('Who I Am'), sp(60));
+    children.push(rule('Snapshot'), sp(60));
     children.push(new Paragraph({spacing:{before:0,after:0},children:[new TextRun({text:D.pitchSummary,size:20,font:'Calibri',color:DARK})]}));
   } else {
     children.push(rule('Summary'), sp(60));
@@ -3115,6 +3189,79 @@ function init() {
   setTheme(t);
   initFontSize();
   initNekoColor();
+
+  // Smart tooltip: lazily build from SKILLS on first hover, then position
+  document.addEventListener('mouseenter', function(e) {
+    const tagEl = e.target.closest('.tag');
+    if (!tagEl) return;
+    // Lazy inject tooltip on first hover
+    if (!tagEl.querySelector('.tag-tooltip')) {
+      const key = tagEl.dataset.skill;
+      if (key && SKILLS[key]) tagEl.insertAdjacentHTML('beforeend', buildTooltip(key));
+    }
+    const tt = tagEl.querySelector('.tag-tooltip');
+    if (!tt) return;
+    const TT_W = 280, TT_H = 170, MARGIN = 10;
+    const r = tagEl.getBoundingClientRect();
+    const vw = window.innerWidth;
+    // Reset to CSS defaults (centered above, arrow at 50%)
+    tt.classList.remove('tt-below');
+    tt.style.left = ''; tt.style.transform = '';
+    tt.style.removeProperty('--tt-arrow-x');
+    // Vertical: above by default, flip below only if not enough room above
+    if (r.top < TT_H + MARGIN) tt.classList.add('tt-below');
+    // Horizontal: default CSS (left:50% + translateX(-50%)) centers on tag perfectly.
+    // Only override when centered tooltip would overflow the viewport edge.
+    const tagCx = r.left + r.width / 2;
+    const idealLeft = tagCx - TT_W / 2;
+    const needsClamp = idealLeft < MARGIN || idealLeft + TT_W > vw - MARGIN;
+    if (needsClamp) {
+      const clampedLeft = Math.max(MARGIN, Math.min(idealLeft, vw - MARGIN - TT_W));
+      const parentLeft = (tagEl.offsetParent ? tagEl.offsetParent.getBoundingClientRect().left : 0);
+      tt.style.left = (clampedLeft - parentLeft) + 'px';
+      tt.style.transform = 'none';
+      // Arrow stays pointing at tag center regardless of tooltip shift
+      tt.style.setProperty('--tt-arrow-x', (tagCx - clampedLeft) + 'px');
+    }
+    // Lerp-based bar fill: starts fast (big gap), decelerates to a smooth stop
+    const fill = tt.querySelector('.tip-bar-fill');
+    const levelEl = tt.querySelector('.tip-bar-level');
+    if (fill && levelEl) {
+      if (tagEl._barRaf) { cancelAnimationFrame(tagEl._barRaf); tagEl._barRaf = null; }
+      const targetPct = parseFloat(fill.dataset.target || fill.style.width) || 80;
+      fill.dataset.target = targetPct; // persist across re-hovers
+      const ms = AppSettings.skill_bar_fill_ms || 500;
+      // lerpFactor per 60fps frame derived from desired feel-time
+      // decay = -ln(0.01) / (ms/1000 * 60) ≈ 4.6 / (ms/1000*60)
+      const decayPerFrame = 1 - Math.exp(-4.6 / (ms / 1000 * 60));
+      const pctSpan = levelEl.querySelector('.tip-bar-pct');
+      let cur = 0;
+      fill.style.width = '0%';
+      let lastTime = performance.now();
+      function frame(now) {
+        const dt60 = (now - lastTime) / (1000 / 60); // normalize to 60fps frames
+        lastTime = now;
+        const factor = 1 - Math.pow(1 - decayPerFrame, dt60);
+        cur += (targetPct - cur) * factor;
+        const done = Math.abs(targetPct - cur) < 0.05;
+        if (done) cur = targetPct;
+        fill.style.width = cur + '%';
+        const rounded = Math.round(cur);
+        const lvl = famLevel(rounded);
+        if (levelEl.firstChild) levelEl.firstChild.textContent = lvl + ' ';
+        if (pctSpan) pctSpan.textContent = '(' + rounded + '%)';
+        if (!done) tagEl._barRaf = requestAnimationFrame(frame);
+        else tagEl._barRaf = null;
+      }
+      tagEl._barRaf = requestAnimationFrame(frame);
+    }
+  }, true);
+
+  // Cancel bar lerp when mouse leaves tag
+  document.addEventListener('mouseleave', function(e) {
+    const tagEl = e.target.closest('.tag');
+    if (tagEl && tagEl._barRaf) { cancelAnimationFrame(tagEl._barRaf); tagEl._barRaf = null; }
+  }, true);
 }
 init();
 
@@ -3154,6 +3301,9 @@ const SETTINGS_SCHEMA = [
   { group: 'Spring / Grass', items: [
     { key:'plant_grow_fast',    label:'Grow Speed',              min:0.01, max:2.0,  step:0.01  },
     { key:'plant_grow_slow',    label:'Shrink Speed',            min:0.01, max:1.0,  step:0.01  },
+  ]},
+  { group: 'Skill Tags', items: [
+    { key:'skill_bar_fill_ms',  label:'Bar Fill Duration (ms)',  min:50,   max:1000, step:10    },
   ]},
 ];
 
@@ -3216,6 +3366,7 @@ Object.assign(window, {
   toggleExportMenu, exportPDF, exportMD, exportHTML, exportDOCX, printResume,
   toggleMoreMenu, toggleNeko, setNekoColor, openAvatarLightbox, closeAvatarLightbox,
   openSettings, closeSettings, resetAllSettings, onSettingSlider,
+  cycleTagLevel,
 });
 
 })(); // end ResumeApp
