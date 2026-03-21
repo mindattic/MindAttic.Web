@@ -1447,17 +1447,10 @@ const NEKO_SPRITE_COUNT = 32;
 
       document.body.appendChild(this.element);
 
-      // Track mouse position — ignore moves near spawn for 1s so neko
-      // doesn't think he's already at the target (user just clicked the bed)
-      this._spawnGuardUntil = Date.now() + 1000;
+      // Track mouse position
       this._mouseMoveHandler = (e) => {
-        if (Date.now() < this._spawnGuardUntil) {
-          const dx = e.clientX - this.x, dy = e.clientY - this.y;
-          if (Math.sqrt(dx*dx + dy*dy) < 50) return; // ignore if still near spawn
-        }
         this.mouseX = e.clientX;
         this.mouseY = e.clientY;
-        this.hasMouseMoved = true;
       };
       document.addEventListener("mousemove", this._mouseMoveHandler);
 
@@ -2051,7 +2044,7 @@ function toggleNeko() {
     icon.style.visibility = 'hidden';
     const isMobile = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     const behavior = isMobile ? BehaviorMode.RUN_AROUND_RANDOMLY : BehaviorMode.CHASE_MOUSE;
-    nekoInstance = new Neko({ fps: 120, speed: 24, startX: startX, startY: startY, behaviorMode: behavior });
+    nekoInstance = new Neko({ fps: 120, speed: 24, startX: startX, startY: startY, behaviorMode: behavior, allowBehaviorChange: false });
     nekoInstance.setSprites(NEKO_SPRITE_COUNT);
     nekoInstance.homeX = startX;
     nekoInstance.homeY = startY;
@@ -2059,12 +2052,13 @@ function toggleNeko() {
     nekoInstance.mouseX = window.innerWidth / 2 + (Math.random() - 0.5) * 200;
     nekoInstance.mouseY = window.innerHeight / 2 + (Math.random() - 0.5) * 200;
     nekoInstance.start();
-    // Force neko into a running state immediately — bypass STOP/AWAKE idle loop
-    const dx = nekoInstance.mouseX - startX;
-    const dy = nekoInstance.mouseY - startY;
-    nekoInstance.moveDX = Math.trunc(dx / Math.sqrt(dx*dx+dy*dy) * 24);
-    nekoInstance.moveDY = Math.trunc(dy / Math.sqrt(dx*dx+dy*dy) * 24);
-    nekoInstance.calcDirection(nekoInstance.moveDX, nekoInstance.moveDY);
+    console.log('SPAWN: x='+startX+' y='+startY+' mx='+Math.round(nekoInstance.mouseX)+' my='+Math.round(nekoInstance.mouseY)+' beh='+nekoInstance.behaviorMode+' state='+nekoInstance.state);
+    let _dc=0;
+    const _ot=nekoInstance.processOriginalTick.bind(nekoInstance);
+    nekoInstance.processOriginalTick=function(){
+      _ot();
+      if(_dc++<30) console.log('T'+_dc+': s='+nekoInstance.state+' mx='+Math.round(nekoInstance.mouseX)+' my='+Math.round(nekoInstance.mouseY)+' tx='+Math.round(nekoInstance.targetX)+' ty='+Math.round(nekoInstance.targetY)+' otx='+Math.round(nekoInstance.oldTargetX)+' oty='+Math.round(nekoInstance.oldTargetY)+' dx='+nekoInstance.moveDX+' dy='+nekoInstance.moveDY+' lx='+Math.round(nekoInstance.logicX)+' ly='+Math.round(nekoInstance.logicY)+' sc='+nekoInstance.stateCount+' beh='+nekoInstance.behaviorMode);
+    };
     // Disable bed click for 5 seconds after waking
     btn.style.pointerEvents = 'none';
     setTimeout(() => { btn.style.pointerEvents = ''; }, 5000);
