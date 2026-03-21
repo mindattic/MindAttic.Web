@@ -1360,11 +1360,10 @@ const NEKO_SPRITE_COUNT = 32;
       this.boundsWidth = document.documentElement.clientWidth - SPRITE_SIZE;
       this.boundsHeight = window.innerHeight - SPRITE_SIZE;
 
-      // Mouse tracking - null until first mouse event
-      // This prevents neko from running somewhere before user moves mouse
-      this.mouseX = null;
-      this.mouseY = null;
-      this.hasMouseMoved = false;
+      // Mouse tracking - initialize to screen center so neko has a target immediately
+      this.mouseX = window.innerWidth / 2;
+      this.mouseY = window.innerHeight / 2;
+      this.hasMouseMoved = true;
 
       // DOM element
       this.element = null;
@@ -1584,27 +1583,10 @@ const NEKO_SPRITE_COUNT = 32;
     }
 
     chaseMouse() {
-      // Don't chase until mouse has moved at least once
-      if (!this.hasMouseMoved) {
-        // Just idle in place - pass target that results in zero movement
-        this.runTowards(
-          this.logicX + SPRITE_SIZE / 2,
-          this.logicY + SPRITE_SIZE - 1
-        );
-        return;
-      }
       this.runTowards(this.mouseX, this.mouseY);
     }
 
     runAwayFromMouse() {
-      // Don't run away until mouse has moved
-      if (!this.hasMouseMoved) {
-        this.runTowards(
-          this.logicX + SPRITE_SIZE / 2,
-          this.logicY + SPRITE_SIZE - 1
-        );
-        return;
-      }
 
       // Original uses m_dwIdleSpace * 16 as the trigger distance
       const dwLimit = this.idleThreshold * 16;
