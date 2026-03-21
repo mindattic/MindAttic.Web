@@ -567,9 +567,13 @@ select.tb-sel:hover{border-color:var(--accent);}
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════════════════
-// DATA
-// ═══════════════════════════════════════════════════════════════════════════════
+;(function ResumeApp() {
+'use strict';
+
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  RESUME DATA                                                                ║
+// ║  Tech tooltips, resume content, skills, experience, projects, education     ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 const techTips = {
   'C#':'Primary language — 20+ years','React':'Hooks, Context, Router, modern patterns',
   'Angular':'Used at Bank of America','.NET / ASP.NET Core':'Full ecosystem expertise',
@@ -676,9 +680,10 @@ const D = {
   ],
 };
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// RENDER
-// ═══════════════════════════════════════════════════════════════════════════════
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  RENDER ENGINE                                                              ║
+// ║  Template functions for resume sections, profile-based rendering            ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 function tag(text) {
   const tip = techTips[text]||'';
   if (!tip) return `<span class="tag">${text}</span>`;
@@ -798,9 +803,10 @@ function render(profile) {
   }
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// PROFILE / THEME / FONT
-// ═══════════════════════════════════════════════════════════════════════════════
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  PROFILE / THEME / FONT                                                     ║
+// ║  User preference management with localStorage persistence                   ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 let currentProfile = 'classic';
 let currentTheme = 'dark';
 let fxAnim = null;
@@ -873,9 +879,10 @@ function resetDefaults() {
   document.getElementById('more-menu').style.display = 'none';
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// CANVAS FX
-// ═══════════════════════════════════════════════════════════════════════════════
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  CANVAS FX                                                                  ║
+// ║  Seasonal animations: Spring, Summer, Autumn, Winter, Matrix, Horror        ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 const canvas = document.getElementById('fx-canvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
@@ -1344,22 +1351,13 @@ function startWinter() {
 }
 
 
-// ── NEKO: classic cat chases cursor (based on Neko98 by David Harvey) ─────────
-// Full nekojs implementation with ico sprites as base64
-// https://github.com/louisabraham/nekojs (GPL v3)
-
-// Neko sprites now in CSS classes .neko-f0 through .neko-f31
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  NEKO                                                                       ║
+// ║  Classic desktop pet — based on Neko98 by David Harvey (1998)               ║
+// ║  JS implementation from nekojs by Louis Abraham (GPL v3)                    ║
+// ║  Sprites embedded as CSS classes .neko-f0 through .neko-f31                 ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 const NEKO_SPRITE_COUNT = 32;
-
-/**
- * Neko.js - A JavaScript implementation of the classic Neko desktop pet
- *
- * Based on Neko98 by David Harvey (1998)
- * Original Neko by Masayuki Koba
- *
- * This JavaScript implementation created by AI (Claude) from the original C++ source
- * Licensed under GPL v3 (see LICENSE.md)
- */
 
 (function () {
   "use strict";
@@ -2060,7 +2058,10 @@ const NEKO_SPRITE_COUNT = 32;
 })();
 
 
-// Neko color filters
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  NEKO COLORS & TOOLBAR INTEGRATION                                          ║
+// ║  Color filter palette, sleeping icon animation, wake/startle/dismiss        ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 const NEKO_COLORS = {
   orange:    'sepia(1) saturate(8) hue-rotate(345deg) brightness(0.85)',
   ginger:    'sepia(1) saturate(8) hue-rotate(355deg) brightness(0.95)',
@@ -2171,7 +2172,10 @@ function toggleNeko() {
   }, 100);
 }
 
-// ── SURVIVAL HORROR: flashlight + ambient flicker ────────────────────────────
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  HORROR & MATRIX THEMES                                                     ║
+// ║  Flashlight overlay effect, Matrix rain animation                           ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 let horrorMX=window.innerWidth/2, horrorMY=window.innerHeight/2;
 let horrorHandlers=null;
 function startHorror() {
@@ -2244,9 +2248,9 @@ function startMatrix() {
   draw();
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// EXPORT MENU
-// ═══════════════════════════════════════════════════════════════════════════════
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  EXPORT MENU                                                                ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 function toggleExportMenu() {
   const menu = document.getElementById('export-menu');
   menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
@@ -2258,9 +2262,9 @@ document.addEventListener('click', e => {
   }
 });
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// MORE MENU
-// ═══════════════════════════════════════════════════════════════════════════════
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  MORE MENU                                                                  ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 function toggleMoreMenu() {
   const menu = document.getElementById('more-menu');
   const btn = document.getElementById('more-btn');
@@ -2284,9 +2288,9 @@ document.addEventListener('click', e => {
   }
 });
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// PDF EXPORT
-// ═══════════════════════════════════════════════════════════════════════════════
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  PDF EXPORT                                                                 ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 function exportPDF() {
   document.getElementById('export-menu').style.display='none';
   const html = document.documentElement;
@@ -2304,9 +2308,9 @@ function exportPDF() {
   },120);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// MARKDOWN EXPORT
-// ═══════════════════════════════════════════════════════════════════════════════
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  MARKDOWN EXPORT                                                            ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 function exportMD() {
   document.getElementById('export-menu').style.display='none';
   const h = D;
@@ -2355,9 +2359,9 @@ function exportMD() {
   download('RyanDeBraal_Resume.md', md, 'text/markdown');
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// PRINT
-// ═══════════════════════════════════════════════════════════════════════════════
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  PRINT                                                                      ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 function printResume() {
   const html = document.documentElement;
   const wasTheme = currentTheme;
@@ -2374,9 +2378,9 @@ function printResume() {
   },120);
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// HTML EXPORT
-// ═══════════════════════════════════════════════════════════════════════════════
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  HTML EXPORT                                                                ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 function exportHTML() {
   document.getElementById('export-menu').style.display='none';
   // Clone the entire document and strip the toolbar
@@ -2400,9 +2404,9 @@ function exportHTML() {
   download('RyanDeBraal_Resume.html', htmlStr, 'text/html');
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// DOCX EXPORT
-// ═══════════════════════════════════════════════════════════════════════════════
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  DOCX EXPORT                                                                ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 async function exportDOCX() {
   document.getElementById('export-menu').style.display='none';
   const btn = document.getElementById('export-btn');
@@ -2510,9 +2514,9 @@ async function exportDOCX() {
   btn.innerHTML = 'Export <svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor;margin-left:2px"><path d="M7 10l5 5 5-5z"/></svg>';
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════════════════════════════════
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  HELPERS                                                                    ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 function download(filename, content, mime) {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([content],{type:mime}));
@@ -2533,9 +2537,9 @@ function loadScript(src) {
   });
 }
 
-// ═══════════════════════════════════════════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════════════════════════════════════════
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  INIT                                                                       ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
 function init() {
   let p='classic', t='light', f="'Outfit',system-ui,sans-serif";
   try{ p=localStorage.getItem('resume-profile')||'classic'; }catch(e){}
@@ -2564,6 +2568,18 @@ function closeAvatarLightbox() {
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeAvatarLightbox();
 });
+
+// ╔═══════════════════════════════════════════════════════════════════════════════╗
+// ║  GLOBAL EXPORTS                                                             ║
+// ║  Functions called from HTML onclick/onchange handlers                       ║
+// ╚═══════════════════════════════════════════════════════════════════════════════╝
+Object.assign(window, {
+  setProfile, setTheme, setFont, adjustFontSize, resetDefaults,
+  toggleExportMenu, exportPDF, exportMD, exportHTML, exportDOCX, printResume,
+  toggleMoreMenu, toggleNeko, setNekoColor, openAvatarLightbox, closeAvatarLightbox,
+});
+
+})(); // end ResumeApp
 </script>
 
 <!-- ── AVATAR LIGHTBOX ── -->
@@ -2572,4 +2588,25 @@ document.addEventListener('keydown', function(e) {
 </div>
 
 
+<!--
+╔═══════════════════════════════════════════════════════════════════════════════╗
+║  Licenses & Attribution                                                      ║
+╠═══════════════════════════════════════════════════════════════════════════════╣
+║                                                                              ║
+║  Neko.js — JavaScript Implementation                                         ║
+║  Based on Neko98 by David Harvey (1998), original Neko by Masayuki Koba      ║
+║  JS port from nekojs by Louis Abraham                                        ║
+║  https://github.com/louisabraham/nekojs/blob/main/LICENSE.md                 ║
+║  Licensed under GPL v3                                                       ║
+║                                                                              ║
+║  Google Fonts                                                                ║
+║  DM Serif Display, Outfit, DM Mono, Roboto, Lato                            ║
+║  Licensed under SIL Open Font License 1.1 / Apache License 2.0              ║
+║                                                                              ║
+║  docx.js (loaded on demand for DOCX export)                                  ║
+║  https://github.com/dolanmiu/docx                                           ║
+║  Licensed under MIT                                                          ║
+║                                                                              ║
+╚═══════════════════════════════════════════════════════════════════════════════╝
+-->
 </body></html>
