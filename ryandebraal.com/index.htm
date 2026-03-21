@@ -1208,7 +1208,7 @@ function startSummer() {
 function createAutumnLayer() {
   const colors=['#c05c18','#e8762a','#d4380a','#f0943c','#8b3a10','#f5b942'];
   const leaves = Array.from({length:40},()=>({
-    x:Math.random()*canvas.width, y:-40-Math.random()*canvas.height,
+    x:Math.random()*canvas.width, y:Math.random()*canvas.height*1.2-40,
     size:12+Math.random()*20, color:colors[Math.floor(Math.random()*colors.length)],
     vx:(Math.random()-0.5)*1.5, vy:0.8+Math.random()*1.2,
     rotation:Math.random()*Math.PI*2, rotSpeed:(Math.random()-0.5)*0.05,
