@@ -2056,10 +2056,15 @@ function toggleNeko() {
     nekoInstance.homeX = startX;
     nekoInstance.homeY = startY;
     // Force mouse target away from spawn so neko actually runs
-    // (user's real mouse is on the button they just clicked)
     nekoInstance.mouseX = window.innerWidth / 2 + (Math.random() - 0.5) * 200;
     nekoInstance.mouseY = window.innerHeight / 2 + (Math.random() - 0.5) * 200;
     nekoInstance.start();
+    // Force neko into a running state immediately — bypass STOP/AWAKE idle loop
+    const dx = nekoInstance.mouseX - startX;
+    const dy = nekoInstance.mouseY - startY;
+    nekoInstance.moveDX = Math.trunc(dx / Math.sqrt(dx*dx+dy*dy) * 24);
+    nekoInstance.moveDY = Math.trunc(dy / Math.sqrt(dx*dx+dy*dy) * 24);
+    nekoInstance.calcDirection(nekoInstance.moveDX, nekoInstance.moveDY);
     // Disable bed click for 5 seconds after waking
     btn.style.pointerEvents = 'none';
     setTimeout(() => { btn.style.pointerEvents = ''; }, 5000);
