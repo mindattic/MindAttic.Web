@@ -134,7 +134,7 @@ select.tb-sel:hover{border-color:var(--accent);}
 @media (orientation:portrait){#resume{background:color-mix(in srgb, var(--bg) 33%, transparent);} .tb-sep{display:none;} .tb-desktop{display:none!important;} .tb-mobile-only{display:flex!important;} #theme-swatch{display:block!important;} #profile-cycle-btn{display:flex!important;align-items:center;justify-content:center;}
 #theme-swatch{width:32px!important;height:28px!important;}
 #neko-btn{width:32px!important;height:28px!important;overflow:hidden;}
-#neko-btn #neko-icon{margin-top:-3px;}
+#neko-btn #neko-icon{margin-top:-5px;}
 #neko-btn #neko-bed{bottom:1px!important;}
 #more-btn{width:32px!important;height:28px!important;padding:0!important;justify-content:center!important;}}
 [data-theme="matrix"] #resume{border-color:#00ff41;box-shadow:0 0 30px rgba(0,255,65,0.15);}
@@ -310,23 +310,23 @@ select.tb-sel:hover{border-color:var(--accent);}
   <div class="tb-sep tb-desktop"></div>
   <span class="tb-label tb-desktop">Profile</span>
   <select class="tb-sel tb-desktop" id="profile-picker" onchange="setProfile(this.value)">
-    <option value="classic">Classic</option>
-    <option value="pitch">Elevator Pitch</option>
-    <option value="complete">Complete</option>
+    <option value="classic">📑 Classic</option>
+    <option value="pitch">📄 Elevator Pitch</option>
+    <option value="complete">📚 Complete</option>
   </select>
 
   <div class="tb-sep tb-desktop"></div>
   <span class="tb-label tb-desktop">Theme</span>
   <select class="tb-sel tb-desktop" id="theme-picker" onchange="setTheme(this.value)">
-    <option value="light" selected="">Light</option>
-    <option value="dark">Dark</option>
-    <option value="spring">Spring</option>
-    <option value="summer">Summer</option>
-    <option value="autumn">Autumn</option>
-    <option value="winter">Winter</option>
-    <option value="matrix">Matrix</option>
-    <option value="neko">Candy</option>
-    <option value="horror">Survival Horror</option>
+    <option value="light" selected="">☀ Light</option>
+    <option value="dark">☽ Dark</option>
+    <option value="spring">✿ Spring</option>
+    <option value="summer">🌻 Summer</option>
+    <option value="autumn">❧ Autumn</option>
+    <option value="winter">❄ Winter</option>
+    <option value="matrix">⌨ Matrix</option>
+    <option value="neko">🍬 Candy</option>
+    <option value="horror">✝ Survival Horror</option>
   </select>
 
   <div class="tb-sep tb-desktop"></div>
@@ -358,7 +358,7 @@ select.tb-sel:hover{border-color:var(--accent);}
     </div>
   </div>
 
-  <button id="profile-cycle-btn" onclick="cycleProfile()" title="Cycle profile" style="display:none;width:32px;height:28px;border-radius:5px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;flex-shrink:0;margin:0 2px;padding:0;align-items:center;justify-content:center;"></button>
+  <button id="profile-cycle-btn" onclick="cycleProfile()" title="Cycle profile" style="display:none;width:32px;height:28px;border-radius:5px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;flex-shrink:0;margin:0 2px;padding:0;font-size:17px;line-height:1;align-items:center;justify-content:center;"></button>
   <button id="theme-swatch" onclick="cycleTheme()" title="Cycle theme" style="display:none;width:28px;height:28px;border-radius:5px;border:1px solid rgba(128,128,128,0.3);cursor:pointer;flex-shrink:0;padding:0;margin:0 2px;overflow:hidden;position:relative;"></button>
   <div class="tb-sep"></div>
   <div style="position:relative;display:inline-block;" id="more-wrap">
@@ -367,24 +367,20 @@ select.tb-sel:hover{border-color:var(--accent);}
       <div class="tb-mobile-only" style="display:none;flex-direction:column;gap:8px;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:10px;">
         <div style="display:flex;align-items:center;gap:8px;width:100%;">
           <span class="tb-label">Profile</span>
-          <select class="tb-sel" id="profile-picker-mobile" onchange="setProfile(this.value);document.getElementById('profile-picker').value=this.value;" style="flex:1;">
-            <option value="classic">Classic</option>
-            <option value="pitch">Elevator Pitch</option>
-            <option value="complete">Complete</option>
-          </select>
+          <div id="profile-picker-mobile" style="display:flex;gap:3px;flex:1;"></div>
         </div>
         <div style="display:flex;align-items:center;gap:8px;width:100%;">
           <span class="tb-label">Theme</span>
           <select class="tb-sel" id="theme-picker-mobile" onchange="setTheme(this.value);document.getElementById('theme-picker').value=this.value;" style="flex:1;">
-            <option value="light" selected>Light</option>
-            <option value="dark">Dark</option>
-            <option value="spring">Spring</option>
-            <option value="summer">Summer</option>
-            <option value="autumn">Autumn</option>
-            <option value="winter">Winter</option>
-            <option value="matrix">Matrix</option>
-            <option value="neko">Candy</option>
-            <option value="horror">Survival Horror</option>
+            <option value="light" selected>☀ Light</option>
+            <option value="dark">☽ Dark</option>
+            <option value="spring">✿ Spring</option>
+            <option value="summer">🌻 Summer</option>
+            <option value="autumn">❧ Autumn</option>
+            <option value="winter">❄ Winter</option>
+            <option value="matrix">⌨ Matrix</option>
+            <option value="neko">🍬 Candy</option>
+            <option value="horror">✝ Survival Horror</option>
           </select>
         </div>
         <div style="display:flex;align-items:center;gap:8px;width:100%;">
@@ -1211,12 +1207,9 @@ let currentTheme = 'dark';
 let fxAnim = null;
 
 const profileLabels = {
-  // []  — 1 page centered
-  pitch:   '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="28" viewBox="0 0 32 28" fill="none"><rect x="11" y="7" width="10" height="14" rx="1" stroke="currentColor" stroke-width="1.5" fill="var(--bg2)"/><line x1="13" y1="11" x2="19" y2="11" stroke="currentColor" stroke-width="1" opacity="0.7"/><line x1="13" y1="14" x2="19" y2="14" stroke="currentColor" stroke-width="1" opacity="0.7"/><line x1="13" y1="17" x2="17" y2="17" stroke="currentColor" stroke-width="1" opacity="0.7"/></svg>',
-  // [[] — back page lines in its visible strip (x8–14), front page full lines
-  classic: '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="28" viewBox="0 0 32 28" fill="none"><rect x="8" y="7" width="10" height="14" rx="1" stroke="currentColor" stroke-width="1.2" fill="var(--bg2)"/><line x1="10" y1="11" x2="14" y2="11" stroke="currentColor" stroke-width="1" opacity="0.5"/><line x1="10" y1="14" x2="14" y2="14" stroke="currentColor" stroke-width="1" opacity="0.5"/><line x1="10" y1="17" x2="13" y2="17" stroke="currentColor" stroke-width="1" opacity="0.5"/><rect x="15" y="7" width="10" height="14" rx="1" stroke="currentColor" stroke-width="1.5" fill="var(--bg2)"/><line x1="17" y1="11" x2="23" y2="11" stroke="currentColor" stroke-width="1" opacity="0.7"/><line x1="17" y1="14" x2="23" y2="14" stroke="currentColor" stroke-width="1" opacity="0.7"/><line x1="17" y1="17" x2="21" y2="17" stroke="currentColor" stroke-width="1" opacity="0.7"/></svg>',
-  // [[[] — back/mid lines in visible strips, front page full lines
-  complete:'<svg xmlns="http://www.w3.org/2000/svg" width="32" height="28" viewBox="0 0 32 28" fill="none"><rect x="4" y="7" width="10" height="14" rx="1" stroke="currentColor" stroke-width="1" fill="var(--bg2)"/><line x1="6" y1="11" x2="10" y2="11" stroke="currentColor" stroke-width="1" opacity="0.4"/><line x1="6" y1="14" x2="10" y2="14" stroke="currentColor" stroke-width="1" opacity="0.4"/><line x1="6" y1="17" x2="9" y2="17" stroke="currentColor" stroke-width="1" opacity="0.4"/><rect x="11" y="7" width="10" height="14" rx="1" stroke="currentColor" stroke-width="1.2" fill="var(--bg2)"/><line x1="13" y1="11" x2="17" y2="11" stroke="currentColor" stroke-width="1" opacity="0.55"/><line x1="13" y1="14" x2="17" y2="14" stroke="currentColor" stroke-width="1" opacity="0.55"/><line x1="13" y1="17" x2="16" y2="17" stroke="currentColor" stroke-width="1" opacity="0.55"/><rect x="18" y="7" width="10" height="14" rx="1" stroke="currentColor" stroke-width="1.5" fill="var(--bg2)"/><line x1="20" y1="11" x2="26" y2="11" stroke="currentColor" stroke-width="1" opacity="0.7"/><line x1="20" y1="14" x2="26" y2="14" stroke="currentColor" stroke-width="1" opacity="0.7"/><line x1="20" y1="17" x2="24" y2="17" stroke="currentColor" stroke-width="1" opacity="0.7"/></svg>',
+  pitch:   '📄',  // single page
+  classic: '📑',  // two pages / tabbed sheets
+  complete:'📚',  // full stack
 };
 const profileOrder = ['classic','pitch','complete'];
 function cycleProfile() {
@@ -1228,7 +1221,7 @@ const THEME_MURALS = {
   light:  {top:'#87CEEB',bot:'#c8f5c0',sym:'☀',sc:'#d48a00'},
   dark:   {top:'#0d0d1a',bot:'#1a1a3e',sym:'☽',sc:'#6ba3e8'},
   spring: {top:'#a8e6b0',bot:'#f0faf2',sym:'✿',sc:'#1f6b35'},
-  summer: {top:'#5bc8f5',bot:'#f7e060',sym:'☀',sc:'#b85c00'},
+  summer: {top:'#5bc8f5',bot:'#f7e060',sym:'🌻',sc:'#b85c00'},
   autumn: {top:'#4a1a00',bot:'#c05c18',sym:'❧',sc:'#f5c060'},
   winter: {top:'#c0d8f0',bot:'#e8f4ff',sym:'❄',sc:'#1a5a8c'},
   matrix: {top:'#001200',bot:'#004000',sym:'⌨',sc:'#00ff41'},
@@ -1254,10 +1247,29 @@ function setProfile(p) {
   currentProfile = p;
   render(p);
   try{ localStorage.setItem('resume-profile',p); }catch(e){}
-  const pm = document.getElementById('profile-picker-mobile');
-  if (pm) pm.value = p;
+  document.getElementById('profile-picker').value = p;
+  updateProfileButtons(p);
   const cb = document.getElementById('profile-cycle-btn');
   if (cb) cb.innerHTML = profileLabels[p] || p;
+}
+function updateProfileButtons(p) {
+  const pm = document.getElementById('profile-picker-mobile');
+  if (!pm) return;
+  if (!pm.querySelector('button')) initProfileButtons();
+  pm.querySelectorAll('button[data-p]').forEach(btn => {
+    const active = btn.dataset.p === p;
+    btn.style.background = active ? 'var(--accent)' : 'var(--bg2)';
+    btn.style.color = active ? '#fff' : 'var(--text)';
+    btn.style.borderColor = active ? 'var(--accent)' : 'var(--border)';
+  });
+}
+function initProfileButtons() {
+  const pm = document.getElementById('profile-picker-mobile');
+  if (!pm) return;
+  const profiles = [{p:'pitch',label:'Pitch'},{p:'classic',label:'Classic'},{p:'complete',label:'Full'}];
+  pm.innerHTML = profiles.map(({p,label}) =>
+    `<button data-p="${p}" onclick="setProfile('${p}')" title="${label}" style="flex:1;height:28px;border-radius:5px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;padding:0 4px;display:flex;align-items:center;justify-content:center;gap:3px;font-size:15px;" aria-label="${label}">${profileLabels[p]}<span style="font-family:var(--font-resume);font-size:9px;font-weight:600;">${label}</span></button>`
+  ).join('');
 }
 
 function setTheme(t) {
