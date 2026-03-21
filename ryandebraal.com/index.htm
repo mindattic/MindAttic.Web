@@ -2043,7 +2043,7 @@ function toggleNeko() {
   setTimeout(() => {
     icon.style.visibility = 'hidden';
     // Use coarse pointer detection (actual phone/tablet) not just touch capability (touchscreen laptops)
-    const isMobile = window.matchMedia('(pointer: coarse)').matches && !window.matchMedia('(hover: hover)').matches;
+    const isMobile = window.innerHeight > window.innerWidth;
     const behavior = isMobile ? BehaviorMode.RUN_AROUND_RANDOMLY : BehaviorMode.CHASE_MOUSE;
     nekoInstance = new Neko({ fps: 120, speed: 24, startX: startX, startY: startY, behaviorMode: behavior, allowBehaviorChange: false });
     nekoInstance.setSprites(NEKO_SPRITE_COUNT);
