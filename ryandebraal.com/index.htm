@@ -1447,12 +1447,19 @@ const NEKO_SPRITE_COUNT = 32;
 
       document.body.appendChild(this.element);
 
-      // Track mouse position - set flag on first move
-      document.addEventListener("mousemove", (e) => {
+      // Track mouse position — ignore moves near spawn for 1s so neko
+      // doesn't think he's already at the target (user just clicked the bed)
+      this._spawnGuardUntil = Date.now() + 1000;
+      this._mouseMoveHandler = (e) => {
+        if (Date.now() < this._spawnGuardUntil) {
+          const dx = e.clientX - this.x, dy = e.clientY - this.y;
+          if (Math.sqrt(dx*dx + dy*dy) < 50) return; // ignore if still near spawn
+        }
         this.mouseX = e.clientX;
         this.mouseY = e.clientY;
         this.hasMouseMoved = true;
-      });
+      };
+      document.addEventListener("mousemove", this._mouseMoveHandler);
 
       // Update bounds on resize
       window.addEventListener("resize", () => {
@@ -1971,6 +1978,9 @@ const NEKO_SPRITE_COUNT = 32;
     }
 
     destroy() {
+      if (this._mouseMoveHandler) {
+        document.removeEventListener("mousemove", this._mouseMoveHandler);
+      }
       if (this.element && this.element.parentNode) {
         this.element.parentNode.removeChild(this.element);
       }
@@ -2046,6 +2056,10 @@ function toggleNeko() {
     nekoInstance.setSprites(NEKO_SPRITE_COUNT);
     nekoInstance.homeX = startX;
     nekoInstance.homeY = startY;
+    // Force mouse target away from spawn so neko actually runs
+    // (user's real mouse is on the button they just clicked)
+    nekoInstance.mouseX = window.innerWidth / 2 + (Math.random() - 0.5) * 200;
+    nekoInstance.mouseY = window.innerHeight / 2 + (Math.random() - 0.5) * 200;
     nekoInstance.start();
     // Disable bed click for 5 seconds after waking
     btn.style.pointerEvents = 'none';
