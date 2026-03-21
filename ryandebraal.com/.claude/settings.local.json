@@ -18,7 +18,10 @@
       "Bash(where python:*)",
       "Bash(where py:*)",
       "Bash(\"C:\\\\Users\\\\ryand\\\\AppData\\\\Local\\\\Programs\\\\Python\\\\Python311\\\\python.exe\" -c \":*)",
-      "Bash(ls -la \"D:/Projects/Resume/neko/\"*.ico)"
+      "Bash(ls -la \"D:/Projects/Resume/neko/\"*.ico)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
     ]
   }
 }
