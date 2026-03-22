@@ -505,7 +505,7 @@ const SETTINGS_DEFAULTS = {
   snow_spread:2.5, snow_max_height:0.32, snow_flake_count:140,
   leaf_count:40,
   plant_grow_fast:0.3, plant_grow_slow:0.15,
-  skill_bar_fill_ms:500,
+  skill_bar_fill_ms:1000,
 };
 let AppSettings = Object.assign({}, SETTINGS_DEFAULTS);
 try {
@@ -3230,7 +3230,7 @@ function init() {
       if (tagEl._barRaf) { cancelAnimationFrame(tagEl._barRaf); tagEl._barRaf = null; }
       const targetPct = parseFloat(fill.dataset.target || fill.style.width) || 80;
       fill.dataset.target = targetPct; // persist across re-hovers
-      const ms = AppSettings.skill_bar_fill_ms || 500;
+      const ms = AppSettings.skill_bar_fill_ms || 1000;
       // lerpFactor per 60fps frame derived from desired feel-time
       // decay = -ln(0.01) / (ms/1000 * 60) ≈ 4.6 / (ms/1000*60)
       const decayPerFrame = 1 - Math.exp(-4.6 / (ms / 1000 * 60));
@@ -3303,7 +3303,7 @@ const SETTINGS_SCHEMA = [
     { key:'plant_grow_slow',    label:'Shrink Speed',            min:0.01, max:1.0,  step:0.01  },
   ]},
   { group: 'Skill Tags', items: [
-    { key:'skill_bar_fill_ms',  label:'Bar Fill Duration (ms)',  min:50,   max:1000, step:10    },
+    { key:'skill_bar_fill_ms',  label:'Bar Fill Duration (ms)',  min:100,  max:3000, step:50    },
   ]},
 ];
 
