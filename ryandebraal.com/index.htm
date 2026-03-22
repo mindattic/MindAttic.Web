@@ -431,6 +431,10 @@ select.tb-sel:hover{border-color:var(--accent);}
         <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--text2);flex-shrink:0"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"></path></svg>
         HTML
       </button>
+      <button onclick="printResume()" style="display:flex;align-items:center;gap:8px;width:100%;padding:9px 14px;background:none;border:none;color:var(--text);font-family:var(--font-resume);font-size:13px;cursor:pointer;text-align:left;transition:background 0.1s;border-top:1px solid var(--border);" onmouseover="this.style.background='var(--bg3)'" onmouseout="this.style.background='none'">
+        <svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:var(--text2);flex-shrink:0"><path d="M19 8H5c-1.66 0-3 1.34-3 3v6h4v4h12v-4h4v-6c0-1.66-1.34-3-3-3zm-3 11H8v-5h8v5zm3-7c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm-1-9H6v4h12V3z"/></svg>
+        Print
+      </button>
     </div>
   </div>
 
@@ -481,6 +485,7 @@ select.tb-sel:hover{border-color:var(--accent);}
             <option value="">Choose…</option>
             <option value="exportMD">Markdown</option>
             <option value="exportHTML">HTML</option>
+            <option value="printResume">Print</option>
           </select>
         </div>
       </div>
@@ -503,36 +508,9 @@ select.tb-sel:hover{border-color:var(--accent);}
         <span id="font-size-label" style="font-size:11px;color:var(--text3);flex:1;text-align:center;">100%</span>
         <button class="tb-btn" onclick="adjustFontSize(1)" title="Increase font size" style="padding:5px 9px;font-size:15px;line-height:1;margin-left:auto;">A+</button>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;width:100%;margin-top:8px;">
-        <span class="tb-label">Neko</span>
-        <select id="neko-color" class="tb-sel" onchange="setNekoColor(this.value)" style="flex:1;">
-          <option value="orange">🟠 Orange</option>
-          <option value="ginger">🟧 Ginger</option>
-          <option value="marmalade">🍊 Marmalade</option>
-          <option value="red">🔴 Red</option>
-          <option value="crimson">❤️ Crimson</option>
-          <option value="hotpink">💗 Hot Pink</option>
-          <option value="magenta">🟣 Magenta</option>
-          <option value="purple">💜 Purple</option>
-          <option value="lavender">🪻 Lavender</option>
-          <option value="blue">🔵 Blue</option>
-          <option value="navy">🫐 Navy</option>
-          <option value="cyan">🩵 Cyan</option>
-          <option value="teal">🌊 Teal</option>
-          <option value="green">🟢 Green</option>
-          <option value="lime">💚 Lime</option>
-          <option value="olive">🫒 Olive</option>
-          <option value="yellow">🟡 Yellow</option>
-          <option value="gold">⭐ Gold</option>
-          <option value="brown">🟤 Brown</option>
-          <option value="chocolate">🍫 Chocolate</option>
-          <option value="gray">⚪ Gray</option>
-          <option value="charcoal">🩶 Charcoal</option>
-          <option value="white">🤍 White</option>
-        </select>
-      </div>
       <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:10px;display:flex;flex-direction:column;gap:6px;">
         <button class="tb-btn" onclick="openSettings()" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">Settings</button>
+        <button class="tb-btn" onclick="openAttributions()" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">Attributions</button>
         <button class="tb-btn" onclick="resetDefaults()" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">Reset to Defaults</button>
       </div>
     </div>
@@ -551,6 +529,32 @@ select.tb-sel:hover{border-color:var(--accent);}
     <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0;">
       <button class="tb-btn" onclick="resetAllSettings()" style="padding:7px 14px;font-size:12px;">Reset to Defaults</button>
       <button class="tb-btn primary" onclick="closeSettings()" style="padding:7px 14px;font-size:12px;">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Attributions Modal -->
+<div id="attr-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
+  <div style="max-width:560px;width:92%;background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.4);">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);">
+      <span style="font-family:var(--font-resume);font-size:15px;font-weight:600;color:var(--text);">Licenses & Attributions</span>
+      <button onclick="closeAttributions()" style="background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:0 4px;line-height:1;">✕</button>
+    </div>
+    <div style="padding:20px;overflow-y:auto;max-height:70vh;font-family:var(--font-resume);font-size:13px;color:var(--text2);line-height:1.7;">
+      <div style="margin-bottom:18px;">
+        <div style="font-weight:600;color:var(--text);margin-bottom:4px;">Neko.js</div>
+        <div>Based on <strong>Neko98</strong> by David Harvey (1998), original Neko by Masayuki Koba.</div>
+        <div>JS port from <a href="https://github.com/louisabraham/nekojs" target="_blank" style="color:var(--accent);">nekojs</a> by Louis Abraham.</div>
+        <div style="color:var(--text3);font-size:12px;">Licensed under GPL v3</div>
+      </div>
+      <div style="margin-bottom:18px;">
+        <div style="font-weight:600;color:var(--text);margin-bottom:4px;">Google Fonts</div>
+        <div>DM Serif Display, Outfit, DM Mono, Roboto, Lato</div>
+        <div style="color:var(--text3);font-size:12px;">Licensed under SIL Open Font License 1.1 / Apache License 2.0</div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;padding:12px 20px;border-top:1px solid var(--border);">
+      <button class="tb-btn primary" onclick="closeAttributions()" style="padding:7px 14px;font-size:12px;">Done</button>
     </div>
   </div>
 </div>
@@ -2060,6 +2064,7 @@ const NEKO_SPRITE_COUNT = 32;
       this.state = NekoState.STOP;
       this.tickCount = 0; // Increments every frame (like m_uTickCount)
       this.stateCount = 0; // Increments every 2 original ticks (like m_uStateCount)
+      this.sleepCooldownUntil = 0; // timestamp: can't sleep again until this time
 
       // Position (display position for smooth rendering)
       this.x = options.startX || 0;
@@ -2535,12 +2540,18 @@ const NEKO_SPRITE_COUNT = 32;
           if (moveStart) {
             this.setState(NekoState.AWAKE);
           } else if (this.stateCount >= YAWN_TIME) {
-            this.setState(NekoState.SLEEP);
+            if (Date.now() < this.sleepCooldownUntil) {
+              // Cooldown active — can't sleep, wake up and move instead
+              this.setState(NekoState.AWAKE);
+            } else {
+              this.setState(NekoState.SLEEP);
+            }
           }
           break;
 
         case NekoState.SLEEP:
           if (moveStart) {
+            this.sleepCooldownUntil = Date.now() + 15000; // can't sleep again for 15s
             this.setState(NekoState.AWAKE);
           }
           break;
@@ -2881,8 +2892,8 @@ function isNekoMoving(neko) {
 function nekoSocialStop(mover) {
   if (mover._socialCooldown) return; // don't interrupt an ongoing interaction
   mover._socialCooldown = true;
-  if (Math.random() < 0.8) {
-    // Yawn and take a nap beside the other cat
+  if (Math.random() < 0.15 && Date.now() >= (mover.sleepCooldownUntil || 0)) {
+    // 15% chance: yawn and take a nap beside the other cat (if not on cooldown)
     mover.setState(NekoState.YAWN);
     mover.behaviorMode = -1; // freeze behavior updates
     setTimeout(() => {
@@ -2891,6 +2902,7 @@ function nekoSocialStop(mover) {
       // Wake up after a while and resume
       setTimeout(() => {
         if (!themeNekos.includes(mover)) return;
+        mover.sleepCooldownUntil = Date.now() + 15000;
         mover.setState(NekoState.AWAKE);
         mover.behaviorMode = randomNekoBehavior(-1);
         mover.catAI = undefined; mover.catTimer = 0;
@@ -2898,7 +2910,7 @@ function nekoSocialStop(mover) {
       }, 4000 + Math.random() * 6000);
     }, 1000);
   } else {
-    // Scratch itself then run off in a new direction
+    // 85% chance: scratch itself then run off in a new direction
     mover.setState(NekoState.SCRATCH);
     mover.behaviorMode = -1;
     setTimeout(() => {
@@ -2999,22 +3011,22 @@ function attachCurvePathing(neko) {
 
 function onNekoMouseWake(neko) {
   if (!isNekoResting(neko)) return; // only react if sleeping/idle
+  neko.sleepCooldownUntil = Date.now() + 15000; // can't sleep again for 15s
   neko.setState(NekoState.AWAKE);
   neko.catAI = undefined; neko.catTimer = 0;
-  // 40% chance: yawn and go back to sleep
-  if (Math.random() < 0.4) {
+  // 30% chance: yawn then get up and wander (no sleeping — cooldown active)
+  if (Math.random() < 0.3) {
     setTimeout(() => {
       if (!themeNekos.includes(neko)) return;
       neko.setState(NekoState.YAWN);
       setTimeout(() => {
         if (!themeNekos.includes(neko)) return;
-        neko.setState(NekoState.SLEEP);
-        neko.behaviorMode = BehaviorMode.RUN_AROUND_RANDOMLY;
-        neko.catAI = 'NAP'; neko.catTimer = 0;
+        neko.setState(NekoState.AWAKE);
+        cycleSingleNeko(neko);
       }, 1200);
     }, 400);
   } else {
-    // 60% chance: wake up and change behavior
+    // 70% chance: wake up and change behavior immediately
     cycleSingleNeko(neko);
   }
 }
@@ -3051,6 +3063,16 @@ function startNekoTheme() {
     neko.element.addEventListener('mouseenter', () => onNekoMouseWake(neko));
     // Half the nekos get bee-style curving paths, half walk straight
     if (i % 2 === 0) attachCurvePathing(neko);
+    // Pre-kick neko into an active moving state so they don't all start idle
+    const moveStates = [NekoState.U_MOVE, NekoState.D_MOVE, NekoState.L_MOVE, NekoState.R_MOVE, NekoState.UL_MOVE, NekoState.UR_MOVE, NekoState.DL_MOVE, NekoState.DR_MOVE];
+    neko.state = moveStates[Math.floor(Math.random() * moveStates.length)];
+    neko.tickCount = Math.floor(Math.random() * 100);
+    neko.stateCount = Math.floor(Math.random() * 20);
+    // Give each neko a random target to move towards
+    neko.targetX = Math.random() * window.innerWidth;
+    neko.targetY = Math.random() * window.innerHeight;
+    neko.oldTargetX = -99999;
+    neko.oldTargetY = -99999;
     neko.start();
     themeNekos.push(neko);
     // Schedule first behavior change with staggered delay
@@ -3343,17 +3365,17 @@ function startOcean() {
   const W = () => canvas.width, H = () => canvas.height;
   const bubbles = Array.from({length: 40}, () => spawnBubble(W(), H(), true));
   // Light shafts: criss-crossing rays with wave motion
-  const shafts = Array.from({length: 14}, (_, i) => {
+  const shafts = Array.from({length: 6}, (_, i) => {
     const dir = (i % 2 === 0) ? 1 : -1; // alternate left/right lean
     return {
-      baseX: (i + 0.5) / 14,
+      baseX: (i + 0.5) / 6,
       dir,
       driftSpd: 0.0004 + Math.random() * 0.0008,
       driftAmp: 0.08 + Math.random() * 0.12,
       phase: Math.random() * Math.PI * 2,
-      width: 20 + Math.random() * 45,
+      width: 60 + Math.random() * 100,
       skew: dir * (40 + Math.random() * 100),
-      opacity: 0.018 + Math.random() * 0.018,
+      opacity: 0.022 + Math.random() * 0.02,
       pulseSpd: 0.003 + Math.random() * 0.005,
       pulsePhase: Math.random() * Math.PI * 2,
       waveSpd: 0.006 + Math.random() * 0.008,   // wave undulation speed
@@ -3393,13 +3415,16 @@ function startOcean() {
 
     // Animated underwater light shafts — criss-crossing with wave motion
     ft++;
+    const sMax = document.documentElement.scrollHeight - window.innerHeight;
+    const sDep = sMax > 0 ? Math.min(1, window.scrollY / sMax) : 0;
+    const shaftDim = 1 - sDep * 0.85; // shafts fade to 15% at max scroll
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     shafts.forEach(s => {
       const drift = Math.sin(ft * s.driftSpd + s.phase) * s.driftAmp;
       const cx = (s.baseX + drift) * w;
       const pulse = 0.6 + 0.4 * Math.sin(ft * s.pulseSpd + s.pulsePhase);
-      const alpha = s.opacity * pulse;
+      const alpha = s.opacity * pulse * shaftDim;
       const halfW = s.width / 2;
       // Wave undulation shifts the bottom of the shaft side-to-side
       const wave = Math.sin(ft * s.waveSpd + s.wavePhase) * s.waveAmp;
@@ -3416,12 +3441,14 @@ function startOcean() {
       grad.addColorStop(1,    'rgba(0,40,60,0)');
       ctx.fillStyle = grad;
       // Draw as a curved quad using bezier for wave feel
+      const topW = halfW * 0.15;  // narrow at surface
+      const botW = halfW * 2.5;  // fans out wide at depth
       ctx.beginPath();
-      ctx.moveTo(cx - halfW, 0);
-      ctx.lineTo(cx + halfW, 0);
-      ctx.quadraticCurveTo(midX + halfW * 0.8, h * 0.5, bottomX + halfW, h);
-      ctx.lineTo(bottomX - halfW, h);
-      ctx.quadraticCurveTo(midX - halfW * 0.8, h * 0.5, cx - halfW, 0);
+      ctx.moveTo(cx - topW, 0);
+      ctx.lineTo(cx + topW, 0);
+      ctx.quadraticCurveTo(midX + halfW * 0.8, h * 0.5, bottomX + botW, h);
+      ctx.lineTo(bottomX - botW, h);
+      ctx.quadraticCurveTo(midX - halfW * 0.8, h * 0.5, cx - topW, 0);
       ctx.closePath();
       ctx.fill();
     });
@@ -3460,6 +3487,15 @@ function startOcean() {
         Object.assign(b, spawnBubble(w, h, false));
       }
     });
+
+    // Scroll-depth darkness — the further you scroll, the deeper and darker
+    const scrollMax = document.documentElement.scrollHeight - window.innerHeight;
+    const scrollDepth = scrollMax > 0 ? Math.min(1, window.scrollY / scrollMax) : 0;
+    const darkAlpha = scrollDepth * 0.7; // up to 70% black at the very bottom
+    if (darkAlpha > 0.01) {
+      ctx.fillStyle = `rgba(0,2,8,${darkAlpha})`;
+      ctx.fillRect(0, 0, w, h);
+    }
 
     fxAnim = requestAnimationFrame(draw);
   }
@@ -3716,121 +3752,6 @@ function exportHTML() {
   download('RyanDeBraal_Resume.html', htmlStr, 'text/html');
 }
 
-// ╔═══════════════════════════════════════════════════════════════════════════════╗
-// ║  DOCX EXPORT                                                                ║
-// ╚═══════════════════════════════════════════════════════════════════════════════╝
-async function exportDOCX() {
-  document.getElementById('export-menu').style.display='none';
-  const btn = document.getElementById('export-btn');
-  btn.textContent = 'Building...';
-
-  if (!window.docx) {
-    await loadScript('https://unpkg.com/docx@9.5.3/build/index.js');
-  }
-
-  const { Document, Packer, Paragraph, TextRun, AlignmentType, LevelFormat, BorderStyle, TabStopType } = window.docx;
-  const ACCENT = '1B4F8C', DARK = '1A1A2E', MID = '4A5568', RULE = '2C5F8A';
-
-  function rule(label) {
-    return new Paragraph({
-      spacing:{before:240,after:80},
-      border:{bottom:{style:BorderStyle.SINGLE,size:6,color:RULE,space:1}},
-      children:[new TextRun({text:label.toUpperCase(),bold:true,size:20,color:ACCENT,font:'Calibri',characterSpacing:60})]
-    });
-  }
-  function jobHdr(title,company,location,dates) {
-    return new Paragraph({
-      spacing:{before:180,after:40},
-      tabStops:[{type:TabStopType.RIGHT,position:9360}],
-      children:[
-        new TextRun({text:title,bold:true,size:22,font:'Calibri',color:DARK}),
-        new TextRun({text:'   ·   ',size:20,font:'Calibri',color:MID}),
-        new TextRun({text:company,bold:true,size:21,font:'Calibri',color:ACCENT}),
-        new TextRun({text:'   ·   '+location,size:19,font:'Calibri',color:MID}),
-        new TextRun({text:'\t'+dates,size:19,font:'Calibri',color:MID,italics:true}),
-      ]
-    });
-  }
-  function bul(text) {
-    const clean = text.replace(/<[^>]+>/g,'');
-    return new Paragraph({numbering:{reference:'bullets',level:0},spacing:{before:30,after:30},children:[new TextRun({text:clean,size:20,font:'Calibri',color:DARK})]});
-  }
-  function skillRow(label,value) {
-    return new Paragraph({spacing:{before:36,after:36},children:[
-      new TextRun({text:label+':  ',bold:true,size:20,font:'Calibri',color:DARK}),
-      new TextRun({text:value,size:20,font:'Calibri',color:MID}),
-    ]});
-  }
-  function sp(n=80){return new Paragraph({spacing:{before:n,after:0},children:[new TextRun('')]});}
-
-  const skills = currentProfile==='complete' ? D.skillsComplete : D.skillsCore;
-  const children = [
-    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:40},children:[new TextRun({text:'RYAN DeBRAAL',bold:true,size:52,font:'Calibri',color:DARK,characterSpacing:60})]}),
-    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:0,after:40},border:{bottom:{style:BorderStyle.SINGLE,size:4,color:ACCENT,space:6}},children:[new TextRun({text:'Principal Full-Stack Engineer  ·  CEO, MindAttic LLC  ·  President, MindAttic Cares',size:22,font:'Calibri',color:ACCENT})]}),
-    new Paragraph({alignment:AlignmentType.CENTER,spacing:{before:60,after:120},children:[new TextRun({text:'ryandebraal@mindattic.com   ·   github.com/mindattic   ·   linkedin.com/in/ryandebraal   ·   mindattic.com   ·   mindatticcares.com',size:19,font:'Calibri',color:MID})]}),
-  ];
-
-  if(currentProfile==='pitch'){
-    children.push(rule('Snapshot'), sp(60));
-    children.push(new Paragraph({spacing:{before:0,after:0},children:[new TextRun({text:D.pitchSummary,size:20,font:'Calibri',color:DARK})]}));
-  } else {
-    children.push(rule('Summary'), sp(60));
-    children.push(new Paragraph({spacing:{before:0,after:0},children:[new TextRun({text:D.summary,size:20,font:'Calibri',color:DARK})]}));
-  }
-
-  children.push(sp(60), rule('Core Skills'), sp(60));
-  skills.forEach(s => children.push(skillRow(s.label, s.items.join(', '))));
-
-  children.push(sp(60), rule('Professional Experience'));
-  D.experience.forEach(j => {
-    children.push(sp(80));
-    children.push(jobHdr(j.title,j.company,j.location,j.dates));
-    new Paragraph({spacing:{before:0,after:60},children:[new TextRun({text:j.tech.join(' · '),size:18,font:'Calibri',color:MID,italics:true})]});
-    children.push(new Paragraph({spacing:{before:0,after:60},children:[new TextRun({text:j.tech.join(' · '),size:18,font:'Calibri',color:MID,italics:true})]}));
-    j.bullets.forEach(b => children.push(bul(b)));
-  });
-
-  children.push(sp(60), rule('Corporate'));
-  D.corporate.forEach(c => {
-    children.push(sp(80));
-    children.push(jobHdr(c.role,c.entity,c.type+' · '+c.address,'Est. '+c.formed));
-  });
-
-  children.push(sp(60), rule('Personal Projects'), sp(60));
-  D.projects.forEach(p => {
-    children.push(new Paragraph({spacing:{before:30,after:30},children:[
-      new TextRun({text:p.name+' — ',bold:true,size:20,font:'Calibri',color:DARK}),
-      new TextRun({text:p.desc,size:20,font:'Calibri',color:MID}),
-    ]}));
-  });
-
-  children.push(sp(60), rule('Education'), sp(60));
-  D.education.forEach(e => {
-    children.push(new Paragraph({spacing:{before:0,after:40},tabStops:[{type:TabStopType.RIGHT,position:9360}],children:[
-      new TextRun({text:e.degree,bold:true,size:22,font:'Calibri',color:DARK}),
-      new TextRun({text:'  ·  '+e.school,size:20,font:'Calibri',color:MID}),
-      new TextRun({text:'\t'+e.dates+(e.note?' · '+e.note:''),size:20,font:'Calibri',color:MID,italics:!!e.note}),
-    ]}));
-  });
-
-  children.push(sp(60), rule('Patents & Inventions'), sp(60));
-  D.patents.forEach(p => {
-    children.push(new Paragraph({spacing:{before:30,after:30},children:[
-      new TextRun({text:p.title,bold:true,size:20,font:'Calibri',color:DARK}),
-      new TextRun({text:' ('+p.num+') — ',size:19,font:'Calibri',color:ACCENT}),
-      new TextRun({text:p.desc,size:20,font:'Calibri',color:MID}),
-    ]}));
-  });
-
-  const doc = new Document({
-    numbering:{config:[{reference:'bullets',levels:[{level:0,format:LevelFormat.BULLET,text:'\u2022',alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:480,hanging:240}}}}]}]},
-    sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1080,right:1260,bottom:1080,left:1260}}},children}]
-  });
-
-  const blob = await Packer.toBlob(doc);
-  downloadBlob(blob,'RyanDeBraal_Resume.docx','application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-  btn.innerHTML = 'Export <svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor;margin-left:2px"><path d="M7 10l5 5 5-5z"/></svg>';
-}
 
 // ╔═══════════════════════════════════════════════════════════════════════════════╗
 // ║  HELPERS                                                                    ║
@@ -3846,13 +3767,6 @@ function downloadBlob(blob, filename, mime) {
   a.href = URL.createObjectURL(blob);
   a.download = filename; a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-}
-function loadScript(src) {
-  return new Promise((resolve,reject)=>{
-    const s = document.createElement('script');
-    s.src=src; s.onload=resolve; s.onerror=reject;
-    document.head.appendChild(s);
-  });
 }
 
 // ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -4043,6 +3957,16 @@ function closeSettings() {
   document.getElementById('settings-modal').style.display = 'none';
 }
 
+function openAttributions() {
+  document.getElementById('more-menu').style.display = 'none';
+  const modal = document.getElementById('attr-modal');
+  modal.style.display = 'flex';
+  modal.onclick = e => { if (e.target === modal) closeAttributions(); };
+}
+function closeAttributions() {
+  document.getElementById('attr-modal').style.display = 'none';
+}
+
 function resetAllSettings() {
   Object.assign(AppSettings, SETTINGS_DEFAULTS);
   try { localStorage.removeItem('resume-settings'); } catch(e){}
@@ -4069,9 +3993,9 @@ function randomTheme() {
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
 Object.assign(window, {
   setProfile, cycleProfile, setTheme, cycleTheme, updateThemeSwatch, setFont, adjustFontSize, resetDefaults,
-  toggleExportMenu, exportMD, exportHTML, exportDOCX, printResume,
+  toggleExportMenu, exportMD, exportHTML, printResume,
   toggleMoreMenu, toggleNeko, setNekoColor, openAvatarLightbox, closeAvatarLightbox,
-  openSettings, closeSettings, resetAllSettings, onSettingSlider,
+  openSettings, closeSettings, resetAllSettings, onSettingSlider, openAttributions, closeAttributions,
   cycleTagLevel, randomTheme,
 });
 
@@ -4099,10 +4023,9 @@ Object.assign(window, {
 ║  DM Serif Display, Outfit, DM Mono, Roboto, Lato                            ║
 ║  Licensed under SIL Open Font License 1.1 / Apache License 2.0              ║
 ║                                                                              ║
-║  docx.js (loaded on demand for DOCX export)                                  ║
-║  https://github.com/dolanmiu/docx                                           ║
-║  Licensed under MIT                                                          ║
-║                                                                              ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 -->
+<footer style="height:15vh;width:100vw;display:flex;align-items:center;justify-content:center;">
+  <span style="font-family:var(--font-resume);font-size:12px;color:var(--text3);">© <script>document.write(new Date().getFullYear())</script> by Ryan DeBraal</span>
+</footer>
 </body></html>
