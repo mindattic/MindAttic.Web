@@ -3414,135 +3414,95 @@ function startMatrix() {
   draw();
 }
 
-// ── FOREST: parallax layered tree silhouettes ─────────────────────────────────
-// Three depth layers — back, mid, front — each scrolling at a different speed.
-// Parallax factor: front layer moves 3× faster than back. The eye reads the
-// speed differential as depth without any 3D math.
+// ── FOREST: emoji parallax with ctx.filter depth faking ───────────────────────
+// Six layers of 🌲/🌳 emoji, each pre-rendered to an offscreen strip.
+// Four depth cues applied simultaneously per layer:
+//   1. Size         — smaller emoji = farther away
+//   2. Brightness   — darker = deeper in forest (atmospheric scattering)
+//   3. Saturation   — muted = far; rich green = near
+//   4. Scroll speed — slower = farther (parallax)
 //
-// Each tree: a trunk drawn as a bezier curve tapering upward, branches spawned
-// recursively with decreasing radius and angle spread, and ellipse blobs for
-// foliage canopy. All procedural — no two trees are identical.
+// ctx.filter is applied to the offscreen canvas at build time, so the filter
+// cost is paid once per resize — not per frame. drawImage composites the
+// pre-darkened pixels with zero filter overhead at runtime.
 //
-// Back layer: desaturated, slow. Front layer: darkest, fastest.
-// The layering order matters: back → mid → front, each painted over the last.
+// mixRatio controls the 🌲→🌳 blend. Back layers are uniform pine (🌲).
+// Front layers mix in deciduous (🌳) for natural variety up close.
 function startForest() {
   const W = () => canvas.width, H = () => canvas.height;
 
-  // Layer config: all packed into bottom third, front row below screen
-  // y = baseline position (1.0 = screen bottom, >1.0 = below screen)
   const layerDefs = [
-    { speed: 0.10, treeH: 40,  treeW: 14,  gap: 7,   y: 0.68, rgb:[5,16,5],     trunk:[15,10,5],  alpha:0.2  },
-    { speed: 0.20, treeH: 60,  treeW: 20,  gap: 9,   y: 0.72, rgb:[8,24,8],     trunk:[20,12,6],  alpha:0.3  },
-    { speed: 0.40, treeH: 90,  treeW: 30,  gap: 12,  y: 0.77, rgb:[14,38,14],   trunk:[28,18,8],  alpha:0.4  },
-    { speed: 0.75, treeH: 130, treeW: 42,  gap: 16,  y: 0.82, rgb:[20,52,20],   trunk:[35,22,10], alpha:0.55 },
-    { speed: 1.3,  treeH: 185, treeW: 58,  gap: 22,  y: 0.88, rgb:[28,68,28],   trunk:[42,28,14], alpha:0.7  },
-    { speed: 2.2,  treeH: 260, treeW: 78,  gap: 28,  y: 0.94, rgb:[22,58,22],   trunk:[48,32,16], alpha:0.85 },
-    { speed: 3.5,  treeH: 360, treeW: 100, gap: 36,  y: 1.02, rgb:[16,44,16],   trunk:[40,26,13], alpha:1.0  },
+    { speed: 0.05, size: 16,  gap: 15, y: 0.60, alpha: 0.14, filter: 'brightness(0.05) saturate(0.35)', mixRatio: 0.0 },
+    { speed: 0.10, size: 22,  gap: 20, y: 0.65, alpha: 0.20, filter: 'brightness(0.08) saturate(0.45)', mixRatio: 0.0 },
+    { speed: 0.22, size: 34,  gap: 28, y: 0.71, alpha: 0.32, filter: 'brightness(0.15) saturate(0.60)', mixRatio: 0.1 },
+    { speed: 0.45, size: 54,  gap: 42, y: 0.78, alpha: 0.52, filter: 'brightness(0.28) saturate(0.75)', mixRatio: 0.2 },
+    { speed: 0.85, size: 80,  gap: 60, y: 0.87, alpha: 0.74, filter: 'brightness(0.44) saturate(0.88)', mixRatio: 0.35},
+    { speed: 1.55, size: 114, gap: 82, y: 0.97, alpha: 0.92, filter: 'brightness(0.60) saturate(1.00)', mixRatio: 0.45},
   ];
 
-  // Pre-render each layer as an offscreen horizontal strip
   function buildStrip(L) {
-    const stripW = W() * 2; // double-wide for seamless scroll
-    const stripH = L.treeH + 20;
+    const stripW = Math.max(W() * 2, 400);
+    const stripH = Math.round(L.size * 1.18) + 6;
     const oc = document.createElement('canvas');
     oc.width = stripW; oc.height = stripH;
     const c = oc.getContext('2d');
-    const [cr,cg,cb] = L.rgb;
-    const [tr,tg,tb] = L.trunk;
-
-    let x = Math.random() * L.gap * 0.5;
+    c.filter = L.filter;
+    c.globalAlpha = L.alpha;
+    let x = Math.random() * L.gap;
     while (x < stripW) {
-      const h = L.treeH * (0.7 + Math.random() * 0.35);
-      const w = L.treeW * (0.75 + Math.random() * 0.5);
-      const tiers = 3 + Math.floor(Math.random() * 3);
-      const baseY = stripH;
-      const lean = (Math.random() - 0.5) * 0.02;
-
-      c.save();
-      c.translate(x, baseY);
-      c.transform(1, 0, lean, 1, 0, 0);
-
-      // Trunk
-      const trW = Math.max(2, w * 0.08);
-      const trH = h * (0.12 + Math.random() * 0.08);
-      c.fillStyle = `rgba(${tr},${tg},${tb},${L.alpha})`;
-      c.fillRect(-trW/2, -trH, trW, trH);
-
-      // Canopy tiers
-      for (let t = 0; t < tiers; t++) {
-        const pct = t / tiers;
-        const tierBottom = -trH - (1-pct) * h * 0.15;
-        const tierTop = -trH - (1-pct) * h * 0.15 - h / tiers * 1.2;
-        const tierW = w * (0.25 + pct * 0.75);
-        const shade = 1 - pct * 0.2 + Math.random() * 0.05;
-        c.fillStyle = `rgba(${Math.round(cr*shade)},${Math.round(cg*shade)},${Math.round(cb*shade)},${L.alpha})`;
-        c.beginPath();
-        c.moveTo(0, tierTop);
-        c.lineTo(-tierW/2, tierBottom);
-        c.lineTo(tierW/2, tierBottom);
-        c.closePath();
-        c.fill();
-      }
-
-      c.restore();
-      x += L.gap + Math.random() * L.gap * 0.6;
+      const emoji = Math.random() < L.mixRatio ? '🌳' : '🌲';
+      const s = Math.round(L.size * (0.78 + Math.random() * 0.46));
+      c.font = `${s}px serif`;
+      c.fillText(emoji, x, stripH - 2); // baseline at strip bottom = trees "stand" on ground
+      x += L.gap * (0.65 + Math.random() * 0.70);
     }
     return { canvas: oc, width: stripW, height: stripH, scroll: Math.random() * stripW, ...L };
   }
 
   let strips = layerDefs.map(buildStrip);
-
-  // Rebuild strips on resize
   let lastW = W(), lastH = H();
 
-  // Mist wisps — concentrated in the tree zone
-  const mist = Array.from({length: 20}, () => ({
+  // Drifting ground mist
+  const mist = Array.from({length: 18}, () => ({
     x: Math.random() * W(),
-    y: H() * (0.62 + Math.random() * 0.32),
-    w: 100 + Math.random() * 250,
-    h: 6 + Math.random() * 16,
-    speed: 0.08 + Math.random() * 0.25,
-    opacity: 0.015 + Math.random() * 0.035,
+    y: H() * (0.80 + Math.random() * 0.16),
+    w: 120 + Math.random() * 280,
+    h: 8 + Math.random() * 18,
+    speed: 0.06 + Math.random() * 0.18,
+    opacity: 0.010 + Math.random() * 0.022,
   }));
 
   function draw() {
     const w = W(), h = H();
-
-    // Rebuild strips if resized
     if (w !== lastW || h !== lastH) {
       strips = layerDefs.map(buildStrip);
       lastW = w; lastH = h;
     }
-
     ctx.clearRect(0, 0, w, h);
 
-    // Draw layers back to front
     strips.forEach(S => {
-      S.scroll += S.speed;
-      if (S.scroll >= S.width) S.scroll -= S.width;
+      S.scroll = (S.scroll + S.speed) % S.width;
       const drawY = h * S.y - S.height;
-      // Draw strip twice for seamless wrap
       ctx.drawImage(S.canvas, -S.scroll, drawY);
       ctx.drawImage(S.canvas, S.width - S.scroll, drawY);
     });
 
-    // Drifting mist between layers
     mist.forEach(m => {
       m.x += m.speed;
-      if (m.x > w + m.w) { m.x = -m.w; m.y = H() * (0.62 + Math.random() * 0.32); }
-      const mg = ctx.createRadialGradient(m.x+m.w/2, m.y, 0, m.x+m.w/2, m.y, m.w/2);
-      mg.addColorStop(0, `rgba(80,120,80,${m.opacity})`);
-      mg.addColorStop(1, 'rgba(80,120,80,0)');
+      if (m.x > w + m.w) { m.x = -m.w; m.y = h * (0.80 + Math.random() * 0.16); }
+      const mg = ctx.createRadialGradient(m.x + m.w / 2, m.y, 0, m.x + m.w / 2, m.y, m.w / 2);
+      mg.addColorStop(0, `rgba(30,60,30,${m.opacity})`);
+      mg.addColorStop(1, 'rgba(30,60,30,0)');
       ctx.fillStyle = mg;
-      ctx.fillRect(m.x, m.y-m.h/2, m.w, m.h);
+      ctx.fillRect(m.x, m.y - m.h / 2, m.w, m.h);
     });
 
-    // Ground fog at base of tree zone
-    const fog = ctx.createLinearGradient(0, h*0.92, 0, h);
-    fog.addColorStop(0, 'rgba(6,18,6,0)');
-    fog.addColorStop(1, 'rgba(6,18,6,0.6)');
+    // Deep ground fog
+    const fog = ctx.createLinearGradient(0, h * 0.91, 0, h);
+    fog.addColorStop(0, 'rgba(6,16,6,0)');
+    fog.addColorStop(1, 'rgba(6,16,6,0.70)');
     ctx.fillStyle = fog;
-    ctx.fillRect(0, h*0.92, w, h*0.08);
+    ctx.fillRect(0, h * 0.91, w, h * 0.09);
 
     fxAnim = requestAnimationFrame(draw);
   }
