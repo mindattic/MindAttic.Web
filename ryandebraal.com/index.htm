@@ -3526,6 +3526,7 @@ function startCyberpunk() {
     center: -0.2 + Math.random()*0.4,
     alpha: 0.06 + Math.random()*0.07,
     color: Math.random()<0.5 ? '200,220,255' : '255,200,255',
+    phase: Math.random() * Math.PI * 2,
   }));
 
   // ── Acid rain: uniform cyan, severe angle (≈38° from vertical) ────────────
@@ -3812,7 +3813,33 @@ function startCyberpunk() {
       winStates = skyData.wins.map(() => ({off:false, timer:Math.floor(Math.random()*300)}));
     }
 
-    // ── City background ──
+    // ── Dark sky base ──
+    ctx.fillStyle = '#03000a';
+    ctx.fillRect(0, 0, w, h);
+
+    // ── Searchlights (behind buildings) ──
+    for (const sl of cpSearchlights) {
+      // Primary sweep + low-freq noise so motion isn't purely sinusoidal
+      sl.angle += sl.speed + Math.sin(frame * 0.017 + sl.phase) * 0.0012
+                           + Math.sin(frame * 0.041 + sl.phase * 2.3) * 0.0006;
+      if (sl.angle > sl.center+sl.range || sl.angle < sl.center-sl.range) sl.speed *= -1;
+      const sx = sl.x * w, sy = h * (0.30 + sl.x * 0.28);
+      const len = h * 0.65;
+      const ex = sx + Math.sin(sl.angle) * len;
+      const ey = sy - len * Math.cos(sl.angle);
+      const slg = ctx.createLinearGradient(sx, sy, ex, ey);
+      slg.addColorStop(0, `rgba(${sl.color},${sl.alpha})`);
+      slg.addColorStop(1, `rgba(${sl.color},0)`);
+      ctx.save();
+      ctx.strokeStyle = slg;
+      ctx.lineWidth = 18 + Math.sin(frame * 0.07 + sl.phase) * 4;
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke();
+      ctx.restore();
+    }
+
+    // ── City background (drawn over searchlights so buildings occlude them) ──
     skyScroll = (skyScroll + 0.18) % skyOC.width;
     ctx.drawImage(skyOC, -skyScroll, 0, skyOC.width, h);
     ctx.drawImage(skyOC, skyOC.width - skyScroll, 0, skyOC.width, h);
@@ -3824,7 +3851,7 @@ function startCyberpunk() {
       ws.timer--;
       if (ws.timer <= 0) {
         ws.off = !ws.off;
-        ws.timer = ws.off ? (3 + Math.floor(Math.random()*30)) : (80 + Math.floor(Math.random()*500));
+        ws.timer = ws.off ? (2 + Math.floor(Math.random()*20)) : (400 + Math.floor(Math.random()*1800));
       }
       if (!ws.off) continue;
       const win = skyData.wins[i];
@@ -3842,27 +3869,6 @@ function startCyberpunk() {
       const sx1 = win.x - skyScroll, sx2 = win.x + skyOC.width - skyScroll;
       if (sx1 > -6 && sx1 < w+6) ctx.fillRect(sx1, wy, 6, 8);
       if (sx2 > -6 && sx2 < w+6) ctx.fillRect(sx2, wy, 6, 8);
-    }
-
-    // ── Searchlights sweeping from rooftops ──
-    for (const sl of cpSearchlights) {
-      sl.angle += sl.speed;
-      if (sl.angle > sl.center+sl.range || sl.angle < sl.center-sl.range) sl.speed *= -1;
-      // Origin: random building rooftop height (upper 30-65% of screen)
-      const sx = sl.x * w, sy = h * (0.30 + sl.x * 0.28);
-      const len = h * 0.65;
-      const ex = sx + Math.sin(sl.angle) * len;
-      const ey = sy - len * Math.cos(sl.angle);
-      const slg = ctx.createLinearGradient(sx, sy, ex, ey);
-      slg.addColorStop(0, `rgba(${sl.color},${sl.alpha})`);
-      slg.addColorStop(1, `rgba(${sl.color},0)`);
-      ctx.save();
-      ctx.strokeStyle = slg;
-      ctx.lineWidth = 18 + Math.random()*6;
-      ctx.globalAlpha = 1;
-      ctx.shadowBlur = 0;
-      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke();
-      ctx.restore();
     }
 
     // ── Drifting toxic clouds ──
@@ -3927,81 +3933,36 @@ function startCyberpunk() {
   startCyberpunkEffects();
 }
 
-// ── CYBERPUNK TAG EFFECTS: neon flicker + leet-speak glitch ──────────────────
+// ── CYBERPUNK TAG EFFECTS: neon flicker animations ───────────────────────────
 // Tags behave like damaged neon signs: random flicker bursts, brief outages,
-// occasional power-surge overbright. 20% of events swap middle characters to
-// leet-speak equivalents (a→4, e→3, i→!, l→1, o→0, s→5) — first and last
-// characters of each word are NEVER touched (Rawlinson reading-invariance).
-const LEET_MAP = {a:'4',e:'3',i:'!',l:'1',o:'0',s:'5',t:'7'};
-function cpLeetWord(w) {
-  if(w.length<=2) return w;
-  const mid = w.slice(1,-1).replace(/[aeilost]/gi, ch =>
-    Math.random()<0.65 ? (LEET_MAP[ch.toLowerCase()]||ch) : ch
-  );
-  return w[0] + mid + w[w.length-1];
-}
-function cpLeetText(txt) {
-  return txt.split(/(\s+)/).map(tok => /\S/.test(tok) ? cpLeetWord(tok) : tok).join('');
-}
+// occasional power-surge overbright.
 
 let cpEffectTimer = null;
-const cpOrigText = new WeakMap();
 
 function stopCyberpunkEffects() {
   if(cpEffectTimer){ clearTimeout(cpEffectTimer); cpEffectTimer=null; }
-  document.querySelectorAll('.tag[data-cpleet]').forEach(t => {
-    if(cpOrigText.has(t)){
-      for (const n of t.childNodes) if (n.nodeType===Node.TEXT_NODE){ n.nodeValue=cpOrigText.get(t); break; }
-      cpOrigText.delete(t);
-    }
-    t.removeAttribute('data-cpleet');
-  });
   document.querySelectorAll('.tag.cp-flicker,.tag.cp-out,.tag.cp-surge').forEach(t =>
     t.classList.remove('cp-flicker','cp-out','cp-surge')
   );
 }
 
 function startCyberpunkEffects() {
-  // Returns the first direct text node — avoids tooltip child elements
-  function tagTextNode(tag) {
-    for (const n of tag.childNodes) if (n.nodeType === Node.TEXT_NODE) return n;
-    return null;
-  }
   function tick() {
     if(document.documentElement.getAttribute('data-theme')!=='cyberpunk') return;
     const tags = Array.from(document.querySelectorAll('.tag'));
     if(!tags.length){ cpEffectTimer=setTimeout(tick,600); return; }
-    const n = 1 + Math.floor(Math.random()*3);
+    const n = 2 + Math.floor(Math.random()*4);
     for(let i=0; i<n; i++){
       const tag = tags[Math.floor(Math.random()*tags.length)];
       const r = Math.random();
-      // Leet glitch — operate on first text node only to avoid touching tooltip HTML
-      if(r<0.18 && !tag.hasAttribute('data-cpleet')){
-        const tn = tagTextNode(tag);
-        if(!tn) continue;
-        const orig = tn.nodeValue;
-        cpOrigText.set(tag, orig);
-        tag.setAttribute('data-cpleet','1');
-        tn.nodeValue = cpLeetText(orig);
-        setTimeout(()=>{
-          if(cpOrigText.has(tag)){
-            const tn2 = tagTextNode(tag);
-            if(tn2) tn2.nodeValue = cpOrigText.get(tag);
-            cpOrigText.delete(tag);
-          }
-          tag.removeAttribute('data-cpleet');
-        }, 600+Math.random()*1800);
-      } else if(r<0.55){
-        // Flicker — higher probability, longer animation durations
-        const cls = r<0.30?'cp-flicker':r<0.44?'cp-out':'cp-surge';
-        tag.classList.remove('cp-flicker','cp-out','cp-surge');
-        void tag.offsetWidth; // restart animation
-        tag.classList.add(cls);
-        const dur = cls==='cp-out'?3200:cls==='cp-surge'?1400:1000;
-        setTimeout(()=>tag.classList.remove(cls), dur+80);
-      }
+      const cls = r<0.45?'cp-flicker':r<0.72?'cp-out':'cp-surge';
+      tag.classList.remove('cp-flicker','cp-out','cp-surge');
+      void tag.offsetWidth;
+      tag.classList.add(cls);
+      const dur = cls==='cp-out'?3200:cls==='cp-surge'?1400:1000;
+      setTimeout(()=>tag.classList.remove(cls), dur+80);
     }
-    cpEffectTimer = setTimeout(tick, 60+Math.random()*700);
+    cpEffectTimer = setTimeout(tick, 40+Math.random()*400);
   }
   tick();
 }
