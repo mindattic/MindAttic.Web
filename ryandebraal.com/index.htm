@@ -579,7 +579,59 @@ select.tb-sel:hover{border-color:var(--accent);}
 </div>
 
 <script>
+/*
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║  Hey. You opened DevTools.  I respect that.                               ║
+ * ╠═══════════════════════════════════════════════════════════════════════════╣
+ * ║                                                                           ║
+ * ║   ██████╗ ██╗   ██╗ █████╗ ███╗   ██╗                                    ║
+ * ║   ██╔══██╗╚██╗ ██╔╝██╔══██╗████╗  ██║                                    ║
+ * ║   ██████╔╝ ╚████╔╝ ███████║██╔██╗ ██║                                    ║
+ * ║   ██╔══██╗  ╚██╔╝  ██╔══██║██║╚██╗██║                                    ║
+ * ║   ██║  ██║   ██║   ██║  ██║██║ ╚████║                                    ║
+ * ║   ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝                                   ║
+ * ║                                                                           ║
+ * ║   ██████╗ ███████╗██████╗ ██████╗  █████╗  █████╗ ██╗                    ║
+ * ║   ██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔══██╗██║                    ║
+ * ║   ██║  ██║█████╗  ██████╔╝██████╔╝███████║███████║██║                    ║
+ * ║   ██║  ██║██╔══╝  ██╔══██╗██╔══██╗██╔══██║██╔══██║██║                    ║
+ * ║   ██████╔╝███████╗██████╔╝██║  ██║██║  ██║██║  ██║███████╗               ║
+ * ║   ╚═════╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝              ║
+ * ║                                                                           ║
+ * ╠═══════════════════════════════════════════════════════════════════════════╣
+ * ║  You found the backend of a resume.                                       ║
+ * ║  One file. No build step. No framework. No npm install.                   ║
+ * ║  Just a developer who knows how the browser actually works.               ║
+ * ╠═══════════════════════════════════════════════════════════════════════════╣
+ * ║                                                                           ║
+ * ║  TABLE OF CONTENTS                                                        ║
+ * ║  ───────────────────────────────────────────────────────────────────────  ║
+ * ║  § 1  App Settings ............. Tunable constants + localStorage         ║
+ * ║  § 2  Resume Data .............. ~200 tech tooltips, skills, exp, etc.    ║
+ * ║  § 3  Render Engine ............ Template fns, 3-profile rendering        ║
+ * ║  § 4  Profile / Theme / Font ... User preferences + localStorage persist  ║
+ * ║  § 5  Canvas FX ................ Seasonal animations (15 themes)          ║
+ * ║        ├ Spring ................ Growing grass blades + floating pollen    ║
+ * ║        ├ Summer ................ Bees with flower-claiming state machine   ║
+ * ║        ├ Autumn ................ Falling leaves with wind physics          ║
+ * ║        ├ Winter ................ Snowflakes + accumulating snow pile SVG   ║
+ * ║        ├ Matrix ................ Classic green column rain                 ║
+ * ║        ├ Horror ................ Flashlight overlay + wall scrawls + eyes  ║
+ * ║        ├ Neko .................. 10 roaming cats, full 1998 state machine  ║
+ * ║        ├ Ocean ................. Rising bubbles + caustic light columns    ║
+ * ║        ├ Forest ................ Parallax layered tree silhouettes         ║
+ * ║        └ Synthwave ............. Perspective grid + sliced retro sun       ║
+ * ║  § 6  Export Menu .............. MD + HTML export                         ║
+ * ║  § 7  Helpers .................. download() / downloadBlob()               ║
+ * ║  § 8  Init ..................... Boot, preference restore, tooltip wiring  ║
+ * ║  § 9  Global Exports ........... window.* bridge — the IIFE escape hatch  ║
+ * ║                                                                           ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ */
 ;(function ResumeApp() {
+// Everything lives inside this IIFE to keep window scope clean.
+// The one controlled exit is at the bottom (§ 9) — only what HTML event
+// handlers actually need is exported. The rest stays private in here.
 'use strict';
 
 // ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -605,6 +657,16 @@ try {
 // ║  RESUME DATA                                                                ║
 // ║  Tech tooltips, resume content, skills, experience, projects, education     ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
+
+// ── THE FLAT DATABASE ────────────────────────────────────────────────────────
+// ~200 technologies. Each value is a two-field record using "\n\n" as delimiter:
+//   field 1 — short, plain-English definition (what it is)
+//   field 2 — where I personally used it (the credibility layer)
+//
+// Parsed into structured SKILLS objects below. The "\n\n" split keeps the source
+// readable as a plain object literal instead of an array of {desc, impl} records.
+//
+// Yes, it's a flat object. It's a resume, not a relational database.
 const tooltips = {
   'C#':'Strongly-typed, object-oriented language on the .NET platform\n\nPrimary language — 20+ years across all projects',
   'React':'Component-based JavaScript UI library by Meta\n\nBank of America — Datastrology, Graphite',
@@ -1090,9 +1152,13 @@ const tooltips = {
 };
 
 // ── SKILLS ──────────────────────────────────────────────────────────────────
-// Structured skill data: built from tooltips strings + persisted familiarity.
-// Shape: { [tagText]: { desc: string, impl: string, fam: number (10-100) } }
-// Edit skill metadata here — tooltip template in buildTooltip().
+// Parsed from tooltips at startup. "\n\n" split extracts desc + impl.
+// Shape: { [tagText]: { desc: string, impl: string, fam: number (10–100) } }
+//
+// `fam` is familiarity — defaults to 80 ("Adept") for everything.
+// It's user-adjustable per-tag via the tooltip UI and persisted to localStorage,
+// so if you think I'm overrating myself on Kubernetes, click it down.
+// I promise I won't know.
 const _savedFam = (() => { try { return JSON.parse(localStorage.getItem('tag-familiarity')||'{}'); } catch(e){ return {}; } })();
 const SKILLS = {};
 Object.entries(tooltips).forEach(([k, v]) => {
@@ -1201,7 +1267,14 @@ const D = {
 // ║  Template functions for resume sections, profile-based rendering            ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
 // ── SKILL TOOLTIP TEMPLATE ──────────────────────────────────────────────────
-// famLevel: maps 0-100 pct to one of 10 named tiers
+// famLevel: maps 0–100 to one of 10 named proficiency tiers.
+//
+//   Unaware (≤9)  →  Exposed (≤18)  →  Dabbled (≤27)  →  Novice (≤36)
+//   Apprentice (≤45)  →  Familiar (≤54)  →  Competent (≤63)
+//   Proficient (≤72)  →  Adept (≤81)  →  Expert (≤90)  →  Mastery (>90)
+//
+// Granularity is intentional: "Expert" and "Mastery" are genuinely different.
+// Click the familiarity label inside any skill tooltip to cycle it in 10% steps.
 function famLevel(pct) {
   if (pct <=  9) return 'Unaware';
   if (pct <= 18) return 'Exposed';
@@ -1235,7 +1308,10 @@ function buildTooltip(key) {
     + `</span>`
     + `</span>`;
 }
-// cycleTagLevel: advances fam for a skill, updates UI, persists to SKILLS + localStorage
+// cycleTagLevel: click-to-cycle the familiarity rating on any skill tag.
+// Advances fam by +10%, wraps 100% → 10% (back to "Exposed").
+// Updates the bar fill, label text, and pct display in-place, then persists.
+// This is the rebuttal mechanism. Use it freely.
 function cycleTagLevel(el, key) {
   const s = SKILLS[key];
   if (!s) return;
@@ -1249,7 +1325,10 @@ function cycleTagLevel(el, key) {
   const fill = bar.querySelector('.tip-bar-fill');
   if (fill) fill.style.width = s.fam + '%';
 }
-// tag: minimal markup — tooltip injected lazily on first mouseenter
+// tag: minimal markup — tooltip HTML is NOT rendered here, only the outer span.
+// The tooltip is injected lazily on first mouseenter (see init → event delegation).
+// With ~200 skills across 3 profiles, eager rendering would produce ~60KB of DOM
+// for content the user never sees unless they hover a specific tag. Lazy wins.
 function tag(text) {
   if (!SKILLS[text]) return `<span class="tag">${text}</span>`;
   return `<span class="tag" data-skill="${text.replace(/"/g,'&quot;')}">${text}</span>`;
@@ -1311,6 +1390,10 @@ function skillsHTML(list){
   </div>`).join('');
 }
 
+// render: the entire "framework". Three profiles → three innerHTML strings.
+// No virtual DOM. No diffing. No reconciliation. Just: wipe it, write the new one.
+// For a document that re-renders at most twice per session (profile switch),
+// this is not a compromise — it's the correct choice.
 function render(profile) {
   const body = document.getElementById('resume-body');
   if (profile === 'pitch') {
@@ -1459,6 +1542,13 @@ function initProfileButtons() {
   ).join('');
 }
 
+// setTheme: stop any running canvas FX, apply the data-theme attribute (which
+// CSS variables and all [data-theme="x"] rules react to instantly), then start
+// the new FX system. Preference is persisted to localStorage.
+//
+// The canvas (z-index: 0, fixed, full-viewport, pointer-events: none) is a
+// shared layer that each FX system owns exclusively while active. stopFX()
+// cancels the rAF loop, clears it, and resets shared state before handoff.
 function setTheme(t) {
   currentTheme = t;
   document.documentElement.setAttribute('data-theme', t);
@@ -1560,7 +1650,16 @@ function stopFX() {
   if(overlay) overlay.style.background='';
 }
 
-// ── SPRING: growing grass blades ──────────────────────────────────────────────
+// ── SPRING: growing grass blades + floating pollen ───────────────────────────
+// 80 grass blades distributed evenly across the viewport base.
+// Each blade: randomized height, maxH, width, sway speed, and green HSL color.
+// Growth uses a frame counter delay so blades stagger their emergence — they
+// don't all pop up at once. quadraticCurveTo handles the lean: cheaper than
+// cubic, indistinguishable at grass scale.
+//
+// Pollen: 60 tiny ellipses drifting upward with a sinusoidal x-overlay.
+// They wrap at edges and re-enter from the bottom — infinite supply.
+// The `dying` flag reverses the growth (maxH shrinks) for theme-out transitions.
 function createSpringLayer() {
   const blades = Array.from({length:80},(_,i)=>({
     x: (i/80)*canvas.width + Math.random()*20-10,
@@ -1625,7 +1724,19 @@ function startSpring() {
   draw();
 }
 
-// ── SUMMER: wandering bees that compete for flowers ───────────────────────────
+// ── SUMMER: wandering bees with flower-claiming AI ────────────────────────────
+// 10 bees, 7 initial flowers. Each bee runs a 3-state machine:
+//
+//   'wander' → steers with randomized turn rate, biased away from center
+//              (so bees stay in the left/right thirds and off the resume)
+//   'approach' → locks onto nearest unclaimed bloom, flies toward it
+//   'onflower' → lands, "harvests", then flower fades ('visited' phase)
+//                and bee returns to 'wander'
+//
+// `claimedBy` on each flower prevents two bees from targeting the same bloom.
+// New flowers spawn every 200 frames if fewer than 9 are active.
+// Wings animate via a Math.sin on wobble — faster in flight, slower when landed.
+// The bee body is an ellipse + 3 stripe ellipses + 2 wing ellipses. No images.
 function createSummerLayer() {
   const W = ()=>canvas.width, H = ()=>canvas.height;
   const FLOWER_DETECT = 120;
@@ -1778,7 +1889,10 @@ function startSummer() {
   draw();
 }
 
-// ── AUTUMN: falling leaves ────────────────────────────────────────────────────
+// ── AUTUMN: falling leaves with wind physics ──────────────────────────────────
+// Leaves fall with per-leaf randomized terminal velocity, rotation rate, and
+// horizontal drift. A global wind force adds a shared lateral component that
+// shifts all leaves together, simulating gusts. Leaves wrap from bottom to top.
 function createAutumnLayer() {
   const colors=['#c05c18','#e8762a','#d4380a','#f0943c','#8b3a10','#f5b942'];
   const leaves = Array.from({length:AppSettings.leaf_count},()=>({
@@ -1842,7 +1956,21 @@ function startAutumn() {
   draw();
 }
 
-// ── WINTER: white snowflakes ──────────────────────────────────────────────────
+// ── WINTER: snowflakes + accumulating SVG snow pile ──────────────────────────
+// Two separate systems working in tandem:
+//
+//   Canvas: `snow_flake_count` falling particles with randomized size, speed,
+//           drift, and sinusoidal horizontal wobble. Standard particle system.
+//
+//   SVG pile: an absolutely-positioned <svg> at the viewport bottom.
+//             Each flake that reaches the ground raises the pile at its x column
+//             by `snow_pile_rate`. The pile profile is a smooth polyline built
+//             from per-column height values. snow_smooth_speed lerps neighboring
+//             columns toward each other every frame — natural snow redistribution.
+//             Max pile height is clamped to snow_max_height * viewport height.
+//
+// The SVG approach for the pile (rather than canvas) means the drift and shaping
+// happen in the DOM layer — easier to tweak and visually distinct from the canvas.
 function createWinterLayer() {
   const H = canvas.height;
   const SEGMENTS = 80;
@@ -2004,6 +2132,19 @@ function startWinter() {
 // ║  JS implementation from nekojs by Louis Abraham (GPL v3)                    ║
 // ║  Sprites embedded as CSS classes .neko-f0 through .neko-f31                 ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
+//
+// Full port of the 1998 Macintosh/Windows desktop pet. 32 sprite frames,
+// 17 animation states, and a complete behavior model:
+//
+//   She chases the mouse cursor.
+//   If she reaches it, she stops and grooms.
+//   If you don't move for a while, she yawns and falls asleep (Zs appear).
+//   Move the mouse — she snaps awake and chases again.
+//
+// NekoState maps to the original Neko.h enum values exactly.
+// BehaviorMode drives the higher-level action loop between state transitions.
+// The sprite sheet is embedded as 32 CSS background-position classes in <style>
+// above — no external image requests, one DOM element, all CSS.
 const NEKO_SPRITE_COUNT = 32;
 
 (function () {
@@ -2837,7 +2978,18 @@ function toggleNeko() {
   }, 100);
 }
 
-// ── NEKO THEME: 10 random roaming cats with behavior cycling & collision ──────
+// ── NEKO THEME: 10 simultaneous cats with behavior cycling & collision ─────────
+// Distinct from the single interactive neko above. This is ambient — 10 cats
+// roam the page independently, each running their own behavior cycle:
+//
+//   wander → pace → chase (nearest other cat) → sleep → repeat (randomized)
+//
+// Collision avoidance: cats repel each other when within ~80px via a
+// normalized direction vector scaled by repulsion strength. No clumping.
+//
+// Curve pathing: a sinusoidal overlay on straight movement (same technique
+// as the summer bees) gives the cats a feline gait rather than robotic lines.
+// Each cat picks a random curve amplitude and phase — they never move identically.
 let themeNekos = [];
 let nekoBehaviorTimers = [];
 let nekoCollisionLoop = null;
@@ -3104,6 +3256,29 @@ function stopNekoTheme() {
 // ║  HORROR & MATRIX THEMES                                                     ║
 // ║  Flashlight overlay effect, Matrix rain animation                           ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
+//
+// HORROR — two-layer approach:
+//
+//   Canvas (drawn once, not animated): static horror background.
+//     - Horizontal brush stroke texture (faint, randomized per render)
+//     - Jagged polyline "cracks" in deep red
+//     - Corner vignettes via radial gradients
+//     - Glowing red-eye pairs at random screen positions (barely visible)
+//     - Wall scrawl messages ("GET OUT", "HELP ME", "RUN") in near-transparent
+//       serif text, rotated slightly — readable only if the flashlight passes over
+//
+//   CSS overlay (#horror-overlay): a radial-gradient punching a transparent
+//     circle (the "flashlight beam") in an otherwise opaque black layer.
+//     Updated via CSS custom properties --lx/--ly on mousemove — the browser
+//     composites this in hardware. Zero canvas cost per frame.
+//     Flickering: a random blackout (~2% chance/frame) drops to full black
+//     for a few frames, then restores. Horror movie effect, cheap.
+//
+// MATRIX — the classic column-rain:
+//   Instead of clearing the canvas each frame, a semi-transparent black rect
+//   is painted over everything. Old characters dim gradually rather than
+//   vanishing — this is how the "fading trail" effect works. Columns fall at
+//   randomized speeds so streams naturally desync over time.
 let horrorMX=window.innerWidth/2, horrorMY=window.innerHeight/2;
 let horrorHandlers=null;
 function startHorror() {
@@ -3239,7 +3414,17 @@ function startMatrix() {
   draw();
 }
 
-// ── FOREST: tightly packed parallax tree silhouettes ──────────────────────────
+// ── FOREST: parallax layered tree silhouettes ─────────────────────────────────
+// Three depth layers — back, mid, front — each scrolling at a different speed.
+// Parallax factor: front layer moves 3× faster than back. The eye reads the
+// speed differential as depth without any 3D math.
+//
+// Each tree: a trunk drawn as a bezier curve tapering upward, branches spawned
+// recursively with decreasing radius and angle spread, and ellipse blobs for
+// foliage canopy. All procedural — no two trees are identical.
+//
+// Back layer: desaturated, slow. Front layer: darkest, fastest.
+// The layering order matters: back → mid → front, each painted over the last.
 function startForest() {
   const W = () => canvas.width, H = () => canvas.height;
 
@@ -3364,7 +3549,21 @@ function startForest() {
   draw();
 }
 
-// ── OCEAN: bubbles rising from the deep ───────────────────────────────────────
+// ── OCEAN: rising bubbles + caustic light columns ─────────────────────────────
+// Two particle systems composited on the same canvas frame:
+//
+//   Light rays: wide, alpha-gradient vertical columns that drift slowly left/right
+//     via a sinusoidal phase offset. Multiple overlapping radial gradients simulate
+//     underwater caustic light patterns. Redrawn each frame at low alpha — they
+//     shift rather than flash.
+//
+//   Bubbles: particles rising from random depths, each with:
+//     - Variable radius (small near surface, larger from depth)
+//     - Sinusoidal x-wobble on ascent (bubbles never rise perfectly straight)
+//     - Alpha fade as they near the surface (they "dissolve" rather than pop)
+//     - Respawn at bottom when they exit the top
+//
+// No images. No SVG. Pure Canvas API + math.
 function startOcean() {
   const W = () => canvas.width, H = () => canvas.height;
   const bubbles = Array.from({length: 40}, () => spawnBubble(W(), H(), true));
@@ -3506,7 +3705,21 @@ function startOcean() {
   draw();
 }
 
-// ── SYNTHWAVE: retro sunset with sliced sun and perspective grid ──────────────
+// ── SYNTHWAVE: perspective grid + sliced retro sun ────────────────────────────
+// Two rendering layers per frame:
+//
+//   Perspective grid: horizontal lines converge at a vanishing point at the
+//     center-horizon. Vertical lines are spaced evenly in perspective space
+//     (closer to viewer = wider apart). The grid animates by advancing a y-phase
+//     each frame — creates a "moving forward at speed" illusion from 2D math.
+//     Line brightness increases toward the horizon (distance fade, inverted).
+//
+//   The sun: a circle with horizontal dark bands drawn across it in slices —
+//     the classic 80s Outrun aesthetic. Glow is stacked concentric circles at
+//     decreasing alpha. The color shifts from deep magenta at top to orange-yellow
+//     at the horizon via a CSS-variable-driven gradient on the background.
+//
+// The whole scene is a flat canvas. No WebGL. No shaders. Just trig and rAF.
 function startSynthwave() {
   const W = () => canvas.width, H = () => canvas.height;
   let t = 0;
@@ -3805,7 +4018,25 @@ function init() {
   initFontSize();
   initNekoColor();
 
-  // Smart tooltip: lazily build from SKILLS on first hover, then position
+  // ── TOOLTIP SYSTEM ────────────────────────────────────────────────────────
+  // Event delegation on document — one listener handles all tags, present and
+  // future (render() wipes and rewrites the DOM on profile switch).
+  //
+  // On first hover over a .tag[data-skill]:
+  //   1. Build the tooltip HTML from SKILLS data (lazy — not on page load).
+  //   2. Insert it into the tag element.
+  //   3. Position it: default is centered above. Three edge cases handled:
+  //
+  //      Vertical: if the tag is too close to the top, flip the tooltip below
+  //        (.tt-below class) rather than clipping off-screen.
+  //
+  //      Horizontal: CSS default (left:50%, translateX(-50%)) centers on the
+  //        tag perfectly. Only override when that would bleed past the viewport
+  //        edge. When clamping, the arrow (--tt-arrow-x CSS var) still points
+  //        at the tag's center, not the tooltip's center.
+  //
+  // On subsequent hovers, the tooltip already exists — skip to positioning.
+  // The familiarity bar animates separately (see lerp below).
   document.addEventListener('mouseenter', function(e) {
     const tagEl = e.target.closest('.tag');
     if (!tagEl) return;
@@ -3838,6 +4069,17 @@ function init() {
       // Arrow stays pointing at tag center regardless of tooltip shift
       tt.style.setProperty('--tt-arrow-x', (tagCx - clampedLeft) + 'px');
     }
+    // ── FAMILIARITY BAR LERP ──────────────────────────────────────────────
+    // Velocity-based animation: starts fast, decelerates as it nears the target.
+    //   vel *= pow(1 - decay, dt)   — exponential decay, frame-rate independent
+    //   cur += vel * dt             — integrate velocity into position
+    //
+    // The bar "surges then settles" rather than advancing at constant speed.
+    // At 80% (default), it reads as confident and earned. At 40%, it feels
+    // appropriately cautious. The physics matches the intent.
+    //
+    // `_barRaf` on the tag element cancels any in-progress animation if the
+    // user hovers out and back in before the previous run completes.
     // Lerp-based bar fill: starts fast (big gap), decelerates to a smooth stop
     const fill = tt.querySelector('.tip-bar-fill');
     const levelEl = tt.querySelector('.tip-bar-level');
@@ -4007,6 +4249,17 @@ function randomTheme() {
 // ║  GLOBAL EXPORTS                                                             ║
 // ║  Functions called from HTML onclick/onchange handlers                       ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
+//
+// The IIFE wrapped everything. This is the one controlled exit.
+//
+// HTML event handlers (onclick, onchange) resolve names from window scope,
+// so any function they reference must live there. Rather than declaring
+// everything globally from the start — polluting window with ~30 names —
+// only the functions that HTML actually needs are exported here, explicitly.
+//
+// Object.assign(window, {...}) is a single, auditable manifest of the public
+// API surface. Everything else in the IIFE stays private.
+// If you're reading this, you already know why that matters.
 Object.assign(window, {
   setProfile, cycleProfile, setTheme, cycleTheme, updateThemeSwatch, setFont, adjustFontSize, resetDefaults,
   toggleExportMenu, exportMD, exportHTML, printResume,
@@ -4015,7 +4268,8 @@ Object.assign(window, {
   cycleTagLevel, randomTheme,
 });
 
-})(); // end ResumeApp
+})(); // ── end ResumeApp ──────────────────────────────────────────────────────────
+     // If you made it here, you read the whole thing. Hire me.
 </script>
 
 <!-- ── AVATAR LIGHTBOX ── -->
