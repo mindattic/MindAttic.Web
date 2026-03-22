@@ -3813,13 +3813,20 @@ function startCyberpunk() {
       }
       // Windows on foreground buildings
       drawWindows(cf, fx, by, bw, bh);
-      // Antennas on foreground buildings
-      if (Math.random()<0.55) {
-        const ax = fx + bw*0.25 + Math.random()*bw*0.5;
-        const aLen = 6 + Math.random()*20;
-        cf.strokeStyle=`rgba(${Math.random()<0.5?'255,0,200':'0,200,255'},0.35)`;
-        cf.lineWidth=0.8;
-        cf.beginPath(); cf.moveTo(ax, by); cf.lineTo(ax, by-aLen); cf.stroke();
+      // Antennas on foreground buildings — most get 1-3
+      if (Math.random()<0.82) {
+        const numAnt = Math.random()<0.45 ? 2 + Math.floor(Math.random()*2) : 1;
+        for (let a=0; a<numAnt; a++) {
+          const ax = fx + bw*0.1 + Math.random()*bw*0.8;
+          const aLen = 5 + Math.random()*22;
+          cf.strokeStyle=`rgba(${Math.random()<0.5?'255,0,200':'0,200,255'},${0.30+Math.random()*0.35})`;
+          cf.lineWidth = 0.7 + Math.random()*0.5;
+          cf.beginPath(); cf.moveTo(ax, by); cf.lineTo(ax, by-aLen); cf.stroke();
+          if (Math.random()<0.5) {
+            cf.fillStyle='rgba(255,30,80,0.85)';
+            cf.beginPath(); cf.arc(ax, by-aLen, 1.2, 0, Math.PI*2); cf.fill();
+          }
+        }
       }
       fgRects.push({x:fx, y:by, w:bw, h:bh});
       fx += bw + 1 + Math.random()*5;
