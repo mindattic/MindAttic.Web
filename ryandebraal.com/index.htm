@@ -3753,11 +3753,17 @@ function startCyberpunk() {
     }
 
     // Helper: building silhouette fill color
-    function bCol(c) { c.fillStyle=`hsl(270,${28+Math.random()*18}%,${3+Math.random()*5}%)`; }
+    // Buildings stay in the purple family — each picks a slightly different shade
+    // (hue 255–285, lightness 2–9%) so they read as the same material in different
+    // lighting rather than wildly different substances.
+    const MAT_HUES = [255, 260, 265, 270, 275, 280, 285];
+    let bgHue = 270;
+    function bCol(c) { c.fillStyle=`hsl(${bgHue},${28+Math.random()*18}%,${3+Math.random()*6}%)`; }
     function bStroke(c,a=0.5) { c.strokeStyle=`rgba(${Math.random()<0.5?'255,0,200':'0,200,255'},${a})`; c.lineWidth=0.7; }
 
     let x = 0;
     while (x < oc.width) {
+      bgHue = MAT_HUES[Math.floor(Math.random()*MAT_HUES.length)];
       const roll = Math.random();
 
       // ── TYPE: Pyramid / zigggurat ──────────────────────────────────────────
@@ -3953,12 +3959,32 @@ function startCyberpunk() {
       const bw = 18 + Math.random()*55;
       const bh = h*0.04 + Math.random()*h*0.17;
       const by = h - bh;
-      cf.fillStyle = `hsl(270,${18+Math.random()*14}%,${7+Math.random()*7}%)`;
-      cf.fillRect(fx, by, bw, bh);
-      if (Math.random() < 0.35) {
+      const fgHue = MAT_HUES[Math.floor(Math.random()*MAT_HUES.length)];
+      cf.fillStyle = `hsl(${fgHue},${18+Math.random()*14}%,${7+Math.random()*8}%)`;
+      // Polygon silhouette — same chamfered corner variants as background towers
+      const fgClip = Math.random();
+      cf.beginPath();
+      if (fgClip < 0.28) {
+        const cut = bw * (0.18 + Math.random()*0.28);
+        cf.moveTo(fx+cut, by); cf.lineTo(fx+bw, by);
+        cf.lineTo(fx+bw, h); cf.lineTo(fx, h); cf.lineTo(fx, by+cut*0.8);
+      } else if (fgClip < 0.52) {
+        const cut = bw * (0.18 + Math.random()*0.28);
+        cf.moveTo(fx, by); cf.lineTo(fx+bw-cut, by);
+        cf.lineTo(fx+bw, by+cut*0.8); cf.lineTo(fx+bw, h); cf.lineTo(fx, h);
+      } else if (fgClip < 0.64) {
+        const cl = bw*(0.10+Math.random()*0.18), cr = bw*(0.10+Math.random()*0.18);
+        cf.moveTo(fx+cl, by); cf.lineTo(fx+bw-cr, by);
+        cf.lineTo(fx+bw, by+cr*0.7); cf.lineTo(fx+bw, h);
+        cf.lineTo(fx, h); cf.lineTo(fx, by+cl*0.7);
+      } else {
+        cf.rect(fx, by, bw, bh);
+      }
+      cf.closePath(); cf.fill();
+      if (fgClip < 0.64 && Math.random() < 0.5) {
         cf.strokeStyle = Math.random()<0.5 ? 'rgba(255,0,200,0.25)' : 'rgba(0,200,255,0.25)';
         cf.lineWidth = 0.8;
-        cf.strokeRect(fx, by, bw, bh);
+        cf.stroke();
       }
       // Windows on foreground buildings
       drawWindows(cf, fx, by, bw, bh);
@@ -3981,13 +4007,61 @@ function startCyberpunk() {
       fx += bw + 1 + Math.random()*5;
     }
 
-    return {bgOC: oc, fgOC, wins, fgRects, rooftops};
+    // ── Medium: mid-distance layer between bg and fg (parallax 0.25) ─────────
+    const mdOC = document.createElement('canvas');
+    mdOC.width = oc.width; mdOC.height = h;
+    const cm = mdOC.getContext('2d');
+    let mx = -5;
+    while (mx < mdOC.width) {
+      const bw = 22 + Math.random()*62;
+      const bh = h*0.08 + Math.random()*h*0.26;
+      const by = h - bh;
+      const mdHue = MAT_HUES[Math.floor(Math.random()*MAT_HUES.length)];
+      cm.fillStyle = `hsl(${mdHue},${22+Math.random()*16}%,${5+Math.random()*6}%)`;
+      const mdClip = Math.random();
+      cm.beginPath();
+      if (mdClip < 0.28) {
+        const cut = bw*(0.18+Math.random()*0.28);
+        cm.moveTo(mx+cut,by); cm.lineTo(mx+bw,by); cm.lineTo(mx+bw,h); cm.lineTo(mx,h); cm.lineTo(mx,by+cut*0.8);
+      } else if (mdClip < 0.52) {
+        const cut = bw*(0.18+Math.random()*0.28);
+        cm.moveTo(mx,by); cm.lineTo(mx+bw-cut,by); cm.lineTo(mx+bw,by+cut*0.8); cm.lineTo(mx+bw,h); cm.lineTo(mx,h);
+      } else if (mdClip < 0.64) {
+        const cl = bw*(0.10+Math.random()*0.18), cr = bw*(0.10+Math.random()*0.18);
+        cm.moveTo(mx+cl,by); cm.lineTo(mx+bw-cr,by); cm.lineTo(mx+bw,by+cr*0.7); cm.lineTo(mx+bw,h); cm.lineTo(mx,h); cm.lineTo(mx,by+cl*0.7);
+      } else {
+        cm.rect(mx, by, bw, bh);
+      }
+      cm.closePath(); cm.fill();
+      if (mdClip < 0.64 && Math.random() < 0.4) {
+        cm.strokeStyle = Math.random()<0.5 ? 'rgba(255,0,200,0.20)' : 'rgba(0,200,255,0.20)';
+        cm.lineWidth = 0.7; cm.stroke();
+      }
+      drawWindows(cm, mx, by, bw, bh);
+      if (Math.random() < 0.70) {
+        const numAnt = Math.random()<0.35 ? 2+Math.floor(Math.random()*2) : 1;
+        for (let a=0; a<numAnt; a++) {
+          const ax = mx + bw*0.1 + Math.random()*bw*0.8;
+          const aLen = 6 + Math.random()*28;
+          cm.strokeStyle=`rgba(${Math.random()<0.5?'255,0,200':'0,200,255'},${0.28+Math.random()*0.32})`;
+          cm.lineWidth = 0.7+Math.random()*0.5;
+          cm.beginPath(); cm.moveTo(ax,by); cm.lineTo(ax,by-aLen); cm.stroke();
+          if (Math.random()<0.5) {
+            cm.fillStyle='rgba(255,30,80,0.85)';
+            cm.beginPath(); cm.arc(ax,by-aLen,1.3,0,Math.PI*2); cm.fill();
+          }
+        }
+      }
+      mx += bw + 1 + Math.random()*7;
+    }
+
+    return {bgOC: oc, mdOC, fgOC, wins, fgRects, rooftops};
   }
 
   let skyData = buildSkyline(W(), H());
-  let skyBG = skyData.bgOC, skyFG = skyData.fgOC;
+  let skyBG = skyData.bgOC, skyMD = skyData.mdOC, skyFG = skyData.fgOC;
   let winStates = skyData.wins.map(() => ({off:false, timer:500 + Math.floor(Math.random()*10000)}));
-  let bgScroll = 0, fgScroll = 0;
+  let bgScroll = 0, mdScroll = 0, fgScroll = 0;
 
   // Anchor each searchlight to a tall building rooftop
   function assignSearchlightRooftops() {
@@ -4051,7 +4125,7 @@ function startCyberpunk() {
     // Rebuild skyline on resize
     if(skyBG.height !== h) {
       skyData = buildSkyline(w, h);
-      skyBG = skyData.bgOC; skyFG = skyData.fgOC;
+      skyBG = skyData.bgOC; skyMD = skyData.mdOC; skyFG = skyData.fgOC;
       winStates = skyData.wins.map(() => ({off:false, timer:500 + Math.floor(Math.random()*10000)}));
       assignSearchlightRooftops();
     }
@@ -4124,6 +4198,11 @@ function startCyberpunk() {
       if (sx2 > -6 && sx2 < w+6) ctx.fillRect(sx2, wy, 6, 8);
     }
 
+    // ── Medium buildings (mid-distance, parallax between bg and fg) ──
+    mdScroll = (mdScroll + 0.25) % skyMD.width;
+    ctx.drawImage(skyMD, -mdScroll, 0, skyMD.width, h);
+    ctx.drawImage(skyMD, skyMD.width - mdScroll, 0, skyMD.width, h);
+
     // ── Foreground buildings (parallax — scrolls faster than bg) ──
     fgScroll = (fgScroll + 0.38) % skyFG.width;
     ctx.drawImage(skyFG, -fgScroll, 0, skyFG.width, h);
@@ -4189,37 +4268,43 @@ function startCyberpunk() {
     ctx.fillStyle='rgba(0,0,0,0.06)';
     for(let y=0;y<h;y+=3) ctx.fillRect(0,y,w,1);
 
-    // ── Resume border: heartbeat glow with palpitations ──
-    // Slow resting pulse (≈40 bpm) with occasional double-beat palpitations.
-    // g=0 → nearly dark; g=1 → full blaze. Border fades in/out like a neon
-    // sign breathing — never fully off, never static.
+    // ── Resume border: slow neon surge with realistic flicker ──
+    // Very slow surge cycle (~3 bpm = one full glow every 20s): 8s gentle rise,
+    // 12s long fade. Between surges the sign holds a dim baseline.
+    // Flicker is voltage-noise style — mostly steady, occasionally buzzing.
     if (frame % 2 === 0) {
       const sec = frame / 60;
-      // Resting heartbeat: sharp attack, slow exponential decay (~0.7s cycle)
-      const bpm = 42;
-      const phase = (sec * bpm / 60) % 1;          // 0..1 within one beat
-      const beat = Math.exp(-phase * 6) * (phase < 0.85 ? 1 : 0); // sharp rise, slow fade, gap
-
-      // Palpitation: extra beat injected at irregular noise-driven intervals
       function _h(n) { const s=Math.sin(n*127.1+311.7)*43758.5453; return s-Math.floor(s); }
       function _sn(t) { const i=Math.floor(t),f=t-i,s=f*f*(3-2*f); return _h(i)+(_h(i+1)-_h(i))*s; }
-      const palp = _sn(sec * 0.31);                // slow wander 0..1
-      const palphase = (sec * bpm / 60 * 1.7) % 1; // extra beat offset
-      const palpBeat = palp > 0.72
-        ? Math.exp(-palphase * 7) * (palphase < 0.8 ? 1 : 0) * 0.65
-        : 0;
 
-      // Baseline dim glow so it never goes fully dark
-      const base = 0.12 + _sn(sec * 0.18) * 0.10;
+      // ~3 bpm surge (one cycle ≈ 20 seconds)
+      const bpm = 3.0;
+      const phase = (sec * bpm / 60) % 1;
+      // Slow bell: rise over first 40% of cycle, decay over remaining 60%
+      const beatEnv = phase < 0.4
+        ? Math.pow(phase / 0.4, 1.6)            // ~8s smooth rise to peak
+        : Math.pow(1 - (phase - 0.4) / 0.6, 2.4); // ~12s long slow fade
 
-      const g = Math.min(1, base + beat * 0.88 + palpBeat);
+      // Realistic neon flicker: voltage-noise dips — stable most of the time,
+      // occasionally buzzing at irregular micro-intervals
+      const flickerTendency = _sn(sec * 0.09); // drifts slowly 0..1
+      const isFlickering = flickerTendency > 0.80; // ~20% of time in flicker mode
+      const fastNoise = _sn(sec * 3.1 + 7.4);
+      const flicker = isFlickering
+        ? 0.35 + fastNoise * 0.55               // erratic during buzz
+        : 1.0 - _sn(sec * 1.8 + 2.2) * 0.05;  // near-steady, tiny wander
+
+      // Dim baseline so it never goes fully dark
+      const base = 0.07 + _sn(sec * 0.11) * 0.05;
+
+      const g = Math.min(1, (base + beatEnv * 0.85) * flicker);
       const resumeEl = document.getElementById('resume');
       if (resumeEl) {
         resumeEl.style.boxShadow =
-          `0 0 ${4+g*28}px rgba(255,0,255,${(0.10+g*0.60).toFixed(2)}),`+
-          `0 0 ${10+g*65}px rgba(255,0,255,${(0.02+g*0.20).toFixed(2)}),`+
-          `inset 0 0 ${6+g*28}px rgba(80,0,120,${(0.02+g*0.12).toFixed(2)})`;
-        resumeEl.style.borderColor = g > 0.82 ? '#ff88ff' : g > 0.4 ? '#ff00ff' : '#cc00cc';
+          `0 0 ${4+g*36}px rgba(255,0,255,${(0.08+g*0.55).toFixed(2)}),`+
+          `0 0 ${12+g*110}px rgba(255,0,255,${(0.01+g*0.18).toFixed(2)}),`+
+          `inset 0 0 ${6+g*32}px rgba(80,0,120,${(0.02+g*0.13).toFixed(2)})`;
+        resumeEl.style.borderColor = g > 0.80 ? '#ff88ff' : g > 0.35 ? '#ff00ff' : '#cc00cc';
       }
     }
 

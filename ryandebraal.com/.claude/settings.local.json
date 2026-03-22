@@ -33,7 +33,8 @@
       "Bash(where node:*)",
       "Bash(sed -n '3199,3207p' D:/Projects/Resume/index.htm)",
       "Bash(sed -n '3650,3660p' D:/Projects/Resume/index.htm)",
-      "Bash(grep -v \"//.*smoke\")"
+      "Bash(grep -v \"//.*smoke\")",
+      "Bash(start chrome:*)"
     ]
   }
 }
