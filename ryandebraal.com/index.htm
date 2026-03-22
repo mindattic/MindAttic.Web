@@ -196,9 +196,9 @@ select.tb-sel:hover{border-color:var(--accent);}
 @keyframes cp-flicker{0%,100%{opacity:1}8%{opacity:.15}10%{opacity:1}18%{opacity:.7}19%{opacity:.08}21%{opacity:1}55%{opacity:.9}56%{opacity:.2}58%{opacity:1}}
 @keyframes cp-out{0%{opacity:1}4%{opacity:.04}78%{opacity:.04}83%{opacity:.45}87%{opacity:.06}100%{opacity:1}}
 @keyframes cp-surge{0%{opacity:1;filter:brightness(1)}8%{opacity:1;filter:brightness(3.5)}13%{opacity:.25;filter:brightness(.25)}18%{opacity:1;filter:brightness(2.2)}28%{opacity:1;filter:brightness(1.4)}100%{opacity:1;filter:brightness(1)}}
-[data-theme="cyberpunk"] .tag.cp-flicker{animation:cp-flicker .45s ease both}
-[data-theme="cyberpunk"] .tag.cp-out{animation:cp-out 1.6s ease both}
-[data-theme="cyberpunk"] .tag.cp-surge{animation:cp-surge .65s ease both}
+[data-theme="cyberpunk"] .tag.cp-flicker{animation:cp-flicker 1s ease both}
+[data-theme="cyberpunk"] .tag.cp-out{animation:cp-out 3.2s ease both}
+[data-theme="cyberpunk"] .tag.cp-surge{animation:cp-surge 1.4s ease both}
 [data-theme="noir"] .r-contact a{border-bottom-color:rgba(192,192,192,0.2);}
 [data-theme="noir"] #resume{box-shadow:0 0 40px rgba(255,255,255,0.03);}
 [data-theme="synthwave"] .r-contact a{border-bottom-color:rgba(255,113,206,0.25);}
@@ -3516,11 +3516,21 @@ function startCyberpunk() {
   const W = () => canvas.width, H = () => canvas.height;
   let frame = 0;
 
+  const cpSearchlights = Array.from({length:4}, () => ({
+    x: Math.random(),
+    angle: -0.4 + Math.random()*0.8,
+    speed: (Math.random()<0.5?1:-1) * (0.003 + Math.random()*0.005),
+    range: 0.35 + Math.random()*0.35,
+    center: -0.2 + Math.random()*0.4,
+    alpha: 0.06 + Math.random()*0.07,
+    color: Math.random()<0.5 ? '200,220,255' : '255,200,255',
+  }));
+
   // ── Acid rain: uniform cyan, severe angle (≈38° from vertical) ────────────
   // dx/dy ratio sets the lean. tan(38°)≈0.78, so horizontal drift is 78% of
   // vertical speed — looks like a hard wind-driven storm, not gentle drizzle.
   const RAIN_COLOR = '#00ffff';
-  const RAIN_ANGLE = 0.78; // vx = speed * this
+  const RAIN_ANGLE = 0.25; // vx = speed * this — nearly vertical, slight lean
   const rain = Array.from({length:180}, () => ({
     x: Math.random() * ((canvas.width||1920) + 300) - 150,
     y: Math.random() * (canvas.height||900),
@@ -3552,33 +3562,6 @@ function startCyberpunk() {
     arcs.push({segs, color, life:1.0});
   }
 
-  // ── Smoke particles (for industrial stacks) ────────────────────────────────
-  // Each stack registers an emitter; particles are drawn in the loop.
-  let smokeEmitters = []; // populated after skyline build
-  let smokeParticles = [];
-  function tickSmoke() {
-    // Emit from each registered stack
-    for (const e of smokeEmitters) {
-      if (Math.random() < 0.18) {
-        smokeParticles.push({
-          x: e.x + (Math.random()-0.5)*4,
-          y: e.y,
-          vx: (Math.random()-0.5)*0.4 - 0.3, // slight left drift
-          vy: -(0.5 + Math.random()*0.8),
-          life: 1.0,
-          decay: 0.004 + Math.random()*0.006,
-          r: 6 + Math.random()*10,
-        });
-      }
-    }
-    smokeParticles = smokeParticles.filter(p => p.life > 0);
-    for (const p of smokeParticles) {
-      p.x += p.vx; p.y += p.vy;
-      p.r += 0.25; // expand as it rises
-      p.life -= p.decay;
-    }
-  }
-
   // ── City skyline offscreen canvas ──────────────────────────────────────────
   // Building types drawn here: rectangular towers, stepped arcologies,
   // pyramids, domed structures, mega-corp supertalls, industrial stacks.
@@ -3586,9 +3569,11 @@ function startCyberpunk() {
     const oc = document.createElement('canvas');
     oc.width = w*2; oc.height = h;
     const c = oc.getContext('2d');
-    smokeEmitters = []; // reset for this render
 
     c.fillStyle = '#03000a'; c.fillRect(0,0,oc.width,h);
+
+    // Collected window positions for dynamic flicker in the main draw loop
+    const wins = [];
 
     // Helper: neon window grid on a rectangular face
     function drawWindows(c, bx, by, bw, bh) {
@@ -3604,6 +3589,7 @@ function startCyberpunk() {
             g.addColorStop(0, cyan?`rgba(0,200,255,0.13)`:`rgba(255,0,200,0.13)`);
             g.addColorStop(1,'rgba(0,0,0,0)');
             c.fillStyle=g; c.fillRect(wx-7,wy-5,20,18);
+            wins.push({x:wx, y:wy});
           }
         }
       }
@@ -3617,32 +3603,8 @@ function startCyberpunk() {
     while (x < oc.width) {
       const roll = Math.random();
 
-      // ── TYPE: Stepped Arcology (massive brutalist megablock) ───────────────
-      if (roll < 0.08) {
-        const bw = 120 + Math.random()*120;
-        const bh = h*0.45 + Math.random()*h*0.3;
-        const by = h - bh;
-        const tiers = 4 + Math.floor(Math.random()*4);
-        for (let t=0; t<tiers; t++) {
-          const tw = bw * (1 - t/tiers * 0.55);
-          const th = bh / tiers;
-          const tx = x + (bw-tw)/2;
-          const ty = by + t*th;
-          bCol(c); c.fillRect(tx, ty, tw, th+2);
-          bStroke(c,0.3); c.strokeRect(tx, ty, tw, th+2);
-          drawWindows(c, tx, ty, tw, th);
-        }
-        // Spire
-        c.strokeStyle='rgba(255,0,200,0.6)'; c.lineWidth=1.5;
-        c.beginPath(); c.moveTo(x+bw/2, by); c.lineTo(x+bw/2, by-30-Math.random()*50); c.stroke();
-        // Antenna blink
-        const ax=x+bw/2, ay=by-30-Math.random()*50;
-        c.fillStyle='rgba(255,0,80,0.95)';
-        c.beginPath(); c.arc(ax, ay, 2.5, 0, Math.PI*2); c.fill();
-        x += bw + 10 + Math.random()*20;
-
       // ── TYPE: Pyramid / zigggurat ──────────────────────────────────────────
-      } else if (roll < 0.16) {
+      if (roll < 0.16) {
         const bw = 90 + Math.random()*110;
         const bh = h*0.28 + Math.random()*h*0.28;
         const by = h - bh;
@@ -3708,13 +3670,11 @@ function startCyberpunk() {
         for (let s=0; s<numStacks; s++) {
           const sx2 = x + 12 + s*(baseW/numStacks) + Math.random()*8;
           const sw = 8 + Math.random()*10;
-          const sh = baseH*1.4 + Math.random()*h*0.18;
+          const sh = baseH*0.55 + Math.random()*h*0.07;
           bCol(c); c.fillRect(sx2, h-baseH-sh, sw, sh);
           // Rim light at top
           c.fillStyle='rgba(255,80,0,0.7)';
           c.fillRect(sx2, h-baseH-sh, sw, 3);
-          // Register smoke emitter
-          smokeEmitters.push({x: sx2+sw/2, y: h-baseH-sh-2});
         }
         x += baseW + 6 + Math.random()*10;
 
@@ -3762,6 +3722,26 @@ function startCyberpunk() {
       }
     }
 
+    // ── Foreground: closer, smaller buildings (depth layer) ────────────────
+    // Drawn on top of main skyline — slightly lighter, shorter, no windows
+    const fgRects = []; // track to cull window flicker behind them
+    let fx = -10;
+    while (fx < oc.width) {
+      const bw = 18 + Math.random()*55;
+      const bh = h*0.04 + Math.random()*h*0.17;
+      const by = h - bh;
+      c.fillStyle = `hsl(270,${18+Math.random()*14}%,${7+Math.random()*7}%)`;
+      c.fillRect(fx, by, bw, bh);
+      // Subtle edge glow on some
+      if (Math.random() < 0.35) {
+        c.strokeStyle = Math.random()<0.5 ? 'rgba(255,0,200,0.25)' : 'rgba(0,200,255,0.25)';
+        c.lineWidth = 0.8;
+        c.strokeRect(fx, by, bw, bh);
+      }
+      fgRects.push({x:fx, y:by, w:bw, h:bh});
+      fx += bw + 1 + Math.random()*5;
+    }
+
     // Wet-street neon reflection at base
     const sg = c.createLinearGradient(0,h*0.83,0,h);
     sg.addColorStop(0,'rgba(0,0,0,0)');
@@ -3769,11 +3749,54 @@ function startCyberpunk() {
     sg.addColorStop(0.7,'rgba(0,60,100,0.13)');
     sg.addColorStop(1,'rgba(10,0,20,0.38)');
     c.fillStyle=sg; c.fillRect(0,h*0.83,oc.width,h*0.17);
-    return oc;
+    return {oc, wins, fgRects};
   }
 
-  let skyOC = buildSkyline(W(), H());
+  let skyData = buildSkyline(W(), H());
+  let skyOC = skyData.oc;
+  let winStates = skyData.wins.map(() => ({off:false, timer:Math.floor(Math.random()*300)}));
   let skyScroll = 0;
+
+  // ── Drifting toxic clouds (top third of screen) ────────────────────────────
+  // Low, fast-moving smog banks — sickly purple-green, layered opacity.
+  // Each cloud is a cluster of overlapping ellipses on a shared x-offset.
+  const clouds = Array.from({length:18}, (_,i) => ({
+    x: Math.random() * (canvas.width||1920),
+    y: 10 + Math.random() * (canvas.height||900) * 0.28,
+    speed: 0.12 + Math.random() * 0.28,
+    scale: 0.6 + Math.random() * 1.2,
+    alpha: 0.06 + Math.random() * 0.10,
+    // Each cloud is a small array of blob offsets
+    blobs: Array.from({length:4+Math.floor(Math.random()*5)}, () => ({
+      dx: (Math.random()-0.5)*160, dy: (Math.random()-0.5)*28,
+      rx: 60+Math.random()*160, ry: 18+Math.random()*32,
+    })),
+    // Hue: toxic green-purple range
+    hue: 260 + Math.random()*80,
+  }));
+
+  function drawClouds(w, h) {
+    for (const cl of clouds) {
+      cl.x += cl.speed;
+      if (cl.x > w + 200) cl.x = -200;
+      ctx.save();
+      ctx.globalAlpha = cl.alpha;
+      for (const b of cl.blobs) {
+        const g = ctx.createRadialGradient(
+          cl.x+b.dx, cl.y+b.dy, 0,
+          cl.x+b.dx, cl.y+b.dy, b.rx*cl.scale
+        );
+        g.addColorStop(0, `hsla(${cl.hue},60%,28%,1)`);
+        g.addColorStop(0.5, `hsla(${cl.hue},50%,18%,0.6)`);
+        g.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = g;
+        ctx.beginPath();
+        ctx.ellipse(cl.x+b.dx, cl.y+b.dy, b.rx*cl.scale, b.ry*cl.scale, 0, 0, Math.PI*2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+  }
 
   function loop() {
     if(document.documentElement.getAttribute('data-theme')!=='cyberpunk') return;
@@ -3781,22 +3804,67 @@ function startCyberpunk() {
     frame++;
 
     // Rebuild skyline on resize
-    if(skyOC.height !== h) { skyOC = buildSkyline(w, h); }
+    if(skyOC.height !== h) {
+      skyData = buildSkyline(w, h);
+      skyOC = skyData.oc;
+      winStates = skyData.wins.map(() => ({off:false, timer:Math.floor(Math.random()*300)}));
+    }
 
     // ── City background ──
     skyScroll = (skyScroll + 0.18) % skyOC.width;
     ctx.drawImage(skyOC, -skyScroll, 0, skyOC.width, h);
     ctx.drawImage(skyOC, skyOC.width - skyScroll, 0, skyOC.width, h);
 
-    // ── Smoke from industrial stacks ──
-    tickSmoke();
-    for (const p of smokeParticles) {
+    // ── Window flicker: unreliable power grid ──
+    ctx.fillStyle = '#03000a';
+    for (let i = 0; i < winStates.length; i++) {
+      const ws = winStates[i];
+      ws.timer--;
+      if (ws.timer <= 0) {
+        ws.off = !ws.off;
+        ws.timer = ws.off ? (3 + Math.floor(Math.random()*30)) : (80 + Math.floor(Math.random()*500));
+      }
+      if (!ws.off) continue;
+      const win = skyData.wins[i];
+      // Skip windows behind foreground buildings (depth culling)
+      const wy = win.y;
+      let hidden = false;
+      for (const fg of skyData.fgRects) {
+        const fgSx = fg.x - skyScroll;
+        const fgSx2 = fg.x + skyOC.width - skyScroll;
+        const wx1 = win.x - skyScroll; const wx2 = win.x + skyOC.width - skyScroll;
+        if ((wx1 >= fgSx && wx1 < fgSx+fg.w && wy >= fg.y) ||
+            (wx2 >= fgSx2 && wx2 < fgSx2+fg.w && wy >= fg.y)) { hidden=true; break; }
+      }
+      if (hidden) continue;
+      const sx1 = win.x - skyScroll, sx2 = win.x + skyOC.width - skyScroll;
+      if (sx1 > -6 && sx1 < w+6) ctx.fillRect(sx1, wy, 6, 8);
+      if (sx2 > -6 && sx2 < w+6) ctx.fillRect(sx2, wy, 6, 8);
+    }
+
+    // ── Searchlights sweeping from rooftops ──
+    for (const sl of cpSearchlights) {
+      sl.angle += sl.speed;
+      if (sl.angle > sl.center+sl.range || sl.angle < sl.center-sl.range) sl.speed *= -1;
+      // Origin: random building rooftop height (upper 30-65% of screen)
+      const sx = sl.x * w, sy = h * (0.30 + sl.x * 0.28);
+      const len = h * 0.65;
+      const ex = sx + Math.sin(sl.angle) * len;
+      const ey = sy - len * Math.cos(sl.angle);
+      const slg = ctx.createLinearGradient(sx, sy, ex, ey);
+      slg.addColorStop(0, `rgba(${sl.color},${sl.alpha})`);
+      slg.addColorStop(1, `rgba(${sl.color},0)`);
       ctx.save();
-      ctx.globalAlpha = p.life * 0.22;
-      ctx.fillStyle = `rgba(160,120,80,1)`;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+      ctx.strokeStyle = slg;
+      ctx.lineWidth = 18 + Math.random()*6;
+      ctx.globalAlpha = 1;
+      ctx.shadowBlur = 0;
+      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke();
       ctx.restore();
     }
+
+    // ── Drifting toxic clouds ──
+    drawClouds(w, h);
 
     // ── Angled cyan rain ──
     ctx.shadowBlur = 4; ctx.shadowColor = RAIN_COLOR;
@@ -3880,7 +3948,10 @@ const cpOrigText = new WeakMap();
 function stopCyberpunkEffects() {
   if(cpEffectTimer){ clearTimeout(cpEffectTimer); cpEffectTimer=null; }
   document.querySelectorAll('.tag[data-cpleet]').forEach(t => {
-    if(cpOrigText.has(t)){ t.textContent=cpOrigText.get(t); cpOrigText.delete(t); }
+    if(cpOrigText.has(t)){
+      for (const n of t.childNodes) if (n.nodeType===Node.TEXT_NODE){ n.nodeValue=cpOrigText.get(t); break; }
+      cpOrigText.delete(t);
+    }
     t.removeAttribute('data-cpleet');
   });
   document.querySelectorAll('.tag.cp-flicker,.tag.cp-out,.tag.cp-surge').forEach(t =>
@@ -3889,6 +3960,11 @@ function stopCyberpunkEffects() {
 }
 
 function startCyberpunkEffects() {
+  // Returns the first direct text node — avoids tooltip child elements
+  function tagTextNode(tag) {
+    for (const n of tag.childNodes) if (n.nodeType === Node.TEXT_NODE) return n;
+    return null;
+  }
   function tick() {
     if(document.documentElement.getAttribute('data-theme')!=='cyberpunk') return;
     const tags = Array.from(document.querySelectorAll('.tag'));
@@ -3897,27 +3973,33 @@ function startCyberpunkEffects() {
     for(let i=0; i<n; i++){
       const tag = tags[Math.floor(Math.random()*tags.length)];
       const r = Math.random();
-      // Leet glitch
+      // Leet glitch — operate on first text node only to avoid touching tooltip HTML
       if(r<0.18 && !tag.hasAttribute('data-cpleet')){
-        const orig = tag.textContent;
-        cpOrigText.set(tag,orig);
+        const tn = tagTextNode(tag);
+        if(!tn) continue;
+        const orig = tn.nodeValue;
+        cpOrigText.set(tag, orig);
         tag.setAttribute('data-cpleet','1');
-        tag.textContent = cpLeetText(orig);
+        tn.nodeValue = cpLeetText(orig);
         setTimeout(()=>{
-          if(cpOrigText.has(tag)){tag.textContent=cpOrigText.get(tag);cpOrigText.delete(tag);}
+          if(cpOrigText.has(tag)){
+            const tn2 = tagTextNode(tag);
+            if(tn2) tn2.nodeValue = cpOrigText.get(tag);
+            cpOrigText.delete(tag);
+          }
           tag.removeAttribute('data-cpleet');
-        }, 250+Math.random()*900);
-      } else if(r<0.42){
-        // Flicker
-        const cls = r<0.27?'cp-flicker':r<0.36?'cp-out':'cp-surge';
+        }, 600+Math.random()*1800);
+      } else if(r<0.55){
+        // Flicker — higher probability, longer animation durations
+        const cls = r<0.30?'cp-flicker':r<0.44?'cp-out':'cp-surge';
         tag.classList.remove('cp-flicker','cp-out','cp-surge');
         void tag.offsetWidth; // restart animation
         tag.classList.add(cls);
-        const dur = cls==='cp-out'?1700:cls==='cp-surge'?700:500;
-        setTimeout(()=>tag.classList.remove(cls), dur+50);
+        const dur = cls==='cp-out'?3200:cls==='cp-surge'?1400:1000;
+        setTimeout(()=>tag.classList.remove(cls), dur+80);
       }
     }
-    cpEffectTimer = setTimeout(tick, 120+Math.random()*1300);
+    cpEffectTimer = setTimeout(tick, 60+Math.random()*700);
   }
   tick();
 }

@@ -29,7 +29,11 @@
       "Bash(powershell -Command \"Select-String -Path ''D:\\\\Projects\\\\Resume\\\\index.htm'' -Pattern ''famLevel|tip-bar|tagFamiliarity|animBar|skillBar|skill_bar'' | Select-Object -First 20 LineNumber,Line\")",
       "Bash(powershell -Command \"Select-String -Path ''D:\\\\Projects\\\\Resume\\\\index.htm'' -Pattern ''mouseenter.*bar|barLerp|lerpFac|bar.*lerp|fill.*lerp|animTag'' | Select-Object -First 10 LineNumber,Line\")",
       "Bash(powershell -Command \"Select-String -Path ''D:\\\\Projects\\\\Resume\\\\index.htm'' -Pattern ''mouseenter'' | Select-Object -First 20 LineNumber,Line\")",
-      "Bash(powershell -Command \"\\(Get-Content ''D:\\\\Projects\\\\Resume\\\\index.htm''\\)[374..380]\")"
+      "Bash(powershell -Command \"\\(Get-Content ''D:\\\\Projects\\\\Resume\\\\index.htm''\\)[374..380]\")",
+      "Bash(where node:*)",
+      "Bash(sed -n '3199,3207p' D:/Projects/Resume/index.htm)",
+      "Bash(sed -n '3650,3660p' D:/Projects/Resume/index.htm)",
+      "Bash(grep -v \"//.*smoke\")"
     ]
   }
 }
