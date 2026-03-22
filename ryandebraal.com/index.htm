@@ -4033,22 +4033,37 @@ function startCyberpunk() {
     ctx.fillStyle='rgba(0,0,0,0.06)';
     for(let y=0;y<h;y+=3) ctx.fillRect(0,y,w,1);
 
-    // ── Resume border: Perlin-noise glow/flicker ──
+    // ── Resume border: heartbeat glow with palpitations ──
+    // Slow resting pulse (≈40 bpm) with occasional double-beat palpitations.
+    // g=0 → nearly dark; g=1 → full blaze. Border fades in/out like a neon
+    // sign breathing — never fully off, never static.
     if (frame % 2 === 0) {
-      // Layered smooth value noise (fast hash-based)
+      const sec = frame / 60;
+      // Resting heartbeat: sharp attack, slow exponential decay (~0.7s cycle)
+      const bpm = 42;
+      const phase = (sec * bpm / 60) % 1;          // 0..1 within one beat
+      const beat = Math.exp(-phase * 6) * (phase < 0.85 ? 1 : 0); // sharp rise, slow fade, gap
+
+      // Palpitation: extra beat injected at irregular noise-driven intervals
       function _h(n) { const s=Math.sin(n*127.1+311.7)*43758.5453; return s-Math.floor(s); }
       function _sn(t) { const i=Math.floor(t),f=t-i,s=f*f*(3-2*f); return _h(i)+(_h(i+1)-_h(i))*s; }
-      const t = frame * 0.007;
-      const n = _sn(t)*0.45 + _sn(t*3.3)*0.30 + _sn(t*11.1)*0.15 + _sn(t*31)*0.10;
-      const spike = _sn(t*47) > 0.91 ? 1.6 : 1.0; // occasional overbright surge
-      const g = Math.min(1, (0.15 + n * 0.85) * spike);
+      const palp = _sn(sec * 0.31);                // slow wander 0..1
+      const palphase = (sec * bpm / 60 * 1.7) % 1; // extra beat offset
+      const palpBeat = palp > 0.72
+        ? Math.exp(-palphase * 7) * (palphase < 0.8 ? 1 : 0) * 0.65
+        : 0;
+
+      // Baseline dim glow so it never goes fully dark
+      const base = 0.12 + _sn(sec * 0.18) * 0.10;
+
+      const g = Math.min(1, base + beat * 0.88 + palpBeat);
       const resumeEl = document.getElementById('resume');
       if (resumeEl) {
         resumeEl.style.boxShadow =
-          `0 0 ${6+g*22}px rgba(255,0,255,${(0.18+g*0.52).toFixed(2)}),`+
-          `0 0 ${14+g*52}px rgba(255,0,255,${(0.04+g*0.18).toFixed(2)}),`+
-          `inset 0 0 ${8+g*24}px rgba(80,0,120,${(0.03+g*0.10).toFixed(2)})`;
-        resumeEl.style.borderColor = g > 0.88 ? '#ff88ff' : '#ff00ff';
+          `0 0 ${4+g*28}px rgba(255,0,255,${(0.10+g*0.60).toFixed(2)}),`+
+          `0 0 ${10+g*65}px rgba(255,0,255,${(0.02+g*0.20).toFixed(2)}),`+
+          `inset 0 0 ${6+g*28}px rgba(80,0,120,${(0.02+g*0.12).toFixed(2)})`;
+        resumeEl.style.borderColor = g > 0.82 ? '#ff88ff' : g > 0.4 ? '#ff00ff' : '#cc00cc';
       }
     }
 
