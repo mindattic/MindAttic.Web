@@ -3533,11 +3533,11 @@ function startCyberpunk() {
   // dx/dy ratio sets the lean. tan(38°)≈0.78, so horizontal drift is 78% of
   // vertical speed — looks like a hard wind-driven storm, not gentle drizzle.
   const RAIN_COLOR = '#00ffff';
-  const rain = Array.from({length:180}, () => ({
+  const rain = Array.from({length:320}, () => ({
     x: Math.random() * ((canvas.width||1920) + 300) - 150,
     y: Math.random() * (canvas.height||900),
     len: 14 + Math.random() * 32,
-    speed: 9 + Math.random() * 10,   // faster
+    speed: 12 + Math.random() * 14,  // faster
     angle: 0.18 + Math.random() * 0.22, // per-drop angle variation (erratic pattern)
     alpha: 0.18 + Math.random() * 0.42,
     width: 0.5 + Math.random() * 1.0,
@@ -3735,11 +3735,21 @@ function startCyberpunk() {
           bCol(c); c.fillRect(tx, ty, tw, th);
           drawWindows(c, tx, ty, tw, th);
         }
-        // Spire
-        if (Math.random()<0.25) {
-          c.strokeStyle=`rgba(${Math.random()<0.5?'255,0,200':'0,200,255'},0.5)`;
-          c.lineWidth=1;
-          c.beginPath(); c.moveTo(x+bw/2, by); c.lineTo(x+bw/2, by-15-Math.random()*35); c.stroke();
+        // Antennas — most towers get one or more
+        if (Math.random()<0.72) {
+          const numAnt = Math.random()<0.35 ? 2 + Math.floor(Math.random()*2) : 1;
+          for (let a=0; a<numAnt; a++) {
+            const ax = x + bw*0.2 + Math.random()*bw*0.6;
+            const aLen = 10 + Math.random()*40;
+            c.strokeStyle=`rgba(${Math.random()<0.5?'255,0,200':'0,200,255'},${0.4+Math.random()*0.4})`;
+            c.lineWidth = 0.8 + Math.random()*0.6;
+            c.beginPath(); c.moveTo(ax, by); c.lineTo(ax, by-aLen); c.stroke();
+            // Blinking tip
+            if (Math.random()<0.6) {
+              c.fillStyle='rgba(255,30,80,0.9)';
+              c.beginPath(); c.arc(ax, by-aLen, 1.5, 0, Math.PI*2); c.fill();
+            }
+          }
         }
         x += bw + 2 + Math.random()*8;
       }
@@ -3772,6 +3782,14 @@ function startCyberpunk() {
       }
       // Windows on foreground buildings
       drawWindows(cf, fx, by, bw, bh);
+      // Antennas on foreground buildings
+      if (Math.random()<0.55) {
+        const ax = fx + bw*0.25 + Math.random()*bw*0.5;
+        const aLen = 6 + Math.random()*20;
+        cf.strokeStyle=`rgba(${Math.random()<0.5?'255,0,200':'0,200,255'},0.35)`;
+        cf.lineWidth=0.8;
+        cf.beginPath(); cf.moveTo(ax, by); cf.lineTo(ax, by-aLen); cf.stroke();
+      }
       fgRects.push({x:fx, y:by, w:bw, h:bh});
       fx += bw + 1 + Math.random()*5;
     }
@@ -3949,7 +3967,7 @@ function startCyberpunk() {
     ctx.shadowBlur = 0;
 
     // ── Electric arcs ──
-    if(Math.random()<0.008) emitArc();
+    if(Math.random()<0.025) emitArc();
     arcs = arcs.filter(a => a.life > 0);
     for (const a of arcs) {
       a.life -= 0.055;
