@@ -3679,8 +3679,8 @@ function startCyberpunk() {
           c.beginPath(); c.moveTo(dcx+ox+domeR, basY); c.lineTo(dcx+ox-domeR, basY-domeR*1.8); c.stroke();
         }
         c.restore();
-        // Dome neon outline
-        c.strokeStyle='rgba(0,220,255,0.45)'; c.lineWidth=1.2;
+        // Dome neon outline — kept dim so it reads as silhouette, not bright ring
+        c.strokeStyle='rgba(0,160,200,0.18)'; c.lineWidth=1.0;
         c.beginPath(); c.arc(dcx, basY, domeR, Math.PI, 0); c.stroke();
         x += bw + 6 + Math.random()*12;
 
@@ -3830,7 +3830,7 @@ function startCyberpunk() {
 
   let skyData = buildSkyline(W(), H());
   let skyBG = skyData.bgOC, skyFG = skyData.fgOC;
-  let winStates = skyData.wins.map(() => ({off:false, timer:Math.floor(Math.random()*300)}));
+  let winStates = skyData.wins.map(() => ({off:false, timer:500 + Math.floor(Math.random()*10000)}));
   let bgScroll = 0, fgScroll = 0;
 
   // Anchor each searchlight to a tall building rooftop
@@ -3896,7 +3896,7 @@ function startCyberpunk() {
     if(skyBG.height !== h) {
       skyData = buildSkyline(w, h);
       skyBG = skyData.bgOC; skyFG = skyData.fgOC;
-      winStates = skyData.wins.map(() => ({off:false, timer:Math.floor(Math.random()*300)}));
+      winStates = skyData.wins.map(() => ({off:false, timer:500 + Math.floor(Math.random()*10000)}));
       assignSearchlightRooftops();
     }
 
@@ -3972,6 +3972,11 @@ function startCyberpunk() {
     fgScroll = (fgScroll + 0.38) % skyFG.width;
     ctx.drawImage(skyFG, -fgScroll, 0, skyFG.width, h);
     ctx.drawImage(skyFG, skyFG.width - fgScroll, 0, skyFG.width, h);
+    // Sparse window flicker on fg buildings (random dark patches in building zone)
+    if (Math.random() < 0.18) {
+      ctx.fillStyle = '#06000d';
+      ctx.fillRect(Math.random()*w, h*0.76 + Math.random()*h*0.22, 5, 7);
+    }
 
     // ── Drifting toxic clouds ──
     drawClouds(w, h);
@@ -4083,7 +4088,7 @@ function startCyberpunkEffects() {
       const dur = cls==='cp-out'?3200:cls==='cp-surge'?1400:1000;
       setTimeout(()=>tag.classList.remove(cls), dur+80);
     }
-    cpEffectTimer = setTimeout(tick, 40+Math.random()*400);
+    cpEffectTimer = setTimeout(tick, 60+Math.random()*560);
   }
   tick();
 }
