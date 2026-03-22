@@ -3760,6 +3760,8 @@ function startCyberpunk() {
     let bgHue = 270;
     function bCol(c) { c.fillStyle=`hsl(${bgHue},${28+Math.random()*18}%,${3+Math.random()*6}%)`; }
     function bStroke(c,a=0.5) { c.strokeStyle=`rgba(${Math.random()<0.5?'255,0,200':'0,200,255'},${a})`; c.lineWidth=0.7; }
+    // Occasional empty lot — ~20% chance of a wider gap so layers don't look like a solid wall
+    function gap() { return Math.random() < 0.20 ? 30 + Math.random()*60 : 0; }
 
     let x = 0;
     while (x < oc.width) {
@@ -3790,11 +3792,26 @@ function startCyberpunk() {
           c.lineTo(x+(bw+sw)/2, sy2);
           c.stroke();
         }
+        // Step-edge warning lights — small amber dots at each tier, registered for flicker
+        for (let s=1; s<steps; s++) {
+          const t = s/steps;
+          const sw2 = bw*(1-t);
+          const sy2 = h - bh*t;
+          const lx = Math.round(x+(bw-sw2)/2) - 2;
+          const rx = Math.round(x+(bw+sw2)/2) - 2;
+          c.fillStyle = 'rgba(255,110,0,0.88)';
+          c.fillRect(lx, sy2-4, 4, 4);
+          c.fillRect(rx, sy2-4, 4, 4);
+          wins.push({x:lx, y:sy2-4});
+          wins.push({x:rx, y:sy2-4});
+        }
         // Glowing capstone
         const g = c.createRadialGradient(x+bw/2, by, 0, x+bw/2, by, 18);
         g.addColorStop(0,'rgba(255,0,200,0.7)'); g.addColorStop(1,'rgba(0,0,0,0)');
         c.fillStyle=g; c.beginPath(); c.arc(x+bw/2, by, 18, 0, Math.PI*2); c.fill();
-        x += bw + 8 + Math.random()*15;
+        // Capstone registered for flicker too
+        wins.push({x: Math.round(x+bw/2)-3, y: by-3});
+        x += bw + 8 + Math.random()*15 + gap();
 
       // ── TYPE: Dome structure ───────────────────────────────────────────────
       } else if (roll < 0.23) {
@@ -3837,7 +3854,7 @@ function startCyberpunk() {
         // Dome neon outline — kept dim so it reads as silhouette, not bright ring
         c.strokeStyle='rgba(0,160,200,0.18)'; c.lineWidth=1.0;
         c.beginPath(); c.arc(dcx, basY, domeR, Math.PI, 0); c.stroke();
-        x += bw + 6 + Math.random()*12;
+        x += bw + 6 + Math.random()*12 + gap();
 
       // ── TYPE: Industrial stack / factory ──────────────────────────────────
       } else if (roll < 0.30) {
@@ -3851,9 +3868,10 @@ function startCyberpunk() {
           const sw = 8 + Math.random()*10;
           const sh = baseH*0.55 + Math.random()*h*0.07;
           bCol(c); c.fillRect(sx2, h-baseH-sh, sw, sh);
-          // Rim light at top
+          // Rim light at top — registered for flicker
           c.fillStyle='rgba(255,80,0,0.7)';
           c.fillRect(sx2, h-baseH-sh, sw, 3);
+          wins.push({x: Math.round(sx2 + sw/2) - 3, y: h-baseH-sh});
         }
         x += baseW + 6 + Math.random()*10;
 
@@ -3876,7 +3894,7 @@ function startCyberpunk() {
         og.addColorStop(0,'rgba(255,0,200,0.9)'); og.addColorStop(1,'rgba(0,0,0,0)');
         c.fillStyle=og; c.beginPath(); c.arc(cx2, cY-50, 14, 0, Math.PI*2); c.fill();
         rooftops.push({x: cx2, y: cY-50});
-        x += bw + 6 + Math.random()*12;
+        x += bw + 6 + Math.random()*12 + gap();
 
       // ── TYPE: Standard tower (most common) — asymmetric chamfered variants ──
       } else {
@@ -3937,7 +3955,7 @@ function startCyberpunk() {
             }
           }
         }
-        x += bw + 2 + Math.random()*8;
+        x += bw + 2 + Math.random()*8 + gap();
       }
     }
 
@@ -4004,7 +4022,7 @@ function startCyberpunk() {
         }
       }
       fgRects.push({x:fx, y:by, w:bw, h:bh});
-      fx += bw + 1 + Math.random()*5;
+      fx += bw + 1 + Math.random()*5 + gap();
     }
 
     // ── Medium: mid-distance layer between bg and fg (parallax 0.25) ─────────
@@ -4052,7 +4070,7 @@ function startCyberpunk() {
           }
         }
       }
-      mx += bw + 1 + Math.random()*7;
+      mx += bw + 1 + Math.random()*7 + gap();
     }
 
     return {bgOC: oc, mdOC, fgOC, wins, fgRects, rooftops};
@@ -4385,7 +4403,14 @@ function startSynthwave() {
     // ── Sun: big circle with horizontal slice gaps ──
     const sunR = Math.min(w, h) * 0.18;
     const sunX = w / 2;
-    const sunY = horizon - sunR * 0.3;
+    // Sunrise: starts as a thin arc just above the horizon, rises to full height
+    // over ~30s (t reaches 75 at 0.04/frame). Smoothstep easing: slow start,
+    // accelerates through the horizon, settles gently at maximum height.
+    const sunRiseT = Math.min(1, t / 75);
+    const sunEased = sunRiseT * sunRiseT * (3 - 2 * sunRiseT); // smoothstep
+    // At sunEased=0: center is 0.85 radii below horizon (thin sliver visible)
+    // At sunEased=1: center is 0.3 radii above horizon (current max position)
+    const sunY = horizon + sunR * (0.85 - 1.15 * sunEased);
     // Sun glow
     const glow = ctx.createRadialGradient(sunX, sunY, sunR * 0.5, sunX, sunY, sunR * 2);
     glow.addColorStop(0, 'rgba(255,200,100,0.3)');
@@ -4433,16 +4458,19 @@ function startSynthwave() {
     ctx.fillStyle = groundGrad;
     ctx.fillRect(0, horizon, w, h - horizon);
 
-    // Horizontal grid lines (closer together near horizon, spread at bottom)
-    ctx.strokeStyle = 'rgba(255,113,206,0.35)';
-    ctx.lineWidth = 1;
-    for (let i = 1; i <= 14; i++) {
-      const pct = (i / 14);
-      const y = horizon + (pct * pct) * (h - horizon); // quadratic spacing
-      ctx.beginPath();
-      ctx.moveTo(0, y);
-      ctx.lineTo(w, y);
-      ctx.stroke();
+    // Horizontal grid lines — quadratic screen-space scroll, no wrap artifacts.
+    // pct=0 → at horizon (invisible); pct=1 → at viewer's feet (full brightness).
+    // Wrap at pct 1→0 is seamless: line fades out at bottom, reappears dim at horizon.
+    const numH = 18;
+    const groundH = h - horizon;
+    const scrollBase = t * 0.05;
+    for (let i = 0; i < numH; i++) {
+      const pct = (i / numH + scrollBase) % 1.0;
+      const sy = horizon + pct * pct * groundH;
+      if (sy < horizon || sy > h + 1) continue;
+      ctx.strokeStyle = `rgba(255,113,206,${Math.min(0.75, pct * 0.58 + 0.04)})`;
+      ctx.lineWidth = 0.4 + pct * 1.6;
+      ctx.beginPath(); ctx.moveTo(0, sy); ctx.lineTo(w, sy); ctx.stroke();
     }
 
     // Vertical grid lines converging at horizon center
@@ -4457,8 +4485,7 @@ function startSynthwave() {
       ctx.stroke();
     }
 
-    // Subtle scrolling: shift grid down over time
-    t += 0.003;
+    t += 0.040; // drive speed — increase for faster forward motion
 
     // Scanline overlay for CRT feel
     ctx.fillStyle = 'rgba(0,0,0,0.04)';
