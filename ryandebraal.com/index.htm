@@ -2,6 +2,57 @@
 <html lang="en" data-theme="light" data-profile="classic">
 <head>
 <meta charset="UTF-8">
+<script>
+/*
+ * ╔═══════════════════════════════════════════════════════════════════════════╗
+ * ║  Hey. You opened DevTools.  I respect that.                               ║
+ * ╠═══════════════════════════════════════════════════════════════════════════╣
+ * ║                                                                           ║
+ * ║   ██████╗ ██╗   ██╗ █████╗ ███╗   ██╗                                    ║
+ * ║   ██╔══██╗╚██╗ ██╔╝██╔══██╗████╗  ██║                                    ║
+ * ║   ██████╔╝ ╚████╔╝ ███████║██╔██╗ ██║                                    ║
+ * ║   ██╔══██╗  ╚██╔╝  ██╔══██║██║╚██╗██║                                    ║
+ * ║   ██║  ██║   ██║   ██║  ██║██║ ╚████║                                    ║
+ * ║   ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝                                   ║
+ * ║                                                                           ║
+ * ║   ██████╗ ███████╗██████╗ ██████╗  █████╗  █████╗ ██╗                    ║
+ * ║   ██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔══██╗██║                    ║
+ * ║   ██║  ██║█████╗  ██████╔╝██████╔╝███████║███████║██║                    ║
+ * ║   ██║  ██║██╔══╝  ██╔══██╗██╔══██╗██╔══██║██╔══██║██║                    ║
+ * ║   ██████╔╝███████╗██████╔╝██║  ██║██║  ██║██║  ██║███████╗               ║
+ * ║   ╚═════╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝              ║
+ * ║                                                                           ║
+ * ╠═══════════════════════════════════════════════════════════════════════════╣
+ * ║  You found the backend of a resume.                                       ║
+ * ║  One file. No build step. No framework. No npm install.                   ║
+ * ║  Just a developer who knows how the browser actually works.               ║
+ * ╠═══════════════════════════════════════════════════════════════════════════╣
+ * ║                                                                           ║
+ * ║  TABLE OF CONTENTS                                                        ║
+ * ║  ───────────────────────────────────────────────────────────────────────  ║
+ * ║  § 1  App Settings ............. Tunable constants + localStorage         ║
+ * ║  § 2  Resume Data .............. ~200 tech tooltips, skills, exp, etc.    ║
+ * ║  § 3  Render Engine ............ Template fns, 3-profile rendering        ║
+ * ║  § 4  Profile / Theme / Font ... User preferences + localStorage persist  ║
+ * ║  § 5  Canvas FX ................ Seasonal animations (15 themes)          ║
+ * ║        ├ Spring ................ Growing grass blades + floating pollen    ║
+ * ║        ├ Summer ................ Bees with flower-claiming state machine   ║
+ * ║        ├ Autumn ................ Falling leaves with wind physics          ║
+ * ║        ├ Winter ................ Snowflakes + accumulating snow pile SVG   ║
+ * ║        ├ Matrix ................ Classic green column rain                 ║
+ * ║        ├ Neko .................. 10 roaming cats, full 1998 state machine  ║
+ * ║        ├ Ocean ................. Rising bubbles + caustic light columns    ║
+ * ║        ├ Forest ................ Parallax layered tree silhouettes         ║
+ * ║        ├ Cyberpunk ............. Neon city skyline, acid rain, arcs        ║
+ * ║        └ Synthwave ............. Perspective grid + sliced retro sun       ║
+ * ║  § 6  Export Menu .............. MD + HTML export                         ║
+ * ║  § 7  Helpers .................. download() / downloadBlob()               ║
+ * ║  § 8  Init ..................... Boot, preference restore, tooltip wiring  ║
+ * ║  § 9  Global Exports ........... window.* bridge — the IIFE escape hatch  ║
+ * ║                                                                           ║
+ * ╚═══════════════════════════════════════════════════════════════════════════╝
+ */
+</script>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ryan DeBraal — Resume</title>
@@ -537,55 +588,6 @@ select.tb-sel:hover{border-color:var(--accent);}
 </div>
 
 <script>
-/*
- * ╔═══════════════════════════════════════════════════════════════════════════╗
- * ║  Hey. You opened DevTools.  I respect that.                               ║
- * ╠═══════════════════════════════════════════════════════════════════════════╣
- * ║                                                                           ║
- * ║   ██████╗ ██╗   ██╗ █████╗ ███╗   ██╗                                    ║
- * ║   ██╔══██╗╚██╗ ██╔╝██╔══██╗████╗  ██║                                    ║
- * ║   ██████╔╝ ╚████╔╝ ███████║██╔██╗ ██║                                    ║
- * ║   ██╔══██╗  ╚██╔╝  ██╔══██║██║╚██╗██║                                    ║
- * ║   ██║  ██║   ██║   ██║  ██║██║ ╚████║                                    ║
- * ║   ╚═╝  ╚═╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═══╝                                   ║
- * ║                                                                           ║
- * ║   ██████╗ ███████╗██████╗ ██████╗  █████╗  █████╗ ██╗                    ║
- * ║   ██╔══██╗██╔════╝██╔══██╗██╔══██╗██╔══██╗██╔══██╗██║                    ║
- * ║   ██║  ██║█████╗  ██████╔╝██████╔╝███████║███████║██║                    ║
- * ║   ██║  ██║██╔══╝  ██╔══██╗██╔══██╗██╔══██║██╔══██║██║                    ║
- * ║   ██████╔╝███████╗██████╔╝██║  ██║██║  ██║██║  ██║███████╗               ║
- * ║   ╚═════╝ ╚══════╝╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝              ║
- * ║                                                                           ║
- * ╠═══════════════════════════════════════════════════════════════════════════╣
- * ║  You found the backend of a resume.                                       ║
- * ║  One file. No build step. No framework. No npm install.                   ║
- * ║  Just a developer who knows how the browser actually works.               ║
- * ╠═══════════════════════════════════════════════════════════════════════════╣
- * ║                                                                           ║
- * ║  TABLE OF CONTENTS                                                        ║
- * ║  ───────────────────────────────────────────────────────────────────────  ║
- * ║  § 1  App Settings ............. Tunable constants + localStorage         ║
- * ║  § 2  Resume Data .............. ~200 tech tooltips, skills, exp, etc.    ║
- * ║  § 3  Render Engine ............ Template fns, 3-profile rendering        ║
- * ║  § 4  Profile / Theme / Font ... User preferences + localStorage persist  ║
- * ║  § 5  Canvas FX ................ Seasonal animations (15 themes)          ║
- * ║        ├ Spring ................ Growing grass blades + floating pollen    ║
- * ║        ├ Summer ................ Bees with flower-claiming state machine   ║
- * ║        ├ Autumn ................ Falling leaves with wind physics          ║
- * ║        ├ Winter ................ Snowflakes + accumulating snow pile SVG   ║
- * ║        ├ Matrix ................ Classic green column rain                 ║
- * ║        ├ Horror ................ Flashlight overlay + wall scrawls + eyes  ║
- * ║        ├ Neko .................. 10 roaming cats, full 1998 state machine  ║
- * ║        ├ Ocean ................. Rising bubbles + caustic light columns    ║
- * ║        ├ Forest ................ Parallax layered tree silhouettes         ║
- * ║        └ Synthwave ............. Perspective grid + sliced retro sun       ║
- * ║  § 6  Export Menu .............. MD + HTML export                         ║
- * ║  § 7  Helpers .................. download() / downloadBlob()               ║
- * ║  § 8  Init ..................... Boot, preference restore, tooltip wiring  ║
- * ║  § 9  Global Exports ........... window.* bridge — the IIFE escape hatch  ║
- * ║                                                                           ║
- * ╚═══════════════════════════════════════════════════════════════════════════╝
- */
 ;(function ResumeApp() {
 // Everything lives inside this IIFE to keep window scope clean.
 // The one controlled exit is at the bottom (§ 9) — only what HTML event
