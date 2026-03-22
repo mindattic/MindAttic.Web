@@ -3648,21 +3648,37 @@ function startCyberpunk() {
         // Base block
         bCol(c); c.fillRect(x, basY, bw, baseH);
         drawWindows(c, x, basY, bw, baseH);
-        // Dome
+        // Dome silhouette
+        const dcx = x+bw/2;
         bCol(c);
-        c.beginPath(); c.arc(x+bw/2, basY, domeR, Math.PI, 0); c.closePath(); c.fill();
+        c.beginPath(); c.arc(dcx, basY, domeR, Math.PI, 0); c.closePath(); c.fill();
+        // Geodesic grid (clipped to dome shape)
+        c.save();
+        c.beginPath(); c.arc(dcx, basY, domeR-0.5, Math.PI, 0); c.closePath(); c.clip();
+        // Horizontal latitude rings
+        c.lineWidth = 0.7;
+        const rings = 4;
+        for (let ri=1; ri<rings; ri++) {
+          const t = ri/rings;
+          const ry = basY - t*domeR;
+          const hw = Math.sqrt(Math.max(0, domeR*domeR - (t*domeR)*(t*domeR)));
+          c.strokeStyle = `rgba(0,210,255,${0.12+t*0.08})`;
+          c.beginPath(); c.moveTo(dcx-hw, ry); c.lineTo(dcx+hw, ry); c.stroke();
+        }
+        // Diagonal struts — two crossing directions → triangulated panels
+        c.strokeStyle = 'rgba(0,180,220,0.13)'; c.lineWidth = 0.6;
+        const step = domeR * 0.38;
+        for (let s=-4; s<=4; s++) {
+          const ox = s * step;
+          // Left-leaning (↗)
+          c.beginPath(); c.moveTo(dcx+ox-domeR, basY); c.lineTo(dcx+ox+domeR, basY-domeR*1.8); c.stroke();
+          // Right-leaning (↖)
+          c.beginPath(); c.moveTo(dcx+ox+domeR, basY); c.lineTo(dcx+ox-domeR, basY-domeR*1.8); c.stroke();
+        }
+        c.restore();
         // Dome neon outline
         c.strokeStyle='rgba(0,220,255,0.45)'; c.lineWidth=1.2;
-        c.beginPath(); c.arc(x+bw/2, basY, domeR, Math.PI, 0); c.stroke();
-        // Dome ribs
-        c.strokeStyle='rgba(0,180,220,0.18)'; c.lineWidth=0.8;
-        for (let r=1; r<5; r++) {
-          const ang = Math.PI + r*(Math.PI/5);
-          c.beginPath();
-          c.moveTo(x+bw/2, basY);
-          c.lineTo(x+bw/2 + Math.cos(ang)*domeR, basY + Math.sin(ang)*domeR);
-          c.stroke();
-        }
+        c.beginPath(); c.arc(dcx, basY, domeR, Math.PI, 0); c.stroke();
         x += bw + 6 + Math.random()*12;
 
       // ── TYPE: Industrial stack / factory ──────────────────────────────────
