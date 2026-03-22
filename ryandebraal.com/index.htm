@@ -25,7 +25,7 @@
  * ╠═══════════════════════════════════════════════════════════════════════════╣
  * ║  You found the backend of a resume.                                       ║
  * ║  One file. No build step. No framework. No npm install.                   ║
- * ║  Just a developer who knows how the browser actually works.               ║
+ * ║  Just a developer who prefers working close to the platform.              ║
  * ╠═══════════════════════════════════════════════════════════════════════════╣
  * ║                                                                           ║
  * ║  TABLE OF CONTENTS                                                        ║
@@ -626,7 +626,7 @@ try {
 // Parsed into structured SKILLS objects below. The "\n\n" split keeps the source
 // readable as a plain object literal instead of an array of {desc, impl} records.
 //
-// Yes, it's a flat object. It's a resume, not a relational database.
+// Flat object keyed by skill name — fast O(1) lookup by tag text.
 const tooltips = {
   'C#':'Strongly-typed, object-oriented language on the .NET platform\n\nPrimary language — 20+ years across all projects',
   'React':'Component-based JavaScript UI library by Meta\n\nBank of America — Datastrology, Graphite',
@@ -1351,9 +1351,8 @@ function skillsHTML(list){
 }
 
 // render: the entire "framework". Three profiles → three innerHTML strings.
-// No virtual DOM. No diffing. No reconciliation. Just: wipe it, write the new one.
-// For a document that re-renders at most twice per session (profile switch),
-// this is not a compromise — it's the correct choice.
+// Full re-render on profile switch: clears the body and rewrites from data.
+// Re-renders at most twice per session so the simplicity outweighs any overhead.
 function render(profile) {
   const body = document.getElementById('resume-body');
   if (profile === 'pitch') {
