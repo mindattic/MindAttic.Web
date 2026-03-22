@@ -598,6 +598,21 @@ select.tb-sel:hover{border-color:var(--accent);}
 // ║  APP SETTINGS                                                                 ║
 // ║  Tunable constants — persisted to localStorage                                ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
+//
+// Design choice: a flat defaults object, shallow-cloned into a mutable AppSettings
+// copy, then layered with any saved localStorage values via Object.assign.
+//
+// Alternatives considered:
+//   A) A class with getters/setters — more encapsulation, easier to add validation,
+//      but overkill for a bag of numbers that never need computed properties.
+//   B) Reactive signals (Solid/Vue-style) — nice for auto-updating UI when a value
+//      changes, but that requires a reactivity system we don't otherwise have.
+//   C) URL query params — shareable settings without storage, but leaks implementation
+//      details into the URL and makes it harder to bookmark a clean link.
+//
+// localStorage felt proportionate for a single-page document with no server.
+// What would you reach for in a production app of this size?
+//
 const SETTINGS_DEFAULTS = {
   neko_fps:120, neko_speed:24, neko_stop_time:4, neko_wash_time:10, neko_scratch_time:4,
   snow_pile_rate_min:1.0, snow_pile_rate_max:4.0, snow_smooth_speed:0.03,
@@ -617,7 +632,20 @@ try {
 // ║  RESUME DATA                                                                ║
 // ║  Tech tooltips, resume content, skills, experience, projects, education     ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
-
+//
+// All content lives here as plain data — no CMS, no API, no database.
+// The resume renders by iterating arrays and looking up keys in SKILLS.
+//
+// This means adding a new skill = one line in `tooltips` + adding it to a skill
+// group in `D`. No schema migration, no deploy pipeline, no PR queue.
+//
+// The tradeoff: as the data set grows past ~300 skills, this module gets long.
+// At that scale you might consider splitting into a JSON file loaded via fetch(),
+// or generating the file from a structured source (YAML, a spreadsheet export).
+// A service worker could cache it, keeping the experience fully offline.
+//
+// For now: one file, zero dependencies, instant load. Worth it.
+//
 // ── THE FLAT DATABASE ────────────────────────────────────────────────────────
 // ~200 technologies. Each value is a two-field record using "\n\n" as delimiter:
 //   field 1 — short, plain-English definition (what it is)
@@ -1119,6 +1147,18 @@ const tooltips = {
 // It's user-adjustable per-tag via the tooltip UI and persisted to localStorage,
 // so if you think I'm overrating myself on Kubernetes, click it down.
 // I promise I won't know.
+//
+// The SKILLS object is built by splitting each tooltip string on \n\n — a cheap
+// convention that avoids wrapping every entry in a structured object literal.
+// The tradeoff: the delimiter is implicit, so a tooltip that accidentally contains
+// a blank line would silently corrupt its own `impl` field. A schema (Zod, JSON
+// Schema, etc.) would catch that at build time — though there is no build time here.
+//
+// One alternative: store tooltips as a Map<string, {desc, impl}> for semantic
+// clarity, but plain objects win on JSON serializability and spread syntax ease.
+//
+// What's your preferred pattern for small structured datasets like this?
+//
 const _savedFam = (() => { try { return JSON.parse(localStorage.getItem('tag-familiarity')||'{}'); } catch(e){ return {}; } })();
 const SKILLS = {};
 Object.entries(tooltips).forEach(([k, v]) => {
@@ -1226,6 +1266,27 @@ const D = {
 // ║  RENDER ENGINE                                                              ║
 // ║  Template functions for resume sections, profile-based rendering            ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
+//
+// Rendering strategy: template literal functions that return HTML strings,
+// concatenated and assigned to innerHTML in a single pass. No virtual DOM,
+// no diffing, no incremental updates.
+//
+// Why not a real framework here?
+//   - The whole document re-renders at most twice per session (profile switch).
+//     The "performance problem" that frameworks solve doesn't exist at this scale.
+//   - Eliminating a build step means anyone can view-source and understand it
+//     without reversing a bundler. That's a deliberate choice for a resume.
+//
+// What this approach gives up:
+//   A) Fine-grained updates — a React/Solid/Svelte component tree would let you
+//      animate individual sections in/out without re-rendering siblings.
+//   B) Type safety on template slots — a typed template engine (htm, lit-html)
+//      would catch missing props at author time rather than render time.
+//   C) Testability — template functions that return strings are hard to
+//      assert against meaningfully. A component model gives you snapshots.
+//
+// Given the constraints (one file, no toolchain), innerHTML concatenation
+// is defensible. What would you reach for at 2× the complexity?
 // ── SKILL TOOLTIP TEMPLATE ──────────────────────────────────────────────────
 // famLevel: maps 0–100 to one of 10 named proficiency tiers.
 //
@@ -1507,6 +1568,22 @@ function initProfileButtons() {
 // The canvas (z-index: 0, fixed, full-viewport, pointer-events: none) is a
 // shared layer that each FX system owns exclusively while active. stopFX()
 // cancels the rAF loop, clears it, and resets shared state before handoff.
+//
+// The if/else chain in setTheme is intentional over a dispatch map like
+// { spring: startSpring, summer: startSummer, ... }[t]?.() because:
+//   1) It's readable at a glance without knowing the map's shape.
+//   2) A typo in the map key fails silently; a missing branch here is
+//      obvious when the theme just doesn't start.
+//
+// A plugin architecture (register a handler by theme name) would scale
+// better if themes were user-extensible, but that's not a use case here.
+//
+// The rAF loop ownership model (one global `fxAnim` token, exclusive access)
+// is simpler than a proper scene graph but means only one FX system can run
+// at a time. That constraint is fine here — it's also a feature, since two
+// competing animation loops at 60fps would fight over the canvas anyway.
+//
+// Could this be driven by a state machine? Probably. Worth it? You tell me.
 function setTheme(t) {
   currentTheme = t;
   document.documentElement.setAttribute('data-theme', t);
@@ -1576,6 +1653,32 @@ function resetDefaults() {
 // ║  CANVAS FX                                                                  ║
 // ║  Seasonal animations: Spring, Summer, Autumn, Winter, Matrix, Horror        ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
+//
+// Architecture: one fullscreen <canvas> fixed behind the resume (#fx-canvas,
+// z-index 0). Each theme owns it exclusively — no layering, no compositing.
+// The canvas is transparent by default; themes that need a background (Cyberpunk,
+// Synthwave) clear it themselves each frame.
+//
+// Each FX system is a self-contained function (startSpring, startSummer, etc.)
+// that closes over its own state. There's no shared particle pool — each system
+// allocates what it needs and the GC cleans up on stopFX().
+//
+// One alternative worth thinking about: Web Workers + OffscreenCanvas would move
+// the animation loop off the main thread entirely, preventing any frame jank from
+// DOM work. The tradeoff is that workers can't touch the DOM, so things like the
+// neko sprite and border glow updates would need a message-passing bridge.
+//
+// Another: a WebGL renderer (Three.js or raw shaders) would handle hundreds of
+// thousands of particles at full framerate. For the current particle counts
+// (≤400 rain drops, ≤200 snowflakes) the 2D canvas API is fine — WebGL would
+// be meaningful engineering for no visible gain.
+//
+// CSS animations were considered for simple effects like falling leaves, but
+// Canvas wins when you need physics (wind, accumulation, flocking) that CSS
+// can't express without JavaScript anyway.
+//
+// If you were building this, would you separate the animation runtime into a
+// module, or keep it inline like this?
 const canvas = document.getElementById('fx-canvas');
 const ctx = canvas.getContext('2d');
 let particles = [];
@@ -3568,8 +3671,27 @@ function startCyberpunk() {
   }
 
   // ── City skyline offscreen canvas ──────────────────────────────────────────
-  // Building types drawn here: rectangular towers, stepped arcologies,
-  // pyramids, domed structures, mega-corp supertalls, industrial stacks.
+  // Building types: pyramids, domes, mega-corp supertalls, industrial stacks,
+  // and asymmetric chamfered towers. A separate foreground canvas enables
+  // parallax by scrolling at a different rate than the background.
+  //
+  // The offscreen canvas is w*2 wide — double the viewport — so the seamless
+  // scroll works by drawing the canvas twice side-by-side. As scroll offset
+  // advances, one copy exits left while the other enters right. Wrapping via
+  // modulo keeps the offset in bounds. It's the same trick used in infinite
+  // runners and old-school platformer parallax since the SNES era.
+  //
+  // Buildings are generated once at startup (and on resize) via a left-to-right
+  // walk with a random roll per building. Procedural, not authored.
+  //
+  // Alternative: pre-author a handful of distinct skyline "segments" and tile
+  // them — more control over aesthetic, less variety. SVG paths would also
+  // work and be infinitely scalable, but adding parallax + animated windows to
+  // an SVG scroll gets complex fast.
+  //
+  // The window-flicker system tracks pixel positions of every rendered window
+  // and randomly darkens them each frame. Is there a lighter-weight approach
+  // that achieves the same effect? Almost certainly — what would you try?
   function buildSkyline(w, h) {
     const oc = document.createElement('canvas');
     oc.width = w*2; oc.height = h;
@@ -4394,6 +4516,29 @@ function downloadBlob(blob, filename, mime) {
 // ╔═══════════════════════════════════════════════════════════════════════════════╗
 // ║  INIT                                                                       ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
+//
+// Boot sequence: restore preferences → render content → wire event listeners →
+// lazy-inject tooltips on first hover. No framework lifecycle, no hydration step.
+//
+// Tooltip injection is deferred to first mouseenter rather than rendered upfront
+// with the tags. Why? The full tooltip HTML (label + desc + impl + familiarity bar)
+// adds ~300 bytes per tag. With ~200 tags on screen, that's ~60KB of DOM nodes
+// that are invisible until hovered. Lazy injection keeps initial render lean.
+//
+// Event delegation (one listener on document.body rather than one per tag) handles
+// the tooltip trigger. This also means dynamically added tags get hover behavior
+// for free — important since render() can replace the whole tag set on profile switch.
+//
+// Alternatives to consider:
+//   A) Popover API (anchor positioning) — the emerging platform primitive for this.
+//      No JS positioning math needed, but browser support was still patchy at time
+//      of writing and the fallback story was painful.
+//   B) CSS-only tooltips via [data-tooltip]::after — zero JS, but no interactivity
+//      (the familiarity slider inside the tooltip requires real DOM).
+//   C) A dedicated tooltip library (Floating UI, Tippy.js) — battle-tested
+//      positioning, but that's a dependency for a resume. Hard pass.
+//
+// Would you have structured the boot differently — e.g. defer render() until fonts load?
 function init() {
   // Wrap avatar img + name in a clickable identity container
   const tbName = document.getElementById('toolbar-name');
@@ -4665,6 +4810,19 @@ function randomTheme() {
 // Object.assign(window, {...}) is a single, auditable manifest of the public
 // API surface. Everything else in the IIFE stays private.
 // If you're reading this, you already know why that matters.
+//
+// The full list is longer than you might expect for a resume — theme cycling,
+// neko controls, avatar lightbox, settings panel, export menu, attributions.
+// Each one is a feature that required a real decision: is this worth the
+// complexity it adds? Feel free to disagree with any of them.
+//
+// Notable omission: no router. Profile switching mutates the DOM in place
+// rather than navigating. That means the back button does nothing useful and
+// deep-linking to a specific profile isn't possible without a hash-based router.
+// Trade-off accepted — it simplified the codebase and this isn't a multi-page app.
+//
+// What's the largest public API surface you'd be comfortable with on window before
+// reaching for a module system, even with no bundler?
 Object.assign(window, {
   setProfile, cycleProfile, setTheme, cycleTheme, updateThemeSwatch, setFont, adjustFontSize, resetDefaults,
   toggleExportMenu, exportMD, exportHTML, printResume,
