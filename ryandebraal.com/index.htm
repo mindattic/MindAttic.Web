@@ -190,8 +190,15 @@ select.tb-sel:hover{border-color:var(--accent);}
 [data-theme="cyberpunk"] #resume{border-color:#ff00ff;box-shadow:0 0 18px rgba(255,0,255,0.55),0 0 48px rgba(255,0,255,0.18),inset 0 0 30px rgba(80,0,120,0.08);}
 [data-theme="cyberpunk"] .r-name{text-shadow:0 0 10px #ff00ff,0 0 28px rgba(255,0,255,0.5);}
 [data-theme="cyberpunk"] .r-title{text-shadow:0 0 8px #00e5ff,0 0 20px rgba(0,229,255,0.4);}
-[data-theme="cyberpunk"] .tag{text-shadow:0 0 8px currentColor,0 0 16px currentColor;box-shadow:0 0 6px rgba(255,0,255,0.3);}
+[data-theme="cyberpunk"] .tag{text-shadow:0 0 4px currentColor;box-shadow:0 0 3px rgba(255,0,255,0.2);transition:opacity 0.05s,filter 0.05s;}
 [data-theme="cyberpunk"] hr{box-shadow:0 0 6px var(--rule);}
+/* Neon tag flicker animations */
+@keyframes cp-flicker{0%,100%{opacity:1}8%{opacity:.15}10%{opacity:1}18%{opacity:.7}19%{opacity:.08}21%{opacity:1}55%{opacity:.9}56%{opacity:.2}58%{opacity:1}}
+@keyframes cp-out{0%{opacity:1}4%{opacity:.04}78%{opacity:.04}83%{opacity:.45}87%{opacity:.06}100%{opacity:1}}
+@keyframes cp-surge{0%{opacity:1;filter:brightness(1)}8%{opacity:1;filter:brightness(3.5)}13%{opacity:.25;filter:brightness(.25)}18%{opacity:1;filter:brightness(2.2)}28%{opacity:1;filter:brightness(1.4)}100%{opacity:1;filter:brightness(1)}}
+[data-theme="cyberpunk"] .tag.cp-flicker{animation:cp-flicker .45s ease both}
+[data-theme="cyberpunk"] .tag.cp-out{animation:cp-out 1.6s ease both}
+[data-theme="cyberpunk"] .tag.cp-surge{animation:cp-surge .65s ease both}
 [data-theme="noir"] .r-contact a{border-bottom-color:rgba(192,192,192,0.2);}
 [data-theme="noir"] #resume{box-shadow:0 0 40px rgba(255,255,255,0.03);}
 [data-theme="synthwave"] .r-contact a{border-bottom-color:rgba(255,113,206,0.25);}
@@ -355,6 +362,8 @@ select.tb-sel:hover{border-color:var(--accent);}
       <option value="cyberpunk">⚡ Cyberpunk</option>
       <option value="noir">🎬 Noir</option>
       <option value="synthwave">🌴 Synthwave</option>
+      <option value="matrix">⌨ Matrix</option>
+      <option value="neko">🐱 Neko</option>
     </optgroup>
     <optgroup label="Seasons">
       <option value="spring">✿ Spring</option>
@@ -366,10 +375,6 @@ select.tb-sel:hover{border-color:var(--accent);}
       <option value="ocean">🌊 Ocean</option>
       <option value="sunset">🌅 Sunset</option>
       <option value="forest">🌲 Forest</option>
-    </optgroup>
-    <optgroup label="Fantasy">
-      <option value="matrix">⌨ Matrix</option>
-      <option value="neko">🐱 Neko</option>
     </optgroup>
   </select>
   <button onclick="randomTheme()" id="random-theme-btn" title="Random theme" class="tb-desktop" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;font-size:16px;display:inline-flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;transition:border-color 0.15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">🎲</button>
@@ -419,6 +424,8 @@ select.tb-sel:hover{border-color:var(--accent);}
               <option value="cyberpunk">⚡ Cyberpunk</option>
               <option value="noir">🎬 Noir</option>
               <option value="synthwave">🌴 Synthwave</option>
+              <option value="matrix">⌨ Matrix</option>
+              <option value="neko">🐱 Neko</option>
             </optgroup>
             <optgroup label="Seasons">
               <option value="spring">✿ Spring</option>
@@ -430,10 +437,6 @@ select.tb-sel:hover{border-color:var(--accent);}
               <option value="ocean">🌊 Ocean</option>
               <option value="sunset">🌅 Sunset</option>
               <option value="forest">🌲 Forest</option>
-            </optgroup>
-            <optgroup label="Fantasy">
-              <option value="matrix">⌨ Matrix</option>
-              <option value="neko">🐱 Neko</option>
             </optgroup>
           </select>
           <button onclick="randomTheme()" title="Random theme" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;font-size:16px;display:inline-flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;transition:border-color 0.15s;">🎲</button>
@@ -1586,6 +1589,7 @@ function stopFX() {
   if (fxAnim) { cancelAnimationFrame(fxAnim); fxAnim = null; }
   ctx.clearRect(0,0,canvas.width,canvas.height);
   particles = [];
+  stopCyberpunkEffects();
   stopNekoTheme();
   // Clean up neko immediately
   if (nekoInstance) { nekoInstance.stop(); nekoInstance.destroy(); nekoInstance = null; }
@@ -3512,112 +3516,259 @@ function startCyberpunk() {
   const W = () => canvas.width, H = () => canvas.height;
   let frame = 0;
 
-  // Palette
-  const NEON = ['#ff00ff','#00ffff','#ff0080','#00ff80','#aaff00','#ff4400','#ff44ff','#44ffff'];
-
-  // ── Neon rain ──────────────────────────────────────────────────────────────
-  const rain = Array.from({length:160}, () => ({
-    x: Math.random() * (canvas.width||1920),
+  // ── Acid rain: uniform cyan, severe angle (≈38° from vertical) ────────────
+  // dx/dy ratio sets the lean. tan(38°)≈0.78, so horizontal drift is 78% of
+  // vertical speed — looks like a hard wind-driven storm, not gentle drizzle.
+  const RAIN_COLOR = '#00ffff';
+  const RAIN_ANGLE = 0.78; // vx = speed * this
+  const rain = Array.from({length:180}, () => ({
+    x: Math.random() * ((canvas.width||1920) + 300) - 150,
     y: Math.random() * (canvas.height||900),
-    len: 10 + Math.random() * 36,
-    speed: 3.5 + Math.random() * 9,
-    color: NEON[Math.floor(Math.random()*NEON.length)],
-    alpha: 0.25 + Math.random() * 0.55,
-    width: 0.4 + Math.random() * 1.4,
+    len: 14 + Math.random() * 32,
+    speed: 5 + Math.random() * 7,
+    alpha: 0.18 + Math.random() * 0.42,
+    width: 0.5 + Math.random() * 1.0,
   }));
-
-  // ── Sparks ─────────────────────────────────────────────────────────────────
-  let sparks = [];
-  function emitSparks(sx, sy, n) {
-    for (let i=0; i<n; i++) {
-      const a = Math.random()*Math.PI*2;
-      const sp = 0.8 + Math.random()*4.5;
-      sparks.push({
-        x:sx, y:sy, vx:Math.cos(a)*sp, vy:Math.sin(a)*sp - 0.5,
-        life:1.0, decay:0.025+Math.random()*0.045,
-        color:NEON[Math.floor(Math.random()*NEON.length)],
-        size:0.8+Math.random()*2.2,
-      });
-    }
-  }
 
   // ── Electric arcs ──────────────────────────────────────────────────────────
   let arcs = [];
   function emitArc() {
     const w=W(), h=H();
     const sx = Math.random()*w;
-    const sy = Math.random()*h*0.75;
-    const ex = sx + (Math.random()-0.5)*220;
-    const ey = sy + 60 + Math.random()*160;
+    const sy = Math.random()*h*0.72;
+    const ex = sx + (Math.random()-0.5)*240;
+    const ey = sy + 50 + Math.random()*180;
     const color = Math.random()<0.5 ? '#ff00ff' : '#00ffff';
     const steps = 8 + Math.floor(Math.random()*8);
     const segs = [];
     for (let i=0; i<=steps; i++) {
       const t=i/steps;
-      const jitter = 35*(1 - Math.abs(t-0.5)*1.8);
+      const jitter = 38*(1-Math.abs(t-0.5)*1.8);
       segs.push([
         sx+(ex-sx)*t + (Math.random()-0.5)*jitter,
-        sy+(ey-sy)*t + (Math.random()-0.5)*jitter*0.5,
+        sy+(ey-sy)*t + (Math.random()-0.5)*jitter*0.45,
       ]);
     }
     arcs.push({segs, color, life:1.0});
-    emitSparks(ex, ey, 6+Math.floor(Math.random()*10));
+  }
+
+  // ── Smoke particles (for industrial stacks) ────────────────────────────────
+  // Each stack registers an emitter; particles are drawn in the loop.
+  let smokeEmitters = []; // populated after skyline build
+  let smokeParticles = [];
+  function tickSmoke() {
+    // Emit from each registered stack
+    for (const e of smokeEmitters) {
+      if (Math.random() < 0.18) {
+        smokeParticles.push({
+          x: e.x + (Math.random()-0.5)*4,
+          y: e.y,
+          vx: (Math.random()-0.5)*0.4 - 0.3, // slight left drift
+          vy: -(0.5 + Math.random()*0.8),
+          life: 1.0,
+          decay: 0.004 + Math.random()*0.006,
+          r: 6 + Math.random()*10,
+        });
+      }
+    }
+    smokeParticles = smokeParticles.filter(p => p.life > 0);
+    for (const p of smokeParticles) {
+      p.x += p.vx; p.y += p.vy;
+      p.r += 0.25; // expand as it rises
+      p.life -= p.decay;
+    }
   }
 
   // ── City skyline offscreen canvas ──────────────────────────────────────────
+  // Building types drawn here: rectangular towers, stepped arcologies,
+  // pyramids, domed structures, mega-corp supertalls, industrial stacks.
   function buildSkyline(w, h) {
     const oc = document.createElement('canvas');
     oc.width = w*2; oc.height = h;
     const c = oc.getContext('2d');
+    smokeEmitters = []; // reset for this render
+
     c.fillStyle = '#03000a'; c.fillRect(0,0,oc.width,h);
-    let x=0;
-    while (x < oc.width) {
-      const bw = 28 + Math.random()*90;
-      const bh = h*0.12 + Math.random()*h*0.52;
-      const by = h - bh;
-      // Building silhouette — very dark purple-black
-      c.fillStyle = `hsl(270,${30+Math.random()*20}%,${3+Math.random()*4}%)`;
-      c.fillRect(x, by, bw, bh);
-      // Windows
-      for (let wy=by+8; wy<h-8; wy+=12) {
-        for (let wx=x+5; wx<x+bw-6; wx+=14) {
-          if (Math.random()<0.38) {
-            const isCyan = Math.random()<0.35;
-            const a = 0.45 + Math.random()*0.45;
-            const wc = isCyan ? `rgba(0,220,255,${a})` : `rgba(255,0,200,${a})`;
+
+    // Helper: neon window grid on a rectangular face
+    function drawWindows(c, bx, by, bw, bh) {
+      for (let wy=by+10; wy<by+bh-8; wy+=13) {
+        for (let wx=bx+6; wx<bx+bw-6; wx+=15) {
+          if (Math.random()<0.42) {
+            const cyan = Math.random()<0.4;
+            const a = 0.4 + Math.random()*0.5;
+            const wc = cyan ? `rgba(0,220,255,${a})` : `rgba(255,0,200,${a})`;
             c.fillStyle = wc;
-            c.fillRect(wx, wy, 6, 7);
-            // Window glow halo
-            const g = c.createRadialGradient(wx+3,wy+3,0, wx+3,wy+3,12);
-            g.addColorStop(0, isCyan?`rgba(0,200,255,0.12)`:`rgba(255,0,200,0.12)`);
+            c.fillRect(wx, wy, 5, 7);
+            const g = c.createRadialGradient(wx+2,wy+3,0, wx+2,wy+3,11);
+            g.addColorStop(0, cyan?`rgba(0,200,255,0.13)`:`rgba(255,0,200,0.13)`);
             g.addColorStop(1,'rgba(0,0,0,0)');
-            c.fillStyle=g; c.fillRect(wx-8,wy-6,22,20);
+            c.fillStyle=g; c.fillRect(wx-7,wy-5,20,18);
           }
         }
       }
-      // Antenna / spire on some buildings
-      if (Math.random()<0.2) {
-        c.strokeStyle = `rgba(255,0,200,${0.3+Math.random()*0.4})`;
-        c.lineWidth = 1;
-        c.beginPath();
-        c.moveTo(x+bw/2, by);
-        c.lineTo(x+bw/2, by - 20 - Math.random()*40);
-        c.stroke();
-        // Blinking light at top
-        if (Math.random()<0.5) {
-          c.fillStyle = `rgba(255,0,80,0.9)`;
-          c.beginPath(); c.arc(x+bw/2, by-20-Math.random()*40, 2, 0, Math.PI*2); c.fill();
-        }
-      }
-      x += bw + Math.random()*6;
     }
-    // Wet street reflection at base
-    const sg = c.createLinearGradient(0,h*0.84,0,h);
+
+    // Helper: building silhouette fill color
+    function bCol(c) { c.fillStyle=`hsl(270,${28+Math.random()*18}%,${3+Math.random()*5}%)`; }
+    function bStroke(c,a=0.5) { c.strokeStyle=`rgba(${Math.random()<0.5?'255,0,200':'0,200,255'},${a})`; c.lineWidth=0.7; }
+
+    let x = 0;
+    while (x < oc.width) {
+      const roll = Math.random();
+
+      // ── TYPE: Stepped Arcology (massive brutalist megablock) ───────────────
+      if (roll < 0.08) {
+        const bw = 120 + Math.random()*120;
+        const bh = h*0.45 + Math.random()*h*0.3;
+        const by = h - bh;
+        const tiers = 4 + Math.floor(Math.random()*4);
+        for (let t=0; t<tiers; t++) {
+          const tw = bw * (1 - t/tiers * 0.55);
+          const th = bh / tiers;
+          const tx = x + (bw-tw)/2;
+          const ty = by + t*th;
+          bCol(c); c.fillRect(tx, ty, tw, th+2);
+          bStroke(c,0.3); c.strokeRect(tx, ty, tw, th+2);
+          drawWindows(c, tx, ty, tw, th);
+        }
+        // Spire
+        c.strokeStyle='rgba(255,0,200,0.6)'; c.lineWidth=1.5;
+        c.beginPath(); c.moveTo(x+bw/2, by); c.lineTo(x+bw/2, by-30-Math.random()*50); c.stroke();
+        // Antenna blink
+        const ax=x+bw/2, ay=by-30-Math.random()*50;
+        c.fillStyle='rgba(255,0,80,0.95)';
+        c.beginPath(); c.arc(ax, ay, 2.5, 0, Math.PI*2); c.fill();
+        x += bw + 10 + Math.random()*20;
+
+      // ── TYPE: Pyramid / zigggurat ──────────────────────────────────────────
+      } else if (roll < 0.16) {
+        const bw = 90 + Math.random()*110;
+        const bh = h*0.28 + Math.random()*h*0.28;
+        const by = h - bh;
+        const steps = 5 + Math.floor(Math.random()*5);
+        bCol(c);
+        // Solid triangle base
+        c.beginPath();
+        c.moveTo(x, h);
+        c.lineTo(x+bw/2, by);
+        c.lineTo(x+bw, h);
+        c.closePath(); c.fill();
+        // Stepped faces
+        bStroke(c,0.4);
+        for (let s=1; s<steps; s++) {
+          const t = s/steps;
+          const sw = bw*(1-t);
+          const sy2 = h - bh*t;
+          c.beginPath();
+          c.moveTo(x+(bw-sw)/2, sy2);
+          c.lineTo(x+(bw+sw)/2, sy2);
+          c.stroke();
+        }
+        // Glowing capstone
+        const g = c.createRadialGradient(x+bw/2, by, 0, x+bw/2, by, 18);
+        g.addColorStop(0,'rgba(255,0,200,0.7)'); g.addColorStop(1,'rgba(0,0,0,0)');
+        c.fillStyle=g; c.beginPath(); c.arc(x+bw/2, by, 18, 0, Math.PI*2); c.fill();
+        x += bw + 8 + Math.random()*15;
+
+      // ── TYPE: Dome structure ───────────────────────────────────────────────
+      } else if (roll < 0.23) {
+        const bw = 70 + Math.random()*80;
+        const baseH = h*0.1 + Math.random()*h*0.12;
+        const domeR = bw * 0.52;
+        const basY = h - baseH;
+        const domeCY = basY - domeR*0.6;
+        // Base block
+        bCol(c); c.fillRect(x, basY, bw, baseH);
+        drawWindows(c, x, basY, bw, baseH);
+        // Dome
+        bCol(c);
+        c.beginPath(); c.arc(x+bw/2, basY, domeR, Math.PI, 0); c.closePath(); c.fill();
+        // Dome neon outline
+        c.strokeStyle='rgba(0,220,255,0.45)'; c.lineWidth=1.2;
+        c.beginPath(); c.arc(x+bw/2, basY, domeR, Math.PI, 0); c.stroke();
+        // Dome ribs
+        c.strokeStyle='rgba(0,180,220,0.18)'; c.lineWidth=0.8;
+        for (let r=1; r<5; r++) {
+          const ang = Math.PI + r*(Math.PI/5);
+          c.beginPath();
+          c.moveTo(x+bw/2, basY);
+          c.lineTo(x+bw/2 + Math.cos(ang)*domeR, basY + Math.sin(ang)*domeR);
+          c.stroke();
+        }
+        x += bw + 6 + Math.random()*12;
+
+      // ── TYPE: Industrial stack / factory ──────────────────────────────────
+      } else if (roll < 0.30) {
+        const numStacks = 1 + Math.floor(Math.random()*3);
+        const baseW = 40 + numStacks*25 + Math.random()*40;
+        const baseH = h*0.08 + Math.random()*h*0.15;
+        bCol(c); c.fillRect(x, h-baseH, baseW, baseH);
+        // Stacks
+        for (let s=0; s<numStacks; s++) {
+          const sx2 = x + 12 + s*(baseW/numStacks) + Math.random()*8;
+          const sw = 8 + Math.random()*10;
+          const sh = baseH*1.4 + Math.random()*h*0.18;
+          bCol(c); c.fillRect(sx2, h-baseH-sh, sw, sh);
+          // Rim light at top
+          c.fillStyle='rgba(255,80,0,0.7)';
+          c.fillRect(sx2, h-baseH-sh, sw, 3);
+          // Register smoke emitter
+          smokeEmitters.push({x: sx2+sw/2, y: h-baseH-sh-2});
+        }
+        x += baseW + 6 + Math.random()*10;
+
+      // ── TYPE: Mega-corp supertall ──────────────────────────────────────────
+      } else if (roll < 0.40) {
+        const bw = 38 + Math.random()*36;
+        const bh = h*0.5 + Math.random()*h*0.3;
+        const by = h - bh;
+        // Main shaft
+        bCol(c); c.fillRect(x, by, bw, bh);
+        drawWindows(c, x, by, bw, bh);
+        // Distinctive crown: X-brace + orb
+        const cx2 = x+bw/2, cY = by-12;
+        c.strokeStyle='rgba(255,0,200,0.65)'; c.lineWidth=1.8;
+        c.beginPath(); c.moveTo(x, cY); c.lineTo(x+bw, cY-20); c.stroke();
+        c.beginPath(); c.moveTo(x+bw, cY); c.lineTo(x, cY-20); c.stroke();
+        c.beginPath(); c.moveTo(cx2, cY-20); c.lineTo(cx2, cY-50-Math.random()*30); c.stroke();
+        // Orb
+        const og = c.createRadialGradient(cx2, cY-50, 0, cx2, cY-50, 14);
+        og.addColorStop(0,'rgba(255,0,200,0.9)'); og.addColorStop(1,'rgba(0,0,0,0)');
+        c.fillStyle=og; c.beginPath(); c.arc(cx2, cY-50, 14, 0, Math.PI*2); c.fill();
+        x += bw + 6 + Math.random()*12;
+
+      // ── TYPE: Standard rectangular tower (most common) ────────────────────
+      } else {
+        const bw = 26 + Math.random()*70;
+        const bh = h*0.1 + Math.random()*h*0.48;
+        const by = h - bh;
+        bCol(c); c.fillRect(x, by, bw, bh);
+        drawWindows(c, x, by, bw, bh);
+        // Setback tier on taller buildings
+        if (bh > h*0.3 && Math.random()<0.5) {
+          const tw = bw*0.65, th = bh*0.35;
+          const tx = x+(bw-tw)/2, ty = by;
+          bCol(c); c.fillRect(tx, ty, tw, th);
+          drawWindows(c, tx, ty, tw, th);
+        }
+        // Spire
+        if (Math.random()<0.25) {
+          c.strokeStyle=`rgba(${Math.random()<0.5?'255,0,200':'0,200,255'},0.5)`;
+          c.lineWidth=1;
+          c.beginPath(); c.moveTo(x+bw/2, by); c.lineTo(x+bw/2, by-15-Math.random()*35); c.stroke();
+        }
+        x += bw + 2 + Math.random()*8;
+      }
+    }
+
+    // Wet-street neon reflection at base
+    const sg = c.createLinearGradient(0,h*0.83,0,h);
     sg.addColorStop(0,'rgba(0,0,0,0)');
-    sg.addColorStop(0.4,'rgba(80,0,100,0.14)');
-    sg.addColorStop(0.7,'rgba(0,60,100,0.12)');
-    sg.addColorStop(1,'rgba(10,0,20,0.35)');
-    c.fillStyle=sg; c.fillRect(0,h*0.84,oc.width,h*0.16);
+    sg.addColorStop(0.35,'rgba(80,0,100,0.16)');
+    sg.addColorStop(0.7,'rgba(0,60,100,0.13)');
+    sg.addColorStop(1,'rgba(10,0,20,0.38)');
+    c.fillStyle=sg; c.fillRect(0,h*0.83,oc.width,h*0.17);
     return oc;
   }
 
@@ -3630,43 +3781,43 @@ function startCyberpunk() {
     frame++;
 
     // Rebuild skyline on resize
-    if(skyOC.height !== h) skyOC = buildSkyline(w, h);
+    if(skyOC.height !== h) { skyOC = buildSkyline(w, h); }
 
-    // ── City background (slow parallax scroll) ──
+    // ── City background ──
     skyScroll = (skyScroll + 0.18) % skyOC.width;
     ctx.drawImage(skyOC, -skyScroll, 0, skyOC.width, h);
     ctx.drawImage(skyOC, skyOC.width - skyScroll, 0, skyOC.width, h);
 
-    // ── Neon rain ──
-    for (const r of rain) {
-      r.y += r.speed;
-      if (r.y > h + r.len) { r.y = -r.len; r.x = Math.random()*w; }
-      const rg = ctx.createLinearGradient(r.x, r.y-r.len, r.x, r.y);
-      rg.addColorStop(0,'rgba(0,0,0,0)');
-      const hex = parseInt(r.alpha*255).toString(16).padStart(2,'0');
-      rg.addColorStop(1, r.color + hex);
-      ctx.strokeStyle = rg;
-      ctx.lineWidth = r.width;
-      ctx.shadowBlur = 3; ctx.shadowColor = r.color;
-      ctx.beginPath(); ctx.moveTo(r.x, r.y-r.len); ctx.lineTo(r.x, r.y); ctx.stroke();
-    }
-    ctx.shadowBlur = 0;
-
-    // ── Random spark bursts ──
-    if(Math.random()<0.06) emitSparks(Math.random()*w, Math.random()*h*0.88, 3+Math.floor(Math.random()*9));
-
-    // ── Draw + update sparks ──
-    sparks = sparks.filter(s => s.life > 0);
-    for (const s of sparks) {
-      s.x += s.vx; s.y += s.vy; s.vy += 0.1;
-      s.life -= s.decay;
+    // ── Smoke from industrial stacks ──
+    tickSmoke();
+    for (const p of smokeParticles) {
       ctx.save();
-      ctx.globalAlpha = s.life;
-      ctx.fillStyle = s.color;
-      ctx.shadowBlur = 6; ctx.shadowColor = s.color;
-      ctx.beginPath(); ctx.arc(s.x, s.y, s.size, 0, Math.PI*2); ctx.fill();
+      ctx.globalAlpha = p.life * 0.22;
+      ctx.fillStyle = `rgba(160,120,80,1)`;
+      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
       ctx.restore();
     }
+
+    // ── Angled cyan rain ──
+    ctx.shadowBlur = 4; ctx.shadowColor = RAIN_COLOR;
+    for (const r of rain) {
+      r.x += r.speed * RAIN_ANGLE;
+      r.y += r.speed;
+      // Wrap: exit right or bottom → re-enter from left/top
+      if (r.y > h + r.len || r.x > w + 100) {
+        r.y = -r.len - Math.random()*h*0.5;
+        r.x = Math.random()*(w + 200) - 200;
+      }
+      const ex = r.x + r.len * RAIN_ANGLE;
+      const ey = r.y + r.len;
+      const rg = ctx.createLinearGradient(r.x, r.y, ex, ey);
+      rg.addColorStop(0, 'rgba(0,0,0,0)');
+      rg.addColorStop(1, `rgba(0,255,255,${r.alpha})`);
+      ctx.strokeStyle = rg;
+      ctx.lineWidth = r.width;
+      ctx.beginPath(); ctx.moveTo(r.x, r.y); ctx.lineTo(ex, ey); ctx.stroke();
+    }
+    ctx.shadowBlur = 0;
 
     // ── Electric arcs ──
     if(Math.random()<0.008) emitArc();
@@ -3674,7 +3825,7 @@ function startCyberpunk() {
     for (const a of arcs) {
       a.life -= 0.055;
       ctx.save();
-      ctx.globalAlpha = a.life * (0.7 + Math.random()*0.3); // flicker
+      ctx.globalAlpha = a.life * (0.7 + Math.random()*0.3);
       ctx.strokeStyle = a.color;
       ctx.lineWidth = 1 + a.life;
       ctx.shadowBlur = 10 + Math.random()*8; ctx.shadowColor = a.color;
@@ -3684,7 +3835,7 @@ function startCyberpunk() {
       ctx.restore();
     }
 
-    // ── Neon fog: magenta vignette top + cyan wet-street glow bottom ──
+    // ── Neon fog ──
     const topFog = ctx.createLinearGradient(0,0,0,h*0.32);
     topFog.addColorStop(0,'rgba(100,0,120,0.20)');
     topFog.addColorStop(1,'rgba(0,0,0,0)');
@@ -3703,6 +3854,72 @@ function startCyberpunk() {
   }
 
   loop();
+  startCyberpunkEffects();
+}
+
+// ── CYBERPUNK TAG EFFECTS: neon flicker + leet-speak glitch ──────────────────
+// Tags behave like damaged neon signs: random flicker bursts, brief outages,
+// occasional power-surge overbright. 20% of events swap middle characters to
+// leet-speak equivalents (a→4, e→3, i→!, l→1, o→0, s→5) — first and last
+// characters of each word are NEVER touched (Rawlinson reading-invariance).
+const LEET_MAP = {a:'4',e:'3',i:'!',l:'1',o:'0',s:'5',t:'7'};
+function cpLeetWord(w) {
+  if(w.length<=2) return w;
+  const mid = w.slice(1,-1).replace(/[aeilost]/gi, ch =>
+    Math.random()<0.65 ? (LEET_MAP[ch.toLowerCase()]||ch) : ch
+  );
+  return w[0] + mid + w[w.length-1];
+}
+function cpLeetText(txt) {
+  return txt.split(/(\s+)/).map(tok => /\S/.test(tok) ? cpLeetWord(tok) : tok).join('');
+}
+
+let cpEffectTimer = null;
+const cpOrigText = new WeakMap();
+
+function stopCyberpunkEffects() {
+  if(cpEffectTimer){ clearTimeout(cpEffectTimer); cpEffectTimer=null; }
+  document.querySelectorAll('.tag[data-cpleet]').forEach(t => {
+    if(cpOrigText.has(t)){ t.textContent=cpOrigText.get(t); cpOrigText.delete(t); }
+    t.removeAttribute('data-cpleet');
+  });
+  document.querySelectorAll('.tag.cp-flicker,.tag.cp-out,.tag.cp-surge').forEach(t =>
+    t.classList.remove('cp-flicker','cp-out','cp-surge')
+  );
+}
+
+function startCyberpunkEffects() {
+  function tick() {
+    if(document.documentElement.getAttribute('data-theme')!=='cyberpunk') return;
+    const tags = Array.from(document.querySelectorAll('.tag'));
+    if(!tags.length){ cpEffectTimer=setTimeout(tick,600); return; }
+    const n = 1 + Math.floor(Math.random()*3);
+    for(let i=0; i<n; i++){
+      const tag = tags[Math.floor(Math.random()*tags.length)];
+      const r = Math.random();
+      // Leet glitch
+      if(r<0.18 && !tag.hasAttribute('data-cpleet')){
+        const orig = tag.textContent;
+        cpOrigText.set(tag,orig);
+        tag.setAttribute('data-cpleet','1');
+        tag.textContent = cpLeetText(orig);
+        setTimeout(()=>{
+          if(cpOrigText.has(tag)){tag.textContent=cpOrigText.get(tag);cpOrigText.delete(tag);}
+          tag.removeAttribute('data-cpleet');
+        }, 250+Math.random()*900);
+      } else if(r<0.42){
+        // Flicker
+        const cls = r<0.27?'cp-flicker':r<0.36?'cp-out':'cp-surge';
+        tag.classList.remove('cp-flicker','cp-out','cp-surge');
+        void tag.offsetWidth; // restart animation
+        tag.classList.add(cls);
+        const dur = cls==='cp-out'?1700:cls==='cp-surge'?700:500;
+        setTimeout(()=>tag.classList.remove(cls), dur+50);
+      }
+    }
+    cpEffectTimer = setTimeout(tick, 120+Math.random()*1300);
+  }
+  tick();
 }
 
 // ── SYNTHWAVE: perspective grid + sliced retro sun ────────────────────────────
