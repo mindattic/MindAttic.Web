@@ -245,7 +245,7 @@ select.tb-sel:hover{border-color:var(--accent);}
 [data-theme="cyberpunk"] hr{box-shadow:0 0 6px var(--rule);}
 /* Neon tag flicker animations */
 @keyframes cp-flicker{0%,100%{opacity:1}8%{opacity:.15}10%{opacity:1}18%{opacity:.7}19%{opacity:.08}21%{opacity:1}55%{opacity:.9}56%{opacity:.2}58%{opacity:1}}
-@keyframes cp-out{0%{opacity:1}4%{opacity:.04}78%{opacity:.04}83%{opacity:.45}87%{opacity:.06}100%{opacity:1}}
+@keyframes cp-out{0%{opacity:1}4%{opacity:.22}78%{opacity:.22}83%{opacity:.6}87%{opacity:.25}100%{opacity:1}}
 @keyframes cp-surge{0%{opacity:1;filter:brightness(1)}8%{opacity:1;filter:brightness(3.5)}13%{opacity:.25;filter:brightness(.25)}18%{opacity:1;filter:brightness(2.2)}28%{opacity:1;filter:brightness(1.4)}100%{opacity:1;filter:brightness(1)}}
 [data-theme="cyberpunk"] .tag.cp-flicker{animation:cp-flicker 1s ease both}
 [data-theme="cyberpunk"] .tag.cp-out{animation:cp-out 3.2s ease both}
@@ -3533,12 +3533,12 @@ function startCyberpunk() {
   // dx/dy ratio sets the lean. tan(38°)≈0.78, so horizontal drift is 78% of
   // vertical speed — looks like a hard wind-driven storm, not gentle drizzle.
   const RAIN_COLOR = '#00ffff';
-  const RAIN_ANGLE = 0.25; // vx = speed * this — nearly vertical, slight lean
   const rain = Array.from({length:180}, () => ({
     x: Math.random() * ((canvas.width||1920) + 300) - 150,
     y: Math.random() * (canvas.height||900),
     len: 14 + Math.random() * 32,
-    speed: 5 + Math.random() * 7,
+    speed: 9 + Math.random() * 10,   // faster
+    angle: 0.18 + Math.random() * 0.22, // per-drop angle variation (erratic pattern)
     alpha: 0.18 + Math.random() * 0.42,
     width: 0.5 + Math.random() * 1.0,
   }));
@@ -3548,9 +3548,9 @@ function startCyberpunk() {
   function emitArc() {
     const w=W(), h=H();
     const sx = Math.random()*w;
-    const sy = Math.random()*h*0.72;
+    const sy = Math.random()*h*0.08; // spawn near top of screen
     const ex = sx + (Math.random()-0.5)*240;
-    const ey = sy + 50 + Math.random()*180;
+    const ey = sy + 80 + Math.random()*280;
     const color = Math.random()<0.5 ? '#ff00ff' : '#00ffff';
     const steps = 8 + Math.floor(Math.random()*8);
     const segs = [];
@@ -3577,6 +3577,8 @@ function startCyberpunk() {
 
     // Collected window positions for dynamic flicker in the main draw loop
     const wins = [];
+    // Tall building rooftop anchors for searchlights
+    const rooftops = [];
 
     // Helper: neon window grid on a rectangular face
     function drawWindows(c, bx, by, bw, bh) {
@@ -3640,7 +3642,7 @@ function startCyberpunk() {
       } else if (roll < 0.23) {
         const bw = 70 + Math.random()*80;
         const baseH = h*0.1 + Math.random()*h*0.12;
-        const domeR = bw * 0.52;
+        const domeR = bw * 0.52 - 0.6; // subtract half stroke-width so arc fits flush
         const basY = h - baseH;
         const domeCY = basY - domeR*0.6;
         // Base block
@@ -3699,6 +3701,7 @@ function startCyberpunk() {
         const og = c.createRadialGradient(cx2, cY-50, 0, cx2, cY-50, 14);
         og.addColorStop(0,'rgba(255,0,200,0.9)'); og.addColorStop(1,'rgba(0,0,0,0)');
         c.fillStyle=og; c.beginPath(); c.arc(cx2, cY-50, 14, 0, Math.PI*2); c.fill();
+        rooftops.push({x: cx2, y: cY-50});
         x += bw + 6 + Math.random()*12;
 
       // ── TYPE: Standard rectangular tower (most common) ────────────────────
@@ -3708,6 +3711,7 @@ function startCyberpunk() {
         const by = h - bh;
         bCol(c); c.fillRect(x, by, bw, bh);
         drawWindows(c, x, by, bw, bh);
+        if (bh > h*0.35) rooftops.push({x: x+bw/2, y: by});
         // Setback tier on taller buildings
         if (bh > h*0.3 && Math.random()<0.5) {
           const tw = bw*0.65, th = bh*0.35;
@@ -3725,26 +3729,6 @@ function startCyberpunk() {
       }
     }
 
-    // ── Foreground: closer, smaller buildings (depth layer) ────────────────
-    // Drawn on top of main skyline — slightly lighter, shorter, no windows
-    const fgRects = []; // track to cull window flicker behind them
-    let fx = -10;
-    while (fx < oc.width) {
-      const bw = 18 + Math.random()*55;
-      const bh = h*0.04 + Math.random()*h*0.17;
-      const by = h - bh;
-      c.fillStyle = `hsl(270,${18+Math.random()*14}%,${7+Math.random()*7}%)`;
-      c.fillRect(fx, by, bw, bh);
-      // Subtle edge glow on some
-      if (Math.random() < 0.35) {
-        c.strokeStyle = Math.random()<0.5 ? 'rgba(255,0,200,0.25)' : 'rgba(0,200,255,0.25)';
-        c.lineWidth = 0.8;
-        c.strokeRect(fx, by, bw, bh);
-      }
-      fgRects.push({x:fx, y:by, w:bw, h:bh});
-      fx += bw + 1 + Math.random()*5;
-    }
-
     // Wet-street neon reflection at base
     const sg = c.createLinearGradient(0,h*0.83,0,h);
     sg.addColorStop(0,'rgba(0,0,0,0)');
@@ -3752,13 +3736,50 @@ function startCyberpunk() {
     sg.addColorStop(0.7,'rgba(0,60,100,0.13)');
     sg.addColorStop(1,'rgba(10,0,20,0.38)');
     c.fillStyle=sg; c.fillRect(0,h*0.83,oc.width,h*0.17);
-    return {oc, wins, fgRects};
+
+    // ── Foreground: closer buildings on separate canvas (parallax layer) ──────
+    const fgOC = document.createElement('canvas');
+    fgOC.width = oc.width; fgOC.height = h;
+    const cf = fgOC.getContext('2d');
+    const fgRects = [];
+    let fx = -10;
+    while (fx < fgOC.width) {
+      const bw = 18 + Math.random()*55;
+      const bh = h*0.04 + Math.random()*h*0.17;
+      const by = h - bh;
+      cf.fillStyle = `hsl(270,${18+Math.random()*14}%,${7+Math.random()*7}%)`;
+      cf.fillRect(fx, by, bw, bh);
+      if (Math.random() < 0.35) {
+        cf.strokeStyle = Math.random()<0.5 ? 'rgba(255,0,200,0.25)' : 'rgba(0,200,255,0.25)';
+        cf.lineWidth = 0.8;
+        cf.strokeRect(fx, by, bw, bh);
+      }
+      // Windows on foreground buildings
+      drawWindows(cf, fx, by, bw, bh);
+      fgRects.push({x:fx, y:by, w:bw, h:bh});
+      fx += bw + 1 + Math.random()*5;
+    }
+
+    return {bgOC: oc, fgOC, wins, fgRects, rooftops};
   }
 
   let skyData = buildSkyline(W(), H());
-  let skyOC = skyData.oc;
+  let skyBG = skyData.bgOC, skyFG = skyData.fgOC;
   let winStates = skyData.wins.map(() => ({off:false, timer:Math.floor(Math.random()*300)}));
-  let skyScroll = 0;
+  let bgScroll = 0, fgScroll = 0;
+
+  // Anchor each searchlight to a tall building rooftop
+  function assignSearchlightRooftops() {
+    const rts = skyData.rooftops;
+    if (!rts.length) return;
+    rts.sort((a,b) => a.y - b.y); // lowest y = tallest
+    const pool = rts.slice(0, Math.min(rts.length, 12));
+    cpSearchlights.forEach(sl => {
+      const rt = pool[Math.floor(Math.random()*pool.length)];
+      sl.rtX = rt.x; sl.rtY = rt.y;
+    });
+  }
+  assignSearchlightRooftops();
 
   // ── Drifting toxic clouds (top third of screen) ────────────────────────────
   // Low, fast-moving smog banks — sickly purple-green, layered opacity.
@@ -3807,42 +3828,53 @@ function startCyberpunk() {
     frame++;
 
     // Rebuild skyline on resize
-    if(skyOC.height !== h) {
+    if(skyBG.height !== h) {
       skyData = buildSkyline(w, h);
-      skyOC = skyData.oc;
+      skyBG = skyData.bgOC; skyFG = skyData.fgOC;
       winStates = skyData.wins.map(() => ({off:false, timer:Math.floor(Math.random()*300)}));
+      assignSearchlightRooftops();
     }
 
     // ── Dark sky base ──
     ctx.fillStyle = '#03000a';
     ctx.fillRect(0, 0, w, h);
 
-    // ── Searchlights (behind buildings) ──
+    // ── Searchlights — cone beams from rooftop anchors, behind buildings ──
     for (const sl of cpSearchlights) {
-      // Primary sweep + low-freq noise so motion isn't purely sinusoidal
       sl.angle += sl.speed + Math.sin(frame * 0.017 + sl.phase) * 0.0012
                            + Math.sin(frame * 0.041 + sl.phase * 2.3) * 0.0006;
       if (sl.angle > sl.center+sl.range || sl.angle < sl.center-sl.range) sl.speed *= -1;
-      const sx = sl.x * w, sy = h * (0.30 + sl.x * 0.28);
-      const len = h * 0.65;
+      // Screen x: rooftop follows bg scroll
+      let sx = sl.rtX - bgScroll;
+      if (sx < -60) sx += skyBG.width;
+      if (sx > w + 60) sx -= skyBG.width;
+      const sy = sl.rtY;
+      const len = h * 0.7;
+      const spread = 0.055;
       const ex = sx + Math.sin(sl.angle) * len;
       const ey = sy - len * Math.cos(sl.angle);
+      const ex1 = sx + Math.sin(sl.angle - spread) * len;
+      const ey1 = sy - len * Math.cos(sl.angle - spread);
+      const ex2 = sx + Math.sin(sl.angle + spread) * len;
+      const ey2 = sy - len * Math.cos(sl.angle + spread);
       const slg = ctx.createLinearGradient(sx, sy, ex, ey);
       slg.addColorStop(0, `rgba(${sl.color},${sl.alpha})`);
       slg.addColorStop(1, `rgba(${sl.color},0)`);
       ctx.save();
-      ctx.strokeStyle = slg;
-      ctx.lineWidth = 18 + Math.sin(frame * 0.07 + sl.phase) * 4;
-      ctx.globalAlpha = 1;
-      ctx.shadowBlur = 0;
-      ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(ex, ey); ctx.stroke();
+      ctx.fillStyle = slg;
+      ctx.beginPath();
+      ctx.moveTo(sx, sy);   // 1px tip at rooftop
+      ctx.lineTo(ex1, ey1);
+      ctx.lineTo(ex2, ey2);
+      ctx.closePath();
+      ctx.fill();
       ctx.restore();
     }
 
     // ── City background (drawn over searchlights so buildings occlude them) ──
-    skyScroll = (skyScroll + 0.18) % skyOC.width;
-    ctx.drawImage(skyOC, -skyScroll, 0, skyOC.width, h);
-    ctx.drawImage(skyOC, skyOC.width - skyScroll, 0, skyOC.width, h);
+    bgScroll = (bgScroll + 0.15) % skyBG.width;
+    ctx.drawImage(skyBG, -bgScroll, 0, skyBG.width, h);
+    ctx.drawImage(skyBG, skyBG.width - bgScroll, 0, skyBG.width, h);
 
     // ── Window flicker: unreliable power grid ──
     ctx.fillStyle = '#03000a';
@@ -3851,7 +3883,7 @@ function startCyberpunk() {
       ws.timer--;
       if (ws.timer <= 0) {
         ws.off = !ws.off;
-        ws.timer = ws.off ? (2 + Math.floor(Math.random()*20)) : (400 + Math.floor(Math.random()*1800));
+        ws.timer = ws.off ? (2 + Math.floor(Math.random()*20)) : (2000 + Math.floor(Math.random()*9000));
       }
       if (!ws.off) continue;
       const win = skyData.wins[i];
@@ -3859,17 +3891,22 @@ function startCyberpunk() {
       const wy = win.y;
       let hidden = false;
       for (const fg of skyData.fgRects) {
-        const fgSx = fg.x - skyScroll;
-        const fgSx2 = fg.x + skyOC.width - skyScroll;
-        const wx1 = win.x - skyScroll; const wx2 = win.x + skyOC.width - skyScroll;
+        const fgSx = fg.x - fgScroll;
+        const fgSx2 = fg.x + skyFG.width - fgScroll;
+        const wx1 = win.x - bgScroll; const wx2 = win.x + skyBG.width - bgScroll;
         if ((wx1 >= fgSx && wx1 < fgSx+fg.w && wy >= fg.y) ||
             (wx2 >= fgSx2 && wx2 < fgSx2+fg.w && wy >= fg.y)) { hidden=true; break; }
       }
       if (hidden) continue;
-      const sx1 = win.x - skyScroll, sx2 = win.x + skyOC.width - skyScroll;
+      const sx1 = win.x - bgScroll, sx2 = win.x + skyBG.width - bgScroll;
       if (sx1 > -6 && sx1 < w+6) ctx.fillRect(sx1, wy, 6, 8);
       if (sx2 > -6 && sx2 < w+6) ctx.fillRect(sx2, wy, 6, 8);
     }
+
+    // ── Foreground buildings (parallax — scrolls faster than bg) ──
+    fgScroll = (fgScroll + 0.38) % skyFG.width;
+    ctx.drawImage(skyFG, -fgScroll, 0, skyFG.width, h);
+    ctx.drawImage(skyFG, skyFG.width - fgScroll, 0, skyFG.width, h);
 
     // ── Drifting toxic clouds ──
     drawClouds(w, h);
@@ -3877,14 +3914,14 @@ function startCyberpunk() {
     // ── Angled cyan rain ──
     ctx.shadowBlur = 4; ctx.shadowColor = RAIN_COLOR;
     for (const r of rain) {
-      r.x += r.speed * RAIN_ANGLE;
+      r.x += r.speed * r.angle;
       r.y += r.speed;
       // Wrap: exit right or bottom → re-enter from left/top
       if (r.y > h + r.len || r.x > w + 100) {
         r.y = -r.len - Math.random()*h*0.5;
         r.x = Math.random()*(w + 200) - 200;
       }
-      const ex = r.x + r.len * RAIN_ANGLE;
+      const ex = r.x + r.len * r.angle;
       const ey = r.y + r.len;
       const rg = ctx.createLinearGradient(r.x, r.y, ex, ey);
       rg.addColorStop(0, 'rgba(0,0,0,0)');
