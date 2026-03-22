@@ -80,6 +80,54 @@
   --tag-hover-bg:#cc2200; --tag-hover-text:#0a0000;
   --rule:#500000;
 }
+[data-theme="ocean"] {
+  --bg:#0a1628; --bg2:#0e1e34; --bg3:#132840; --border:#1e3a5c;
+  --accent:#00b4d8; --accent2:#48cae4;
+  --text:#caf0f8; --text2:#90e0ef; --text3:#4a8ca8;
+  --tag-bg:#0e1e34; --tag-text:#00b4d8; --tag-border:#1e3a5c;
+  --tag-hover-bg:#00b4d8; --tag-hover-text:#0a1628;
+  --rule:#0077b6;
+}
+[data-theme="sunset"] {
+  --bg:#1a0a1e; --bg2:#241028; --bg3:#2e1632; --border:#5c2a60;
+  --accent:#ff6b35; --accent2:#ff8c5a;
+  --text:#ffecd2; --text2:#d4a07a; --text3:#8a5c40;
+  --tag-bg:#241028; --tag-text:#ff6b35; --tag-border:#5c2a60;
+  --tag-hover-bg:#ff6b35; --tag-hover-text:#1a0a1e;
+  --rule:#c44520;
+}
+[data-theme="forest"] {
+  --bg:#0a1a0a; --bg2:#102010; --bg3:#162816; --border:#2a4a2a;
+  --accent:#4caf50; --accent2:#66bb6a;
+  --text:#d0e8d0; --text2:#8ab88a; --text3:#5a7a5a;
+  --tag-bg:#102010; --tag-text:#4caf50; --tag-border:#2a4a2a;
+  --tag-hover-bg:#4caf50; --tag-hover-text:#0a1a0a;
+  --rule:#2e7d32;
+}
+[data-theme="cyberpunk"] {
+  --bg:#0a0014; --bg2:#10001e; --bg3:#180028; --border:#3a0066;
+  --accent:#ff00ff; --accent2:#ff44ff;
+  --text:#e0f0ff; --text2:#00e5ff; --text3:#6a4a8a;
+  --tag-bg:#10001e; --tag-text:#ff00ff; --tag-border:#3a0066;
+  --tag-hover-bg:#ff00ff; --tag-hover-text:#0a0014;
+  --rule:#8800aa;
+}
+[data-theme="noir"] {
+  --bg:#0e0e0e; --bg2:#141414; --bg3:#1c1c1c; --border:#333;
+  --accent:#c0c0c0; --accent2:#e0e0e0;
+  --text:#d8d8d8; --text2:#999; --text3:#555;
+  --tag-bg:#141414; --tag-text:#c0c0c0; --tag-border:#333;
+  --tag-hover-bg:#c0c0c0; --tag-hover-text:#0e0e0e;
+  --rule:#555;
+}
+[data-theme="vaporwave"] {
+  --bg:#1a0a2e; --bg2:#200e38; --bg3:#281242; --border:#4a2070;
+  --accent:#ff71ce; --accent2:#ff9de0;
+  --text:#e0f0ff; --text2:#01cdfe; --text3:#7a5090;
+  --tag-bg:#200e38; --tag-text:#ff71ce; --tag-border:#4a2070;
+  --tag-hover-bg:#ff71ce; --tag-hover-text:#1a0a2e;
+  --rule:#b967ff;
+}
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{font-size:14px;-webkit-font-smoothing:antialiased;}
@@ -133,10 +181,8 @@ select.tb-sel:hover{border-color:var(--accent);}
 #resume{max-width:820px;margin:28px auto;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:52px 60px;font-family:var(--font-resume);position:relative;z-index:10;transition:background 0.3s,border-color 0.3s;}
 @media (orientation:portrait){#resume{background:color-mix(in srgb, var(--bg) 33%, transparent);} .tb-sep{display:none;} .tb-desktop{display:none!important;} .tb-mobile-only{display:flex!important;} #theme-swatch{display:block!important;} #profile-cycle-btn{display:flex!important;align-items:center;justify-content:center;}
 #theme-swatch{width:32px!important;height:28px!important;}
-#neko-btn{width:32px!important;height:28px!important;overflow:hidden;}
-#neko-btn #neko-icon{margin-top:-5px;}
-#neko-btn #neko-bed{bottom:1px!important;}
-#more-btn{width:32px!important;height:28px!important;padding:0!important;justify-content:center!important;}}
+#more-btn{width:32px!important;height:28px!important;padding:0!important;justify-content:center!important;}
+#random-theme-mobile{display:flex!important;}}
 [data-theme="matrix"] #resume{border-color:#00ff41;box-shadow:0 0 30px rgba(0,255,65,0.15);}
 
 /* ── HEADER ── */
@@ -159,8 +205,25 @@ select.tb-sel:hover{border-color:var(--accent);}
 [data-theme="matrix"] body{background:linear-gradient(180deg, #000800 0%, #000d00 30%, #001400 70%, #001a00 100%);}
 [data-theme="neko"] body{background:linear-gradient(180deg, #fff8f0 0%, #fff0e0 30%, #ffe8d0 70%, #ffdfc0 100%);}
 [data-theme="horror"] body{background:linear-gradient(180deg, #0a0000 0%, #080000 30%, #050000 70%, #020000 100%);}
+[data-theme="ocean"] body{background:linear-gradient(180deg, #03111e 0%, #071a2e 30%, #0a1628 70%, #0e1e34 100%);}
+[data-theme="sunset"] body{background:linear-gradient(180deg, #2a0420 0%, #221018 30%, #1a0a1e 70%, #140818 100%);}
+[data-theme="forest"] body{background:linear-gradient(180deg, #041204 0%, #081808 30%, #0a1a0a 70%, #0e200e 100%);}
+[data-theme="cyberpunk"] body{background:linear-gradient(180deg, #04000a 0%, #080012 30%, #0a0014 70%, #10001e 100%);}
+[data-theme="noir"] body{background:linear-gradient(180deg, #080808 0%, #0a0a0a 30%, #0e0e0e 70%, #111 100%);}
+[data-theme="vaporwave"] body{background:#0e0418;}
 [data-theme="winter"] .r-contact a{border-bottom-color:rgba(26,90,140,0.2);}
 [data-theme="matrix"] .r-contact a{border-bottom-color:rgba(0,255,65,0.2);}
+[data-theme="ocean"] .r-contact a{border-bottom-color:rgba(0,180,216,0.2);}
+[data-theme="sunset"] .r-contact a{border-bottom-color:rgba(255,107,53,0.25);}
+[data-theme="forest"] .r-contact a{border-bottom-color:rgba(76,175,80,0.2);}
+[data-theme="cyberpunk"] .r-contact a{border-bottom-color:rgba(255,0,255,0.2);}
+[data-theme="cyberpunk"] .tb-btn,[data-theme="cyberpunk"] select.tb-sel,[data-theme="cyberpunk"] #toolbar-name{font-family:'Courier New',monospace;}
+[data-theme="cyberpunk"] #resume{border-color:#ff00ff;box-shadow:0 0 30px rgba(255,0,255,0.1);}
+[data-theme="cyberpunk"] .tag{text-shadow:0 0 6px currentColor;}
+[data-theme="noir"] .r-contact a{border-bottom-color:rgba(192,192,192,0.2);}
+[data-theme="noir"] #resume{box-shadow:0 0 40px rgba(255,255,255,0.03);}
+[data-theme="vaporwave"] .r-contact a{border-bottom-color:rgba(255,113,206,0.25);}
+[data-theme="vaporwave"] .tag{text-shadow:0 0 6px currentColor;}
 
 /* ── SECTION RULE ── */
 .r-sec{font-family:var(--font-resume);font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.14em;color:var(--accent);border-bottom:1px solid var(--rule);padding-bottom:4px;margin:22px 0 11px;}
@@ -313,11 +376,6 @@ select.tb-sel:hover{border-color:var(--accent);}
   <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAFyWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgOS4xLWMwMDMgNzkuOTY5MGE4NywgMjAyNS8wMy8wNi0xOToxMjowMyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI3LjEgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyNi0wMy0yMFQxNjowNTozOC0wNTowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjYtMDMtMjBUMTY6MzI6MDgtMDU6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjYtMDMtMjBUMTY6MzI6MDgtMDU6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmRkNzQ0ZGViLWQxYjYtMGM0OS05OGUxLWFiYTllZmJmYzkwYSIgeG1wTU06RG9jdW1lbnRJRD0i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" alt="Ryan DeBraal" onclick="openAvatarLightbox()" style="width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0;cursor:pointer;" title="View photo">
   <span id="toolbar-name">Ryan DeBraal</span>
 
-  <button id="neko-btn" onclick="toggleNeko()" title="Summon Neko!" style="padding:0;margin:0 4px;background:none;border:none;cursor:pointer;flex-shrink:0;line-height:0;position:relative;">
-    <div id="neko-icon" class="neko-sprite neko-f31" style="width:32px;height:32px;display:block;position:relative;z-index:1;"></div>
-    <div id="neko-bed" style="position:absolute;bottom:-2px;left:50%;transform:translateX(calc(-50% + 3px));width:36px;height:8px;background:radial-gradient(ellipse at center, rgba(0,0,0,0.35) 0%, rgba(0,0,0,0.15) 50%, transparent 75%);border-radius:50%;pointer-events:none;"></div>
-  </button>
-
   <div class="tb-sep tb-desktop"></div>
   <span class="tb-label tb-desktop">Profile</span>
   <select class="tb-sel tb-desktop" id="profile-picker" onchange="setProfile(this.value)">
@@ -329,16 +387,31 @@ select.tb-sel:hover{border-color:var(--accent);}
   <div class="tb-sep tb-desktop"></div>
   <span class="tb-label tb-desktop">Theme</span>
   <select class="tb-sel tb-desktop" id="theme-picker" onchange="setTheme(this.value)">
-    <option value="light" selected="">☀ Light</option>
-    <option value="dark">☽ Dark</option>
-    <option value="spring">✿ Spring</option>
-    <option value="summer">🌻 Summer</option>
-    <option value="autumn">❧ Autumn</option>
-    <option value="winter">❄ Winter</option>
-    <option value="matrix">⌨ Matrix</option>
-    <option value="neko">🍬 Candy</option>
-    <option value="horror">✝ Survival Horror</option>
+    <optgroup label="Basic">
+      <option value="light" selected="">☀ Light</option>
+      <option value="dark">☽ Dark</option>
+    </optgroup>
+    <optgroup label="Seasons">
+      <option value="spring">✿ Spring</option>
+      <option value="summer">🌻 Summer</option>
+      <option value="autumn">❧ Autumn</option>
+      <option value="winter">❄ Winter</option>
+    </optgroup>
+    <optgroup label="Nature">
+      <option value="ocean">🌊 Ocean</option>
+      <option value="sunset">🌅 Sunset</option>
+      <option value="forest">🌲 Forest</option>
+    </optgroup>
+    <optgroup label="Fantasy">
+      <option value="matrix">⌨ Matrix</option>
+      <option value="neko">🐱 Neko</option>
+      <option value="horror">✝ Survival Horror</option>
+      <option value="cyberpunk">⚡ Cyberpunk</option>
+      <option value="noir">🎬 Noir</option>
+      <option value="vaporwave">🌴 Vaporwave</option>
+    </optgroup>
   </select>
+  <button onclick="randomTheme()" id="random-theme-btn" title="Random theme" class="tb-desktop" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;font-size:16px;display:inline-flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;transition:transform 0.5s ease;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">🎲</button>
 
   <div class="tb-sep tb-desktop"></div>
   <div style="position:relative;display:inline-block;" id="export-wrap" class="tb-desktop">
@@ -362,6 +435,7 @@ select.tb-sel:hover{border-color:var(--accent);}
 
   <button id="profile-cycle-btn" onclick="cycleProfile()" title="Cycle profile" style="display:none;width:32px;height:28px;border-radius:5px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;flex-shrink:0;margin:0 2px;padding:0;font-size:17px;line-height:1;align-items:center;justify-content:center;"></button>
   <button id="theme-swatch" onclick="cycleTheme()" title="Cycle theme" style="display:none;width:28px;height:28px;border-radius:5px;border:1px solid rgba(128,128,128,0.3);cursor:pointer;flex-shrink:0;padding:0;margin:0 2px;overflow:hidden;position:relative;"></button>
+  <button id="random-theme-mobile" onclick="randomTheme()" title="Random theme" style="display:none;width:32px;height:28px;border-radius:5px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;font-size:16px;flex-shrink:0;padding:0;margin:0 2px;align-items:center;justify-content:center;transition:transform 0.5s ease;">🎲</button>
   <div class="tb-sep"></div>
   <div style="position:relative;display:inline-block;" id="more-wrap">
     <button class="tb-btn" onclick="toggleMoreMenu()" id="more-btn" title="More options" style="padding:5px 10px;font-size:16px;font-weight:700;letter-spacing:1px;line-height:1;display:flex;align-items:center;justify-content:center;">…</button>
@@ -374,16 +448,31 @@ select.tb-sel:hover{border-color:var(--accent);}
         <div style="display:flex;align-items:center;gap:8px;width:100%;">
           <span class="tb-label">Theme</span>
           <select class="tb-sel" id="theme-picker-mobile" onchange="setTheme(this.value);document.getElementById('theme-picker').value=this.value;" style="flex:1;">
-            <option value="light" selected>☀ Light</option>
-            <option value="dark">☽ Dark</option>
-            <option value="spring">✿ Spring</option>
-            <option value="summer">🌻 Summer</option>
-            <option value="autumn">❧ Autumn</option>
-            <option value="winter">❄ Winter</option>
-            <option value="matrix">⌨ Matrix</option>
-            <option value="neko">🍬 Candy</option>
-            <option value="horror">✝ Survival Horror</option>
+            <optgroup label="Basic">
+              <option value="light" selected>☀ Light</option>
+              <option value="dark">☽ Dark</option>
+            </optgroup>
+            <optgroup label="Seasons">
+              <option value="spring">✿ Spring</option>
+              <option value="summer">🌻 Summer</option>
+              <option value="autumn">❧ Autumn</option>
+              <option value="winter">❄ Winter</option>
+            </optgroup>
+            <optgroup label="Nature">
+              <option value="ocean">🌊 Ocean</option>
+              <option value="sunset">🌅 Sunset</option>
+              <option value="forest">🌲 Forest</option>
+            </optgroup>
+            <optgroup label="Fantasy">
+              <option value="matrix">⌨ Matrix</option>
+              <option value="neko">🐱 Neko</option>
+              <option value="horror">✝ Survival Horror</option>
+              <option value="cyberpunk">⚡ Cyberpunk</option>
+              <option value="noir">🎬 Noir</option>
+              <option value="vaporwave">🌴 Vaporwave</option>
+            </optgroup>
           </select>
+          <button onclick="randomTheme()" title="Random theme" style="width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;font-size:16px;display:inline-flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;transition:transform 0.5s ease;">🎲</button>
         </div>
         <div style="display:flex;align-items:center;gap:8px;width:100%;">
           <span class="tb-label">Export</span>
@@ -494,7 +583,7 @@ const SETTINGS_DEFAULTS = {
   snow_spread:2.5, snow_max_height:0.32, snow_flake_count:140,
   leaf_count:40,
   plant_grow_fast:0.3, plant_grow_slow:0.15,
-  skill_bar_fill_ms:1000,
+  skill_fill_start_speed:8, skill_fill_decay:0.06,
 };
 let AppSettings = Object.assign({}, SETTINGS_DEFAULTS);
 try {
@@ -1298,17 +1387,23 @@ function cycleProfile() {
   const idx = profileOrder.indexOf(currentProfile);
   setProfile(profileOrder[(idx + 1) % profileOrder.length]);
 }
-const THEME_ORDER = ['light','dark','spring','summer','autumn','winter','matrix','neko','horror'];
+const THEME_ORDER = ['light','dark','spring','summer','autumn','winter','ocean','sunset','forest','matrix','neko','horror','cyberpunk','noir','vaporwave'];
 const THEME_MURALS = {
-  light:  {top:'#87CEEB',bot:'#c8f5c0',sym:'☀',sc:'#d48a00'},
-  dark:   {top:'#0d0d1a',bot:'#1a1a3e',sym:'☽',sc:'#6ba3e8'},
-  spring: {top:'#a8e6b0',bot:'#f0faf2',sym:'✿',sc:'#1f6b35'},
-  summer: {top:'#5bc8f5',bot:'#f7e060',sym:'🌻',sc:'#b85c00'},
-  autumn: {top:'#4a1a00',bot:'#c05c18',sym:'❧',sc:'#f5c060'},
-  winter: {top:'#c0d8f0',bot:'#e8f4ff',sym:'❄',sc:'#1a5a8c'},
-  matrix: {top:'#001200',bot:'#004000',sym:'⌨',sc:'#00ff41'},
-  neko:   {top:'#fff0e0',bot:'#ffccaa',sym:'🍬',sc:'#d4608a'},
-  horror: {top:'#0d0000',bot:'#3a0000',sym:'✝',sc:'#cc2200'},
+  light:     {top:'#87CEEB',bot:'#c8f5c0',sym:'☀',sc:'#d48a00'},
+  dark:      {top:'#0d0d1a',bot:'#1a1a3e',sym:'☽',sc:'#6ba3e8'},
+  spring:    {top:'#a8e6b0',bot:'#f0faf2',sym:'✿',sc:'#1f6b35'},
+  summer:    {top:'#5bc8f5',bot:'#f7e060',sym:'🌻',sc:'#b85c00'},
+  autumn:    {top:'#4a1a00',bot:'#c05c18',sym:'❧',sc:'#f5c060'},
+  winter:    {top:'#c0d8f0',bot:'#e8f4ff',sym:'❄',sc:'#1a5a8c'},
+  ocean:     {top:'#03111e',bot:'#0077b6',sym:'🌊',sc:'#00b4d8'},
+  sunset:    {top:'#ff6b35',bot:'#4a0030',sym:'🌅',sc:'#ffecd2'},
+  forest:    {top:'#0a1a0a',bot:'#2e7d32',sym:'🌲',sc:'#66bb6a'},
+  matrix:    {top:'#001200',bot:'#004000',sym:'⌨',sc:'#00ff41'},
+  neko:      {top:'#fff0e0',bot:'#ffccaa',sym:'🐱',sc:'#d4608a'},
+  horror:    {top:'#0d0000',bot:'#3a0000',sym:'✝',sc:'#cc2200'},
+  cyberpunk: {top:'#0a0014',bot:'#3a0066',sym:'⚡',sc:'#ff00ff'},
+  noir:      {top:'#0e0e0e',bot:'#333',sym:'🎬',sc:'#c0c0c0'},
+  vaporwave: {top:'#1a0a2e',bot:'#4a2070',sym:'🌴',sc:'#ff71ce'},
 };
 function updateThemeSwatch(t) {
   const sw = document.getElementById('theme-swatch');
@@ -1364,6 +1459,10 @@ function setTheme(t) {
   else if(t==='winter') startWinter();
   else if(t==='matrix') startMatrix();
   else if(t==='horror') startHorror();
+  else if(t==='neko') startNekoTheme();
+  else if(t==='ocean') startOcean();
+  else if(t==='forest') startForest();
+  else if(t==='vaporwave') startVaporwave();
   try{ localStorage.setItem('resume-theme',t); }catch(e){}
   const tm = document.getElementById('theme-picker-mobile');
   if (tm) tm.value = t;
@@ -1434,6 +1533,7 @@ function stopFX() {
   ctx.clearRect(0,0,canvas.width,canvas.height);
   particles = [];
   stopHorror();
+  stopNekoTheme();
   // Clean up neko immediately
   if (nekoInstance) { nekoInstance.stop(); nekoInstance.destroy(); nekoInstance = null; }
   if (typeof stopNekoSleepAnim === 'function') stopNekoSleepAnim();
@@ -2667,7 +2767,10 @@ const NEKO_COLORS = {
 };
 function setNekoColor(color) {
   const filter = NEKO_COLORS[color] || NEKO_COLORS.orange;
-  document.querySelectorAll('.neko-sprite').forEach(el => el.style.filter = filter);
+  // Only apply to non-theme nekos (theme nekos have their own random color)
+  document.querySelectorAll('.neko-sprite').forEach(el => {
+    if (!el.dataset.themeNeko) el.style.filter = filter;
+  });
   try{ localStorage.setItem('neko-color', color); }catch(e){}
 }
 function initNekoColor() {
@@ -2748,6 +2851,260 @@ function toggleNeko() {
     btn.style.pointerEvents = 'none';
     setTimeout(() => { btn.style.pointerEvents = ''; }, 5000);
   }, 100);
+}
+
+// ── NEKO THEME: 10 random roaming cats with behavior cycling & collision ──────
+let themeNekos = [];
+let nekoBehaviorTimers = [];
+let nekoCollisionLoop = null;
+
+const NEKO_BEHAVIORS = [
+  BehaviorMode.CHASE_MOUSE,
+  BehaviorMode.RUN_AWAY_FROM_MOUSE,
+  BehaviorMode.RUN_AROUND_RANDOMLY,
+  BehaviorMode.PACE_AROUND_SCREEN,
+  BehaviorMode.RUN_AROUND,
+];
+const NEKO_MIN_DIST = 48; // minimum pixel distance between cats
+
+function randomNekoBehavior(exclude) {
+  const pool = NEKO_BEHAVIORS.filter(b => b !== exclude);
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
+function cycleSingleNeko(neko) {
+  // Pick a new behavior different from the current one
+  const newBehavior = randomNekoBehavior(neko.behaviorMode);
+  neko.behaviorMode = newBehavior;
+  // Reset AI state so runRandomly() re-initializes
+  neko.catAI = undefined;
+  neko.catTimer = 0;
+  neko.catBurst = 0;
+  neko.cornerIndex = 0;
+  neko.ballX = 0; neko.ballY = 0;
+  // Wake up if sleeping
+  if (neko.state === NekoState.SLEEP || neko.state === NekoState.STOP ||
+      neko.state === NekoState.WASH || neko.state === NekoState.SCRATCH) {
+    neko.setState(NekoState.AWAKE);
+  }
+}
+
+function scheduleBehaviorCycle(neko) {
+  const delay = 8000 + Math.random() * 12000; // 8–20 seconds
+  const tid = setTimeout(() => {
+    if (!themeNekos.includes(neko)) return; // already despawned
+    cycleSingleNeko(neko);
+    scheduleBehaviorCycle(neko); // schedule next cycle
+  }, delay);
+  nekoBehaviorTimers.push(tid);
+}
+
+function isNekoResting(neko) {
+  return neko.state === NekoState.SLEEP || neko.state === NekoState.STOP ||
+         neko.state === NekoState.WASH || neko.state === NekoState.SCRATCH ||
+         neko.state === NekoState.YAWN;
+}
+
+function isNekoMoving(neko) {
+  return neko.state >= NekoState.U_MOVE && neko.state <= NekoState.DR_MOVE;
+}
+
+// Social interaction when a moving neko meets a stationary one
+function nekoSocialStop(mover) {
+  if (mover._socialCooldown) return; // don't interrupt an ongoing interaction
+  mover._socialCooldown = true;
+  if (Math.random() < 0.8) {
+    // Yawn and take a nap beside the other cat
+    mover.setState(NekoState.YAWN);
+    mover.behaviorMode = -1; // freeze behavior updates
+    setTimeout(() => {
+      if (!themeNekos.includes(mover)) return;
+      mover.setState(NekoState.SLEEP);
+      // Wake up after a while and resume
+      setTimeout(() => {
+        if (!themeNekos.includes(mover)) return;
+        mover.setState(NekoState.AWAKE);
+        mover.behaviorMode = randomNekoBehavior(-1);
+        mover.catAI = undefined; mover.catTimer = 0;
+        mover._socialCooldown = false;
+      }, 4000 + Math.random() * 6000);
+    }, 1000);
+  } else {
+    // Scratch itself then run off in a new direction
+    mover.setState(NekoState.SCRATCH);
+    mover.behaviorMode = -1;
+    setTimeout(() => {
+      if (!themeNekos.includes(mover)) return;
+      mover.setState(NekoState.AWAKE);
+      cycleSingleNeko(mover);
+      mover._socialCooldown = false;
+    }, 1500 + Math.random() * 1500);
+  }
+}
+
+function nekoCollisionTick() {
+  for (let i = 0; i < themeNekos.length; i++) {
+    for (let j = i + 1; j < themeNekos.length; j++) {
+      const a = themeNekos[i], b = themeNekos[j];
+      const dx = a.x - b.x, dy = a.y - b.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < NEKO_MIN_DIST && dist > 0) {
+        // Push apart
+        const push = (NEKO_MIN_DIST - dist) * 0.3;
+        const nx = dx / dist, ny = dy / dist;
+        a.logicX += nx * push; a.logicY += ny * push;
+        b.logicX -= nx * push; b.logicY -= ny * push;
+        a.logicX = Math.max(0, Math.min(a.boundsWidth, a.logicX));
+        a.logicY = Math.max(0, Math.min(a.boundsHeight, a.logicY));
+        b.logicX = Math.max(0, Math.min(b.boundsWidth, b.logicX));
+        b.logicY = Math.max(0, Math.min(b.boundsHeight, b.logicY));
+
+        const aResting = isNekoResting(a), bResting = isNekoResting(b);
+        const aMoving = isNekoMoving(a), bMoving = isNekoMoving(b);
+
+        // Moving neko encounters a stationary neko → social stop
+        if (aMoving && bResting) {
+          nekoSocialStop(a);
+        } else if (bMoving && aResting) {
+          nekoSocialStop(b);
+        } else if (aMoving && bMoving) {
+          // Both moving — one yields (random pick)
+          nekoSocialStop(Math.random() < 0.5 ? a : b);
+        }
+        // Wake resting nekos that get bumped (if not in a social interaction)
+        if (aResting && !a._socialCooldown) {
+          a.setState(NekoState.AWAKE);
+          a.catAI = undefined; a.catTimer = 0;
+        }
+        if (bResting && !b._socialCooldown) {
+          b.setState(NekoState.AWAKE);
+          b.catAI = undefined; b.catTimer = 0;
+        }
+      }
+    }
+  }
+}
+
+// ── CURVE PATHING: bee-style sinuous movement overlay ─────────────────────────
+// Attaches to a neko instance and bends its movement each tick
+function attachCurvePathing(neko) {
+  neko._curve = {
+    angle: Math.random() * Math.PI * 2,
+    turnRate: 0,
+    targetTurn: (Math.random() - 0.5) * 0.06,
+    wanderTimer: 0,
+    active: true,
+  };
+  // Monkey-patch processOriginalTick to inject curve offset
+  const origTick = neko.processOriginalTick.bind(neko);
+  neko.processOriginalTick = function() {
+    const c = this._curve;
+    if (!c || !c.active) { origTick(); return; }
+    // Only apply curve when neko is actively moving (not sleeping/idle)
+    const moving = this.state >= NekoState.U_MOVE && this.state <= NekoState.DR_MOVE;
+    if (moving) {
+      c.wanderTimer++;
+      if (c.wanderTimer > 30 + Math.random() * 60) {
+        c.targetTurn = (Math.random() - 0.5) * 0.08;
+        c.wanderTimer = 0;
+      }
+      c.turnRate += (c.targetTurn - c.turnRate) * 0.08;
+      c.angle += c.turnRate;
+      // Offset the logic position with a perpendicular curve
+      const perpX = Math.cos(c.angle + Math.PI / 2) * 1.5;
+      const perpY = Math.sin(c.angle + Math.PI / 2) * 1.5;
+      origTick();
+      this.logicX += perpX;
+      this.logicY += perpY;
+      // Soft boundary nudge
+      if (this.logicX < 20) c.angle += 0.04;
+      else if (this.logicX > this.boundsWidth - 20) c.angle -= 0.04;
+      if (this.logicY < 20) c.angle += (Math.cos(c.angle) > 0 ? 0.04 : -0.04);
+      else if (this.logicY > this.boundsHeight - 20) c.angle += (Math.cos(c.angle) > 0 ? -0.04 : 0.04);
+      this.logicX = Math.max(0, Math.min(this.boundsWidth, this.logicX));
+      this.logicY = Math.max(0, Math.min(this.boundsHeight, this.logicY));
+    } else {
+      origTick();
+    }
+  };
+}
+
+function onNekoMouseWake(neko) {
+  if (!isNekoResting(neko)) return; // only react if sleeping/idle
+  neko.setState(NekoState.AWAKE);
+  neko.catAI = undefined; neko.catTimer = 0;
+  // 40% chance: yawn and go back to sleep
+  if (Math.random() < 0.4) {
+    setTimeout(() => {
+      if (!themeNekos.includes(neko)) return;
+      neko.setState(NekoState.YAWN);
+      setTimeout(() => {
+        if (!themeNekos.includes(neko)) return;
+        neko.setState(NekoState.SLEEP);
+        neko.behaviorMode = BehaviorMode.RUN_AROUND_RANDOMLY;
+        neko.catAI = 'NAP'; neko.catTimer = 0;
+      }, 1200);
+    }, 400);
+  } else {
+    // 60% chance: wake up and change behavior
+    cycleSingleNeko(neko);
+  }
+}
+
+function startNekoTheme() {
+  stopNekoTheme();
+  const colorKeys = Object.keys(NEKO_COLORS);
+  // Initial behavior spread: 2 of each type
+  const initialBehaviors = [
+    BehaviorMode.CHASE_MOUSE, BehaviorMode.CHASE_MOUSE,
+    BehaviorMode.RUN_AWAY_FROM_MOUSE, BehaviorMode.RUN_AWAY_FROM_MOUSE,
+    BehaviorMode.RUN_AROUND_RANDOMLY, BehaviorMode.RUN_AROUND_RANDOMLY,
+    BehaviorMode.PACE_AROUND_SCREEN, BehaviorMode.PACE_AROUND_SCREEN,
+    BehaviorMode.RUN_AROUND, BehaviorMode.RUN_AROUND,
+  ];
+  // Shuffle
+  for (let i = initialBehaviors.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [initialBehaviors[i], initialBehaviors[j]] = [initialBehaviors[j], initialBehaviors[i]];
+  }
+  // Spread spawn positions across the screen to avoid initial overlap
+  for (let i = 0; i < 10; i++) {
+    const col = i % 5, row = Math.floor(i / 5);
+    const x = (col + 0.5) * (window.innerWidth / 5) - 16 + (Math.random() - 0.5) * 40;
+    const y = (row + 0.5) * (window.innerHeight / 2) - 16 + (Math.random() - 0.5) * 40;
+    const neko = new Neko({ fps: AppSettings.neko_fps, speed: 10 + Math.random() * 14, startX: x, startY: y, behaviorMode: initialBehaviors[i], allowBehaviorChange: false });
+    neko.setSprites(NEKO_SPRITE_COUNT);
+    const color = colorKeys[Math.floor(Math.random() * colorKeys.length)];
+    neko.element.style.filter = NEKO_COLORS[color];
+    neko.element.dataset.themeNeko = '1'; // mark as theme neko so setNekoColor skips it
+    neko._assignedColor = color; // preserve assigned color
+    // Enable pointer events for mouseover wake interaction
+    neko.element.style.pointerEvents = 'auto';
+    neko.element.style.cursor = 'default';
+    neko.element.addEventListener('mouseenter', () => onNekoMouseWake(neko));
+    // Half the nekos get bee-style curving paths, half walk straight
+    if (i % 2 === 0) attachCurvePathing(neko);
+    neko.start();
+    themeNekos.push(neko);
+    // Schedule first behavior change with staggered delay
+    const initialDelay = 5000 + Math.random() * 10000;
+    const tid = setTimeout(() => {
+      if (!themeNekos.includes(neko)) return;
+      cycleSingleNeko(neko);
+      scheduleBehaviorCycle(neko);
+    }, initialDelay);
+    nekoBehaviorTimers.push(tid);
+  }
+  // Collision avoidance loop (runs at ~15fps)
+  nekoCollisionLoop = setInterval(nekoCollisionTick, 66);
+}
+
+function stopNekoTheme() {
+  nekoBehaviorTimers.forEach(t => clearTimeout(t));
+  nekoBehaviorTimers = [];
+  if (nekoCollisionLoop) { clearInterval(nekoCollisionLoop); nekoCollisionLoop = null; }
+  themeNekos.forEach(n => { n.stop(); n.destroy(); });
+  themeNekos = [];
 }
 
 // ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -2884,6 +3241,351 @@ function startMatrix() {
       if(y*16>canvas.height && Math.random()>0.975) drops[i]=0;
       else drops[i]+=0.4;
     });
+    fxAnim = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── FOREST: tightly packed parallax tree silhouettes ──────────────────────────
+function startForest() {
+  const W = () => canvas.width, H = () => canvas.height;
+
+  // Layer config: all packed into bottom third, front row below screen
+  // y = baseline position (1.0 = screen bottom, >1.0 = below screen)
+  const layerDefs = [
+    { speed: 0.10, treeH: 40,  treeW: 14,  gap: 7,   y: 0.68, rgb:[5,16,5],     trunk:[15,10,5],  alpha:0.2  },
+    { speed: 0.20, treeH: 60,  treeW: 20,  gap: 9,   y: 0.72, rgb:[8,24,8],     trunk:[20,12,6],  alpha:0.3  },
+    { speed: 0.40, treeH: 90,  treeW: 30,  gap: 12,  y: 0.77, rgb:[14,38,14],   trunk:[28,18,8],  alpha:0.4  },
+    { speed: 0.75, treeH: 130, treeW: 42,  gap: 16,  y: 0.82, rgb:[20,52,20],   trunk:[35,22,10], alpha:0.55 },
+    { speed: 1.3,  treeH: 185, treeW: 58,  gap: 22,  y: 0.88, rgb:[28,68,28],   trunk:[42,28,14], alpha:0.7  },
+    { speed: 2.2,  treeH: 260, treeW: 78,  gap: 28,  y: 0.94, rgb:[22,58,22],   trunk:[48,32,16], alpha:0.85 },
+    { speed: 3.5,  treeH: 360, treeW: 100, gap: 36,  y: 1.02, rgb:[16,44,16],   trunk:[40,26,13], alpha:1.0  },
+  ];
+
+  // Pre-render each layer as an offscreen horizontal strip
+  function buildStrip(L) {
+    const stripW = W() * 2; // double-wide for seamless scroll
+    const stripH = L.treeH + 20;
+    const oc = document.createElement('canvas');
+    oc.width = stripW; oc.height = stripH;
+    const c = oc.getContext('2d');
+    const [cr,cg,cb] = L.rgb;
+    const [tr,tg,tb] = L.trunk;
+
+    let x = Math.random() * L.gap * 0.5;
+    while (x < stripW) {
+      const h = L.treeH * (0.7 + Math.random() * 0.35);
+      const w = L.treeW * (0.75 + Math.random() * 0.5);
+      const tiers = 3 + Math.floor(Math.random() * 3);
+      const baseY = stripH;
+      const lean = (Math.random() - 0.5) * 0.02;
+
+      c.save();
+      c.translate(x, baseY);
+      c.transform(1, 0, lean, 1, 0, 0);
+
+      // Trunk
+      const trW = Math.max(2, w * 0.08);
+      const trH = h * (0.12 + Math.random() * 0.08);
+      c.fillStyle = `rgba(${tr},${tg},${tb},${L.alpha})`;
+      c.fillRect(-trW/2, -trH, trW, trH);
+
+      // Canopy tiers
+      for (let t = 0; t < tiers; t++) {
+        const pct = t / tiers;
+        const tierBottom = -trH - (1-pct) * h * 0.15;
+        const tierTop = -trH - (1-pct) * h * 0.15 - h / tiers * 1.2;
+        const tierW = w * (0.25 + pct * 0.75);
+        const shade = 1 - pct * 0.2 + Math.random() * 0.05;
+        c.fillStyle = `rgba(${Math.round(cr*shade)},${Math.round(cg*shade)},${Math.round(cb*shade)},${L.alpha})`;
+        c.beginPath();
+        c.moveTo(0, tierTop);
+        c.lineTo(-tierW/2, tierBottom);
+        c.lineTo(tierW/2, tierBottom);
+        c.closePath();
+        c.fill();
+      }
+
+      c.restore();
+      x += L.gap + Math.random() * L.gap * 0.6;
+    }
+    return { canvas: oc, width: stripW, height: stripH, scroll: Math.random() * stripW, ...L };
+  }
+
+  let strips = layerDefs.map(buildStrip);
+
+  // Rebuild strips on resize
+  let lastW = W(), lastH = H();
+
+  // Mist wisps — concentrated in the tree zone
+  const mist = Array.from({length: 20}, () => ({
+    x: Math.random() * W(),
+    y: H() * (0.62 + Math.random() * 0.32),
+    w: 100 + Math.random() * 250,
+    h: 6 + Math.random() * 16,
+    speed: 0.08 + Math.random() * 0.25,
+    opacity: 0.015 + Math.random() * 0.035,
+  }));
+
+  function draw() {
+    const w = W(), h = H();
+
+    // Rebuild strips if resized
+    if (w !== lastW || h !== lastH) {
+      strips = layerDefs.map(buildStrip);
+      lastW = w; lastH = h;
+    }
+
+    ctx.clearRect(0, 0, w, h);
+
+    // Draw layers back to front
+    strips.forEach(S => {
+      S.scroll += S.speed;
+      if (S.scroll >= S.width) S.scroll -= S.width;
+      const drawY = h * S.y - S.height;
+      // Draw strip twice for seamless wrap
+      ctx.drawImage(S.canvas, -S.scroll, drawY);
+      ctx.drawImage(S.canvas, S.width - S.scroll, drawY);
+    });
+
+    // Drifting mist between layers
+    mist.forEach(m => {
+      m.x += m.speed;
+      if (m.x > w + m.w) { m.x = -m.w; m.y = H() * (0.62 + Math.random() * 0.32); }
+      const mg = ctx.createRadialGradient(m.x+m.w/2, m.y, 0, m.x+m.w/2, m.y, m.w/2);
+      mg.addColorStop(0, `rgba(80,120,80,${m.opacity})`);
+      mg.addColorStop(1, 'rgba(80,120,80,0)');
+      ctx.fillStyle = mg;
+      ctx.fillRect(m.x, m.y-m.h/2, m.w, m.h);
+    });
+
+    // Ground fog at base of tree zone
+    const fog = ctx.createLinearGradient(0, h*0.92, 0, h);
+    fog.addColorStop(0, 'rgba(6,18,6,0)');
+    fog.addColorStop(1, 'rgba(6,18,6,0.6)');
+    ctx.fillStyle = fog;
+    ctx.fillRect(0, h*0.92, w, h*0.08);
+
+    fxAnim = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── OCEAN: bubbles rising from the deep ───────────────────────────────────────
+function startOcean() {
+  const W = () => canvas.width, H = () => canvas.height;
+  const bubbles = Array.from({length: 40}, () => spawnBubble(W(), H(), true));
+  // Light shafts: each has its own drift speed and phase
+  const shafts = Array.from({length: 6}, (_, i) => ({
+    baseX: (i + 0.5) / 6,          // 0–1 normalized base position
+    driftSpd: 0.0003 + Math.random() * 0.0005,
+    driftAmp: 0.06 + Math.random() * 0.08,
+    phase: Math.random() * Math.PI * 2,
+    width: 30 + Math.random() * 50,
+    skew: 20 + Math.random() * 60,   // how far the shaft leans at bottom
+    opacity: 0.025 + Math.random() * 0.02,
+    pulseSpd: 0.003 + Math.random() * 0.004,
+    pulsePhase: Math.random() * Math.PI * 2,
+  }));
+  let ft = 0;
+
+  function spawnBubble(w, h, init) {
+    return {
+      x: Math.random() * w,
+      y: init ? Math.random() * h : h + 10 + Math.random() * 40,
+      r: 3 + Math.random() * 12,
+      speed: 0.3 + Math.random() * 0.8,
+      wobbleAmp: 10 + Math.random() * 20,
+      wobbleSpd: 0.008 + Math.random() * 0.012,
+      wobbleOff: Math.random() * Math.PI * 2,
+      opacity: 0.15 + Math.random() * 0.25,
+      t: 0,
+    };
+  }
+
+  function draw() {
+    const w = W(), h = H();
+    ctx.clearRect(0, 0, w, h);
+
+    // Depth darkness overlay — darker the deeper you go
+    const depthGrad = ctx.createLinearGradient(0, 0, 0, h);
+    depthGrad.addColorStop(0,   'rgba(0,8,20,0)');
+    depthGrad.addColorStop(0.3, 'rgba(0,6,16,0.1)');
+    depthGrad.addColorStop(0.6, 'rgba(0,4,12,0.25)');
+    depthGrad.addColorStop(0.85,'rgba(0,2,8,0.45)');
+    depthGrad.addColorStop(1,   'rgba(0,0,4,0.65)');
+    ctx.fillStyle = depthGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // Animated underwater light shafts — attenuated by depth
+    ft++;
+    ctx.save();
+    shafts.forEach(s => {
+      const drift = Math.sin(ft * s.driftSpd + s.phase) * s.driftAmp;
+      const cx = (s.baseX + drift) * w;
+      const pulse = 0.7 + 0.3 * Math.sin(ft * s.pulseSpd + s.pulsePhase);
+      const alpha = s.opacity * pulse;
+      const halfW = s.width / 2;
+      // Shafts fade out much faster with depth
+      const grad = ctx.createLinearGradient(cx, 0, cx + s.skew * 0.3, h);
+      grad.addColorStop(0,    `rgba(0,200,240,${alpha * 2})`);
+      grad.addColorStop(0.15, `rgba(0,190,230,${alpha * 1.2})`);
+      grad.addColorStop(0.35, `rgba(0,160,200,${alpha * 0.5})`);
+      grad.addColorStop(0.55, `rgba(0,120,160,${alpha * 0.15})`);
+      grad.addColorStop(0.75, 'rgba(0,80,120,0)');
+      grad.addColorStop(1,    'rgba(0,40,60,0)');
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(cx - halfW, 0);
+      ctx.lineTo(cx + halfW, 0);
+      ctx.lineTo(cx + halfW + s.skew, h);
+      ctx.lineTo(cx - halfW + s.skew, h);
+      ctx.closePath();
+      ctx.fill();
+    });
+    ctx.restore();
+
+    // Draw and update bubbles — opacity scaled by depth
+    bubbles.forEach(b => {
+      b.t += b.wobbleSpd;
+      b.y -= b.speed;
+      const wx = b.x + Math.sin(b.t + b.wobbleOff) * b.wobbleAmp;
+      const depthFade = 1 - (b.y / h) * 0.7; // brighter near top, dimmer at bottom
+
+      // Bubble body
+      ctx.beginPath();
+      ctx.arc(wx, b.y, b.r, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(144,224,239,${b.opacity * depthFade})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      // Inner glow
+      const ig = ctx.createRadialGradient(wx - b.r * 0.3, b.y - b.r * 0.3, b.r * 0.1, wx, b.y, b.r);
+      ig.addColorStop(0, `rgba(200,240,255,${b.opacity * 0.6 * depthFade})`);
+      ig.addColorStop(1, 'rgba(200,240,255,0)');
+      ctx.fillStyle = ig;
+      ctx.fill();
+
+      // Specular highlight
+      ctx.beginPath();
+      ctx.arc(wx - b.r * 0.25, b.y - b.r * 0.3, b.r * 0.25, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,255,255,${b.opacity * 0.7 * depthFade})`;
+      ctx.fill();
+
+      // Respawn when off top
+      if (b.y + b.r < -10) {
+        Object.assign(b, spawnBubble(w, h, false));
+      }
+    });
+
+    fxAnim = requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ── VAPORWAVE: retro sunset with sliced sun and perspective grid ──────────────
+function startVaporwave() {
+  const W = () => canvas.width, H = () => canvas.height;
+  let t = 0;
+  function draw() {
+    const w = W(), h = H();
+    const horizon = h * 0.55;
+
+    // ── Sky gradient: deep purple → hot pink → orange → yellow ──
+    const sky = ctx.createLinearGradient(0, 0, 0, horizon);
+    sky.addColorStop(0,   '#1a0030');
+    sky.addColorStop(0.3, '#4a0060');
+    sky.addColorStop(0.55,'#ff2d95');
+    sky.addColorStop(0.75,'#ff6b35');
+    sky.addColorStop(0.9, '#ffb347');
+    sky.addColorStop(1,   '#ffe066');
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, w, horizon);
+
+    // ── Sun: big circle with horizontal slice gaps ──
+    const sunR = Math.min(w, h) * 0.18;
+    const sunX = w / 2;
+    const sunY = horizon - sunR * 0.3;
+    // Sun glow
+    const glow = ctx.createRadialGradient(sunX, sunY, sunR * 0.5, sunX, sunY, sunR * 2);
+    glow.addColorStop(0, 'rgba(255,200,100,0.3)');
+    glow.addColorStop(1, 'rgba(255,200,100,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, w, horizon);
+
+    // Draw sun with horizontal slices cut out
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(0, 0, w, horizon); // clip to sky
+    ctx.clip();
+    const sliceCount = 8;
+    const sliceGap = 3 + Math.floor(sunR / 25);
+    for (let row = -sunR; row < sunR; row += sliceGap * 2) {
+      ctx.beginPath();
+      // For each horizontal band, find circle intersection
+      const rowTop = row;
+      const rowBot = Math.min(row + sliceGap, sunR);
+      // Clip to circle: x² + y² = R²
+      for (let y = rowTop; y <= rowBot; y++) {
+        const xHalf = Math.sqrt(Math.max(0, sunR * sunR - y * y));
+        if (y === rowTop) ctx.moveTo(sunX - xHalf, sunY + y);
+        ctx.lineTo(sunX - xHalf, sunY + y);
+      }
+      for (let y = rowBot; y >= rowTop; y--) {
+        const xHalf = Math.sqrt(Math.max(0, sunR * sunR - y * y));
+        ctx.lineTo(sunX + xHalf, sunY + y);
+      }
+      ctx.closePath();
+      // Gradient across the sun disc
+      const sg = ctx.createLinearGradient(0, sunY - sunR, 0, sunY + sunR);
+      sg.addColorStop(0, '#ff2d95');
+      sg.addColorStop(0.5, '#ff6b35');
+      sg.addColorStop(1, '#ffe066');
+      ctx.fillStyle = sg;
+      ctx.fill();
+    }
+    ctx.restore();
+
+    // ── Ground: dark purple with perspective grid ──
+    const groundGrad = ctx.createLinearGradient(0, horizon, 0, h);
+    groundGrad.addColorStop(0, '#2a0845');
+    groundGrad.addColorStop(1, '#0e0418');
+    ctx.fillStyle = groundGrad;
+    ctx.fillRect(0, horizon, w, h - horizon);
+
+    // Horizontal grid lines (closer together near horizon, spread at bottom)
+    ctx.strokeStyle = 'rgba(255,113,206,0.35)';
+    ctx.lineWidth = 1;
+    for (let i = 1; i <= 14; i++) {
+      const pct = (i / 14);
+      const y = horizon + (pct * pct) * (h - horizon); // quadratic spacing
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.stroke();
+    }
+
+    // Vertical grid lines converging at horizon center
+    ctx.strokeStyle = 'rgba(255,113,206,0.25)';
+    const vLines = 20;
+    for (let i = -vLines / 2; i <= vLines / 2; i++) {
+      const topX = w / 2; // vanishing point
+      const botX = w / 2 + i * (w / vLines) * 2.5;
+      ctx.beginPath();
+      ctx.moveTo(topX, horizon);
+      ctx.lineTo(botX, h);
+      ctx.stroke();
+    }
+
+    // Subtle scrolling: shift grid down over time
+    t += 0.003;
+
+    // Scanline overlay for CRT feel
+    ctx.fillStyle = 'rgba(0,0,0,0.04)';
+    for (let y = 0; y < h; y += 3) {
+      ctx.fillRect(0, y, w, 1);
+    }
+
     fxAnim = requestAnimationFrame(draw);
   }
   draw();
@@ -3230,20 +3932,22 @@ function init() {
       if (tagEl._barRaf) { cancelAnimationFrame(tagEl._barRaf); tagEl._barRaf = null; }
       const targetPct = parseFloat(fill.dataset.target || fill.style.width) || 80;
       fill.dataset.target = targetPct; // persist across re-hovers
-      const ms = AppSettings.skill_bar_fill_ms || 1000;
-      // lerpFactor per 60fps frame derived from desired feel-time
-      // decay = -ln(0.01) / (ms/1000 * 60) ≈ 4.6 / (ms/1000*60)
-      const decayPerFrame = 1 - Math.exp(-4.6 / (ms / 1000 * 60));
+      // Start speed: initial pct/frame jump. Decay: how fast it decelerates (0–1, higher = faster stop)
+      const startSpeed = AppSettings.skill_fill_start_speed || 8;
+      const decay = AppSettings.skill_fill_decay || 0.06;
       const pctSpan = levelEl.querySelector('.tip-bar-pct');
       let cur = 0;
+      let vel = startSpeed; // current velocity in pct per frame
       fill.style.width = '0%';
       let lastTime = performance.now();
       function frame(now) {
-        const dt60 = (now - lastTime) / (1000 / 60); // normalize to 60fps frames
+        const dt60 = (now - lastTime) / (1000 / 60);
         lastTime = now;
-        const factor = 1 - Math.pow(1 - decayPerFrame, dt60);
-        cur += (targetPct - cur) * factor;
-        const done = Math.abs(targetPct - cur) < 0.05;
+        // Apply velocity then decay it
+        vel *= Math.pow(1 - decay, dt60);
+        cur += vel * dt60;
+        if (cur > targetPct) { cur = targetPct; vel = 0; }
+        const done = Math.abs(targetPct - cur) < 0.05 || (vel < 0.01 && cur < targetPct);
         if (done) cur = targetPct;
         fill.style.width = cur + '%';
         const rounded = Math.round(cur);
@@ -3303,7 +4007,8 @@ const SETTINGS_SCHEMA = [
     { key:'plant_grow_slow',    label:'Shrink Speed',            min:0.01, max:1.0,  step:0.01  },
   ]},
   { group: 'Skill Tags', items: [
-    { key:'skill_bar_fill_ms',  label:'Bar Fill Duration (ms)',  min:100,  max:3000, step:50    },
+    { key:'skill_fill_start_speed', label:'Fill Start Speed',  min:1,    max:30,   step:0.5   },
+    { key:'skill_fill_decay',       label:'Fill Decay',        min:0.01, max:0.20, step:0.01  },
   ]},
 ];
 
@@ -3365,8 +4070,10 @@ function randomTheme() {
   document.getElementById('theme-picker').value = pick;
   const tm = document.getElementById('theme-picker-mobile');
   if (tm) tm.value = pick;
-  const btn = document.getElementById('random-theme-btn');
-  if (btn) { btn.style.transform = 'rotate(720deg) scale(1.2)'; setTimeout(() => btn.style.transform = '', 500); }
+  ['random-theme-btn','random-theme-mobile'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) { btn.style.transform = 'rotate(720deg) scale(1.2)'; setTimeout(() => btn.style.transform = '', 500); }
+  });
 }
 
 // ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -3411,5 +4118,4 @@ Object.assign(window, {
 ║                                                                              ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 -->
-<button id="random-theme-btn" onclick="randomTheme()" title="Random theme" style="position:fixed;bottom:20px;right:20px;z-index:9999;width:44px;height:44px;border-radius:50%;border:1px solid var(--border);background:var(--bg);color:var(--text);cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,0.15);transition:transform 0.5s ease, box-shadow 0.2s;" onmouseover="this.style.boxShadow='0 4px 18px rgba(0,0,0,0.25)'" onmouseout="this.style.boxShadow='0 2px 10px rgba(0,0,0,0.15)'">🎲</button>
 </body></html>
