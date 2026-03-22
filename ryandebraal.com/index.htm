@@ -3723,12 +3723,40 @@ function startCyberpunk() {
         rooftops.push({x: cx2, y: cY-50});
         x += bw + 6 + Math.random()*12;
 
-      // ── TYPE: Standard rectangular tower (most common) ────────────────────
+      // ── TYPE: Standard tower (most common) — asymmetric chamfered variants ──
       } else {
         const bw = 26 + Math.random()*70;
         const bh = h*0.1 + Math.random()*h*0.48;
         const by = h - bh;
-        bCol(c); c.fillRect(x, by, bw, bh);
+        // Randomly clip a top corner for a futuristic asymmetric profile
+        const clip = Math.random();
+        bCol(c);
+        c.beginPath();
+        if (clip < 0.28) {
+          // Top-left corner clipped
+          const cut = bw * (0.18 + Math.random()*0.28);
+          c.moveTo(x+cut, by); c.lineTo(x+bw, by);
+          c.lineTo(x+bw, h); c.lineTo(x, h); c.lineTo(x, by+cut*0.8);
+        } else if (clip < 0.52) {
+          // Top-right corner clipped
+          const cut = bw * (0.18 + Math.random()*0.28);
+          c.moveTo(x, by); c.lineTo(x+bw-cut, by);
+          c.lineTo(x+bw, by+cut*0.8); c.lineTo(x+bw, h); c.lineTo(x, h);
+        } else if (clip < 0.64) {
+          // Both top corners clipped (trapezoid top)
+          const cl = bw*(0.10+Math.random()*0.18), cr = bw*(0.10+Math.random()*0.18);
+          c.moveTo(x+cl, by); c.lineTo(x+bw-cr, by);
+          c.lineTo(x+bw, by+cr*0.7); c.lineTo(x+bw, h);
+          c.lineTo(x, h); c.lineTo(x, by+cl*0.7);
+        } else {
+          // Plain rectangle
+          c.rect(x, by, bw, bh);
+        }
+        c.closePath(); c.fill();
+        // Neon edge trace on clipped faces
+        if (clip < 0.64) {
+          bStroke(c, 0.35); c.stroke();
+        }
         drawWindows(c, x, by, bw, bh);
         if (bh > h*0.35) rooftops.push({x: x+bw/2, y: by});
         // Setback tier on taller buildings
