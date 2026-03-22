@@ -3075,7 +3075,7 @@ const NEKO_BEHAVIORS = [
   BehaviorMode.PACE_AROUND_SCREEN,
   BehaviorMode.RUN_AROUND,
 ];
-const NEKO_MIN_DIST = 48; // minimum pixel distance between cats
+const NEKO_MIN_DIST = 60; // minimum pixel distance — detect overlaps earlier
 
 function randomNekoBehavior(exclude) {
   const pool = NEKO_BEHAVIORS.filter(b => b !== exclude);
@@ -3153,6 +3153,18 @@ function nekoSocialStop(mover) {
   }
 }
 
+// Immediate flee — no scratch animation, just turn and run.
+// Used when bounding boxes fully overlap and a social pause would look wrong.
+function nekoFlee(neko) {
+  if (neko._socialCooldown) return;
+  neko._socialCooldown = true;
+  neko.behaviorMode = BehaviorMode.RUN_AROUND_RANDOMLY;
+  neko.catAI = undefined; neko.catTimer = 0; neko.catBurst = 0;
+  neko.cornerIndex = 0; neko.ballX = 0; neko.ballY = 0;
+  neko.setState(NekoState.AWAKE);
+  setTimeout(() => { if (themeNekos.includes(neko)) neko._socialCooldown = false; }, 2500);
+}
+
 function nekoCollisionTick() {
   for (let i = 0; i < themeNekos.length; i++) {
     for (let j = i + 1; j < themeNekos.length; j++) {
@@ -3172,24 +3184,26 @@ function nekoCollisionTick() {
 
         const aResting = isNekoResting(a), bResting = isNekoResting(b);
         const aMoving = isNekoMoving(a), bMoving = isNekoMoving(b);
+        // Deeper overlaps are more alarming — scale flee probability with closeness
+        const overlapRatio = 1 - dist / NEKO_MIN_DIST; // 0=just touching, 1=fully overlapping
+        const fleeProbability = 0.55 + overlapRatio * 0.40; // 55%–95%
 
-        // Moving neko encounters a stationary neko → social stop
-        if (aMoving && bResting) {
-          nekoSocialStop(a);
+        if (aMoving && bMoving) {
+          // Both moving — both flee in opposite directions (not just one yielding)
+          nekoFlee(a); nekoFlee(b);
+        } else if (aMoving && bResting) {
+          if (Math.random() < fleeProbability) nekoFlee(a);
+          else nekoSocialStop(a);
         } else if (bMoving && aResting) {
-          nekoSocialStop(b);
-        } else if (aMoving && bMoving) {
-          // Both moving — one yields (random pick)
-          nekoSocialStop(Math.random() < 0.5 ? a : b);
+          if (Math.random() < fleeProbability) nekoFlee(b);
+          else nekoSocialStop(b);
         }
-        // Wake resting nekos that get bumped (if not in a social interaction)
+        // Resting cats that get bumped also flee (not just wake in place)
         if (aResting && !a._socialCooldown) {
-          a.setState(NekoState.AWAKE);
-          a.catAI = undefined; a.catTimer = 0;
+          Math.random() < fleeProbability ? nekoFlee(a) : (a.setState(NekoState.AWAKE), a.catAI = undefined, a.catTimer = 0);
         }
         if (bResting && !b._socialCooldown) {
-          b.setState(NekoState.AWAKE);
-          b.catAI = undefined; b.catTimer = 0;
+          Math.random() < fleeProbability ? nekoFlee(b) : (b.setState(NekoState.AWAKE), b.catAI = undefined, b.catTimer = 0);
         }
       }
     }
