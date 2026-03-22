@@ -3573,7 +3573,7 @@ function startCyberpunk() {
     oc.width = w*2; oc.height = h;
     const c = oc.getContext('2d');
 
-    c.fillStyle = '#03000a'; c.fillRect(0,0,oc.width,h);
+    // Sky left transparent so searchlights drawn on main canvas show through
 
     // Collected window positions for dynamic flicker in the main draw loop
     const wins = [];
