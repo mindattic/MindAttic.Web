@@ -178,14 +178,6 @@
   --tag-hover-bg:#c0c0c0; --tag-hover-text:#0e0e0e;
   --rule:#555;
 }
-[data-theme="slate"] {
-  --bg:#141b24; --bg2:#1a2330; --bg3:#202c3c; --border:#2e3f54;
-  --accent:#5b9bd5; --accent2:#7ab3e0;
-  --text:#d8e4f0; --text2:#8bacc8; --text3:#4a6680;
-  --tag-bg:#1a2330; --tag-text:#5b9bd5; --tag-border:#2e3f54;
-  --tag-hover-bg:#5b9bd5; --tag-hover-text:#141b24;
-  --rule:#3a5a78;
-}
 [data-theme="rose"] {
   --bg:#fff5f5; --bg2:#ffeef0; --bg3:#fde2e6; --border:#f5bfc8;
   --accent:#c0415a; --accent2:#d9546e;
@@ -193,14 +185,6 @@
   --tag-bg:#fde2e6; --tag-text:#b03050; --tag-border:#f0aab8;
   --tag-hover-bg:#c0415a; --tag-hover-text:#fff;
   --rule:#e07090;
-}
-[data-theme="moss"] {
-  --bg:#f5f2ec; --bg2:#ede8e0; --bg3:#e0d8cc; --border:#c4b89a;
-  --accent:#5a7a3a; --accent2:#70984a;
-  --text:#1e200e; --text2:#4a5228; --text3:#7a8050;
-  --tag-bg:#e0d8cc; --tag-text:#4a6028; --tag-border:#b8aa88;
-  --tag-hover-bg:#5a7a3a; --tag-hover-text:#f5f2ec;
-  --rule:#7a9050;
 }
 [data-theme="dusk"] {
   --bg:#12102a; --bg2:#181630; --bg3:#201e3c; --border:#38356a;
@@ -294,9 +278,7 @@ select.tb-sel:hover{border-color:var(--accent);}
 [data-theme="forest"] body{background:linear-gradient(180deg, #041204 0%, #081808 30%, #0a1a0a 70%, #0e200e 100%);}
 [data-theme="cyberpunk"] body{background:linear-gradient(180deg, #04000a 0%, #080012 30%, #0a0014 70%, #10001e 100%);}
 [data-theme="noir"] body{background:linear-gradient(180deg, #080808 0%, #0a0a0a 30%, #0e0e0e 70%, #111 100%);}
-[data-theme="slate"] body{background:linear-gradient(180deg, #0e1520 0%, #111822 30%, #141b24 70%, #18202c 100%);}
 [data-theme="rose"] body{background:#fff5f5;}
-[data-theme="moss"] body{background:#f5f2ec;}
 [data-theme="dusk"] body{background:linear-gradient(180deg, #0c0a22 0%, #100e28 30%, #12102a 70%, #181630 100%);}
 [data-theme="sand"] body{background:#faf4e8;}
 [data-theme="synthwave"] body{background:#0e0418;}
@@ -520,9 +502,7 @@ select.tb-sel:hover{border-color:var(--accent);}
     <optgroup label="Moods">
       <option value="light" selected="">☀ Light</option>
       <option value="dark">☽ Dark</option>
-      <option value="slate">◈ Slate</option>
       <option value="rose">🌹 Rose</option>
-      <option value="moss">🌿 Moss</option>
       <option value="dusk">🌆 Dusk</option>
       <option value="sand">🏜 Sand</option>
       <option value="cyberpunk">⎔ Cyberpunk</option>
@@ -587,10 +567,8 @@ select.tb-sel:hover{border-color:var(--accent);}
             <optgroup label="Moods">
               <option value="light" selected>☀ Light</option>
               <option value="dark">☽ Dark</option>
-              <option value="slate">◈ Slate</option>
-              <option value="rose">🌹 Rose</option>
-              <option value="moss">🌿 Moss</option>
-              <option value="dusk">🌆 Dusk</option>
+                      <option value="rose">🌹 Rose</option>
+                      <option value="dusk">🌆 Dusk</option>
               <option value="sand">🏜 Sand</option>
               <option value="cyberpunk">⎔ Cyberpunk</option>
               <option value="noir">🎬 Noir</option>
