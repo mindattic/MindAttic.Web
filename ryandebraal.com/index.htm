@@ -4841,6 +4841,29 @@ function startSynthwave() {
   const W = () => canvas.width, H = () => canvas.height;
   let t = 0;
 
+  // Two separate mountain ranges flanking the sun — left side and right side only.
+  // Each is a jagged low-poly silhouette that stays below the horizon line.
+  function buildSideMountains(side) {
+    // side: -1 = left, +1 = right
+    // Cover the outer 40% of the screen; leave ~20% gap at centre for the sun.
+    const xStart = side === -1 ? -0.02 : 0.60;
+    const xEnd   = side === -1 ?  0.40 : 1.02;
+    const n = 10;
+    const pts = [{ xf: xStart, yf: 0.55 }];
+    for (let i = 1; i <= n; i++) {
+      const xf = xStart + (xEnd - xStart) * (i / (n + 1));
+      // Taller near outer edge, lower toward inner (sun) side
+      const outerFrac = side === -1 ? 1 - (xf / 0.40) : (xf - 0.60) / 0.42;
+      const maxH = 0.16 * (0.30 + outerFrac * 0.70);
+      const hf = maxH * (0.40 + Math.random() * 0.60);
+      pts.push({ xf, yf: 0.55 - hf });
+    }
+    pts.push({ xf: xEnd, yf: 0.55 });
+    return pts;
+  }
+  const leftMtns  = buildSideMountains(-1);
+  const rightMtns = buildSideMountains(1);
+
   function draw() {
     const w = W(), h = H();
     const horizon = h * 0.55;
@@ -4905,6 +4928,21 @@ function startSynthwave() {
       ctx.fillStyle = sg;
       ctx.fill();
     }
+    ctx.restore();
+
+    // ── Side mountains: low silhouettes flanking the sun ──
+    ctx.save();
+    ctx.beginPath(); ctx.rect(0, 0, w, horizon + 2); ctx.clip();
+    [leftMtns, rightMtns].forEach(pts => {
+      ctx.beginPath();
+      pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.xf * w, p.yf * h) : ctx.lineTo(p.xf * w, p.yf * h));
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(12,0,22,0.95)';
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(220,0,170,0.45)';
+      ctx.lineWidth = 1.2;
+      ctx.stroke();
+    });
     ctx.restore();
 
     // ── Ground: dark purple with perspective grid ──
