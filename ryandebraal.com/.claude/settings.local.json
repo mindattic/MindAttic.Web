@@ -34,7 +34,23 @@
       "Bash(sed -n '3199,3207p' D:/Projects/Resume/index.htm)",
       "Bash(sed -n '3650,3660p' D:/Projects/Resume/index.htm)",
       "Bash(grep -v \"//.*smoke\")",
-      "Bash(start chrome:*)"
+      "Bash(start chrome:*)",
+      "Bash(grep \"//\")",
+      "Bash(sed -n '363,370p' index.htm)",
+      "Bash(sed -n '2220,2260p' index.htm)",
+      "WebFetch(domain:www.svgrepo.com)",
+      "WebFetch(domain:freesvg.org)",
+      "WebFetch(domain:publicdomainvectors.org)",
+      "WebFetch(domain:openclipart.org)",
+      "WebFetch(domain:www.vecteezy.com)",
+      "WebFetch(domain:upload.wikimedia.org)",
+      "WebFetch(domain:commons.wikimedia.org)",
+      "WebFetch(domain:thenounproject.com)",
+      "WebFetch(domain:svgsilh.com)",
+      "WebFetch(domain:www.onlinewebfonts.com)",
+      "WebFetch(domain:pic.onlinewebfonts.com)",
+      "WebFetch(domain:www.visiwig.com)",
+      "WebFetch(domain:cdn.worldvectorlogo.com)"
     ]
   }
 }
