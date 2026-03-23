@@ -4841,26 +4841,6 @@ function startSynthwave() {
   const W = () => canvas.width, H = () => canvas.height;
   let t = 0;
 
-  // Low-poly mountains — built once as fractional {xf,yf} coords, scaled each frame.
-  // Two layers: back (shorter) and front (taller). Both dip in the centre so the
-  // rising sun stays visible; flanks are boosted for the classic 80s look.
-  function buildMountains() {
-    return [0.12, 0.20].map((maxH, layer) => {
-      const n   = 13 + layer * 5;
-      const pts = [{ xf: -0.01, yf: 0.55 }];
-      for (let i = 1; i <= n; i++) {
-        const xf = i / (n + 1);
-        // cos² envelope: tall at edges, lower toward centre
-        const sideBoost = 0.30 + 0.70 * Math.pow(Math.cos(xf * Math.PI * 0.88), 2);
-        const hf = maxH * sideBoost * (0.35 + Math.random() * 0.65);
-        pts.push({ xf, yf: 0.55 - hf });
-      }
-      pts.push({ xf: 1.01, yf: 0.55 });
-      return pts;
-    });
-  }
-  const mountainLayers = buildMountains();
-
   function draw() {
     const w = W(), h = H();
     const horizon = h * 0.55;
@@ -4925,20 +4905,6 @@ function startSynthwave() {
       ctx.fillStyle = sg;
       ctx.fill();
     }
-    ctx.restore();
-
-    // ── Mountains: low-poly silhouettes clipped to sky ──
-    const mtFills = ['rgba(14,0,26,0.92)', 'rgba(24,0,42,0.97)'];
-    const mtEdges = ['rgba(140,0,110,0.28)', 'rgba(255,0,200,0.55)'];
-    ctx.save();
-    ctx.beginPath(); ctx.rect(0, 0, w, horizon); ctx.clip();
-    mountainLayers.forEach((pts, li) => {
-      ctx.beginPath();
-      pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.xf * w, p.yf * h) : ctx.lineTo(p.xf * w, p.yf * h));
-      ctx.closePath();
-      ctx.fillStyle = mtFills[li]; ctx.fill();
-      ctx.strokeStyle = mtEdges[li]; ctx.lineWidth = 1.5; ctx.stroke();
-    });
     ctx.restore();
 
     // ── Ground: dark purple with perspective grid ──
