@@ -162,12 +162,12 @@
   --rule:#2e7d32;
 }
 [data-theme="cyberpunk"] {
-  --bg:#0a0014; --bg2:#10001e; --bg3:#180028; --border:#3a0066;
-  --accent:#ff00ff; --accent2:#ff44ff;
-  --text:#e0f0ff; --text2:#00e5ff; --text3:#6a4a8a;
+  --bg:#000005; --bg2:#04000d; --bg3:#08000e; --border:#3a1a00;
+  --accent:#ff8c00; --accent2:#ffcc00;
+  --text:#fff0d0; --text2:#00e5ff; --text3:#7a5a30;
   --tag-bg:#10001e; --tag-text:#ff00ff; --tag-border:#3a0066;
   --tag-hover-bg:#ff00ff; --tag-hover-text:#0a0014;
-  --rule:#8800aa;
+  --rule:#cc5500;
 }
 [data-theme="noir"] {
   --bg:#0e0e0e; --bg2:#141414; --bg3:#1c1c1c; --border:#333;
@@ -186,7 +186,7 @@
   --rule:#b967ff;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-html{font-size:14px;-webkit-font-smoothing:antialiased;}
+html{font-size:14px;-webkit-font-smoothing:antialiased;scroll-behavior:smooth;}
 body{font-family:var(--font-resume);background:var(--bg2);color:var(--text);min-height:100vh;transition:background 0.3s,color 0.3s;position:relative;overflow-x:hidden;}
 
 /* ── CANVAS (animations live here, behind everything) ── */
@@ -211,6 +211,15 @@ select.tb-sel:hover{border-color:var(--accent);}
 
 /* Matrix font override */
 [data-theme="matrix"] .tb-btn,[data-theme="matrix"] select.tb-sel,[data-theme="matrix"] #toolbar-name{font-family:'Courier New',monospace;}
+
+/* ── RESUME HAMBURGER NAV ── */
+#resume-nav-btn{position:absolute;top:14px;left:16px;background:none;border:none;color:var(--text3);font-size:19px;line-height:1;cursor:pointer;padding:4px 7px;border-radius:6px;transition:color 0.15s,background 0.15s;z-index:20;font-family:inherit;}
+#resume-nav-btn:hover{color:var(--accent);background:var(--bg3);}
+#resume-nav-menu{display:none;position:absolute;top:46px;left:8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.22);z-index:300;min-width:195px;padding:6px 0;}
+#resume-nav-menu a{display:block;padding:9px 20px;font-size:12px;font-family:var(--font-resume);color:var(--text2);text-decoration:none;transition:color 0.15s,text-shadow 0.15s,padding-left 0.15s;white-space:nowrap;}
+#resume-nav-menu.open{display:block;}
+#resume-nav-menu a:hover{color:var(--accent);text-shadow:0 0 8px var(--accent);padding-left:28px;}
+@media print{#resume-nav-btn,#resume-nav-menu{display:none!important;}}
 
 /* ── RESUME DOC ── */
 #resume{max-width:820px;margin:28px auto;background:var(--bg);border:1px solid var(--border);border-radius:12px;padding:52px 60px;font-family:var(--font-resume);position:relative;z-index:10;transition:background 0.3s,border-color 0.3s;}
@@ -242,7 +251,7 @@ select.tb-sel:hover{border-color:var(--accent);}
 [data-theme="ocean"] body{background:linear-gradient(180deg, #03111e 0%, #071a2e 30%, #0a1628 70%, #0e1e34 100%);}
 [data-theme="sunset"] body{background:linear-gradient(180deg, #2a0420 0%, #221018 30%, #1a0a1e 70%, #140818 100%);}
 [data-theme="forest"] body{background:linear-gradient(180deg, #041204 0%, #081808 30%, #0a1a0a 70%, #0e200e 100%);}
-[data-theme="cyberpunk"] body{background:linear-gradient(180deg, #04000a 0%, #080012 30%, #0a0014 70%, #10001e 100%);}
+[data-theme="cyberpunk"] body{background:linear-gradient(180deg, #000000 0%, #020008 30%, #030010 70%, #04000d 100%);}
 [data-theme="noir"] body{background:linear-gradient(180deg, #080808 0%, #0a0a0a 30%, #0e0e0e 70%, #111 100%);}
 [data-theme="synthwave"] body{background:#0e0418;}
 [data-theme="winter"] .r-contact a{border-bottom-color:rgba(26,90,140,0.2);}
@@ -250,13 +259,20 @@ select.tb-sel:hover{border-color:var(--accent);}
 [data-theme="ocean"] .r-contact a{border-bottom-color:rgba(0,180,216,0.2);}
 [data-theme="sunset"] .r-contact a{border-bottom-color:rgba(255,107,53,0.25);}
 [data-theme="forest"] .r-contact a{border-bottom-color:rgba(76,175,80,0.2);}
-[data-theme="cyberpunk"] .r-contact a{border-bottom-color:rgba(255,0,255,0.3);}
+[data-theme="cyberpunk"] .r-contact a{border-bottom-color:rgba(255,140,0,0.35);}
 [data-theme="cyberpunk"] .tb-btn,[data-theme="cyberpunk"] select.tb-sel,[data-theme="cyberpunk"] #toolbar-name{font-family:'Courier New',monospace;}
-[data-theme="cyberpunk"] #resume{border-color:#ff00ff;box-shadow:0 0 6px rgba(255,0,255,0.15);}
-[data-theme="cyberpunk"] .r-name{text-shadow:0 0 10px #ff00ff,0 0 28px rgba(255,0,255,0.5);}
-[data-theme="cyberpunk"] .r-title{text-shadow:0 0 8px #00e5ff,0 0 20px rgba(0,229,255,0.4);}
-[data-theme="cyberpunk"] .tag{text-shadow:0 0 4px currentColor;box-shadow:0 0 3px rgba(255,0,255,0.2);transition:opacity 0.05s,filter 0.05s;}
+[data-theme="cyberpunk"] #resume{border-color:#ff8c00;box-shadow:0 0 8px rgba(255,140,0,0.2),0 0 24px rgba(255,140,0,0.06);}
+[data-theme="cyberpunk"] .r-name{text-shadow:0 0 10px #ffcc00,0 0 28px rgba(255,140,0,0.6);}
+[data-theme="cyberpunk"] .r-title{color:#ff00ff;text-shadow:0 0 8px #ff00ff,0 0 20px rgba(255,0,255,0.4);}
+[data-theme="cyberpunk"] .tag{text-shadow:0 0 4px currentColor;box-shadow:0 0 3px rgba(255,0,255,0.2);transition:opacity 0.05s,filter 0.05s;animation:cp-tag-idle 18s ease-in-out infinite;}
+[data-theme="cyberpunk"] .tag:nth-child(10n){--tag-bg:#120800;--tag-text:#ffd700;--tag-border:#5a3000;--tag-hover-bg:#ff8c00;--tag-hover-text:#000;}
+[data-theme="cyberpunk"] .tag:nth-child(4n+1){animation-delay:-4.5s;}
+[data-theme="cyberpunk"] .tag:nth-child(4n+2){animation-delay:-9s;}
+[data-theme="cyberpunk"] .tag:nth-child(4n+3){animation-delay:-13.5s;}
+@keyframes cp-tag-idle{0%,100%{opacity:1;text-shadow:0 0 4px currentColor;}70%{opacity:1;text-shadow:0 0 7px currentColor,0 0 14px currentColor;}71%{opacity:0.55;}72%{opacity:1;text-shadow:0 0 8px currentColor,0 0 16px currentColor;}88%{opacity:1;}89%{opacity:0.4;}90%{opacity:1;}}
 [data-theme="cyberpunk"] hr{box-shadow:0 0 6px var(--rule);}
+@keyframes cp-reboot{0%{opacity:0;filter:brightness(4) saturate(2)}20%{opacity:1;filter:brightness(2)}100%{opacity:1;filter:brightness(1)}}
+[data-theme="cyberpunk"] .tag.cp-rebooted{animation:cp-reboot 0.35s ease-out both;}
 /* Neon tag flicker animations */
 @keyframes cp-flicker{0%,100%{opacity:1}8%{opacity:.15}10%{opacity:1}18%{opacity:.7}19%{opacity:.08}21%{opacity:1}55%{opacity:.9}56%{opacity:.2}58%{opacity:1}}
 @keyframes cp-out{0%{opacity:1}4%{opacity:.22}78%{opacity:.22}83%{opacity:.6}87%{opacity:.25}100%{opacity:1}}
@@ -397,6 +413,10 @@ select.tb-sel:hover{border-color:var(--accent);}
 /* ── LIGHTBOX ── */
 #avatar-lightbox{display:none;position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);}
 #avatar-lightbox.active{display:flex;}
+#avatar-lightbox .lb-inner{display:flex;flex-direction:column;align-items:center;gap:20px;cursor:default;}
+#avatar-lightbox .lb-links{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;}
+#avatar-lightbox .lb-links a{color:rgba(255,255,255,0.75);font-size:13px;text-decoration:none;letter-spacing:0.03em;padding:5px 14px;border:1px solid rgba(255,255,255,0.2);border-radius:20px;transition:color 0.15s,border-color 0.15s,text-shadow 0.15s;white-space:nowrap;}
+#avatar-lightbox .lb-links a:hover{color:var(--accent);border-color:var(--accent);text-shadow:0 0 8px var(--accent);}
 #avatar-lightbox .lb-img{width:400px;height:400px;border-radius:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);animation:lb-in 0.25s ease-out;}
 @keyframes lb-in{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
 @keyframes dice-spin{from{transform:rotate(0deg) scale(1)}50%{transform:rotate(360deg) scale(1.2)}to{transform:rotate(720deg) scale(1)}}
@@ -424,7 +444,7 @@ select.tb-sel:hover{border-color:var(--accent);}
     <optgroup label="Moods">
       <option value="light" selected="">☀ Light</option>
       <option value="dark">☽ Dark</option>
-      <option value="cyberpunk">⚡ Cyberpunk</option>
+      <option value="cyberpunk">⎔ Cyberpunk</option>
       <option value="noir">🎬 Noir</option>
       <option value="synthwave">🌴 Synthwave</option>
       <option value="matrix">⌨ Matrix</option>
@@ -486,7 +506,7 @@ select.tb-sel:hover{border-color:var(--accent);}
             <optgroup label="Moods">
               <option value="light" selected>☀ Light</option>
               <option value="dark">☽ Dark</option>
-              <option value="cyberpunk">⚡ Cyberpunk</option>
+              <option value="cyberpunk">⎔ Cyberpunk</option>
               <option value="noir">🎬 Noir</option>
               <option value="synthwave">🌴 Synthwave</option>
               <option value="matrix">⌨ Matrix</option>
@@ -588,8 +608,10 @@ select.tb-sel:hover{border-color:var(--accent);}
 
 <!-- ── RESUME ── -->
 <div id="resume">
+  <button id="resume-nav-btn" onclick="toggleResumeNav()" title="Jump to section">☰</button>
+  <div id="resume-nav-menu"></div>
   <div class="r-name">Ryan DeBraal</div>
-  <div class="r-title">Principal Full-Stack Engineer · CEO, MindAttic LLC · President, MindAttic Cares</div>
+  <div class="r-title">Principal Full-Stack Software Engineer · CEO, MindAttic LLC · President, MindAttic Cares</div>
   <div class="r-contact">
     <a href="mailto:ryandebraal@mindattic.com">ryandebraal@mindattic.com</a> &nbsp;·&nbsp;
     <a href="https://www.linkedin.com/in/ryandebraal/" target="_blank">linkedin.com/in/ryandebraal</a> &nbsp;·&nbsp;
@@ -1369,7 +1391,10 @@ function tag(text) {
   return `<span class="tag" data-skill="${text.replace(/"/g,'&quot;')}">${text}</span>`;
 }
 
-function secHTML(label){ return `<div class="r-sec">${label}</div>`; }
+function secHTML(label){
+  const id = 'sec-' + label.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+  return `<div class="r-sec" id="${id}">${label}</div>`;
+}
 
 function expHTML(jobs){
   return jobs.map(j=>`<div class="r-job">
@@ -1494,6 +1519,7 @@ function render(profile) {
       ${patHTML()}
     `;
   }
+  buildNavLinks();
 }
 
 // ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -1527,7 +1553,7 @@ const THEME_MURALS = {
   forest:    {top:'#0a1a0a',bot:'#2e7d32',sym:'🌲',sc:'#66bb6a'},
   matrix:    {top:'#001200',bot:'#004000',sym:'⌨',sc:'#00ff41'},
   neko:      {top:'#fff0e0',bot:'#ffccaa',sym:'🐱',sc:'#d4608a'},
-  cyberpunk: {top:'#0a0014',bot:'#3a0066',sym:'⚡',sc:'#ff00ff'},
+  cyberpunk: {top:'#000005',bot:'#3a1a00',sym:'⎔',sc:'#ff8c00'},
   noir:      {top:'#0e0e0e',bot:'#333',sym:'🎬',sc:'#c0c0c0'},
   synthwave: {top:'#1a0a2e',bot:'#4a2070',sym:'🌴',sc:'#ff71ce'},
 };
@@ -4339,11 +4365,32 @@ function startCyberpunk() {
 
 let cpEffectTimer = null;
 
+const CP_REBOOT_COLORS = ['#00e5ff','#00ff41','#ff8c00','#ffd700','#ff2244','#7fff00','#ff6ec7','#bf00ff'];
+
+function cpRebootTag(tag) {
+  const col = CP_REBOOT_COLORS[Math.floor(Math.random()*CP_REBOOT_COLORS.length)];
+  tag.style.setProperty('--tag-text', col);
+  tag.style.setProperty('--tag-border', col);
+  tag.style.setProperty('--tag-hover-bg', col);
+  tag.classList.add('cp-rebooted');
+  void tag.offsetWidth;
+  const hold = 4000 + Math.random()*10000;
+  setTimeout(() => {
+    tag.style.removeProperty('--tag-text');
+    tag.style.removeProperty('--tag-border');
+    tag.style.removeProperty('--tag-hover-bg');
+    tag.classList.remove('cp-rebooted');
+  }, hold);
+}
+
 function stopCyberpunkEffects() {
   if(cpEffectTimer){ clearTimeout(cpEffectTimer); cpEffectTimer=null; }
-  document.querySelectorAll('.tag.cp-flicker,.tag.cp-out,.tag.cp-surge').forEach(t =>
-    t.classList.remove('cp-flicker','cp-out','cp-surge')
-  );
+  document.querySelectorAll('.tag').forEach(t => {
+    t.classList.remove('cp-flicker','cp-out','cp-surge','cp-rebooted');
+    t.style.removeProperty('--tag-text');
+    t.style.removeProperty('--tag-border');
+    t.style.removeProperty('--tag-hover-bg');
+  });
 }
 
 function startCyberpunkEffects() {
@@ -4351,18 +4398,18 @@ function startCyberpunkEffects() {
     if(document.documentElement.getAttribute('data-theme')!=='cyberpunk') return;
     const tags = Array.from(document.querySelectorAll('.tag'));
     if(!tags.length){ cpEffectTimer=setTimeout(tick,600); return; }
-    const n = 2 + Math.floor(Math.random()*4);
-    for(let i=0; i<n; i++){
-      const tag = tags[Math.floor(Math.random()*tags.length)];
-      const r = Math.random();
-      const cls = r<0.45?'cp-flicker':r<0.72?'cp-out':'cp-surge';
-      tag.classList.remove('cp-flicker','cp-out','cp-surge');
-      void tag.offsetWidth;
-      tag.classList.add(cls);
-      const dur = cls==='cp-out'?3200:cls==='cp-surge'?1400:1000;
-      setTimeout(()=>tag.classList.remove(cls), dur+80);
-    }
-    cpEffectTimer = setTimeout(tick, 60+Math.random()*560);
+    const tag = tags[Math.floor(Math.random()*tags.length)];
+    const r = Math.random();
+    const cls = r<0.45?'cp-flicker':r<0.72?'cp-out':'cp-surge';
+    tag.classList.remove('cp-flicker','cp-out','cp-surge');
+    void tag.offsetWidth;
+    tag.classList.add(cls);
+    const dur = cls==='cp-out'?3200:cls==='cp-surge'?1400:1000;
+    setTimeout(() => {
+      tag.classList.remove(cls);
+      if(cls==='cp-out' && Math.random()<0.25) cpRebootTag(tag);
+    }, dur+80);
+    cpEffectTimer = setTimeout(tick, 1800+Math.random()*4200);
   }
   tick();
 }
@@ -4473,12 +4520,15 @@ function startSynthwave() {
       ctx.beginPath(); ctx.moveTo(0, sy); ctx.lineTo(w, sy); ctx.stroke();
     }
 
-    // Vertical grid lines converging at horizon center
-    ctx.strokeStyle = 'rgba(255,113,206,0.25)';
+    // Vertical grid lines — spread and opacity ping-pong via sin (never resets; reverses course)
+    const vPhase = (Math.sin(t * 0.18) + 1) / 2; // oscillates 0→1→0 seamlessly
+    const spreadFactor = 1.8 + vPhase * 1.4;      // 1.8× (tight) → 3.2× (wide)
+    const vAlpha = (0.12 + vPhase * 0.28).toFixed(2); // dim → bright
+    ctx.strokeStyle = `rgba(255,113,206,${vAlpha})`;
     const vLines = 20;
     for (let i = -vLines / 2; i <= vLines / 2; i++) {
-      const topX = w / 2; // vanishing point
-      const botX = w / 2 + i * (w / vLines) * 2.5;
+      const topX = w / 2;
+      const botX = w / 2 + i * (w / vLines) * spreadFactor;
       ctx.beginPath();
       ctx.moveTo(topX, horizon);
       ctx.lineTo(botX, h);
@@ -4546,7 +4596,7 @@ function exportMD() {
   const h = D;
   const skills = currentProfile === 'complete' ? h.skillsComplete : h.skillsCore;
   let md = `# Ryan DeBraal\n\n`;
-  md += `**Principal Full-Stack Engineer · CEO, MindAttic LLC · President, MindAttic Cares**\n\n`;
+  md += `**Principal Full-Stack Software Engineer · CEO, MindAttic LLC · President, MindAttic Cares**\n\n`;
   md += `ryandebraal@mindattic.com · github.com/mindattic · linkedin.com/in/ryandebraal · mindattic.com · mindatticcares.com\n\n---\n\n`;
 
   if (currentProfile === 'pitch') {
@@ -4628,6 +4678,8 @@ function exportHTML() {
   if(fx) fx.remove();
   const sp = clone.querySelector('#snow-pile-svg');
   if(sp) sp.remove();
+  // Remove hamburger nav
+  ['#resume-nav-btn','#resume-nav-menu'].forEach(sel => { const el = clone.querySelector(sel); if(el) el.remove(); });
   // Remove all script tags
   clone.querySelectorAll('script').forEach(s => s.remove());
   // Force light theme
@@ -4822,7 +4874,28 @@ function closeAvatarLightbox() {
   document.getElementById('avatar-lightbox').classList.remove('active');
 }
 document.addEventListener('keydown', function(e) {
-  if (e.key === 'Escape') closeAvatarLightbox();
+  if (e.key === 'Escape') { closeAvatarLightbox(); closeResumeNav(); }
+});
+
+// Resume section nav
+function buildNavLinks() {
+  const menu = document.getElementById('resume-nav-menu');
+  if (!menu) return;
+  const secs = document.querySelectorAll('.r-sec[id]');
+  menu.innerHTML = [...secs].map(el =>
+    `<a href="#${el.id}" onclick="closeResumeNav()">${el.textContent}</a>`
+  ).join('');
+}
+function toggleResumeNav() {
+  document.getElementById('resume-nav-menu')?.classList.toggle('open');
+}
+function closeResumeNav() {
+  document.getElementById('resume-nav-menu')?.classList.remove('open');
+}
+document.addEventListener('click', function(e) {
+  const menu = document.getElementById('resume-nav-menu');
+  if (!menu?.classList.contains('open')) return;
+  if (!e.target.closest('#resume-nav-menu') && !e.target.closest('#resume-nav-btn')) closeResumeNav();
 });
 
 // ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -4967,6 +5040,7 @@ Object.assign(window, {
   setProfile, cycleProfile, setTheme, cycleTheme, updateThemeSwatch, setFont, adjustFontSize, resetDefaults,
   toggleExportMenu, exportMD, exportHTML, printResume,
   toggleMoreMenu, toggleNeko, setNekoColor, openAvatarLightbox, closeAvatarLightbox,
+  toggleResumeNav, closeResumeNav, buildNavLinks,
   openSettings, closeSettings, resetAllSettings, onSettingSlider, openAttributions, closeAttributions,
   cycleTagLevel, randomTheme,
 });
@@ -4977,7 +5051,14 @@ Object.assign(window, {
 
 <!-- ── AVATAR LIGHTBOX ── -->
 <div id="avatar-lightbox" onclick="closeAvatarLightbox()">
-  <div class="lb-img ryan-full"></div>
+  <div class="lb-inner" onclick="event.stopPropagation()">
+    <div class="lb-links">
+      <a href="https://mindattic.com/" target="_blank">mindattic.com</a>
+      <a href="https://mindatticcares.com/" target="_blank">mindatticcares.com</a>
+      <a href="#" style="opacity:0.4;cursor:default;pointer-events:none;">more to come…</a>
+    </div>
+    <div class="lb-img ryan-full"></div>
+  </div>
 </div>
 
 
@@ -4999,6 +5080,6 @@ Object.assign(window, {
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 -->
 <footer style="height:15vh;width:100vw;display:flex;align-items:center;justify-content:center;">
-  <span style="font-family:var(--font-resume);font-size:12px;color:var(--text3);">© <script>document.write(new Date().getFullYear())</script> by Ryan DeBraal</span>
+  <span style="font-family:var(--font-resume);font-size:12px;color:var(--text3);">© <script>document.write(new Date().getFullYear())</script> Ryan DeBraal</span>
 </footer>
 </body></html>
