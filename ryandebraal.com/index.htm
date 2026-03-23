@@ -4976,6 +4976,23 @@ function startSynthwave() {
       ctx.stroke();
     }
 
+    // Scrolling perspective columns — new lines continuously emerge from the VP
+    // and sweep outward in sync with the horizontal lines, selling forward motion.
+    const advCount = 14;
+    for (let side = -1; side <= 1; side += 2) {
+      for (let i = 0; i < advCount; i++) {
+        const p = ((i / advCount + scrollBase) % 1.0);
+        const q = p * p;
+        const xBottom = w / 2 + side * p * w * 0.50;
+        ctx.strokeStyle = `rgba(255,113,206,${(0.04 + q * 0.22).toFixed(2)})`;
+        ctx.lineWidth = 0.4 + q * 0.7;
+        ctx.beginPath();
+        ctx.moveTo(w / 2, horizon);
+        ctx.lineTo(xBottom, h);
+        ctx.stroke();
+      }
+    }
+
     // ── Road perspective ──────────────────────────────────────────────────
     // Vanishing point at centre of horizon.  Road edges spread to ~30% of
     // screen width at the bottom.  A single dashed centre line scrolls
