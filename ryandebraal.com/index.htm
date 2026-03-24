@@ -4832,7 +4832,7 @@ function startSynthwave() {
             row.push({ x, y: hor + 3 });  // base row sits on the horizon
           } else {
             const outerFrac = side < 0 ? (1 - xf) : xf; // 0 at road gap, 1 at screen edge
-            const maxH = hor * 0.44 * Math.pow(1 - rf, 0.65) * (0.20 + outerFrac * 0.80);
+            const maxH = hor * 0.44 * Math.pow(1 - rf, 0.65) * Math.pow(outerFrac, 0.65);
             row.push({ x, y: hor - maxH * (0.40 + Math.random() * 0.60) });
           }
         }
