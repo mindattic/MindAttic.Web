@@ -3334,22 +3334,21 @@ function toggleNeko() {
 
 // ╔═══════════════════════════════════════════════════════════════════════════════╗
 // ║  NEKO THEME                                                                   ║
-// ║  10 simultaneous cats with independent behaviour + inter-cat collision        ║
+// ║  10 autonomous cats + 1 classic mouse-chaser — 11 cats total                 ║
 // ╠═══════════════════════════════════════════════════════════════════════════════╣
-// ║  Each of the 10 cats is a full Neko instance (see NEKO section above) but    ║
-// ║  in autonomous mode: instead of chasing the mouse cursor, each cat cycles    ║
-// ║  through a random behaviour sequence (run to point, stop, groom, sleep,      ║
-// ║  wake) independently.  They occasionally notice each other and react.        ║
+// ║  Cats 1–10: fully autonomous.  Each cycles through random behaviours         ║
+// ║  (wander, pace, run) on independent timers.  CHASE_MOUSE is excluded from    ║
+// ║  the autonomous behaviour pool — they never spontaneously chase the cursor.  ║
 // ║                                                                               ║
-// ║  Inter-cat collision: a simple radius check — cats that get too close push   ║
-// ║  apart.  No physics engine; just a one-line vector normalisation.            ║
+// ║  Cat 11: the classic.  Always CHASE_MOUSE, never cycles, uses the user's     ║
+// ║  saved neko colour (the same one from the toolbar picker) so it looks like   ║
+// ║  "their" cat roaming among the autonomous ones.                               ║
 // ║                                                                               ║
-// ║  Each cat is assigned a randomised CSS filter colour from NEKO_COLORS so     ║
-// ║  all 10 are visually distinct.  The single DOM element per cat is reused     ║
-// ║  across frame ticks; only transform + background-position change.            ║
+// ║  Inter-cat collision: radius check — cats that get too close push apart.     ║
+// ║  No physics engine; just a normalised repulsion vector.                       ║
 // ║                                                                               ║
-// ║  Curve pathing: cats don't walk in straight lines — they follow a sinusoidal ║
-// ║  offset path that makes each journey look like a casual, meandering stroll.  ║
+// ║  Curve pathing: even-indexed autonomous cats follow a sinusoidal overlay      ║
+// ║  on straight movement — gives a feline gait rather than robotic lines.       ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
 // Distinct from the single interactive neko above. This is ambient — 10 cats
 // roam the page independently, each running their own behavior cycle:
@@ -3367,7 +3366,6 @@ let nekoBehaviorTimers = [];
 let nekoCollisionLoop = null;
 
 const NEKO_BEHAVIORS = [
-  BehaviorMode.CHASE_MOUSE,
   BehaviorMode.RUN_AROUND_RANDOMLY,
   BehaviorMode.PACE_AROUND_SCREEN,
   BehaviorMode.RUN_AROUND,
@@ -3576,12 +3574,11 @@ function onNekoMouseWake(neko) {
 function startNekoTheme() {
   stopNekoTheme();
   const colorKeys = Object.keys(NEKO_COLORS);
-  // Initial behavior spread: 2 of each type
+  // Initial behavior spread across 10 autonomous cats (no CHASE_MOUSE — that belongs to cat 11)
   const initialBehaviors = [
-    BehaviorMode.CHASE_MOUSE, BehaviorMode.CHASE_MOUSE,
-    BehaviorMode.RUN_AROUND_RANDOMLY, BehaviorMode.RUN_AROUND_RANDOMLY, BehaviorMode.RUN_AROUND_RANDOMLY,
+    BehaviorMode.RUN_AROUND_RANDOMLY, BehaviorMode.RUN_AROUND_RANDOMLY, BehaviorMode.RUN_AROUND_RANDOMLY, BehaviorMode.RUN_AROUND_RANDOMLY,
     BehaviorMode.PACE_AROUND_SCREEN, BehaviorMode.PACE_AROUND_SCREEN, BehaviorMode.PACE_AROUND_SCREEN,
-    BehaviorMode.RUN_AROUND, BehaviorMode.RUN_AROUND,
+    BehaviorMode.RUN_AROUND, BehaviorMode.RUN_AROUND, BehaviorMode.RUN_AROUND,
   ];
   // Shuffle
   for (let i = initialBehaviors.length - 1; i > 0; i--) {
@@ -3626,6 +3623,24 @@ function startNekoTheme() {
     }, initialDelay);
     nekoBehaviorTimers.push(tid);
   }
+  // ── Cat 11: classic mouse-chaser — always follows cursor, never cycles behavior ──
+  {
+    const x = window.innerWidth / 2 + (Math.random() - 0.5) * 80;
+    const y = window.innerHeight / 2 + (Math.random() - 0.5) * 80;
+    const mouseCat = new Neko({ fps: AppSettings.neko_fps, speed: AppSettings.neko_speed, startX: x, startY: y, behaviorMode: BehaviorMode.CHASE_MOUSE, allowBehaviorChange: false });
+    mouseCat.setSprites(NEKO_SPRITE_COUNT);
+    // Use the user's saved neko colour so this cat looks like "their" cat
+    let savedColor = 'orange';
+    try { savedColor = localStorage.getItem('neko-color') || 'orange'; } catch(e) {}
+    mouseCat.element.style.filter = NEKO_COLORS[savedColor] || NEKO_COLORS.orange;
+    mouseCat.element.dataset.themeNeko = '1';
+    mouseCat.element.style.pointerEvents = 'auto';
+    mouseCat.element.style.cursor = 'default';
+    // No behavior cycling — this one always chases the mouse
+    mouseCat.start();
+    themeNekos.push(mouseCat);
+  }
+
   // Collision avoidance loop (runs at ~15fps)
   nekoCollisionLoop = setInterval(nekoCollisionTick, 66);
 }
