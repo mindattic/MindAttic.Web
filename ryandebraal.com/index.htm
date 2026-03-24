@@ -4919,12 +4919,15 @@ function startSynthwave() {
         for (let c = 0; c < nC; c++) {
           const tl = grid[r][c],   tr = grid[r][c+1];
           const bl = grid[r+1][c], br = grid[r+1][c+1];
-          // Solid dark fill so sky doesn't bleed through faces
-          ctx.fillStyle = `rgba(6,0,16,${(0.60 + depthFrac * 0.32).toFixed(2)})`;
+          // Dark purple fill — lets sky gradient hint through at peak tips
+          ctx.fillStyle = `rgba(18,0,38,${(0.55 + depthFrac * 0.35).toFixed(2)})`;
           ctx.beginPath(); ctx.moveTo(tl.x,tl.y); ctx.lineTo(tr.x,tr.y); ctx.lineTo(br.x,br.y); ctx.closePath(); ctx.fill();
           ctx.beginPath(); ctx.moveTo(tl.x,tl.y); ctx.lineTo(br.x,br.y); ctx.lineTo(bl.x,bl.y); ctx.closePath(); ctx.fill();
-          // Blue/cyan wireframe edges
-          ctx.strokeStyle = `rgba(110,170,255,${(0.22 + depthFrac * 0.48).toFixed(2)})`;
+          // Edges: hot pink at peaks fading to blue-purple at base
+          const er = Math.round(200 + depthFrac * 55);   // 200→255 (pink→white-pink)
+          const eg = Math.round(40  + depthFrac * 20);   // 40→60
+          const eb = Math.round(180 - depthFrac * 60);   // 180→120 (more blue at base)
+          ctx.strokeStyle = `rgba(${er},${eg},${eb},${(0.20 + depthFrac * 0.50).toFixed(2)})`;
           ctx.lineWidth = 0.75;
           ctx.beginPath();
           ctx.moveTo(tl.x,tl.y); ctx.lineTo(tr.x,tr.y);
