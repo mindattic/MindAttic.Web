@@ -4952,48 +4952,38 @@ function startSynthwave() {
     ctx.fillStyle = groundGrad;
     ctx.fillRect(0, horizon, w, h - horizon);
 
-    // Horizontal grid lines — quadratic screen-space scroll, no wrap artifacts.
-    // pct=0 → at horizon (invisible); pct=1 → at viewer's feet (full brightness).
-    // Wrap at pct 1→0 is seamless: line fades out at bottom, reappears dim at horizon.
-    const numH = 18;
+    // ── Unified perspective grid ──────────────────────────────────────────────
+    // Draw horizontal lines AND the vertical column segments connecting adjacent
+    // rows together so the cells form a scrolling lattice rather than two
+    // independent sets of lines.
+    const numH    = 18;   // depth rows
+    const numCols = 14;   // columns (0..numCols), spread from edge to edge
     const groundH = h - horizon;
     const scrollBase = t * 0.05;
-    for (let i = 0; i < numH; i++) {
-      const pct = (i / numH + scrollBase) % 1.0;
-      const sy = horizon + pct * pct * groundH;
-      if (sy < horizon || sy > h + 1) continue;
-      ctx.strokeStyle = `rgba(255,113,206,${Math.min(0.75, pct * 0.58 + 0.04)})`;
-      ctx.lineWidth = 0.4 + pct * 1.6;
-      ctx.beginPath(); ctx.moveTo(0, sy); ctx.lineTo(w, sy); ctx.stroke();
-    }
 
-    // Vertical grid lines — fan from vanishing point to screen bottom
-    const numV = 22;
-    for (let i = 0; i <= numV; i++) {
-      const xBottom = (i / numV) * w;
-      const dist = Math.abs(2 * i / numV - 1); // 0 at centre, 1 at edges
-      ctx.strokeStyle = `rgba(255,113,206,${(0.07 + dist * 0.26).toFixed(2)})`;
-      ctx.lineWidth = 0.6;
-      ctx.beginPath();
-      ctx.moveTo(w / 2, horizon);
-      ctx.lineTo(xBottom, h);
-      ctx.stroke();
-    }
+    for (let row = 0; row < numH; row++) {
+      const p0 = ((row       / numH) + scrollBase) % 1.0;
+      const p1 = (((row + 1) / numH) + scrollBase) % 1.0;
+      if (p1 < p0) continue;               // skip the single wrap-around row
+      const q0 = p0 * p0, q1 = p1 * p1;
+      const y0 = horizon + groundH * q0;
+      const y1 = horizon + groundH * q1;
+      const alpha = Math.min(0.80, p1 * 0.62 + 0.05);
 
-    // Scrolling perspective columns — new lines continuously emerge from the VP
-    // and sweep outward in sync with the horizontal lines, selling forward motion.
-    const advCount = 14;
-    for (let side = -1; side <= 1; side += 2) {
-      for (let i = 0; i < advCount; i++) {
-        const p = ((i / advCount + scrollBase) % 1.0);
-        const q = p * p;
-        const xBottom = w / 2 + side * p * w * 0.50;
-        ctx.strokeStyle = `rgba(255,113,206,${(0.04 + q * 0.22).toFixed(2)})`;
-        ctx.lineWidth = 0.4 + q * 0.7;
-        ctx.beginPath();
-        ctx.moveTo(w / 2, horizon);
-        ctx.lineTo(xBottom, h);
-        ctx.stroke();
+      // Horizontal line at the near edge of this cell
+      ctx.strokeStyle = `rgba(255,113,206,${alpha.toFixed(2)})`;
+      ctx.lineWidth = 0.5 + q1 * 2.0;
+      ctx.beginPath(); ctx.moveTo(0, y0); ctx.lineTo(w, y0); ctx.stroke();
+
+      // Vertical segments — each column connects (x@p0,y0) → (x@p1,y1)
+      for (let col = 0; col <= numCols; col++) {
+        const wx = (col / numCols) * 2 - 1;        // world x: -1..+1
+        const x0 = w / 2 + wx * (w / 2) * q0;
+        const x1 = w / 2 + wx * (w / 2) * q1;
+        const ca = (alpha * (0.22 + Math.abs(wx) * 0.55)).toFixed(2);
+        ctx.strokeStyle = `rgba(255,113,206,${ca})`;
+        ctx.lineWidth = 0.4 + q1 * 1.1;
+        ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
       }
     }
 
