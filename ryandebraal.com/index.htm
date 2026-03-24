@@ -275,11 +275,8 @@ body{font-family:var(--font-resume);background:var(--bg2);color:var(--text);min-
 /* ── CANVAS (animations live here, behind everything) ── */
 #fx-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
 
-/* ── COPYRIGHT BAR ── */
-#copyright-bar{position:sticky;top:0;z-index:201;background:var(--bg2);border-bottom:1px solid var(--border);padding:3px 16px;display:flex;align-items:center;justify-content:center;font-family:var(--font-resume);font-size:10px;color:var(--text3);letter-spacing:0.04em;white-space:nowrap;}
-
 /* ── TOOLBAR ── */
-#toolbar{position:sticky;top:26px;z-index:200;background:var(--bg);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+#toolbar{position:sticky;top:0;z-index:200;background:var(--bg);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 #toolbar-identity{display:inline-flex;align-items:center;gap:8px;cursor:pointer;margin-right:auto;}
 #toolbar-identity img{transition:box-shadow 0.2s;}
 #toolbar-name{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;transition:color 0.2s,text-shadow 0.2s;}
@@ -322,7 +319,7 @@ select.tb-sel:hover{border-color:var(--accent);}
 /* ── HEADER ── */
 .r-name{font-family:var(--font-resume);font-size:36px;font-weight:400;text-align:center;color:var(--text);letter-spacing:-0.01em;margin-bottom:5px;}
 .r-title{text-align:center;font-size:13px;color:var(--accent);letter-spacing:0.03em;margin-bottom:5px;font-family:var(--font-resume);}
-.r-contact{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;font-size:12px;color:var(--text3);font-family:var(--font-resume);padding-bottom:5px;}
+.r-contact{text-align:center;font-size:12px;color:var(--text3);font-family:var(--font-resume);padding-bottom:5px;}
 .r-contact a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(107,163,232,0.2);transition:border-color 0.2s,color 0.2s;}
 .r-contact a:hover{border-bottom-color:var(--accent);}
 [data-theme="light"] .r-contact a{border-bottom-color:rgba(27,79,140,0.2);}
@@ -559,7 +556,6 @@ select.tb-sel:hover{border-color:var(--accent);}
 ║  self-documenting — you can read the HTML and know exactly what fires.        ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 -->
-<div id="copyright-bar">© <script>document.write(new Date().getFullYear())</script> Ryan DeBraal · All Rights Reserved</div>
 <div id="toolbar">
   <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAA7EAAAOxAGVKw4bAAAFyWlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgOS4xLWMwMDMgNzkuOTY5MGE4NywgMjAyNS8wMy8wNi0xOToxMjowMyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIDI3LjEgKFdpbmRvd3MpIiB4bXA6Q3JlYXRlRGF0ZT0iMjAyNi0wMy0yMFQxNjowNTozOC0wNTowMCIgeG1wOk1vZGlmeURhdGU9IjIwMjYtMDMtMjBUMTY6MzI6MDgtMDU6MDAiIHhtcDpNZXRhZGF0YURhdGU9IjIwMjYtMDMtMjBUMTY6MzI6MDgtMDU6MDAiIGRjOmZvcm1hdD0iaW1hZ2UvcG5nIiBwaG90b3Nob3A6Q29sb3JNb2RlPSIzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOmRkNzQ0ZGViLWQxYjYtMGM0OS05OGUxLWFiYTllZmJmYzkwYSIgeG1wTU06RG9jdW1lbnRJRD0i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" alt="Ryan DeBraal" onclick="openAvatarLightbox()" style="width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0;cursor:pointer;" title="View photo">
   <span id="toolbar-name">Ryan DeBraal</span>
@@ -579,17 +575,17 @@ select.tb-sel:hover{border-color:var(--accent);}
     <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
     GitHub
   </a>
-  <a class="tb-link tb-desktop" href="https://www.ryandebraal.com/youtube" target="_blank" rel="noopener" title="YouTube">
+  <a class="tb-link tb-desktop" href="https://www.youtube.com/@MindAttic" target="_blank" rel="noopener" title="YouTube">
     <svg viewBox="0 0 24 24"><path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81zM10 15V9l5.2 3-5.2 3z"/></svg>
     YouTube
   </a>
   <a class="tb-link tb-desktop" href="https://mindattic.com/" target="_blank" rel="noopener" title="mindattic.com">
     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIbSURBVDhPpZMxSyNxEMV/m81qDEhC3CYBFUV0C8uASLCxSGGRIq0g6DcQO1GCH8HKVrRIG+zEJqRIp5I2RRAhJIWaKBgW1t13zeV/Kngc3CvfvPeGGWYsSeI/EPtOfMY4O4qi7yUDq9ls6vj4mI+PD1ZWVtjY2CCZTFIul78I7+7uqNfrvL6+cnt7SxiGnJycwMPDgw4PD7W8vCxAiURCgOr1uj6jWCwK0OTkpFzXVaVSUb/fF2PBcDjU3Nyc4vG4EomEKpWKMQ8GA2WzWbmuq+npae3s7Jia2UEqleL09JT19XUcx6FareL7PgCDwQDbtkkmk4RhiOd5ZjQTMBqNyGQyNBoNcrkc7XabRqMBwMLCAq1Wi/n5eUajkTHzOWBqaoqrqysASqUSAGdnZwRBQBRFZDIZXNcFwHGcse1PgGVZDIdDOp0Oe3t7pNNpbm5u2NzcJAxDY+B3szG+3MHz8zO+7+N5Hmtra7y/v+N5nun48vIC3+7CBDw9PXF/f08qlQJga2uLWCzGwcGBEVuWBUA6nTacCbi8vKTb7WLbNgCFQoEoigiCwIh7vR4AnU7HcNRqNS0tLQkQoO3tbUnS29ubVldX9fj4KEna398XoImJCcXjcR0dHSkIAlnX19c6Pz8nm82yuLjI7Ows+XyeXC5HEAQ4joPv+1xcXBCGIbZt0263mZmZYXd3F0s/fKMkM/Pf8OM3/osZ4BeNOBOfvUnXuwAAAABJRU5ErkJggg==" alt="mindattic">
-    MindAttic
+    mindattic.com
   </a>
   <a class="tb-link tb-desktop" href="https://mindatticcares.com/" target="_blank" rel="noopener" title="mindatticcares.com">
     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAITSURBVDhPpZM9S6NBFIXPvGLeSAyGBPGDKGvjb7DQwghK9A8oFqaw0UKDjaVNWBC0EewUIVpZiaVYuEqwFQQLKzGFYdVE8SuS13m2yJpNgtvsnmrm8pxzZ+BeA6B/Fcipr9ULkP7WwxgZay2JREIXFxcKhULq6+tTb2+vIpGIRkdHa/j37W29Li4Kz1NgbU3u+LgEsLW1xcTEBJLw+VyMMbiuSzab5VNvq6vkOzt529ggHw5z39SELZVQhQDm55NIorW1lcbGRtLpNAAfV1c89PdjS6Vy2MoKtxIf19e1AY+PjwwPD9PR0UkgEGBkZAQAL53GOz+vcM/T09y7LkBtwNnZGQDJZBLHcWhpCXGVzcLrK7aKuzWGl7k5qA/Y3d0lk8lw/OMYx3Hw+/3MzsyQy+crzMvCArcStliE+oDDw0NSqRQAsdgQwWAQSWxubgJgCwV+ShR3diqemjm4ublRsViUJCWmpvT09KRoNKr42Jgk6TmVkn92Vu7kZMXjVA/i3t6empubJUmDsUE1NDQoHo+ro61NXF7q4+5OwfX1Mvzb5xhj5HmeMpmMDg4OVCg8SJKi0ai6u7tVeCjf3/f3FVxa+mM25vMMAwMDSEISXV1dHB0dAZCYSvB9eRmA95OTyr+rZQBOT0+Vy+UUDkfU0/NNPp9P7e3t5Q6SZK3kfL02xlqL+XxOlQB9Va+X4X/WWdIvg/e4HAGp198AAAAASUVORK5CYII=" alt="mindatticcares">
-    MindAttic Cares
+    mindatticcares.com
   </a>
 
   <div class="tb-sep tb-desktop"></div>
@@ -772,30 +768,11 @@ select.tb-sel:hover{border-color:var(--accent);}
   <div class="r-name">Ryan DeBraal</div>
   <div class="r-title">Principal Full-Stack Software Engineer · CEO, MindAttic LLC · President, MindAttic Cares</div>
   <div class="r-contact">
-    <a class="tb-link" href="mailto:ryandebraal@mindattic.com" title="ryandebraal@mindattic.com">
-      <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-      Email
-    </a>
-    <a class="tb-link" href="https://www.linkedin.com/in/ryandebraal/" target="_blank" rel="noopener" title="LinkedIn">
-      <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
-      LinkedIn
-    </a>
-    <a class="tb-link" href="https://github.com/mindattic" target="_blank" rel="noopener" title="GitHub">
-      <svg viewBox="0 0 24 24"><path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
-      GitHub
-    </a>
-    <a class="tb-link" href="https://www.ryandebraal.com/youtube" target="_blank" rel="noopener" title="YouTube">
-      <svg viewBox="0 0 24 24"><path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81zM10 15V9l5.2 3-5.2 3z"/></svg>
-      YouTube
-    </a>
-    <a class="tb-link" href="https://mindattic.com/" target="_blank" rel="noopener" title="mindattic.com">
-      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIbSURBVDhPpZMxSyNxEMV/m81qDEhC3CYBFUV0C8uASLCxSGGRIq0g6DcQO1GCH8HKVrRIG+zEJqRIp5I2RRAhJIWaKBgW1t13zeV/Kngc3CvfvPeGGWYsSeI/EPtOfMY4O4qi7yUDq9ls6vj4mI+PD1ZWVtjY2CCZTFIul78I7+7uqNfrvL6+cnt7SxiGnJycwMPDgw4PD7W8vCxAiURCgOr1uj6jWCwK0OTkpFzXVaVSUb/fF2PBcDjU3Nyc4vG4EomEKpWKMQ8GA2WzWbmuq+npae3s7Jia2UEqleL09JT19XUcx6FareL7PgCDwQDbtkkmk4RhiOd5ZjQTMBqNyGQyNBoNcrkc7XabRqMBwMLCAq1Wi/n5eUajkTHzOWBqaoqrqysASqUSAGdnZwRBQBRFZDIZXNcFwHGcse1PgGVZDIdDOp0Oe3t7pNNpbm5u2NzcJAxDY+B3szG+3MHz8zO+7+N5Hmtra7y/v+N5nun48vIC3+7CBDw9PXF/f08qlQJga2uLWCzGwcGBEVuWBUA6nTacCbi8vKTb7WLbNgCFQoEoigiCwIh7vR4AnU7HcNRqNS0tLQkQoO3tbUnS29ubVldX9fj4KEna398XoImJCcXjcR0dHSkIAlnX19c6Pz8nm82yuLjI7Ows+XyeXC5HEAQ4joPv+1xcXBCGIbZt0263mZmZYXd3F0s/fKMkM/Pf8OM3/osZ4BeNOBOfvUnXuwAAAABJRU5ErkJggg==" alt="mindattic">
-      MindAttic
-    </a>
-    <a class="tb-link" href="https://mindatticcares.com/" target="_blank" rel="noopener" title="mindatticcares.com">
-      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAITSURBVDhPpZM9S6NBFIXPvGLeSAyGBPGDKGvjb7DQwghK9A8oFqaw0UKDjaVNWBC0EewUIVpZiaVYuEqwFQQLKzGFYdVE8SuS13m2yJpNgtvsnmrm8pxzZ+BeA6B/Fcipr9ULkP7WwxgZay2JREIXFxcKhULq6+tTb2+vIpGIRkdHa/j37W29Li4Kz1NgbU3u+LgEsLW1xcTEBJLw+VyMMbiuSzab5VNvq6vkOzt529ggHw5z39SELZVQhQDm55NIorW1lcbGRtLpNAAfV1c89PdjS6Vy2MoKtxIf19e1AY+PjwwPD9PR0UkgEGBkZAQAL53GOz+vcM/T09y7LkBtwNnZGQDJZBLHcWhpCXGVzcLrK7aKuzWGl7k5qA/Y3d0lk8lw/OMYx3Hw+/3MzsyQy+crzMvCArcStliE+oDDw0NSqRQAsdgQwWAQSWxubgJgCwV+ShR3diqemjm4ublRsViUJCWmpvT09KRoNKr42Jgk6TmVkn92Vu7kZMXjVA/i3t6empubJUmDsUE1NDQoHo+ro61NXF7q4+5OwfX1Mvzb5xhj5HmeMpmMDg4OVCg8SJKi0ai6u7tVeCjf3/f3FVxa+mM25vMMAwMDSEISXV1dHB0dAZCYSvB9eRmA95OTyr+rZQBOT0+Vy+UUDkfU0/NNPp9P7e3t5Q6SZK3kfL02xlqL+XxOlQB9Va+X4X/WWdIvg/e4HAGp198AAAAASUVORK5CYII=" alt="mindatticcares">
-      MindAttic Cares
-    </a>
+    <a href="mailto:ryandebraal@mindattic.com">ryandebraal@mindattic.com</a> &nbsp;·&nbsp;
+    <a href="https://www.linkedin.com/in/ryandebraal/" target="_blank">linkedin.com/in/ryandebraal</a> &nbsp;·&nbsp;
+    <a href="https://github.com/mindattic" target="_blank">github.com/mindattic</a> &nbsp;·&nbsp;
+    <a href="https://mindattic.com/" target="_blank">mindattic.com</a> &nbsp;·&nbsp;
+    <a href="https://mindatticcares.com/" target="_blank">mindatticcares.com</a>
   </div>
   <div id="resume-body">
     </div>
@@ -889,459 +866,521 @@ try {
 // readable as a plain object literal instead of an array of {desc, impl} records.
 //
 // Flat object keyed by skill name — fast O(1) lookup by tag text.
-// ── THE FLAT DATABASE ─────────────────────────────────────────────────────────
-// SKILLS maps each technology name → { overview, experience, fam }
-//   overview   — plain-English description of the technology
-//   experience — where/how it was used in this codebase or real projects
-//   fam        — familiarity 0–100; default 80 ("Adept"); persisted per-key
-//                Only non-default values are written to localStorage so the
-//                object can stay lean on first load.
-const _savedFam = (() => { try { return JSON.parse(localStorage.getItem('tag-familiarity')||'{}'); } catch(e){ return {}; } })();
-const SKILLS = {
-  'C#': { overview: 'Strongly-typed, object-oriented language on the .NET platform', experience: 'Primary language — 20+ years across all projects', fam: _savedFam['C#'] !== undefined ? _savedFam['C#'] : 80 },
-  'React': { overview: 'Component-based JavaScript UI library by Meta', experience: 'Bank of America — Datastrology, Graphite', fam: _savedFam['React'] !== undefined ? _savedFam['React'] : 80 },
-  'Angular': { overview: 'Full-featured TypeScript SPA framework by Google', experience: 'Bank of America — enterprise applications', fam: _savedFam['Angular'] !== undefined ? _savedFam['Angular'] : 80 },
-  '.NET / ASP.NET Core': { overview: 'Cross-platform framework for building web apps and services', experience: 'Used across all professional and personal projects', fam: _savedFam['.NET / ASP.NET Core'] !== undefined ? _savedFam['.NET / ASP.NET Core'] : 80 },
-  'JavaScript': { overview: 'Dynamic scripting language for web and server-side development', experience: 'ES6+ vanilla & frameworks — all web projects', fam: _savedFam['JavaScript'] !== undefined ? _savedFam['JavaScript'] : 80 },
-  'TypeScript': { overview: 'Typed superset of JavaScript for large-scale applications', experience: 'Bank of America — Datastrology, Graphite', fam: _savedFam['TypeScript'] !== undefined ? _savedFam['TypeScript'] : 80 },
-  'SQL': { overview: 'Structured query language for relational database management', experience: 'SQL Server, T-SQL, stored procs — all data-driven projects', fam: _savedFam['SQL'] !== undefined ? _savedFam['SQL'] : 80 },
-  'GraphQL (HotChocolate)': { overview: 'Flexible query language for APIs; HotChocolate is a GraphQL server for .NET', experience: 'Bank of America — Graphite', fam: _savedFam['GraphQL (HotChocolate)'] !== undefined ? _savedFam['GraphQL (HotChocolate)'] : 80 },
-  'Elasticsearch': { overview: 'Distributed search and analytics engine for structured and unstructured data', experience: 'Bank of America — Graphite cross-SOR platform', fam: _savedFam['Elasticsearch'] !== undefined ? _savedFam['Elasticsearch'] : 80 },
-  'RAG pipelines': { overview: 'Retrieval-Augmented Generation — grounding LLM responses with external knowledge', experience: 'Tutor AI platform', fam: _savedFam['RAG pipelines'] !== undefined ? _savedFam['RAG pipelines'] : 80 },
-  'LSH/SimHash': { overview: 'Locality-Sensitive Hashing for approximate nearest-neighbor similarity matching', experience: 'Tutor — concept matching engine', fam: _savedFam['LSH/SimHash'] !== undefined ? _savedFam['LSH/SimHash'] : 80 },
-  'Genetic algorithms': { overview: 'Evolutionary optimization technique using selection, crossover, and mutation', experience: 'IdiotProof — trading strategy optimizer', fam: _savedFam['Genetic algorithms'] !== undefined ? _savedFam['Genetic algorithms'] : 80 },
-  'Neural networks': { overview: 'Interconnected layers of nodes that learn patterns from data', experience: 'IdiotProof — per-ticker indicator weight calibration', fam: _savedFam['Neural networks'] !== undefined ? _savedFam['Neural networks'] : 80 },
-  'LLM integration': { overview: 'Connecting large language models into applications via API', experience: 'Tutor (OpenAI + Anthropic), ChatGPT_To_Claude', fam: _savedFam['LLM integration'] !== undefined ? _savedFam['LLM integration'] : 80 },
-  'Force-layout graph engines': { overview: 'Physics-based graph visualization using repulsion and attraction forces', experience: 'Datastrology — Patent Pending (Bank of America)', fam: _savedFam['Force-layout graph engines'] !== undefined ? _savedFam['Force-layout graph engines'] : 80 },
-  'Bidirectional push/pull sync': { overview: 'Real-time two-way data synchronization without caching or UI reload', experience: 'Graphite (Bank of America)', fam: _savedFam['Bidirectional push/pull sync'] !== undefined ? _savedFam['Bidirectional push/pull sync'] : 80 },
-  'Unity': { overview: 'Cross-platform game engine for 2D and 3D development', experience: 'GridGame2026 — active development', fam: _savedFam['Unity'] !== undefined ? _savedFam['Unity'] : 80 },
-  'ShaderLab': { overview: 'Unity\\'s shader declaration language for custom rendering pipelines', experience: 'GridGame2026 — custom shaders', fam: _savedFam['ShaderLab'] !== undefined ? _savedFam['ShaderLab'] : 80 },
-  'Interactive Brokers API': { overview: 'Programmatic access to IBKR brokerage for automated order execution', experience: 'Ahab, Gappy, IdiotProof — live trading', fam: _savedFam['Interactive Brokers API'] !== undefined ? _savedFam['Interactive Brokers API'] : 80 },
-  'NIST frameworks': { overview: 'National Institute of Standards and Technology cybersecurity guidelines', experience: 'Continuous Monitoring platform (Bank of America)', fam: _savedFam['NIST frameworks'] !== undefined ? _savedFam['NIST frameworks'] : 80 },
-  'PHP': { overview: 'Server-side scripting language widely used for web development', experience: 'Bag of Games — CMS and frontend (3 years)', fam: _savedFam['PHP'] !== undefined ? _savedFam['PHP'] : 80 },
-  'VB.NET': { overview: 'Object-oriented language on the .NET platform, Visual Basic syntax', experience: 'Kimberly-Clark — contract work', fam: _savedFam['VB.NET'] !== undefined ? _savedFam['VB.NET'] : 80 },
-  'PowerShell': { overview: 'Task automation and configuration management shell from Microsoft', experience: 'Inquire to learn more.', fam: _savedFam['PowerShell'] !== undefined ? _savedFam['PowerShell'] : 80 },
-  'Batch files': { overview: 'Windows batch scripting (.bat/.cmd) for automating command-line tasks and system operations', experience: 'Inquire to learn more.', fam: _savedFam['Batch files'] !== undefined ? _savedFam['Batch files'] : 80 },
-  '.NET MAUI': { overview: 'Cross-platform framework for native mobile and desktop apps from a single codebase', experience: 'Tutor — cross-platform app', fam: _savedFam['.NET MAUI'] !== undefined ? _savedFam['.NET MAUI'] : 80 },
-  'Backtesting frameworks': { overview: 'Systems for simulating trading strategies against historical market data', experience: 'IdiotProof & Ahab — custom-built engines', fam: _savedFam['Backtesting frameworks'] !== undefined ? _savedFam['Backtesting frameworks'] : 80 },
-  'SignalR': { overview: 'Real-time web communication library for .NET using WebSockets', experience: 'Bank of America — real-time UI updates', fam: _savedFam['SignalR'] !== undefined ? _savedFam['SignalR'] : 80 },
-  'REST APIs': { overview: 'Stateless HTTP-based architecture for building web services', experience: 'Used across all professional and personal projects', fam: _savedFam['REST APIs'] !== undefined ? _savedFam['REST APIs'] : 80 },
-  'WebSockets': { overview: 'Full-duplex communication protocol over a single TCP connection', experience: 'Bank of America — Graphite real-time sync', fam: _savedFam['WebSockets'] !== undefined ? _savedFam['WebSockets'] : 80 },
-  'Microservices': { overview: 'Architectural style decomposing applications into small, independent services', experience: 'Bank of America — enterprise platforms', fam: _savedFam['Microservices'] !== undefined ? _savedFam['Microservices'] : 80 },
-  'Event-driven architecture': { overview: 'Systems that communicate through asynchronous event production and consumption', experience: 'Bank of America — Graphite, Trident', fam: _savedFam['Event-driven architecture'] !== undefined ? _savedFam['Event-driven architecture'] : 80 },
-  'Multi-threading': { overview: 'Concurrent execution of multiple threads for parallel processing', experience: 'Datastrology — force-layout engine (Bank of America)', fam: _savedFam['Multi-threading'] !== undefined ? _savedFam['Multi-threading'] : 80 },
-  'CQRS': { overview: 'Command Query Responsibility Segregation — separating read and write models', experience: 'Inquire to learn more.', fam: _savedFam['CQRS'] !== undefined ? _savedFam['CQRS'] : 80 },
-  'Cross-source real-time data unification': { overview: 'Aggregating heterogeneous data sources into a single live view', experience: 'Graphite (Bank of America)', fam: _savedFam['Cross-source real-time data unification'] !== undefined ? _savedFam['Cross-source real-time data unification'] : 80 },
-  'Vector embeddings': { overview: 'Dense numerical representations of text for semantic similarity', experience: 'Tutor — RAG pipeline', fam: _savedFam['Vector embeddings'] !== undefined ? _savedFam['Vector embeddings'] : 80 },
-  'Vulnerability management': { overview: 'Identifying, classifying, and remediating security weaknesses', experience: 'Continuous Monitoring (Bank of America)', fam: _savedFam['Vulnerability management'] !== undefined ? _savedFam['Vulnerability management'] : 80 },
-  'Threat detection': { overview: 'Identifying malicious activity and potential security breaches', experience: 'Trident — phishing correlation engine (Bank of America)', fam: _savedFam['Threat detection'] !== undefined ? _savedFam['Threat detection'] : 80 },
-  'OWASP Top 10': { overview: 'Industry-standard list of the most critical web application security risks', experience: 'Applied across all web projects', fam: _savedFam['OWASP Top 10'] !== undefined ? _savedFam['OWASP Top 10'] : 80 },
-  'OAuth 2.0': { overview: 'Authorization framework for delegated access using tokens', experience: 'Bank of America — enterprise applications', fam: _savedFam['OAuth 2.0'] !== undefined ? _savedFam['OAuth 2.0'] : 80 },
-  'JWT': { overview: 'JSON Web Tokens — compact, self-contained tokens for secure information exchange', experience: 'Bank of America — authentication systems', fam: _savedFam['JWT'] !== undefined ? _savedFam['JWT'] : 80 },
-  'Active Directory': { overview: 'Microsoft directory service for identity and access management', experience: 'Bank of America & Kimberly-Clark', fam: _savedFam['Active Directory'] !== undefined ? _savedFam['Active Directory'] : 80 },
-  'Penetration testing concepts': { overview: 'Simulated cyberattacks to identify exploitable vulnerabilities', experience: 'M.S. Information Security coursework', fam: _savedFam['Penetration testing concepts'] !== undefined ? _savedFam['Penetration testing concepts'] : 80 },
-  'HLSL': { overview: 'High-Level Shading Language for programming GPU shaders', experience: 'GridGame2026 — custom render pipelines', fam: _savedFam['HLSL'] !== undefined ? _savedFam['HLSL'] : 80 },
-  'Procedural generation': { overview: 'Algorithmically creating game content (terrain, levels, etc.) at runtime', experience: 'GridGame2026', fam: _savedFam['Procedural generation'] !== undefined ? _savedFam['Procedural generation'] : 80 },
-  'Pathfinding (A*)': { overview: 'Graph search algorithm finding the shortest path between nodes', experience: 'GridGame2026 — unit movement', fam: _savedFam['Pathfinding (A*)'] !== undefined ? _savedFam['Pathfinding (A*)'] : 80 },
-  'Custom render pipelines': { overview: 'Tailored GPU rendering workflows for specific visual effects', experience: 'GridGame2026 — Unity URP/HDRP', fam: _savedFam['Custom render pipelines'] !== undefined ? _savedFam['Custom render pipelines'] : 80 },
-  'Algorithmic trading': { overview: 'Automated trade execution based on predefined rules and signals', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['Algorithmic trading'] !== undefined ? _savedFam['Algorithmic trading'] : 80 },
-  'DSL design': { overview: 'Creating domain-specific languages tailored to a particular problem space', experience: 'IdiotProof — IdiotScript', fam: _savedFam['DSL design'] !== undefined ? _savedFam['DSL design'] : 80 },
-  'Backtesting engines': { overview: 'Engines that replay historical data to validate trading strategies', experience: 'IdiotProof & Ahab', fam: _savedFam['Backtesting engines'] !== undefined ? _savedFam['Backtesting engines'] : 80 },
-  'Position sizing': { overview: 'Calculating optimal trade size based on risk tolerance and account equity', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['Position sizing'] !== undefined ? _savedFam['Position sizing'] : 80 },
-  'Gap trading': { overview: 'Strategy exploiting price gaps between market close and open', experience: 'Gappy — live gap-trading system', fam: _savedFam['Gap trading'] !== undefined ? _savedFam['Gap trading'] : 80 },
-  'Technical indicators': { overview: 'Mathematical calculations on price/volume data to forecast market direction', experience: 'Ahab, Gappy, IdiotProof — RSI, MACD, ADX, etc.', fam: _savedFam['Technical indicators'] !== undefined ? _savedFam['Technical indicators'] : 80 },
-  'Git': { overview: 'Distributed version control system for tracking code changes', experience: 'Used across all projects', fam: _savedFam['Git'] !== undefined ? _savedFam['Git'] : 80 },
-  'CI/CD': { overview: 'Continuous Integration and Delivery — automated build, test, and deploy pipelines', experience: 'Azure DevOps — Bank of America', fam: _savedFam['CI/CD'] !== undefined ? _savedFam['CI/CD'] : 80 },
-  'Agile/Scrum': { overview: 'Iterative development methodology with sprints and daily standups', experience: 'Bank of America — all teams', fam: _savedFam['Agile/Scrum'] !== undefined ? _savedFam['Agile/Scrum'] : 80 },
-  'TDD': { overview: 'Test-Driven Development — writing tests before implementation code', experience: 'Inquire to learn more.', fam: _savedFam['TDD'] !== undefined ? _savedFam['TDD'] : 80 },
-  'QA/UAT': { overview: 'Quality Assurance and User Acceptance Testing to validate software meets requirements', experience: 'Bank of America & Kimberly-Clark', fam: _savedFam['QA/UAT'] !== undefined ? _savedFam['QA/UAT'] : 80 },
-  'Azure DevOps': { overview: 'Microsoft cloud platform for CI/CD pipelines, repos, and project tracking', experience: 'Bank of America', fam: _savedFam['Azure DevOps'] !== undefined ? _savedFam['Azure DevOps'] : 80 },
-  'Docker': { overview: 'Containerization platform for packaging applications with their dependencies', experience: 'Inquire to learn more.', fam: _savedFam['Docker'] !== undefined ? _savedFam['Docker'] : 80 },
-  'Visual Studio': { overview: 'Microsoft IDE for .NET and multi-language development', experience: 'Primary IDE — 2005–2022 across all projects', fam: _savedFam['Visual Studio'] !== undefined ? _savedFam['Visual Studio'] : 80 },
-  'Postman': { overview: 'API development and testing tool for building and debugging HTTP requests', experience: 'Used across all API-driven projects', fam: _savedFam['Postman'] !== undefined ? _savedFam['Postman'] : 80 },
-  'Performance tuning': { overview: 'Optimizing code, queries, and systems for speed and resource efficiency', experience: 'Bank of America — Datastrology, Graphite', fam: _savedFam['Performance tuning'] !== undefined ? _savedFam['Performance tuning'] : 80 },
-  'Blazor': { overview: 'Build interactive web UIs with C# instead of JavaScript on .NET', experience: 'Inquire to learn more.', fam: _savedFam['Blazor'] !== undefined ? _savedFam['Blazor'] : 80 },
-  'NLP': { overview: 'Natural Language Processing — enabling machines to understand human language', experience: 'Trident — phishing detection (Bank of America)', fam: _savedFam['NLP'] !== undefined ? _savedFam['NLP'] : 80 },
-  'OpenAI API': { overview: 'API for accessing GPT models for text generation and embeddings', experience: 'Tutor, ChatGPT_To_Claude', fam: _savedFam['OpenAI API'] !== undefined ? _savedFam['OpenAI API'] : 80 },
-  'Anthropic API': { overview: 'API for accessing Claude models for text generation and analysis', experience: 'Tutor, ChatGPT_To_Claude', fam: _savedFam['Anthropic API'] !== undefined ? _savedFam['Anthropic API'] : 80 },
-  'Phishing correlation': { overview: 'Clustering and linking multi-vector phishing campaigns to identify threat actors', experience: 'Trident (Bank of America)', fam: _savedFam['Phishing correlation'] !== undefined ? _savedFam['Phishing correlation'] : 80 },
-  'Shader Graph': { overview: 'Visual node-based shader editor in Unity', experience: 'GridGame2026', fam: _savedFam['Shader Graph'] !== undefined ? _savedFam['Shader Graph'] : 80 },
-  'jQuery': { overview: 'Fast, lightweight JavaScript library for DOM manipulation and events', experience: 'Bag of Games, legacy Bank of America projects', fam: _savedFam['jQuery'] !== undefined ? _savedFam['jQuery'] : 80 },
-  'WordPress': { overview: 'Open-source CMS powering websites and blogs', experience: 'Bag of Games — site rebuild and content strategy', fam: _savedFam['WordPress'] !== undefined ? _savedFam['WordPress'] : 80 },
-  'HTML': { overview: 'Standard markup language for structuring web content', experience: 'Used across all web projects', fam: _savedFam['HTML'] !== undefined ? _savedFam['HTML'] : 80 },
-  'CSS': { overview: 'Style sheet language for designing the visual presentation of web pages', experience: 'Used across all web projects', fam: _savedFam['CSS'] !== undefined ? _savedFam['CSS'] : 80 },
-  'SEO': { overview: 'Search Engine Optimization — improving website visibility in search results', experience: 'Bag of Games — content strategy', fam: _savedFam['SEO'] !== undefined ? _savedFam['SEO'] : 80 },
-  'ASP.NET': { overview: 'Microsoft web framework for building dynamic websites and APIs', experience: 'Bank of America & Kimberly-Clark', fam: _savedFam['ASP.NET'] !== undefined ? _savedFam['ASP.NET'] : 80 },
-  'SQL Server': { overview: 'Microsoft relational database management system', experience: 'Bank of America & Kimberly-Clark — all data platforms', fam: _savedFam['SQL Server'] !== undefined ? _savedFam['SQL Server'] : 80 },
-  'XML': { overview: 'Extensible Markup Language for structured data exchange', experience: 'Kimberly-Clark — document management', fam: _savedFam['XML'] !== undefined ? _savedFam['XML'] : 80 },
-  'Bootstrap': { overview: 'CSS framework for responsive, mobile-first web design', experience: 'Inquire to learn more.', fam: _savedFam['Bootstrap'] !== undefined ? _savedFam['Bootstrap'] : 80 },
-  'Tailwind CSS': { overview: 'Utility-first CSS framework for rapid custom UI development', experience: 'Inquire to learn more.', fam: _savedFam['Tailwind CSS'] !== undefined ? _savedFam['Tailwind CSS'] : 80 },
-  'Component library design': { overview: 'Building reusable UI component systems for design consistency', experience: 'GDS — Bank of America', fam: _savedFam['Component library design'] !== undefined ? _savedFam['Component library design'] : 80 },
-  'Responsive design': { overview: 'Adapting layouts to work across screen sizes and devices', experience: 'All web projects', fam: _savedFam['Responsive design'] !== undefined ? _savedFam['Responsive design'] : 80 },
-  'Real-time UI': { overview: 'Interfaces that update instantly without page reloads', experience: 'Graphite, Datastrology (Bank of America)', fam: _savedFam['Real-time UI'] !== undefined ? _savedFam['Real-time UI'] : 80 },
-  'T-SQL': { overview: 'Microsoft SQL Server dialect with procedural extensions for stored procedures and scripting', experience: 'Bank of America & Kimberly-Clark', fam: _savedFam['T-SQL'] !== undefined ? _savedFam['T-SQL'] : 80 },
-  'HTML5': { overview: 'Latest standard of HTML with semantic elements, multimedia, and Canvas/WebGL APIs', experience: 'Used across all web projects', fam: _savedFam['HTML5'] !== undefined ? _savedFam['HTML5'] : 80 },
-  'CSS3': { overview: 'Modern CSS with animations, grid, flexbox, variables, and media queries', experience: 'Used across all web projects', fam: _savedFam['CSS3'] !== undefined ? _savedFam['CSS3'] : 80 },
-  'ASP.NET Core': { overview: 'Cross-platform, high-performance .NET framework for building web apps and APIs', experience: 'Bank of America — enterprise platforms', fam: _savedFam['ASP.NET Core'] !== undefined ? _savedFam['ASP.NET Core'] : 80 },
-  '.NET': { overview: 'Microsoft application platform spanning web, desktop, mobile, and cloud', experience: 'Used across all professional and personal projects', fam: _savedFam['.NET'] !== undefined ? _savedFam['.NET'] : 80 },
-  'HTML/CSS3': { overview: 'Markup and styling languages for structuring and designing web interfaces', experience: 'Used across all web projects', fam: _savedFam['HTML/CSS3'] !== undefined ? _savedFam['HTML/CSS3'] : 80 },
-  'GraphQL': { overview: 'Query language for APIs enabling clients to request exactly the data they need', experience: 'Bank of America — Graphite', fam: _savedFam['GraphQL'] !== undefined ? _savedFam['GraphQL'] : 80 },
-  '.NET Framework': { overview: 'Original Windows-only Microsoft application platform', experience: 'Kimberly-Clark & early Bank of America projects', fam: _savedFam['.NET Framework'] !== undefined ? _savedFam['.NET Framework'] : 80 },
-  '.NET Core': { overview: 'Open-source, cross-platform successor to .NET Framework', experience: 'Bank of America — enterprise platforms', fam: _savedFam['.NET Core'] !== undefined ? _savedFam['.NET Core'] : 80 },
-  '.NET 5–10': { overview: 'Unified Microsoft .NET platform (versions 5 through 10), successor to both .NET Framework and .NET Core', experience: 'IdiotProof (.NET 10), Ahab (.NET 8), Tutor', fam: _savedFam['.NET 5–10'] !== undefined ? _savedFam['.NET 5–10'] : 80 },
-  'ASP.NET MVC': { overview: 'Model-View-Controller web framework for .NET separating concerns into three roles', experience: 'Bank of America & Kimberly-Clark', fam: _savedFam['ASP.NET MVC'] !== undefined ? _savedFam['ASP.NET MVC'] : 80 },
-  'ASP.NET Web API': { overview: 'RESTful HTTP service framework for .NET before ASP.NET Core', experience: 'Bank of America — legacy services', fam: _savedFam['ASP.NET Web API'] !== undefined ? _savedFam['ASP.NET Web API'] : 80 },
-  'ASP.NET Web Forms': { overview: 'Event-driven .NET web framework using server-side controls and page lifecycle', experience: 'Kimberly-Clark — legacy applications', fam: _savedFam['ASP.NET Web Forms'] !== undefined ? _savedFam['ASP.NET Web Forms'] : 80 },
-  'AutoMapper': { overview: 'Object-to-object mapping library for .NET eliminating manual property assignment', experience: 'Bank of America', fam: _savedFam['AutoMapper'] !== undefined ? _savedFam['AutoMapper'] : 80 },
-  'Blazor Server': { overview: 'ASP.NET Core hosting model running C# UI logic on the server over SignalR', experience: 'Inquire to learn more.', fam: _savedFam['Blazor Server'] !== undefined ? _savedFam['Blazor Server'] : 80 },
-  'Blazor WASM': { overview: 'Blazor WebAssembly — runs C# and .NET directly in the browser via WebAssembly', experience: 'Inquire to learn more.', fam: _savedFam['Blazor WASM'] !== undefined ? _savedFam['Blazor WASM'] : 80 },
-  'Dapper': { overview: 'Lightweight micro-ORM for .NET extending IDbConnection with typed query helpers', experience: 'Bank of America', fam: _savedFam['Dapper'] !== undefined ? _savedFam['Dapper'] : 80 },
-  'PetaPoco': { overview: 'Tiny ORM for .NET — lightweight alternative to Entity Framework with T4 template code generation', experience: 'Bank of America', fam: _savedFam['PetaPoco'] !== undefined ? _savedFam['PetaPoco'] : 80 },
-  'EF Core': { overview: 'Entity Framework Core — lightweight, extensible ORM for .NET data access', experience: 'Bank of America', fam: _savedFam['EF Core'] !== undefined ? _savedFam['EF Core'] : 80 },
-  'EF Core migrations': { overview: 'Code-first database schema versioning system in Entity Framework Core', experience: 'Bank of America', fam: _savedFam['EF Core migrations'] !== undefined ? _savedFam['EF Core migrations'] : 80 },
-  'Entity Framework 6': { overview: 'Full-featured ORM for .NET Framework with code-first and database-first modes', experience: 'Bank of America — legacy data layer', fam: _savedFam['Entity Framework 6'] !== undefined ? _savedFam['Entity Framework 6'] : 80 },
-  'Hangfire': { overview: 'Background job processing library for .NET with persistent job storage and dashboard', experience: 'Bank of America', fam: _savedFam['Hangfire'] !== undefined ? _savedFam['Hangfire'] : 80 },
-  'HttpClient': { overview: '.NET class for sending HTTP requests and receiving HTTP responses asynchronously', experience: 'Used across all API-integrated projects', fam: _savedFam['HttpClient'] !== undefined ? _savedFam['HttpClient'] : 80 },
-  'MAUI': { overview: '.NET Multi-platform App UI — cross-platform native UI framework for iOS, Android, macOS, and Windows', experience: 'Tutor — cross-platform app', fam: _savedFam['MAUI'] !== undefined ? _savedFam['MAUI'] : 80 },
-  'MediatR': { overview: 'In-process messaging library for .NET implementing the mediator pattern (CQRS)', experience: 'Bank of America', fam: _savedFam['MediatR'] !== undefined ? _savedFam['MediatR'] : 80 },
-  'Newtonsoft.Json': { overview: 'Json.NET — high-performance JSON serialization library for .NET (most downloaded NuGet package)', experience: 'Used across all .NET projects', fam: _savedFam['Newtonsoft.Json'] !== undefined ? _savedFam['Newtonsoft.Json'] : 80 },
-  'OData': { overview: 'Open Data Protocol — REST-based query standard for web APIs supporting filtering and paging', experience: 'Bank of America', fam: _savedFam['OData'] !== undefined ? _savedFam['OData'] : 80 },
-  'Polly': { overview: '.NET resilience library providing retry, circuit breaker, fallback, and timeout policies', experience: 'Bank of America', fam: _savedFam['Polly'] !== undefined ? _savedFam['Polly'] : 80 },
-  'Quartz.NET': { overview: 'Powerful job scheduling library for .NET supporting cron expressions and persistence', experience: 'Bank of America', fam: _savedFam['Quartz.NET'] !== undefined ? _savedFam['Quartz.NET'] : 80 },
-  'RestSharp': { overview: 'Simple HTTP REST API client library for .NET applications', experience: 'Bank of America', fam: _savedFam['RestSharp'] !== undefined ? _savedFam['RestSharp'] : 80 },
-  'Serilog': { overview: 'Structured logging library for .NET with pluggable sinks (file, console, Seq, etc.)', experience: 'Bank of America', fam: _savedFam['Serilog'] !== undefined ? _savedFam['Serilog'] : 80 },
-  'System.Text.Json': { overview: 'Built-in high-performance JSON serialization library in .NET 3.1+', experience: 'Bank of America — modern services', fam: _savedFam['System.Text.Json'] !== undefined ? _savedFam['System.Text.Json'] : 80 },
-  'WCF': { overview: 'Windows Communication Foundation — .NET framework for building service-oriented apps over SOAP, TCP, and HTTP', experience: 'Bank of America — legacy services', fam: _savedFam['WCF'] !== undefined ? _savedFam['WCF'] : 80 },
-  'WPF': { overview: 'Windows Presentation Foundation — .NET framework for building desktop Windows UIs with XAML', experience: 'Inquire to learn more.', fam: _savedFam['WPF'] !== undefined ? _savedFam['WPF'] : 80 },
-  'WinForms': { overview: 'Windows Forms — original .NET framework for Windows desktop application development', experience: 'Inquire to learn more.', fam: _savedFam['WinForms'] !== undefined ? _savedFam['WinForms'] : 80 },
-  'Worker Services': { overview: '.NET long-running background service hosting model for daemons and jobs', experience: 'Bank of America', fam: _savedFam['Worker Services'] !== undefined ? _savedFam['Worker Services'] : 80 },
-  'gRPC': { overview: 'Google Remote Procedure Call — high-performance RPC framework using Protocol Buffers over HTTP/2', experience: 'Bank of America', fam: _savedFam['gRPC'] !== undefined ? _savedFam['gRPC'] : 80 },
-  'ADO.NET': { overview: 'ActiveX Data Objects .NET — low-level data access layer for direct SQL and stored procedure calls', experience: 'Kimberly-Clark & Bank of America — legacy data access', fam: _savedFam['ADO.NET'] !== undefined ? _savedFam['ADO.NET'] : 80 },
-  'FluentValidation': { overview: '.NET library for building strongly-typed, chainable validation rules', experience: 'Bank of America', fam: _savedFam['FluentValidation'] !== undefined ? _savedFam['FluentValidation'] : 80 },
-  'FluentAssertions': { overview: '.NET test assertion library with a readable fluent API for expressive test expectations', experience: 'Bank of America', fam: _savedFam['FluentAssertions'] !== undefined ? _savedFam['FluentAssertions'] : 80 },
-  'Alpine.js': { overview: 'Minimal JavaScript framework adding reactive behavior to HTML via attributes', experience: 'Inquire to learn more.', fam: _savedFam['Alpine.js'] !== undefined ? _savedFam['Alpine.js'] : 80 },
-  'AngularJS': { overview: 'Original Google JavaScript MVC framework (version 1.x), predecessor to modern Angular', experience: 'Bank of America — legacy frontend', fam: _savedFam['AngularJS'] !== undefined ? _savedFam['AngularJS'] : 80 },
-  'Ant Design': { overview: 'Enterprise-grade React UI component library with a comprehensive design system', experience: 'Inquire to learn more.', fam: _savedFam['Ant Design'] !== undefined ? _savedFam['Ant Design'] : 80 },
-  'Axios': { overview: 'Promise-based HTTP client for the browser and Node.js with interceptor support', experience: 'Bank of America', fam: _savedFam['Axios'] !== undefined ? _savedFam['Axios'] : 80 },
-  'Backbone.js': { overview: 'Lightweight JavaScript MVC library providing structure via models, views, and collections', experience: 'Bank of America — legacy frontend', fam: _savedFam['Backbone.js'] !== undefined ? _savedFam['Backbone.js'] : 80 },
-  'Bootstrap 3–5': { overview: 'Popular CSS framework for responsive, mobile-first web design (versions 3 through 5)', experience: 'Bank of America & Bag of Games', fam: _savedFam['Bootstrap 3–5'] !== undefined ? _savedFam['Bootstrap 3–5'] : 80 },
-  'Chakra UI': { overview: 'Accessible, composable React component library with built-in dark mode support', experience: 'Inquire to learn more.', fam: _savedFam['Chakra UI'] !== undefined ? _savedFam['Chakra UI'] : 80 },
-  'Chart.js': { overview: 'Simple JavaScript charting library for HTML5 Canvas with animated charts', experience: 'Bank of America', fam: _savedFam['Chart.js'] !== undefined ? _savedFam['Chart.js'] : 80 },
-  'Day.js': { overview: 'Lightweight 2KB date manipulation library with a Moment.js-compatible API', experience: 'Bank of America', fam: _savedFam['Day.js'] !== undefined ? _savedFam['Day.js'] : 80 },
-  'Design tokens': { overview: 'Platform-agnostic design variables (colors, spacing, typography) shared across platforms', experience: 'GDS component library (Bank of America)', fam: _savedFam['Design tokens'] !== undefined ? _savedFam['Design tokens'] : 80 },
-  'Formik': { overview: 'Form state management and validation library for React', experience: 'Bank of America', fam: _savedFam['Formik'] !== undefined ? _savedFam['Formik'] : 80 },
-  'Framer Motion': { overview: 'Production-ready declarative animation library for React with spring physics', experience: 'Inquire to learn more.', fam: _savedFam['Framer Motion'] !== undefined ? _savedFam['Framer Motion'] : 80 },
-  'GSAP': { overview: 'GreenSock Animation Platform — high-performance JavaScript animation library for complex sequences', experience: 'Bank of America', fam: _savedFam['GSAP'] !== undefined ? _savedFam['GSAP'] : 80 },
-  'Htmx': { overview: 'HTML extension library for AJAX, CSS transitions, WebSockets, and Server-Sent Events without JavaScript', experience: 'Inquire to learn more.', fam: _savedFam['Htmx'] !== undefined ? _savedFam['Htmx'] : 80 },
-  'Knockout.js': { overview: 'JavaScript MVVM library with declarative data bindings and automatic UI updates', experience: 'Bank of America — legacy frontend', fam: _savedFam['Knockout.js'] !== undefined ? _savedFam['Knockout.js'] : 80 },
-  'Leaflet': { overview: 'Lightweight open-source JavaScript library for mobile-friendly interactive maps', experience: 'Bank of America', fam: _savedFam['Leaflet'] !== undefined ? _savedFam['Leaflet'] : 80 },
-  'Lodash': { overview: 'JavaScript utility library providing helper functions for arrays, objects, strings, and functions', experience: 'Bank of America', fam: _savedFam['Lodash'] !== undefined ? _savedFam['Lodash'] : 80 },
-  'Material UI': { overview: 'React component library implementing Google\\'s Material Design specification', experience: 'Bank of America', fam: _savedFam['Material UI'] !== undefined ? _savedFam['Material UI'] : 80 },
-  'MobX': { overview: 'State management library using reactive programming and observable state for React', experience: 'Inquire to learn more.', fam: _savedFam['MobX'] !== undefined ? _savedFam['MobX'] : 80 },
-  'Moment.js': { overview: 'Legacy JavaScript date/time parsing, formatting, and manipulation library', experience: 'Bank of America — legacy projects', fam: _savedFam['Moment.js'] !== undefined ? _savedFam['Moment.js'] : 80 },
-  'Next.js': { overview: 'React framework with server-side rendering, file-based routing, and static site generation', experience: 'Inquire to learn more.', fam: _savedFam['Next.js'] !== undefined ? _savedFam['Next.js'] : 80 },
-  'Radix UI': { overview: 'Unstyled, fully accessible React component primitives for building design systems', experience: 'Inquire to learn more.', fam: _savedFam['Radix UI'] !== undefined ? _savedFam['Radix UI'] : 80 },
-  'React Hook Form': { overview: 'Performant React form library using native HTML input refs to minimize re-renders', experience: 'Bank of America', fam: _savedFam['React Hook Form'] !== undefined ? _savedFam['React Hook Form'] : 80 },
-  'React Hooks': { overview: 'React API for using state, effects, and context in function components', experience: 'Bank of America — modern React', fam: _savedFam['React Hooks'] !== undefined ? _savedFam['React Hooks'] : 80 },
-  'React Router': { overview: 'Declarative client-side routing library for React single-page applications', experience: 'Bank of America', fam: _savedFam['React Router'] !== undefined ? _savedFam['React Router'] : 80 },
-  'Recharts': { overview: 'Composable charting library built on React and D3.js', experience: 'Bank of America', fam: _savedFam['Recharts'] !== undefined ? _savedFam['Recharts'] : 80 },
-  'Redux': { overview: 'Predictable state container for JavaScript apps using a single immutable store', experience: 'Bank of America', fam: _savedFam['Redux'] !== undefined ? _savedFam['Redux'] : 80 },
-  'SWR': { overview: 'Stale-While-Revalidate — React data-fetching hook with caching and revalidation by Vercel', experience: 'Bank of America', fam: _savedFam['SWR'] !== undefined ? _savedFam['SWR'] : 80 },
-  'Socket.io': { overview: 'Real-time bidirectional event-based communication library over WebSockets with fallbacks', experience: 'Bank of America', fam: _savedFam['Socket.io'] !== undefined ? _savedFam['Socket.io'] : 80 },
-  'Storybook': { overview: 'UI component development environment for building and documenting components in isolation', experience: 'GDS component library (Bank of America)', fam: _savedFam['Storybook'] !== undefined ? _savedFam['Storybook'] : 80 },
-  'Svelte': { overview: 'Compile-time JavaScript framework with no virtual DOM — compiles to vanilla JS', experience: 'Inquire to learn more.', fam: _savedFam['Svelte'] !== undefined ? _savedFam['Svelte'] : 80 },
-  'Tanstack Query': { overview: 'Async state management and server data-fetching/caching library for React', experience: 'Bank of America', fam: _savedFam['Tanstack Query'] !== undefined ? _savedFam['Tanstack Query'] : 80 },
-  'Three.js': { overview: 'JavaScript 3D graphics library that renders scenes using WebGL', experience: 'Bank of America — Datastrology visualizations', fam: _savedFam['Three.js'] !== undefined ? _savedFam['Three.js'] : 80 },
-  'Vue.js': { overview: 'Progressive JavaScript framework for building user interfaces with a reactive data system', experience: 'Inquire to learn more.', fam: _savedFam['Vue.js'] !== undefined ? _savedFam['Vue.js'] : 80 },
-  'Zod': { overview: 'TypeScript-first schema declaration and validation library with static type inference', experience: 'Bank of America', fam: _savedFam['Zod'] !== undefined ? _savedFam['Zod'] : 80 },
-  'Zustand': { overview: 'Lightweight, unopinionated React state management using a simplified store API', experience: 'Bank of America', fam: _savedFam['Zustand'] !== undefined ? _savedFam['Zustand'] : 80 },
-  'shadcn/ui': { overview: 'Accessible, customizable React component collection using Radix UI and Tailwind CSS', experience: 'Inquire to learn more.', fam: _savedFam['shadcn/ui'] !== undefined ? _savedFam['shadcn/ui'] : 80 },
-  'jQuery UI': { overview: 'jQuery-based UI interactions, widgets (datepicker, dialog, autocomplete), and effects', experience: 'Bank of America — legacy frontend', fam: _savedFam['jQuery UI'] !== undefined ? _savedFam['jQuery UI'] : 80 },
-  'CSS Animations': { overview: 'Keyframe-based CSS system for animating HTML elements without JavaScript', experience: 'Used across all web projects', fam: _savedFam['CSS Animations'] !== undefined ? _savedFam['CSS Animations'] : 80 },
-  'CSS Grid': { overview: 'Two-dimensional CSS layout system for rows and columns', experience: 'Used across all web projects', fam: _savedFam['CSS Grid'] !== undefined ? _savedFam['CSS Grid'] : 80 },
-  'CSS Modules': { overview: 'Locally scoped CSS classes at build time to prevent style conflicts', experience: 'Bank of America', fam: _savedFam['CSS Modules'] !== undefined ? _savedFam['CSS Modules'] : 80 },
-  'CSS Variables': { overview: 'Custom CSS properties (--var) for reusable, theme-able values in stylesheets', experience: 'GDS component library (Bank of America)', fam: _savedFam['CSS Variables'] !== undefined ? _savedFam['CSS Variables'] : 80 },
-  'BEM': { overview: 'Block Element Modifier — CSS naming methodology for scalable, maintainable stylesheets', experience: 'Bank of America', fam: _savedFam['BEM'] !== undefined ? _savedFam['BEM'] : 80 },
-  'Flexbox': { overview: 'CSS Flexible Box Layout for one-dimensional responsive alignment and distribution', experience: 'Used across all web projects', fam: _savedFam['Flexbox'] !== undefined ? _savedFam['Flexbox'] : 80 },
-  'SASS / SCSS': { overview: 'Syntactically Awesome Stylesheets / SCSS — CSS preprocessor adding variables, nesting, and mixins', experience: 'Bank of America', fam: _savedFam['SASS / SCSS'] !== undefined ? _savedFam['SASS / SCSS'] : 80 },
-  'Less': { overview: 'Leaner Style Sheets — CSS preprocessor extending CSS with variables and functions', experience: 'Bank of America — legacy styling', fam: _savedFam['Less'] !== undefined ? _savedFam['Less'] : 80 },
-  'PostCSS': { overview: 'Tool for transforming CSS with JavaScript plugins (autoprefixer, cssnano, etc.)', experience: 'Bank of America', fam: _savedFam['PostCSS'] !== undefined ? _savedFam['PostCSS'] : 80 },
-  'Styled Components': { overview: 'CSS-in-JS library for writing component-scoped styles in React using tagged template literals', experience: 'Bank of America', fam: _savedFam['Styled Components'] !== undefined ? _savedFam['Styled Components'] : 80 },
-  'Mobile-first': { overview: 'Design methodology starting with mobile screen sizes and progressively enhancing for larger screens', experience: 'Used across all web projects', fam: _savedFam['Mobile-first'] !== undefined ? _savedFam['Mobile-first'] : 80 },
-  'Accessibility (WCAG 2.1)': { overview: 'Web Content Accessibility Guidelines 2.1 — international standard for accessible web design', experience: 'Bank of America — GDS component library', fam: _savedFam['Accessibility (WCAG 2.1)'] !== undefined ? _savedFam['Accessibility (WCAG 2.1)'] : 80 },
-  'Babel': { overview: 'JavaScript transpiler converting modern ES6+ syntax to backward-compatible ES5 for older browsers', experience: 'Bank of America', fam: _savedFam['Babel'] !== undefined ? _savedFam['Babel'] : 80 },
-  'Cake': { overview: 'C# Make — cross-platform build automation system using a C# DSL', experience: 'Bank of America', fam: _savedFam['Cake'] !== undefined ? _savedFam['Cake'] : 80 },
-  'ESLint': { overview: 'Pluggable static analysis tool for identifying and fixing JavaScript/TypeScript code problems', experience: 'Bank of America', fam: _savedFam['ESLint'] !== undefined ? _savedFam['ESLint'] : 80 },
-  'Grunt': { overview: 'JavaScript task runner automating repetitive build tasks via a configuration file', experience: 'Bank of America — legacy build pipeline', fam: _savedFam['Grunt'] !== undefined ? _savedFam['Grunt'] : 80 },
-  'Gulp': { overview: 'Stream-based JavaScript task runner for build automation using code over configuration', experience: 'Bank of America — legacy build pipeline', fam: _savedFam['Gulp'] !== undefined ? _savedFam['Gulp'] : 80 },
-  'Lerna': { overview: 'Monorepo management tool for versioning and publishing multiple JavaScript packages', experience: 'Bank of America', fam: _savedFam['Lerna'] !== undefined ? _savedFam['Lerna'] : 80 },
-  'MSBuild': { overview: 'Microsoft Build Engine — build platform for .NET and C++ projects', experience: 'Bank of America & Kimberly-Clark', fam: _savedFam['MSBuild'] !== undefined ? _savedFam['MSBuild'] : 80 },
-  'Nx': { overview: 'Monorepo build tool with caching, code generation, and dependency graph for JS/TS projects', experience: 'Bank of America', fam: _savedFam['Nx'] !== undefined ? _savedFam['Nx'] : 80 },
-  'Parcel': { overview: 'Zero-configuration web application bundler with fast incremental builds', experience: 'Inquire to learn more.', fam: _savedFam['Parcel'] !== undefined ? _savedFam['Parcel'] : 80 },
-  'Prettier': { overview: 'Opinionated code formatter enforcing consistent style across JavaScript, TypeScript, and CSS', experience: 'Bank of America', fam: _savedFam['Prettier'] !== undefined ? _savedFam['Prettier'] : 80 },
-  'Rollup': { overview: 'JavaScript module bundler optimized for ES modules and tree-shaking for libraries', experience: 'Inquire to learn more.', fam: _savedFam['Rollup'] !== undefined ? _savedFam['Rollup'] : 80 },
-  'Turborepo': { overview: 'High-performance monorepo build system with remote caching for JavaScript/TypeScript projects', experience: 'Bank of America', fam: _savedFam['Turborepo'] !== undefined ? _savedFam['Turborepo'] : 80 },
-  'Vite': { overview: 'Next-generation frontend build tool using native ES modules for near-instant HMR', experience: 'Bank of America', fam: _savedFam['Vite'] !== undefined ? _savedFam['Vite'] : 80 },
-  'Webpack': { overview: 'Module bundler transforming JavaScript, CSS, and assets into optimized bundles', experience: 'Bank of America', fam: _savedFam['Webpack'] !== undefined ? _savedFam['Webpack'] : 80 },
-  'esbuild': { overview: 'Extremely fast JavaScript and TypeScript bundler and minifier written in Go', experience: 'Bank of America', fam: _savedFam['esbuild'] !== undefined ? _savedFam['esbuild'] : 80 },
-  'npm': { overview: 'Node Package Manager — JavaScript package registry and dependency manager', experience: 'Used across all JavaScript projects', fam: _savedFam['npm'] !== undefined ? _savedFam['npm'] : 80 },
-  'pnpm': { overview: 'Fast, disk-efficient Node.js package manager using hard links and a content-addressable store', experience: 'Inquire to learn more.', fam: _savedFam['pnpm'] !== undefined ? _savedFam['pnpm'] : 80 },
-  'Yarn': { overview: 'Fast, reliable JavaScript package manager with workspaces and deterministic installs', experience: 'Bank of America', fam: _savedFam['Yarn'] !== undefined ? _savedFam['Yarn'] : 80 },
-  'BDD': { overview: 'Behavior-Driven Development — writing tests in human-readable Given/When/Then (Gherkin) format', experience: 'Bank of America', fam: _savedFam['BDD'] !== undefined ? _savedFam['BDD'] : 80 },
-  'Bogus': { overview: 'Fake data generator for .NET generating realistic test fixtures with Fluent API', experience: 'Bank of America', fam: _savedFam['Bogus'] !== undefined ? _savedFam['Bogus'] : 80 },
-  'E2E testing': { overview: 'End-to-End testing — automated tests simulating complete real user workflows in a browser', experience: 'Bank of America', fam: _savedFam['E2E testing'] !== undefined ? _savedFam['E2E testing'] : 80 },
-  'Integration testing': { overview: 'Testing interactions between multiple components, services, or layers together', experience: 'Bank of America', fam: _savedFam['Integration testing'] !== undefined ? _savedFam['Integration testing'] : 80 },
-  'Moq': { overview: 'Most popular .NET mocking framework for creating mock and stub objects in unit tests', experience: 'Bank of America', fam: _savedFam['Moq'] !== undefined ? _savedFam['Moq'] : 80 },
-  'MSTest': { overview: 'Microsoft\\'s built-in .NET unit testing framework integrated with Visual Studio', experience: 'Kimberly-Clark & Bank of America', fam: _savedFam['MSTest'] !== undefined ? _savedFam['MSTest'] : 80 },
-  'NUnit': { overview: 'Popular open-source unit testing framework for .NET with rich assertion support', experience: 'Bank of America', fam: _savedFam['NUnit'] !== undefined ? _savedFam['NUnit'] : 80 },
-  'Playwright (concepts)': { overview: 'Browser automation and cross-browser end-to-end testing framework by Microsoft', experience: 'Inquire to learn more.', fam: _savedFam['Playwright (concepts)'] !== undefined ? _savedFam['Playwright (concepts)'] : 80 },
-  'QA process management': { overview: 'Organizing, planning, and running quality assurance workflows, test plans, and cycles', experience: 'Kimberly-Clark & Bank of America', fam: _savedFam['QA process management'] !== undefined ? _savedFam['QA process management'] : 80 },
-  'Selenium (concepts)': { overview: 'Browser automation framework for web application testing across browsers', experience: 'Bank of America', fam: _savedFam['Selenium (concepts)'] !== undefined ? _savedFam['Selenium (concepts)'] : 80 },
-  'SpecFlow': { overview: 'Behavior-Driven Development framework for .NET using Gherkin syntax', experience: 'Bank of America', fam: _savedFam['SpecFlow'] !== undefined ? _savedFam['SpecFlow'] : 80 },
-  'SonarQube (concepts)': { overview: 'Static code analysis platform detecting bugs, vulnerabilities, and code smells', experience: 'Bank of America', fam: _savedFam['SonarQube (concepts)'] !== undefined ? _savedFam['SonarQube (concepts)'] : 80 },
-  'Static analysis': { overview: 'Analyzing source code without executing it to detect bugs, style issues, and vulnerabilities', experience: 'Bank of America', fam: _savedFam['Static analysis'] !== undefined ? _savedFam['Static analysis'] : 80 },
-  'UAT': { overview: 'User Acceptance Testing — validating that software meets business requirements with real end users', experience: 'Kimberly-Clark & Bank of America', fam: _savedFam['UAT'] !== undefined ? _savedFam['UAT'] : 80 },
-  'Unit testing': { overview: 'Testing individual units of code (functions, classes) in isolation from dependencies', experience: 'Used across all projects', fam: _savedFam['Unit testing'] !== undefined ? _savedFam['Unit testing'] : 80 },
-  'k6 (concepts)': { overview: 'Open-source load testing tool for performance and stress testing of HTTP services', experience: 'Bank of America', fam: _savedFam['k6 (concepts)'] !== undefined ? _savedFam['k6 (concepts)'] : 80 },
-  'Code coverage': { overview: 'Percentage of source code lines executed by automated tests', experience: 'Bank of America', fam: _savedFam['Code coverage'] !== undefined ? _savedFam['Code coverage'] : 80 },
-  'Code review': { overview: 'Systematic peer examination of source code changes for quality, bugs, and best practices', experience: 'Bank of America', fam: _savedFam['Code review'] !== undefined ? _savedFam['Code review'] : 80 },
-  'xUnit': { overview: 'Open-source unit testing framework for .NET from the creator of NUnit', experience: 'Bank of America', fam: _savedFam['xUnit'] !== undefined ? _savedFam['xUnit'] : 80 },
-  'Azure': { overview: 'Microsoft\\'s cloud computing platform for hosting, storage, AI, and managed services', experience: 'Bank of America', fam: _savedFam['Azure'] !== undefined ? _savedFam['Azure'] : 80 },
-  'Azure API Management': { overview: 'Managed gateway for publishing, securing, analyzing, and monitoring APIs at scale', experience: 'Bank of America', fam: _savedFam['Azure API Management'] !== undefined ? _savedFam['Azure API Management'] : 80 },
-  'Azure Active Directory': { overview: 'Microsoft\\'s cloud identity and access management service (now Entra ID)', experience: 'Bank of America', fam: _savedFam['Azure Active Directory'] !== undefined ? _savedFam['Azure Active Directory'] : 80 },
-  'Azure App Service': { overview: 'Fully managed platform-as-a-service for hosting web apps, APIs, and mobile backends', experience: 'Bank of America', fam: _savedFam['Azure App Service'] !== undefined ? _savedFam['Azure App Service'] : 80 },
-  'Azure Application Insights': { overview: 'Application performance monitoring and analytics service in Azure', experience: 'Bank of America', fam: _savedFam['Azure Application Insights'] !== undefined ? _savedFam['Azure Application Insights'] : 80 },
-  'Azure Blob Storage': { overview: 'Massively scalable unstructured object storage for any type of data in Azure', experience: 'Bank of America', fam: _savedFam['Azure Blob Storage'] !== undefined ? _savedFam['Azure Blob Storage'] : 80 },
-  'Azure Cache for Redis': { overview: 'Fully managed in-memory data store on Azure based on Redis', experience: 'Bank of America', fam: _savedFam['Azure Cache for Redis'] !== undefined ? _savedFam['Azure Cache for Redis'] : 80 },
-  'Azure Cosmos DB': { overview: 'Globally distributed, multi-model NoSQL database service with multiple APIs', experience: 'Bank of America', fam: _savedFam['Azure Cosmos DB'] !== undefined ? _savedFam['Azure Cosmos DB'] : 80 },
-  'Azure Data Studio': { overview: 'Cross-platform database tool for managing SQL Server, Azure SQL, and PostgreSQL', experience: 'Bank of America', fam: _savedFam['Azure Data Studio'] !== undefined ? _savedFam['Azure Data Studio'] : 80 },
-  'Azure Event Grid': { overview: 'Fully managed event routing service for reactive architectures using a publish-subscribe model', experience: 'Bank of America', fam: _savedFam['Azure Event Grid'] !== undefined ? _savedFam['Azure Event Grid'] : 80 },
-  'Azure Functions': { overview: 'Serverless compute service for running event-triggered code on demand in Azure', experience: 'Bank of America', fam: _savedFam['Azure Functions'] !== undefined ? _savedFam['Azure Functions'] : 80 },
-  'Azure Key Vault': { overview: 'Cloud service for securely storing and accessing secrets, keys, and certificates', experience: 'Bank of America', fam: _savedFam['Azure Key Vault'] !== undefined ? _savedFam['Azure Key Vault'] : 80 },
-  'Azure Monitor': { overview: 'Full-stack monitoring and diagnostics platform for Azure resources and applications', experience: 'Bank of America', fam: _savedFam['Azure Monitor'] !== undefined ? _savedFam['Azure Monitor'] : 80 },
-  'Azure OpenAI': { overview: 'Azure-hosted access to OpenAI models (GPT, embeddings, DALL-E) with enterprise security', experience: 'Bank of America', fam: _savedFam['Azure OpenAI'] !== undefined ? _savedFam['Azure OpenAI'] : 80 },
-  'Azure Pipelines': { overview: 'Continuous Integration and Continuous Delivery service within Azure DevOps', experience: 'Bank of America', fam: _savedFam['Azure Pipelines'] !== undefined ? _savedFam['Azure Pipelines'] : 80 },
-  'Azure SQL': { overview: 'Fully managed relational database service based on SQL Server in Azure', experience: 'Bank of America', fam: _savedFam['Azure SQL'] !== undefined ? _savedFam['Azure SQL'] : 80 },
-  'Azure Service Bus': { overview: 'Managed enterprise message broker for reliable asynchronous messaging between services', experience: 'Bank of America — Graphite event pipeline', fam: _savedFam['Azure Service Bus'] !== undefined ? _savedFam['Azure Service Bus'] : 80 },
-  'Docker Compose': { overview: 'Tool for defining and running multi-container Docker applications via a YAML file', experience: 'Inquire to learn more.', fam: _savedFam['Docker Compose'] !== undefined ? _savedFam['Docker Compose'] : 80 },
-  'GitHub Actions': { overview: 'Workflow automation built into GitHub for CI/CD, scripting, and event-driven automation', experience: 'Inquire to learn more.', fam: _savedFam['GitHub Actions'] !== undefined ? _savedFam['GitHub Actions'] : 80 },
-  'IIS': { overview: 'Internet Information Services — Microsoft\\'s extensible web server for Windows', experience: 'Kimberly-Clark & Bank of America', fam: _savedFam['IIS'] !== undefined ? _savedFam['IIS'] : 80 },
-  'Kubernetes (concepts)': { overview: 'Container orchestration system automating deployment, scaling, and management of containers', experience: 'Bank of America', fam: _savedFam['Kubernetes (concepts)'] !== undefined ? _savedFam['Kubernetes (concepts)'] : 80 },
-  'Linux (Ubuntu)': { overview: 'Open-source Unix-like operating system; Ubuntu is the most widely used Linux distribution', experience: 'Bank of America & personal development', fam: _savedFam['Linux (Ubuntu)'] !== undefined ? _savedFam['Linux (Ubuntu)'] : 80 },
-  'Nginx': { overview: 'High-performance HTTP web server, reverse proxy, and load balancer', experience: 'Bank of America', fam: _savedFam['Nginx'] !== undefined ? _savedFam['Nginx'] : 80 },
-  'Terraform (concepts)': { overview: 'Infrastructure-as-Code tool for provisioning and managing cloud resources declaratively', experience: 'Bank of America', fam: _savedFam['Terraform (concepts)'] !== undefined ? _savedFam['Terraform (concepts)'] : 80 },
-  'Windows Server': { overview: 'Microsoft\\'s server operating system for hosting services and managing enterprise infrastructure', experience: 'Kimberly-Clark & Bank of America', fam: _savedFam['Windows Server'] !== undefined ? _savedFam['Windows Server'] : 80 },
-  'WSL2': { overview: 'Windows Subsystem for Linux 2 — runs a full Linux kernel natively inside Windows', experience: 'Personal development environment', fam: _savedFam['WSL2'] !== undefined ? _savedFam['WSL2'] : 80 },
-  'Beyond Compare': { overview: 'File and folder diff and synchronization tool for comparing code and directories', experience: 'Used across all projects', fam: _savedFam['Beyond Compare'] !== undefined ? _savedFam['Beyond Compare'] : 80 },
-  'Charles Proxy': { overview: 'HTTP/HTTPS proxy and monitor for inspecting and debugging web and API traffic', experience: 'Bank of America', fam: _savedFam['Charles Proxy'] !== undefined ? _savedFam['Charles Proxy'] : 80 },
-  'Chrome DevTools': { overview: 'Browser-based developer tools for debugging, profiling, and inspecting web pages', experience: 'Used across all web projects', fam: _savedFam['Chrome DevTools'] !== undefined ? _savedFam['Chrome DevTools'] : 80 },
-  'Fiddler': { overview: 'HTTP/HTTPS debugging proxy for capturing, inspecting, and replaying web traffic', experience: 'Bank of America & Kimberly-Clark', fam: _savedFam['Fiddler'] !== undefined ? _savedFam['Fiddler'] : 80 },
-  'FileZilla': { overview: 'Open-source FTP, FTPS, and SFTP client for transferring files to servers', experience: 'Bag of Games & personal projects', fam: _savedFam['FileZilla'] !== undefined ? _savedFam['FileZilla'] : 80 },
-  'GitKraken': { overview: 'Cross-platform Git GUI client with visual branch and merge management', experience: 'Personal and professional projects', fam: _savedFam['GitKraken'] !== undefined ? _savedFam['GitKraken'] : 80 },
-  'JetBrains Rider': { overview: 'Cross-platform .NET IDE from JetBrains with deep refactoring and code analysis', experience: 'Personal development', fam: _savedFam['JetBrains Rider'] !== undefined ? _savedFam['JetBrains Rider'] : 80 },
-  'LinqPad': { overview: 'Lightweight .NET scripting tool for querying databases with LINQ and testing code snippets', experience: 'Bank of America', fam: _savedFam['LinqPad'] !== undefined ? _savedFam['LinqPad'] : 80 },
-  'PowerShell ISE': { overview: 'PowerShell Integrated Scripting Environment — IDE for writing and running PowerShell scripts', experience: 'Bank of America', fam: _savedFam['PowerShell ISE'] !== undefined ? _savedFam['PowerShell ISE'] : 80 },
-  'SSMS': { overview: 'SQL Server Management Studio — GUI for administering, querying, and managing SQL Server', experience: 'Bank of America & Kimberly-Clark', fam: _savedFam['SSMS'] !== undefined ? _savedFam['SSMS'] : 80 },
-  'Swagger / OpenAPI': { overview: 'OpenAPI Specification and Swagger tooling for documenting and testing REST APIs interactively', experience: 'Bank of America', fam: _savedFam['Swagger / OpenAPI'] !== undefined ? _savedFam['Swagger / OpenAPI'] : 80 },
-  'Sysinternals': { overview: 'Suite of advanced Windows system utilities for diagnostics, monitoring, and troubleshooting', experience: 'Bank of America', fam: _savedFam['Sysinternals'] !== undefined ? _savedFam['Sysinternals'] : 80 },
-  'VS Code': { overview: 'Visual Studio Code — lightweight, extensible code editor by Microsoft with massive extension ecosystem', experience: 'Personal and professional projects', fam: _savedFam['VS Code'] !== undefined ? _savedFam['VS Code'] : 80 },
-  'Visual Studio 2005–2022': { overview: 'Microsoft\\'s full-featured IDE for .NET and C++ development (versions 2005 through 2022)', experience: 'Primary IDE — Bank of America & Kimberly-Clark', fam: _savedFam['Visual Studio 2005–2022'] !== undefined ? _savedFam['Visual Studio 2005–2022'] : 80 },
-  'WinSCP': { overview: 'Windows SCP/SFTP/FTP client for secure file transfers between local and remote machines', experience: 'Personal and Bag of Games projects', fam: _savedFam['WinSCP'] !== undefined ? _savedFam['WinSCP'] : 80 },
-  'Windows Terminal': { overview: 'Modern multi-tab terminal application for PowerShell, CMD, WSL, and SSH', experience: 'Personal development environment', fam: _savedFam['Windows Terminal'] !== undefined ? _savedFam['Windows Terminal'] : 80 },
-  'MariaDB': { overview: 'Community-developed fork of MySQL with performance improvements and added features', experience: 'Inquire to learn more.', fam: _savedFam['MariaDB'] !== undefined ? _savedFam['MariaDB'] : 80 },
-  'MongoDB (concepts)': { overview: 'Document-oriented NoSQL database storing data as flexible BSON/JSON documents', experience: 'Bank of America — architectural awareness', fam: _savedFam['MongoDB (concepts)'] !== undefined ? _savedFam['MongoDB (concepts)'] : 80 },
-  'MySQL': { overview: 'Most widely used open-source relational database management system', experience: 'Bag of Games', fam: _savedFam['MySQL'] !== undefined ? _savedFam['MySQL'] : 80 },
-  'OpenSearch': { overview: 'Open-source distributed search and analytics engine forked from Elasticsearch', experience: 'Bank of America', fam: _savedFam['OpenSearch'] !== undefined ? _savedFam['OpenSearch'] : 80 },
-  'PostgreSQL': { overview: 'Advanced open-source relational database with strong SQL compliance and extensibility', experience: 'Inquire to learn more.', fam: _savedFam['PostgreSQL'] !== undefined ? _savedFam['PostgreSQL'] : 80 },
-  'Redis': { overview: 'In-memory data store used as a cache, message broker, and session store', experience: 'Bank of America', fam: _savedFam['Redis'] !== undefined ? _savedFam['Redis'] : 80 },
-  'SQLite': { overview: 'Lightweight, serverless, self-contained embedded SQL database engine', experience: 'Personal projects — Tutor, Ahab', fam: _savedFam['SQLite'] !== undefined ? _savedFam['SQLite'] : 80 },
-  'CSV parsing': { overview: 'Reading and processing comma-separated values text files as structured data', experience: 'Used across all data-driven projects', fam: _savedFam['CSV parsing'] !== undefined ? _savedFam['CSV parsing'] : 80 },
-  'CTEs': { overview: 'Common Table Expressions — temporary named result sets defined within a SQL query', experience: 'Bank of America', fam: _savedFam['CTEs'] !== undefined ? _savedFam['CTEs'] : 80 },
-  'Database design': { overview: 'Planning relational schemas, tables, primary/foreign keys, and relationships for a system', experience: 'Bank of America & Kimberly-Clark', fam: _savedFam['Database design'] !== undefined ? _savedFam['Database design'] : 80 },
-  'Excel generation (EPPlus)': { overview: 'Generating Excel spreadsheets in .NET using the EPPlus library without Office installed', experience: 'Bank of America', fam: _savedFam['Excel generation (EPPlus)'] !== undefined ? _savedFam['Excel generation (EPPlus)'] : 80 },
-  'Full-text search': { overview: 'Searching the entire text content of documents rather than metadata fields only', experience: 'Bank of America — Graphite, Continuous Monitoring', fam: _savedFam['Full-text search'] !== undefined ? _savedFam['Full-text search'] : 80 },
-  'Indexing strategies': { overview: 'Designing database indexes (clustered, non-clustered, covering) to optimize query performance', experience: 'Bank of America', fam: _savedFam['Indexing strategies'] !== undefined ? _savedFam['Indexing strategies'] : 80 },
-  'Normalization': { overview: 'Database design process eliminating redundancy by decomposing tables into smaller ones', experience: 'Bank of America & Kimberly-Clark', fam: _savedFam['Normalization'] !== undefined ? _savedFam['Normalization'] : 80 },
-  'PL/SQL': { overview: 'Procedural Language/SQL — Oracle\\'s procedural extension to SQL for stored procedures and triggers', experience: 'Inquire to learn more.', fam: _savedFam['PL/SQL'] !== undefined ? _savedFam['PL/SQL'] : 80 },
-  'Query optimization': { overview: 'Rewriting SQL queries and adding indexes to maximize execution speed', experience: 'Bank of America', fam: _savedFam['Query optimization'] !== undefined ? _savedFam['Query optimization'] : 80 },
-  'SQL Server 2005–2022': { overview: 'Microsoft\\'s enterprise relational database management system, versions 2005 through 2022', experience: 'Bank of America & Kimberly-Clark — all data platforms', fam: _savedFam['SQL Server 2005–2022'] !== undefined ? _savedFam['SQL Server 2005–2022'] : 80 },
-  'Stored procedures': { overview: 'Pre-compiled SQL routines stored in a database for reuse and performance', experience: 'Bank of America & Kimberly-Clark', fam: _savedFam['Stored procedures'] !== undefined ? _savedFam['Stored procedures'] : 80 },
-  'Triggers': { overview: 'Database objects that automatically execute SQL in response to INSERT, UPDATE, or DELETE events', experience: 'Bank of America & Kimberly-Clark', fam: _savedFam['Triggers'] !== undefined ? _savedFam['Triggers'] : 80 },
-  'Vector databases': { overview: 'Databases optimized for storing and querying high-dimensional embedding vectors', experience: 'Tutor — RAG pipeline', fam: _savedFam['Vector databases'] !== undefined ? _savedFam['Vector databases'] : 80 },
-  'Views': { overview: 'Named SQL queries stored in the database as virtual tables', experience: 'Bank of America & Kimberly-Clark', fam: _savedFam['Views'] !== undefined ? _savedFam['Views'] : 80 },
-  'Window functions': { overview: 'SQL functions (ROW_NUMBER, RANK, LAG, etc.) computing results across a sliding row set', experience: 'Bank of America', fam: _savedFam['Window functions'] !== undefined ? _savedFam['Window functions'] : 80 },
-  'API Gateway': { overview: 'Server acting as a single entry point routing requests to downstream microservices', experience: 'Bank of America', fam: _savedFam['API Gateway'] !== undefined ? _savedFam['API Gateway'] : 80 },
-  'API design': { overview: 'Designing clean, consistent, versioned, and developer-friendly APIs', experience: 'Bank of America', fam: _savedFam['API design'] !== undefined ? _savedFam['API design'] : 80 },
-  'API versioning': { overview: 'Managing backward-compatible API changes across multiple concurrent versions', experience: 'Bank of America', fam: _savedFam['API versioning'] !== undefined ? _savedFam['API versioning'] : 80 },
-  'Architecture decision records': { overview: 'Lightweight documents capturing significant architectural decisions and their rationale', experience: 'Bank of America', fam: _savedFam['Architecture decision records'] !== undefined ? _savedFam['Architecture decision records'] : 80 },
-  'BFF pattern': { overview: 'Backend For Frontend — tailored API layer serving the specific needs of a single client type', experience: 'Bank of America', fam: _savedFam['BFF pattern'] !== undefined ? _savedFam['BFF pattern'] : 80 },
-  'Circuit breaker': { overview: 'Fault tolerance pattern that stops calling a failing service to allow it to recover', experience: 'Bank of America — Polly', fam: _savedFam['Circuit breaker'] !== undefined ? _savedFam['Circuit breaker'] : 80 },
-  'Clean architecture': { overview: 'Dependency inversion architecture separating business logic from frameworks and infrastructure', experience: 'Bank of America', fam: _savedFam['Clean architecture'] !== undefined ? _savedFam['Clean architecture'] : 80 },
-  'DDD': { overview: 'Domain-Driven Design — modeling software around the core business domain and its language', experience: 'Bank of America', fam: _savedFam['DDD'] !== undefined ? _savedFam['DDD'] : 80 },
-  'Event Sourcing': { overview: 'Storing all state changes as an immutable sequence of events rather than current state', experience: 'Bank of America', fam: _savedFam['Event Sourcing'] !== undefined ? _savedFam['Event Sourcing'] : 80 },
-  'Feature flags': { overview: 'Runtime toggles for enabling or disabling features without a new deployment', experience: 'Bank of America', fam: _savedFam['Feature flags'] !== undefined ? _savedFam['Feature flags'] : 80 },
-  'Hexagonal architecture': { overview: 'Ports and adapters pattern isolating application core logic from external systems', experience: 'Bank of America', fam: _savedFam['Hexagonal architecture'] !== undefined ? _savedFam['Hexagonal architecture'] : 80 },
-  'Message queues': { overview: 'Asynchronous first-in/first-out buffers enabling decoupled communication between services', experience: 'Bank of America — Azure Service Bus', fam: _savedFam['Message queues'] !== undefined ? _savedFam['Message queues'] : 80 },
-  'Outbox pattern': { overview: 'Reliably publishing events by writing to an outbox table in the same transaction as the entity', experience: 'Bank of America', fam: _savedFam['Outbox pattern'] !== undefined ? _savedFam['Outbox pattern'] : 80 },
-  'Pub/Sub': { overview: 'Publisher/Subscriber messaging pattern for broadcasting events to multiple decoupled consumers', experience: 'Bank of America', fam: _savedFam['Pub/Sub'] !== undefined ? _savedFam['Pub/Sub'] : 80 },
-  'Rate limiting': { overview: 'Restricting the number of API requests a client can make in a time window', experience: 'Bank of America', fam: _savedFam['Rate limiting'] !== undefined ? _savedFam['Rate limiting'] : 80 },
-  'Repository pattern': { overview: 'Abstraction layer between data access logic and business logic enabling testability', experience: 'Bank of America', fam: _savedFam['Repository pattern'] !== undefined ? _savedFam['Repository pattern'] : 80 },
-  'Saga pattern': { overview: 'Managing distributed transactions as a sequence of local transactions with compensating actions', experience: 'Bank of America', fam: _savedFam['Saga pattern'] !== undefined ? _savedFam['Saga pattern'] : 80 },
-  'SOLID': { overview: 'Five OOP design principles: Single responsibility, Open/closed, Liskov substitution, Interface segregation, Dependency inversion', experience: 'Applied across all professional projects', fam: _savedFam['SOLID'] !== undefined ? _savedFam['SOLID'] : 80 },
-  'Self-documenting code': { overview: 'Writing code that expresses intent clearly enough to reduce the need for comments', experience: 'Applied across all projects', fam: _savedFam['Self-documenting code'] !== undefined ? _savedFam['Self-documenting code'] : 80 },
-  'Clean code': { overview: 'Writing readable, maintainable, and expressive source code following established principles', experience: 'Applied across all projects', fam: _savedFam['Clean code'] !== undefined ? _savedFam['Clean code'] : 80 },
-  'DRY / KISS / YAGNI': { overview: 'Don\\'t Repeat Yourself / Keep It Simple Stupid / You Aren\\'t Gonna Need It — core engineering principles', experience: 'Applied across all projects', fam: _savedFam['DRY / KISS / YAGNI'] !== undefined ? _savedFam['DRY / KISS / YAGNI'] : 80 },
-  'Documentation': { overview: 'Writing technical docs, API references, and inline comments to support maintainability', experience: 'Bank of America', fam: _savedFam['Documentation'] !== undefined ? _savedFam['Documentation'] : 80 },
-  'Mentoring': { overview: 'Guiding and developing less-experienced developers through code review and pairing', experience: 'Bank of America', fam: _savedFam['Mentoring'] !== undefined ? _savedFam['Mentoring'] : 80 },
-  'Stakeholder communication': { overview: 'Presenting technical work, decisions, and tradeoffs to non-technical stakeholders', experience: 'Bank of America', fam: _savedFam['Stakeholder communication'] !== undefined ? _savedFam['Stakeholder communication'] : 80 },
-  'Technical debt management': { overview: 'Tracking and systematically resolving accumulated poor design decisions', experience: 'Bank of America', fam: _savedFam['Technical debt management'] !== undefined ? _savedFam['Technical debt management'] : 80 },
-  'Pair programming': { overview: 'Two developers collaborating at one workstation, one writing code and one reviewing in real time', experience: 'Bank of America', fam: _savedFam['Pair programming'] !== undefined ? _savedFam['Pair programming'] : 80 },
-  'ABAC': { overview: 'Attribute-Based Access Control — authorization model granting access based on user and resource attributes', experience: 'Bank of America', fam: _savedFam['ABAC'] !== undefined ? _savedFam['ABAC'] : 80 },
-  'AES encryption': { overview: 'Advanced Encryption Standard — symmetric block cipher for secure data encryption (128/192/256-bit)', experience: 'Bank of America', fam: _savedFam['AES encryption'] !== undefined ? _savedFam['AES encryption'] : 80 },
-  'CIS benchmarks': { overview: 'Center for Internet Security benchmarks — security configuration best practice guidelines', experience: 'Continuous Monitoring (Bank of America)', fam: _savedFam['CIS benchmarks'] !== undefined ? _savedFam['CIS benchmarks'] : 80 },
-  'CORS': { overview: 'Cross-Origin Resource Sharing — browser security policy controlling which domains can make API requests', experience: 'Bank of America', fam: _savedFam['CORS'] !== undefined ? _savedFam['CORS'] : 80 },
-  'CSP': { overview: 'Content Security Policy — HTTP header restricting which resources a browser may load to prevent XSS', experience: 'Bank of America', fam: _savedFam['CSP'] !== undefined ? _savedFam['CSP'] : 80 },
-  'CSRF protection': { overview: 'Cross-Site Request Forgery protection — preventing malicious sites from submitting requests as logged-in users', experience: 'Bank of America', fam: _savedFam['CSRF protection'] !== undefined ? _savedFam['CSRF protection'] : 80 },
-  'HMAC': { overview: 'Hash-based Message Authentication Code — cryptographic signature verifying message integrity and authenticity', experience: 'Bank of America', fam: _savedFam['HMAC'] !== undefined ? _savedFam['HMAC'] : 80 },
-  'HTTPS / TLS': { overview: 'Hypertext Transfer Protocol Secure / Transport Layer Security — encrypted web communication protocol', experience: 'Used across all web projects', fam: _savedFam['HTTPS / TLS'] !== undefined ? _savedFam['HTTPS / TLS'] : 80 },
-  'LDAP': { overview: 'Lightweight Directory Access Protocol — open standard for accessing directory services like Active Directory', experience: 'Bank of America & Kimberly-Clark', fam: _savedFam['LDAP'] !== undefined ? _savedFam['LDAP'] : 80 },
-  'MFA': { overview: 'Multi-Factor Authentication — requiring two or more verification factors (password + OTP) for access', experience: 'Bank of America', fam: _savedFam['MFA'] !== undefined ? _savedFam['MFA'] : 80 },
-  'RBAC': { overview: 'Role-Based Access Control — authorization model assigning permissions to user roles rather than individuals', experience: 'Bank of America', fam: _savedFam['RBAC'] !== undefined ? _savedFam['RBAC'] : 80 },
-  'RSA encryption': { overview: 'Rivest–Shamir–Adleman — asymmetric public-key cryptographic algorithm for encryption and digital signatures', experience: 'Bank of America', fam: _savedFam['RSA encryption'] !== undefined ? _savedFam['RSA encryption'] : 80 },
-  'SAML 2.0': { overview: 'Security Assertion Markup Language 2.0 — XML-based standard for SSO and cross-domain identity federation', experience: 'Bank of America', fam: _savedFam['SAML 2.0'] !== undefined ? _savedFam['SAML 2.0'] : 80 },
-  'SAST / DAST': { overview: 'Static/Dynamic Application Security Testing — automated scanning for vulnerabilities in code and running apps', experience: 'Continuous Monitoring (Bank of America)', fam: _savedFam['SAST / DAST'] !== undefined ? _savedFam['SAST / DAST'] : 80 },
-  'SIEM concepts': { overview: 'Security Information and Event Management — real-time threat monitoring, logging, and alerting platforms', experience: 'Continuous Monitoring (Bank of America)', fam: _savedFam['SIEM concepts'] !== undefined ? _savedFam['SIEM concepts'] : 80 },
-  'STRIDE': { overview: 'Threat modeling framework: Spoofing, Tampering, Repudiation, Information disclosure, Denial of service, Elevation of privilege', experience: 'Bank of America', fam: _savedFam['STRIDE'] !== undefined ? _savedFam['STRIDE'] : 80 },
-  'SQL injection prevention': { overview: 'Parameterizing queries and validating input to prevent SQL injection attacks (OWASP Top 1)', experience: 'Applied across all database projects', fam: _savedFam['SQL injection prevention'] !== undefined ? _savedFam['SQL injection prevention'] : 80 },
-  'Vulnerability scanning': { overview: 'Automated discovery of security weaknesses in systems, applications, and networks', experience: 'Continuous Monitoring (Bank of America)', fam: _savedFam['Vulnerability scanning'] !== undefined ? _savedFam['Vulnerability scanning'] : 80 },
-  'Windows Authentication': { overview: 'Integrated Windows security using Kerberos or NTLM for authenticating IIS web applications', experience: 'Kimberly-Clark & Bank of America', fam: _savedFam['Windows Authentication'] !== undefined ? _savedFam['Windows Authentication'] : 80 },
-  'XSS prevention': { overview: 'Cross-Site Scripting prevention — encoding output and setting CSP headers to block script injection', experience: 'Applied across all web projects', fam: _savedFam['XSS prevention'] !== undefined ? _savedFam['XSS prevention'] : 80 },
-  'Argon2': { overview: 'Winner of the Password Hashing Competition — memory-hard password hashing algorithm resistant to GPU attacks', experience: 'Bank of America', fam: _savedFam['Argon2'] !== undefined ? _savedFam['Argon2'] : 80 },
-  'bcrypt': { overview: 'Adaptive password hashing function using a cost factor to resist brute-force attacks', experience: 'Bank of America', fam: _savedFam['bcrypt'] !== undefined ? _savedFam['bcrypt'] : 80 },
-  'Pen testing concepts': { overview: 'Penetration testing — simulating cyberattacks to discover and validate exploitable vulnerabilities', experience: 'M.S. Information Security coursework', fam: _savedFam['Pen testing concepts'] !== undefined ? _savedFam['Pen testing concepts'] : 80 },
-  'Threat modeling': { overview: 'Structured process for identifying, prioritizing, and addressing security threats during design', experience: 'Bank of America', fam: _savedFam['Threat modeling'] !== undefined ? _savedFam['Threat modeling'] : 80 },
-  'Anomaly detection': { overview: 'Machine learning technique for identifying unusual patterns or outliers in data', experience: 'Trident — phishing detection (Bank of America)', fam: _savedFam['Anomaly detection'] !== undefined ? _savedFam['Anomaly detection'] : 80 },
-  'Backpropagation': { overview: 'Algorithm for training neural networks by computing gradients and propagating errors backward', experience: 'IdiotProof — neural network weight learning', fam: _savedFam['Backpropagation'] !== undefined ? _savedFam['Backpropagation'] : 80 },
-  'Backtesting': { overview: 'Simulating a trading strategy on historical market data to evaluate its performance', experience: 'IdiotProof, Ahab, Gappy', fam: _savedFam['Backtesting'] !== undefined ? _savedFam['Backtesting'] : 80 },
-  'BM25': { overview: 'Best Match 25 — probabilistic ranking function used in full-text search engines', experience: 'Bank of America — Graphite search', fam: _savedFam['BM25'] !== undefined ? _savedFam['BM25'] : 80 },
-  'Chain-of-thought': { overview: 'Prompting technique guiding LLMs to reason through problems step by step before answering', experience: 'Tutor AI platform', fam: _savedFam['Chain-of-thought'] !== undefined ? _savedFam['Chain-of-thought'] : 80 },
-  'Chunking strategies': { overview: 'Methods for splitting documents into appropriately sized segments for RAG pipelines', experience: 'Tutor — RAG pipeline', fam: _savedFam['Chunking strategies'] !== undefined ? _savedFam['Chunking strategies'] : 80 },
-  'Cosine similarity': { overview: 'Mathematical measure of similarity between two vectors based on the angle between them', experience: 'Tutor — semantic search', fam: _savedFam['Cosine similarity'] !== undefined ? _savedFam['Cosine similarity'] : 80 },
-  'Few-shot prompting': { overview: 'Providing example input/output pairs in the prompt to guide LLM behavior', experience: 'Tutor AI platform', fam: _savedFam['Few-shot prompting'] !== undefined ? _savedFam['Few-shot prompting'] : 80 },
-  'Gradient descent': { overview: 'Iterative optimization algorithm minimizing a loss function by moving in the direction of steepest descent', experience: 'IdiotProof — neural network training', fam: _savedFam['Gradient descent'] !== undefined ? _savedFam['Gradient descent'] : 80 },
-  'MinHash': { overview: 'Probabilistic algorithm for efficiently estimating the Jaccard similarity between large sets', experience: 'Tutor — concept matching', fam: _savedFam['MinHash'] !== undefined ? _savedFam['MinHash'] : 80 },
-  'Monte Carlo simulation': { overview: 'Using repeated random sampling to model probability distributions and outcomes', experience: 'IdiotProof — risk modeling', fam: _savedFam['Monte Carlo simulation'] !== undefined ? _savedFam['Monte Carlo simulation'] : 80 },
-  'Prompt engineering': { overview: 'Crafting effective prompts to control LLM behavior, output format, and reasoning quality', experience: 'Tutor, ChatGPT_To_Claude', fam: _savedFam['Prompt engineering'] !== undefined ? _savedFam['Prompt engineering'] : 80 },
-  'Semantic Kernel': { overview: 'Microsoft\\'s open-source SDK for integrating LLMs into .NET applications with plugins', experience: 'Bank of America', fam: _savedFam['Semantic Kernel'] !== undefined ? _savedFam['Semantic Kernel'] : 80 },
-  'Semantic search': { overview: 'Search that understands query intent and meaning using vector similarity rather than keywords', experience: 'Tutor — knowledge graph search', fam: _savedFam['Semantic search'] !== undefined ? _savedFam['Semantic search'] : 80 },
-  'SimHash': { overview: 'Locality-sensitive hashing variant for detecting near-duplicate text documents', experience: 'Tutor — concept matching engine', fam: _savedFam['SimHash'] !== undefined ? _savedFam['SimHash'] : 80 },
-  'TF-IDF': { overview: 'Term Frequency–Inverse Document Frequency — statistical measure of word relevance in a document collection', experience: 'Bank of America — Trident', fam: _savedFam['TF-IDF'] !== undefined ? _savedFam['TF-IDF'] : 80 },
-  'Tokenization': { overview: 'Splitting text into tokens (words, subwords, or characters) for NLP and LLM processing', experience: 'Tutor — RAG pipeline', fam: _savedFam['Tokenization'] !== undefined ? _savedFam['Tokenization'] : 80 },
-  'Tool use / function calling': { overview: 'LLM capability to call external functions or APIs via structured JSON schema definitions', experience: 'Tutor AI platform', fam: _savedFam['Tool use / function calling'] !== undefined ? _savedFam['Tool use / function calling'] : 80 },
-  'LSH (Locality-Sensitive Hashing)': { overview: 'Locality-Sensitive Hashing — approximate nearest-neighbor search reducing high-dimensional comparison cost', experience: 'Tutor — concept matching', fam: _savedFam['LSH (Locality-Sensitive Hashing)'] !== undefined ? _savedFam['LSH (Locality-Sensitive Hashing)'] : 80 },
-  'Automated order execution': { overview: 'Programmatically placing buy/sell orders through a broker API without manual intervention', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['Automated order execution'] !== undefined ? _savedFam['Automated order execution'] : 80 },
-  'Candlestick patterns': { overview: 'Chart formations (hammer, engulfing, doji, etc.) representing price action in financial markets', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['Candlestick patterns'] !== undefined ? _savedFam['Candlestick patterns'] : 80 },
-  'Drawdown analysis': { overview: 'Measuring peak-to-trough decline in portfolio or strategy equity over a time period', experience: 'IdiotProof — backtesting engine', fam: _savedFam['Drawdown analysis'] !== undefined ? _savedFam['Drawdown analysis'] : 80 },
-  'IB Gateway': { overview: 'Interactive Brokers\\' headless API gateway for connecting algorithmic trading systems', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['IB Gateway'] !== undefined ? _savedFam['IB Gateway'] : 80 },
-  'IdiotScript': { overview: 'Custom domain-specific language designed for defining trading strategy logic in IdiotProof', experience: 'IdiotProof', fam: _savedFam['IdiotScript'] !== undefined ? _savedFam['IdiotScript'] : 80 },
-  'Interactive Brokers API (IBKR)': { overview: 'Programmatic access to Interactive Brokers brokerage via the TWS API for live trading', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['Interactive Brokers API (IBKR)'] !== undefined ? _savedFam['Interactive Brokers API (IBKR)'] : 80 },
-  'Live trading': { overview: 'Executing real buy/sell orders on a live brokerage account with real capital', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['Live trading'] !== undefined ? _savedFam['Live trading'] : 80 },
-  'Market/Limit/Stop/OCO orders': { overview: 'Fundamental order types for trade execution: Market (immediate), Limit (price), Stop (trigger), One-Cancels-Other', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['Market/Limit/Stop/OCO orders'] !== undefined ? _savedFam['Market/Limit/Stop/OCO orders'] : 80 },
-  'Mean reversion': { overview: 'Trading strategy betting that prices will revert toward a historical average after deviating', experience: 'Ahab, Gappy', fam: _savedFam['Mean reversion'] !== undefined ? _savedFam['Mean reversion'] : 80 },
-  'Momentum strategies': { overview: 'Trading strategies entering positions in the direction of a strong price trend', experience: 'Ahab, IdiotProof', fam: _savedFam['Momentum strategies'] !== undefined ? _savedFam['Momentum strategies'] : 80 },
-  'Paper trading': { overview: 'Simulated trading using fake capital to test strategies without financial risk', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['Paper trading'] !== undefined ? _savedFam['Paper trading'] : 80 },
-  'Pine Script': { overview: 'TradingView\\'s proprietary scripting language for creating custom indicators and strategies', experience: 'Personal trading research', fam: _savedFam['Pine Script'] !== undefined ? _savedFam['Pine Script'] : 80 },
-  'Position management': { overview: 'Tracking, sizing, and managing open trading positions and total portfolio exposure', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['Position management'] !== undefined ? _savedFam['Position management'] : 80 },
-  'Risk management': { overview: 'Strategies to limit financial loss including stop losses, position sizing, and drawdown limits', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['Risk management'] !== undefined ? _savedFam['Risk management'] : 80 },
-  'Sharpe ratio': { overview: 'Risk-adjusted return metric measuring excess return per unit of volatility', experience: 'IdiotProof — strategy evaluation', fam: _savedFam['Sharpe ratio'] !== undefined ? _savedFam['Sharpe ratio'] : 80 },
-  'Support & resistance': { overview: 'Price levels where buying or selling pressure has historically reversed price direction', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['Support & resistance'] !== undefined ? _savedFam['Support & resistance'] : 80 },
-  'TWS API': { overview: 'Trader Workstation API — Interactive Brokers\\' primary socket-based API for programmatic trading', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['TWS API'] !== undefined ? _savedFam['TWS API'] : 80 },
-  'Technical indicators (RSI, MACD, ADX, VWAP, EMA, Bollinger Bands, ATR)': { overview: 'Relative Strength Index, MACD, Average Directional Index, Volume-Weighted Average Price, Exponential Moving Average, Bollinger Bands, Average True Range', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['Technical indicators (RSI, MACD, ADX, VWAP, EMA, Bollinger Bands, ATR)'] !== undefined ? _savedFam['Technical indicators (RSI, MACD, ADX, VWAP, EMA, Bollinger Bands, ATR)'] : 80 },
-  'TradingView': { overview: 'Web-based charting platform and community for technical market analysis', experience: 'Personal trading research', fam: _savedFam['TradingView'] !== undefined ? _savedFam['TradingView'] : 80 },
-  'Trend following': { overview: 'Trading strategy entering and holding positions in the direction of an established market trend', experience: 'Ahab, IdiotProof', fam: _savedFam['Trend following'] !== undefined ? _savedFam['Trend following'] : 80 },
-  'Volume analysis': { overview: 'Interpreting trading volume to confirm price moves and identify breakouts or reversals', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['Volume analysis'] !== undefined ? _savedFam['Volume analysis'] : 80 },
-  'Walk-forward optimization': { overview: 'Validating strategy parameters by training on one period and testing on unseen out-of-sample data', experience: 'IdiotProof', fam: _savedFam['Walk-forward optimization'] !== undefined ? _savedFam['Walk-forward optimization'] : 80 },
-  'OHLCV data': { overview: 'Open/High/Low/Close/Volume — standard candlestick market data format for price history', experience: 'Ahab, Gappy, IdiotProof', fam: _savedFam['OHLCV data'] !== undefined ? _savedFam['OHLCV data'] : 80 },
-  'Compute Shaders': { overview: 'GPU programs for general-purpose parallel computation (physics, particles, procedural data)', experience: 'GridGame2026', fam: _savedFam['Compute Shaders'] !== undefined ? _savedFam['Compute Shaders'] : 80 },
-  'ECS (concepts)': { overview: 'Entity Component System — data-oriented game architecture pattern separating data from behavior', experience: 'GridGame2026', fam: _savedFam['ECS (concepts)'] !== undefined ? _savedFam['ECS (concepts)'] : 80 },
-  'Level design': { overview: 'Designing the spatial layout, objectives, and flow of game levels', experience: 'GridGame2026', fam: _savedFam['Level design'] !== undefined ? _savedFam['Level design'] : 80 },
-  'NavMesh': { overview: 'Navigation Mesh — precomputed walkable surface used by Unity\\'s AI pathfinding system', experience: 'GridGame2026', fam: _savedFam['NavMesh'] !== undefined ? _savedFam['NavMesh'] : 80 },
-  'Narrative design': { overview: 'Crafting in-game story, world lore, dialogue, and character arcs', experience: 'GridGame2026 — self-authored world lore', fam: _savedFam['Narrative design'] !== undefined ? _savedFam['Narrative design'] : 80 },
-  'Particle systems': { overview: 'Engine simulation of large numbers of small particles for effects like fire, smoke, and explosions', experience: 'GridGame2026', fam: _savedFam['Particle systems'] !== undefined ? _savedFam['Particle systems'] : 80 },
-  'Perlin noise': { overview: 'Gradient noise function producing smooth, natural-looking patterns for terrain and texture generation', experience: 'GridGame2026 — procedural generation', fam: _savedFam['Perlin noise'] !== undefined ? _savedFam['Perlin noise'] : 80 },
-  'Performance optimization': { overview: 'Profiling and optimizing CPU/GPU usage, memory, and draw calls for smooth gameplay', experience: 'GridGame2026', fam: _savedFam['Performance optimization'] !== undefined ? _savedFam['Performance optimization'] : 80 },
-  'Post-processing': { overview: 'Screen-space image effects (bloom, depth of field, color grading) applied after the main render pass', experience: 'GridGame2026', fam: _savedFam['Post-processing'] !== undefined ? _savedFam['Post-processing'] : 80 },
-  'Sprite rendering': { overview: 'Rendering 2D images (sprites) in a game engine with transformation, layering, and animation', experience: 'GridGame2026', fam: _savedFam['Sprite rendering'] !== undefined ? _savedFam['Sprite rendering'] : 80 },
-  'State machines': { overview: 'Models computing behavior as a set of states and well-defined transitions between them', experience: 'GridGame2026 & Neko AI', fam: _savedFam['State machines'] !== undefined ? _savedFam['State machines'] : 80 },
-  'Tilemaps': { overview: 'Grid-based 2D level construction using repeating tile images in a game engine', experience: 'GridGame2026', fam: _savedFam['Tilemaps'] !== undefined ? _savedFam['Tilemaps'] : 80 },
-  'Unity Animator': { overview: 'Unity\\'s state machine-based animation controller for blending and transitioning animations', experience: 'GridGame2026', fam: _savedFam['Unity Animator'] !== undefined ? _savedFam['Unity Animator'] : 80 },
-  'Unity C# scripting': { overview: 'Writing MonoBehaviour and game logic scripts in C# within the Unity engine', experience: 'GridGame2026', fam: _savedFam['Unity C# scripting'] !== undefined ? _savedFam['Unity C# scripting'] : 80 },
-  'Unity Canvas UI': { overview: 'Unity\\'s UI system built on a Canvas component for menus, HUD, and overlays', experience: 'GridGame2026', fam: _savedFam['Unity Canvas UI'] !== undefined ? _savedFam['Unity Canvas UI'] : 80 },
-  'Unity Input System': { overview: 'Unity\\'s modern input handling package supporting keyboard, mouse, gamepad, and touch', experience: 'GridGame2026', fam: _savedFam['Unity Input System'] !== undefined ? _savedFam['Unity Input System'] : 80 },
-  'Unity Physics': { overview: 'Unity\\'s physics simulation using Rigidbody, Collider, and physics materials', experience: 'GridGame2026', fam: _savedFam['Unity Physics'] !== undefined ? _savedFam['Unity Physics'] : 80 },
-  'Unity Profiler': { overview: 'Unity\\'s built-in performance analysis tool for diagnosing CPU, GPU, and memory bottlenecks', experience: 'GridGame2026', fam: _savedFam['Unity Profiler'] !== undefined ? _savedFam['Unity Profiler'] : 80 },
-  'URP / HDRP': { overview: 'Universal Render Pipeline / High Definition Render Pipeline — Unity\\'s scriptable rendering pipelines for mobile and high-fidelity graphics', experience: 'GridGame2026', fam: _savedFam['URP / HDRP'] !== undefined ? _savedFam['URP / HDRP'] : 80 },
-  'World building': { overview: 'Designing the fictional universe, geography, cultures, and lore of a game world', experience: 'GridGame2026 — self-authored lore', fam: _savedFam['World building'] !== undefined ? _savedFam['World building'] : 80 },
-  'GLSL': { overview: 'OpenGL Shading Language — C-like language for writing vertex and fragment shaders', experience: 'Inquire to learn more.', fam: _savedFam['GLSL'] !== undefined ? _savedFam['GLSL'] : 80 },
-  'Open Graph': { overview: 'Meta tag protocol controlling how URLs appear when shared on social media platforms', experience: 'Bag of Games', fam: _savedFam['Open Graph'] !== undefined ? _savedFam['Open Graph'] : 80 },
-  'PHP CMS development': { overview: 'Building custom content management systems using PHP as the server-side language', experience: 'Bag of Games', fam: _savedFam['PHP CMS development'] !== undefined ? _savedFam['PHP CMS development'] : 80 },
-  'SEO optimization': { overview: 'Technical and content strategies to improve search engine rankings and organic traffic', experience: 'Bag of Games', fam: _savedFam['SEO optimization'] !== undefined ? _savedFam['SEO optimization'] : 80 },
-  'Sitemap generation': { overview: 'Creating XML sitemaps to help search engines discover and index site pages', experience: 'Bag of Games', fam: _savedFam['Sitemap generation'] !== undefined ? _savedFam['Sitemap generation'] : 80 },
-  'Social media integration': { overview: 'Connecting websites and apps to social platforms via their APIs and share features', experience: 'Bag of Games', fam: _savedFam['Social media integration'] !== undefined ? _savedFam['Social media integration'] : 80 },
-  'Structured data': { overview: 'Schema.org JSON-LD markup helping search engines understand page content', experience: 'Bag of Games', fam: _savedFam['Structured data'] !== undefined ? _savedFam['Structured data'] : 80 },
-  'WordPress REST API': { overview: 'WordPress\\'s built-in REST API for headless and programmatic content management', experience: 'Bag of Games', fam: _savedFam['WordPress REST API'] !== undefined ? _savedFam['WordPress REST API'] : 80 },
-  'WordPress plugin dev': { overview: 'Creating custom functionality extensions for WordPress using PHP hooks and filters', experience: 'Bag of Games', fam: _savedFam['WordPress plugin dev'] !== undefined ? _savedFam['WordPress plugin dev'] : 80 },
-  'WordPress theme dev': { overview: 'Building custom visual templates for WordPress defining layout, style, and page structure', experience: 'Bag of Games', fam: _savedFam['WordPress theme dev'] !== undefined ? _savedFam['WordPress theme dev'] : 80 },
-  'Core Web Vitals': { overview: 'Google\\'s user experience metrics: Largest Contentful Paint, Interaction to Next Paint, Cumulative Layout Shift', experience: 'Bag of Games', fam: _savedFam['Core Web Vitals'] !== undefined ? _savedFam['Core Web Vitals'] : 80 },
-  'Page speed optimization': { overview: 'Techniques for improving web page load time including minification, lazy loading, and CDN use', experience: 'Bag of Games', fam: _savedFam['Page speed optimization'] !== undefined ? _savedFam['Page speed optimization'] : 80 },
-  'Custom CMS development': { overview: 'Building bespoke content management systems tailored to specific workflow needs', experience: 'Kimberly-Clark — RADAR X, RIM', fam: _savedFam['Custom CMS development'] !== undefined ? _savedFam['Custom CMS development'] : 80 },
-  'JSON': { overview: 'JavaScript Object Notation — lightweight, human-readable data interchange format', experience: 'Used across all projects', fam: _savedFam['JSON'] !== undefined ? _savedFam['JSON'] : 80 },
-  'Markdown': { overview: 'Lightweight markup language converting plain text to formatted HTML', experience: 'Used across all projects for docs', fam: _savedFam['Markdown'] !== undefined ? _savedFam['Markdown'] : 80 },
-  'Protobuf': { overview: 'Protocol Buffers — Google\\'s language-neutral binary serialization format used with gRPC', experience: 'Bank of America', fam: _savedFam['Protobuf'] !== undefined ? _savedFam['Protobuf'] : 80 },
-  'REGEX / Regex': { overview: 'Regular Expressions — pattern matching language for searching, validating, and transforming text', experience: 'Used across all projects', fam: _savedFam['REGEX / Regex'] !== undefined ? _savedFam['REGEX / Regex'] : 80 },
-  'Regex': { overview: 'Regular Expressions — pattern matching language for searching, validating, and transforming text', experience: 'Used across all projects', fam: _savedFam['Regex'] !== undefined ? _savedFam['Regex'] : 80 },
-  'SVG': { overview: 'Scalable Vector Graphics — XML-based vector image format resolution-independent at any size', experience: 'Bank of America — Datastrology, resume site', fam: _savedFam['SVG'] !== undefined ? _savedFam['SVG'] : 80 },
-  'SSE': { overview: 'Server-Sent Events — one-way server-to-client streaming over HTTP without WebSockets', experience: 'Bank of America', fam: _savedFam['SSE'] !== undefined ? _savedFam['SSE'] : 80 },
-  'WebGL': { overview: 'Web Graphics Library — JavaScript API for rendering 2D and 3D graphics in the browser using the GPU', experience: 'Bank of America — Datastrology', fam: _savedFam['WebGL'] !== undefined ? _savedFam['WebGL'] : 80 },
-  'WebRTC': { overview: 'Web Real-Time Communication — API enabling peer-to-peer audio, video, and data channels', experience: 'Bank of America', fam: _savedFam['WebRTC'] !== undefined ? _savedFam['WebRTC'] : 80 },
-  'Webhooks': { overview: 'User-defined HTTP callbacks triggered automatically when events occur in external services', experience: 'Bank of America', fam: _savedFam['Webhooks'] !== undefined ? _savedFam['Webhooks'] : 80 },
-  'XSLT': { overview: 'Extensible Stylesheet Language Transformations — language for transforming XML documents into other formats', experience: 'Kimberly-Clark', fam: _savedFam['XSLT'] !== undefined ? _savedFam['XSLT'] : 80 },
-  'XPath': { overview: 'XML Path Language — syntax for navigating and selecting nodes in XML documents', experience: 'Kimberly-Clark', fam: _savedFam['XPath'] !== undefined ? _savedFam['XPath'] : 80 },
-  'XSLT transformation': { overview: 'Applying XSLT stylesheets to transform XML data into HTML, text, or other XML structures', experience: 'Kimberly-Clark — document management', fam: _savedFam['XSLT transformation'] !== undefined ? _savedFam['XSLT transformation'] : 80 },
-  'YAML': { overview: 'YAML Ain\\'t Markup Language — human-readable data serialization format for configuration files', experience: 'Used across DevOps and config files', fam: _savedFam['YAML'] !== undefined ? _savedFam['YAML'] : 80 },
-  'Canvas API': { overview: 'HTML5 JavaScript API for drawing 2D graphics, animations, and pixel manipulation', experience: 'Resume site animations (this site)', fam: _savedFam['Canvas API'] !== undefined ? _savedFam['Canvas API'] : 80 },
-  'CSV parsing': { overview: 'Reading and processing Comma-Separated Values text files as structured tabular data', experience: 'IdiotProof, Ahab — market data ingestion', fam: _savedFam['CSV parsing'] !== undefined ? _savedFam['CSV parsing'] : 80 },
-  'Bash': { overview: 'Bourne Again Shell — Unix command-line shell and scripting language for automation', experience: 'Personal development and DevOps', fam: _savedFam['Bash'] !== undefined ? _savedFam['Bash'] : 80 },
-  'Lua': { overview: 'Lightweight, embeddable scripting language often used in game engines and embedded systems', experience: 'Personal projects', fam: _savedFam['Lua'] !== undefined ? _savedFam['Lua'] : 80 },
-  'Python': { overview: 'High-level, interpreted general-purpose language widely used in data science and scripting', experience: 'Inquire to learn more.', fam: _savedFam['Python'] !== undefined ? _savedFam['Python'] : 80 },
-  'VB6': { overview: 'Visual Basic 6 — legacy COM-based Windows application development language (pre-.NET)', experience: 'Inquire to learn more.', fam: _savedFam['VB6'] !== undefined ? _savedFam['VB6'] : 80 },
-  'Agile / Scrum': { overview: 'Iterative development methodology with sprints, daily standups, and retrospectives', experience: 'Bank of America — all teams', fam: _savedFam['Agile / Scrum'] !== undefined ? _savedFam['Agile / Scrum'] : 80 },
-  'Backlog grooming': { overview: 'Agile ceremony for reviewing, refining, and prioritizing upcoming work in the product backlog', experience: 'Bank of America', fam: _savedFam['Backlog grooming'] !== undefined ? _savedFam['Backlog grooming'] : 80 },
-  'Kanban': { overview: 'Visual workflow management method using boards and WIP limits to optimize flow', experience: 'Bank of America', fam: _savedFam['Kanban'] !== undefined ? _savedFam['Kanban'] : 80 },
-  'Sprint planning': { overview: 'Agile ceremony where the team selects and commits to work for the upcoming sprint', experience: 'Bank of America', fam: _savedFam['Sprint planning'] !== undefined ? _savedFam['Sprint planning'] : 80 },
-  'Patent filing': { overview: 'Process of preparing and submitting a patent application to the USPTO', experience: 'Bank of America — 3 patents filed', fam: _savedFam['Patent filing'] !== undefined ? _savedFam['Patent filing'] : 80 },
-  'SDK design': { overview: 'Designing software development kits for clean, ergonomic developer consumption', experience: 'Bank of America', fam: _savedFam['SDK design'] !== undefined ? _savedFam['SDK design'] : 80 },
-  'D3.js': { overview: 'Data-Driven Documents — JavaScript library for creating dynamic, interactive data visualizations using SVG', experience: 'Bank of America — Datastrology', fam: _savedFam['D3.js'] !== undefined ? _savedFam['D3.js'] : 80 },
-  'Force-layout graphs': { overview: 'Physics-based graph visualization using attraction/repulsion forces to position nodes', experience: 'Datastrology — Patent Pending (Bank of America)', fam: _savedFam['Force-layout graphs'] !== undefined ? _savedFam['Force-layout graphs'] : 80 },
-  'Graph algorithms': { overview: 'Algorithms operating on graph structures: BFS, DFS, Dijkstra, shortest path, cycle detection', experience: 'Bank of America — Datastrology', fam: _savedFam['Graph algorithms'] !== undefined ? _savedFam['Graph algorithms'] : 80 },
-  'BFS / DFS': { overview: 'Breadth-First Search / Depth-First Search — fundamental graph traversal algorithms', experience: 'Bank of America — Datastrology', fam: _savedFam['BFS / DFS'] !== undefined ? _savedFam['BFS / DFS'] : 80 },
-  'A* pathfinding': { overview: 'A-star — graph traversal algorithm finding the shortest path using a heuristic cost estimate', experience: 'GridGame2026 — unit movement', fam: _savedFam['A* pathfinding'] !== undefined ? _savedFam['A* pathfinding'] : 80 },
-  'Real-time data pipelines': { overview: 'Systems for processing and transforming streaming data with minimal latency', experience: 'Graphite (Bank of America)', fam: _savedFam['Real-time data pipelines'] !== undefined ? _savedFam['Real-time data pipelines'] : 80 },
-  'Cross-SOR data unification': { overview: 'Consolidating data from multiple Systems of Record (SQL, REST, Elasticsearch) into one live view', experience: 'Graphite (Bank of America)', fam: _savedFam['Cross-SOR data unification'] !== undefined ? _savedFam['Cross-SOR data unification'] : 80 },
-  'ETL concepts': { overview: 'Extract, Transform, Load — moving, cleaning, and transforming data between source and target systems', experience: 'Bank of America', fam: _savedFam['ETL concepts'] !== undefined ? _savedFam['ETL concepts'] : 80 },
-  'Log analysis': { overview: 'Parsing, aggregating, and interpreting log data to diagnose issues or detect threats', experience: 'Continuous Monitoring (Bank of America)', fam: _savedFam['Log analysis'] !== undefined ? _savedFam['Log analysis'] : 80 },
-  'Phishing detection': { overview: 'Machine learning classification of phishing emails and URLs using NLP and behavioral signals', experience: 'Trident (Bank of America)', fam: _savedFam['Phishing detection'] !== undefined ? _savedFam['Phishing detection'] : 80 },
-  'GitHub': { overview: 'Web-based platform for hosting Git repositories with collaboration and issue tracking', experience: 'All personal projects', fam: _savedFam['GitHub'] !== undefined ? _savedFam['GitHub'] : 80 },
-  'PDF generation': { overview: 'Programmatically creating PDF documents from templates or data using libraries', experience: 'Bank of America', fam: _savedFam['PDF generation'] !== undefined ? _savedFam['PDF generation'] : 80 },
-  'Adobe XD': { overview: 'Vector-based UI/UX design and prototyping tool by Adobe for web and mobile', experience: 'Bank of America — GDS component library', fam: _savedFam['Adobe XD'] !== undefined ? _savedFam['Adobe XD'] : 80 },
-  'CDC': { overview: 'Change Data Capture — tracking and recording database row-level changes for real-time sync', experience: 'Bank of America — Graphite', fam: _savedFam['CDC'] !== undefined ? _savedFam['CDC'] : 80 },
-  'Content strategy': { overview: 'Planning, creating, and managing content to achieve business and audience goals', experience: 'Bag of Games — 90+ articles', fam: _savedFam['Content strategy'] !== undefined ? _savedFam['Content strategy'] : 80 },
-  'Figma': { overview: 'Collaborative web-based UI/UX design and prototyping tool with real-time multiplayer', experience: 'Bank of America — GDS component library', fam: _savedFam['Figma'] !== undefined ? _savedFam['Figma'] : 80 },
-  'LINQ': { overview: 'Language Integrated Query — .NET syntax for querying collections, databases, and XML in C#', experience: 'Used across all .NET projects', fam: _savedFam['LINQ'] !== undefined ? _savedFam['LINQ'] : 80 },
-  'OpenID Connect': { overview: 'Identity layer built on top of OAuth 2.0 providing user authentication and profile info', experience: 'Bank of America', fam: _savedFam['OpenID Connect'] !== undefined ? _savedFam['OpenID Connect'] : 80 },
-  'RabbitMQ': { overview: 'Open-source message broker implementing AMQP for reliable asynchronous messaging', experience: 'Bank of America', fam: _savedFam['RabbitMQ'] !== undefined ? _savedFam['RabbitMQ'] : 80 },
-  'Sketch': { overview: 'macOS vector design tool for UI/UX prototyping and design systems', experience: 'Bank of America — GDS component library', fam: _savedFam['Sketch'] !== undefined ? _savedFam['Sketch'] : 80 },
+const tooltips = {
+  'C#':'Strongly-typed, object-oriented language on the .NET platform\n\nPrimary language — 20+ years across all projects',
+  'React':'Component-based JavaScript UI library by Meta\n\nBank of America — Datastrology, Graphite',
+  'Angular':'Full-featured TypeScript SPA framework by Google\n\nBank of America — enterprise applications',
+  '.NET / ASP.NET Core':'Cross-platform framework for building web apps and services\n\nUsed across all professional and personal projects',
+  'JavaScript':'Dynamic scripting language for web and server-side development\n\nES6+ vanilla & frameworks — all web projects',
+  'TypeScript':'Typed superset of JavaScript for large-scale applications\n\nBank of America — Datastrology, Graphite',
+  'SQL':'Structured query language for relational database management\n\nSQL Server, T-SQL, stored procs — all data-driven projects',
+  'GraphQL (HotChocolate)':'Flexible query language for APIs; HotChocolate is a GraphQL server for .NET\n\nBank of America — Graphite',
+  'Elasticsearch':'Distributed search and analytics engine for structured and unstructured data\n\nBank of America — Graphite cross-SOR platform',
+  'RAG pipelines':'Retrieval-Augmented Generation — grounding LLM responses with external knowledge\n\nTutor AI platform',
+  'LSH/SimHash':'Locality-Sensitive Hashing for approximate nearest-neighbor similarity matching\n\nTutor — concept matching engine',
+  'Genetic algorithms':'Evolutionary optimization technique using selection, crossover, and mutation\n\nIdiotProof — trading strategy optimizer',
+  'Neural networks':'Interconnected layers of nodes that learn patterns from data\n\nIdiotProof — per-ticker indicator weight calibration',
+  'LLM integration':'Connecting large language models into applications via API\n\nTutor (OpenAI + Anthropic), ChatGPT_To_Claude',
+  'Force-layout graph engines':'Physics-based graph visualization using repulsion and attraction forces\n\nDatastrology — Patent Pending (Bank of America)',
+  'Bidirectional push/pull sync':'Real-time two-way data synchronization without caching or UI reload\n\nGraphite (Bank of America)',
+  'Unity':'Cross-platform game engine for 2D and 3D development\n\nGridGame2026 — active development',
+  'ShaderLab':'Unity\'s shader declaration language for custom rendering pipelines\n\nGridGame2026 — custom shaders',
+  'Interactive Brokers API':'Programmatic access to IBKR brokerage for automated order execution\n\nAhab, Gappy, IdiotProof — live trading',
+  'NIST frameworks':'National Institute of Standards and Technology cybersecurity guidelines\n\nContinuous Monitoring platform (Bank of America)',
+  'PHP':'Server-side scripting language widely used for web development\n\nBag of Games — CMS and frontend (3 years)',
+  'VB.NET':'Object-oriented language on the .NET platform, Visual Basic syntax\n\nKimberly-Clark — contract work',
+  'PowerShell':'Task automation and configuration management shell from Microsoft\n\nInquire to learn more.',
+  'Batch files':'Windows batch scripting (.bat/.cmd) for automating command-line tasks and system operations\n\nInquire to learn more.',
+  '.NET MAUI':'Cross-platform framework for native mobile and desktop apps from a single codebase\n\nTutor — cross-platform app',
+  'Backtesting frameworks':'Systems for simulating trading strategies against historical market data\n\nIdiotProof & Ahab — custom-built engines',
+  'SignalR':'Real-time web communication library for .NET using WebSockets\n\nBank of America — real-time UI updates',
+  'REST APIs':'Stateless HTTP-based architecture for building web services\n\nUsed across all professional and personal projects',
+  'WebSockets':'Full-duplex communication protocol over a single TCP connection\n\nBank of America — Graphite real-time sync',
+  'Microservices':'Architectural style decomposing applications into small, independent services\n\nBank of America — enterprise platforms',
+  'Event-driven architecture':'Systems that communicate through asynchronous event production and consumption\n\nBank of America — Graphite, Trident',
+  'Multi-threading':'Concurrent execution of multiple threads for parallel processing\n\nDatastrology — force-layout engine (Bank of America)',
+  'CQRS':'Command Query Responsibility Segregation — separating read and write models\n\nInquire to learn more.',
+  'Cross-source real-time data unification':'Aggregating heterogeneous data sources into a single live view\n\nGraphite (Bank of America)',
+  'Vector embeddings':'Dense numerical representations of text for semantic similarity\n\nTutor — RAG pipeline',
+  'Vulnerability management':'Identifying, classifying, and remediating security weaknesses\n\nContinuous Monitoring (Bank of America)',
+  'Threat detection':'Identifying malicious activity and potential security breaches\n\nTrident — phishing correlation engine (Bank of America)',
+  'OWASP Top 10':'Industry-standard list of the most critical web application security risks\n\nApplied across all web projects',
+  'OAuth 2.0':'Authorization framework for delegated access using tokens\n\nBank of America — enterprise applications',
+  'JWT':'JSON Web Tokens — compact, self-contained tokens for secure information exchange\n\nBank of America — authentication systems',
+  'Active Directory':'Microsoft directory service for identity and access management\n\nBank of America & Kimberly-Clark',
+  'Penetration testing concepts':'Simulated cyberattacks to identify exploitable vulnerabilities\n\nM.S. Information Security coursework',
+  'HLSL':'High-Level Shading Language for programming GPU shaders\n\nGridGame2026 — custom render pipelines',
+  'Procedural generation':'Algorithmically creating game content (terrain, levels, etc.) at runtime\n\nGridGame2026',
+  'Pathfinding (A*)':'Graph search algorithm finding the shortest path between nodes\n\nGridGame2026 — unit movement',
+  'Custom render pipelines':'Tailored GPU rendering workflows for specific visual effects\n\nGridGame2026 — Unity URP/HDRP',
+  'Algorithmic trading':'Automated trade execution based on predefined rules and signals\n\nAhab, Gappy, IdiotProof',
+  'DSL design':'Creating domain-specific languages tailored to a particular problem space\n\nIdiotProof — IdiotScript',
+  'Backtesting engines':'Engines that replay historical data to validate trading strategies\n\nIdiotProof & Ahab',
+  'Position sizing':'Calculating optimal trade size based on risk tolerance and account equity\n\nAhab, Gappy, IdiotProof',
+  'Gap trading':'Strategy exploiting price gaps between market close and open\n\nGappy — live gap-trading system',
+  'Technical indicators':'Mathematical calculations on price/volume data to forecast market direction\n\nAhab, Gappy, IdiotProof — RSI, MACD, ADX, etc.',
+  'Git':'Distributed version control system for tracking code changes\n\nUsed across all projects',
+  'CI/CD':'Continuous Integration and Delivery — automated build, test, and deploy pipelines\n\nAzure DevOps — Bank of America',
+  'Agile/Scrum':'Iterative development methodology with sprints and daily standups\n\nBank of America — all teams',
+  'TDD':'Test-Driven Development — writing tests before implementation code\n\nInquire to learn more.',
+  'QA/UAT':'Quality Assurance and User Acceptance Testing to validate software meets requirements\n\nBank of America & Kimberly-Clark',
+  'Azure DevOps':'Microsoft cloud platform for CI/CD pipelines, repos, and project tracking\n\nBank of America',
+  'Docker':'Containerization platform for packaging applications with their dependencies\n\nInquire to learn more.',
+  'Visual Studio':'Microsoft IDE for .NET and multi-language development\n\nPrimary IDE — 2005–2022 across all projects',
+  'Postman':'API development and testing tool for building and debugging HTTP requests\n\nUsed across all API-driven projects',
+  'Performance tuning':'Optimizing code, queries, and systems for speed and resource efficiency\n\nBank of America — Datastrology, Graphite',
+  'Blazor':'Build interactive web UIs with C# instead of JavaScript on .NET\n\nInquire to learn more.',
+  'NLP':'Natural Language Processing — enabling machines to understand human language\n\nTrident — phishing detection (Bank of America)',
+  'OpenAI API':'API for accessing GPT models for text generation and embeddings\n\nTutor, ChatGPT_To_Claude',
+  'Anthropic API':'API for accessing Claude models for text generation and analysis\n\nTutor, ChatGPT_To_Claude',
+  'Phishing correlation':'Clustering and linking multi-vector phishing campaigns to identify threat actors\n\nTrident (Bank of America)',
+  'Shader Graph':'Visual node-based shader editor in Unity\n\nGridGame2026',
+  'jQuery':'Fast, lightweight JavaScript library for DOM manipulation and events\n\nBag of Games, legacy Bank of America projects',
+  'WordPress':'Open-source CMS powering websites and blogs\n\nBag of Games — site rebuild and content strategy',
+  'HTML':'Standard markup language for structuring web content\n\nUsed across all web projects',
+  'CSS':'Style sheet language for designing the visual presentation of web pages\n\nUsed across all web projects',
+  'SEO':'Search Engine Optimization — improving website visibility in search results\n\nBag of Games — content strategy',
+  'ASP.NET':'Microsoft web framework for building dynamic websites and APIs\n\nBank of America & Kimberly-Clark',
+  'SQL Server':'Microsoft relational database management system\n\nBank of America & Kimberly-Clark — all data platforms',
+  'XML':'Extensible Markup Language for structured data exchange\n\nKimberly-Clark — document management',
+  'Bootstrap':'CSS framework for responsive, mobile-first web design\n\nInquire to learn more.',
+  'Tailwind CSS':'Utility-first CSS framework for rapid custom UI development\n\nInquire to learn more.',
+  'Component library design':'Building reusable UI component systems for design consistency\n\nGDS — Bank of America',
+  'Responsive design':'Adapting layouts to work across screen sizes and devices\n\nAll web projects',
+  'Real-time UI':'Interfaces that update instantly without page reloads\n\nGraphite, Datastrology (Bank of America)',
+  'T-SQL':'Microsoft SQL Server dialect with procedural extensions for stored procedures and scripting\n\nBank of America & Kimberly-Clark',
+  'HTML5':'Latest standard of HTML with semantic elements, multimedia, and Canvas/WebGL APIs\n\nUsed across all web projects',
+  'CSS3':'Modern CSS with animations, grid, flexbox, variables, and media queries\n\nUsed across all web projects',
+  'ASP.NET Core':'Cross-platform, high-performance .NET framework for building web apps and APIs\n\nBank of America — enterprise platforms',
+  '.NET':'Microsoft application platform spanning web, desktop, mobile, and cloud\n\nUsed across all professional and personal projects',
+  'HTML/CSS3':'Markup and styling languages for structuring and designing web interfaces\n\nUsed across all web projects',
+  'GraphQL':'Query language for APIs enabling clients to request exactly the data they need\n\nBank of America — Graphite',
+
+  // .NET ecosystem
+  '.NET Framework':'Original Windows-only Microsoft application platform\n\nKimberly-Clark & early Bank of America projects',
+  '.NET Core':'Open-source, cross-platform successor to .NET Framework\n\nBank of America — enterprise platforms',
+  '.NET 5–10':'Unified Microsoft .NET platform (versions 5 through 10), successor to both .NET Framework and .NET Core\n\nIdiotProof (.NET 10), Ahab (.NET 8), Tutor',
+  'ASP.NET MVC':'Model-View-Controller web framework for .NET separating concerns into three roles\n\nBank of America & Kimberly-Clark',
+  'ASP.NET Web API':'RESTful HTTP service framework for .NET before ASP.NET Core\n\nBank of America — legacy services',
+  'ASP.NET Web Forms':'Event-driven .NET web framework using server-side controls and page lifecycle\n\nKimberly-Clark — legacy applications',
+  'AutoMapper':'Object-to-object mapping library for .NET eliminating manual property assignment\n\nBank of America',
+  'Blazor Server':'ASP.NET Core hosting model running C# UI logic on the server over SignalR\n\nInquire to learn more.',
+  'Blazor WASM':'Blazor WebAssembly — runs C# and .NET directly in the browser via WebAssembly\n\nInquire to learn more.',
+  'Dapper':'Lightweight micro-ORM for .NET extending IDbConnection with typed query helpers\n\nBank of America',
+  'PetaPoco':'Tiny ORM for .NET — lightweight alternative to Entity Framework with T4 template code generation\n\nBank of America',
+  'EF Core':'Entity Framework Core — lightweight, extensible ORM for .NET data access\n\nBank of America',
+  'EF Core migrations':'Code-first database schema versioning system in Entity Framework Core\n\nBank of America',
+  'Entity Framework 6':'Full-featured ORM for .NET Framework with code-first and database-first modes\n\nBank of America — legacy data layer',
+  'Hangfire':'Background job processing library for .NET with persistent job storage and dashboard\n\nBank of America',
+  'HttpClient':'.NET class for sending HTTP requests and receiving HTTP responses asynchronously\n\nUsed across all API-integrated projects',
+  'MAUI':'.NET Multi-platform App UI — cross-platform native UI framework for iOS, Android, macOS, and Windows\n\nTutor — cross-platform app',
+  'MediatR':'In-process messaging library for .NET implementing the mediator pattern (CQRS)\n\nBank of America',
+  'Newtonsoft.Json':'Json.NET — high-performance JSON serialization library for .NET (most downloaded NuGet package)\n\nUsed across all .NET projects',
+  'OData':'Open Data Protocol — REST-based query standard for web APIs supporting filtering and paging\n\nBank of America',
+  'Polly':'.NET resilience library providing retry, circuit breaker, fallback, and timeout policies\n\nBank of America',
+  'Quartz.NET':'Powerful job scheduling library for .NET supporting cron expressions and persistence\n\nBank of America',
+  'RestSharp':'Simple HTTP REST API client library for .NET applications\n\nBank of America',
+  'Serilog':'Structured logging library for .NET with pluggable sinks (file, console, Seq, etc.)\n\nBank of America',
+  'System.Text.Json':'Built-in high-performance JSON serialization library in .NET 3.1+\n\nBank of America — modern services',
+  'WCF':'Windows Communication Foundation — .NET framework for building service-oriented apps over SOAP, TCP, and HTTP\n\nBank of America — legacy services',
+  'WPF':'Windows Presentation Foundation — .NET framework for building desktop Windows UIs with XAML\n\nInquire to learn more.',
+  'WinForms':'Windows Forms — original .NET framework for Windows desktop application development\n\nInquire to learn more.',
+  'Worker Services':'.NET long-running background service hosting model for daemons and jobs\n\nBank of America',
+  'gRPC':'Google Remote Procedure Call — high-performance RPC framework using Protocol Buffers over HTTP/2\n\nBank of America',
+  'ADO.NET':'ActiveX Data Objects .NET — low-level data access layer for direct SQL and stored procedure calls\n\nKimberly-Clark & Bank of America — legacy data access',
+  'FluentValidation':'.NET library for building strongly-typed, chainable validation rules\n\nBank of America',
+  'FluentAssertions':'.NET test assertion library with a readable fluent API for expressive test expectations\n\nBank of America',
+
+  // Frontend frameworks & libraries
+  'Alpine.js':'Minimal JavaScript framework adding reactive behavior to HTML via attributes\n\nInquire to learn more.',
+  'AngularJS':'Original Google JavaScript MVC framework (version 1.x), predecessor to modern Angular\n\nBank of America — legacy frontend',
+  'Ant Design':'Enterprise-grade React UI component library with a comprehensive design system\n\nInquire to learn more.',
+  'Axios':'Promise-based HTTP client for the browser and Node.js with interceptor support\n\nBank of America',
+  'Backbone.js':'Lightweight JavaScript MVC library providing structure via models, views, and collections\n\nBank of America — legacy frontend',
+  'Bootstrap 3–5':'Popular CSS framework for responsive, mobile-first web design (versions 3 through 5)\n\nBank of America & Bag of Games',
+  'Chakra UI':'Accessible, composable React component library with built-in dark mode support\n\nInquire to learn more.',
+  'Chart.js':'Simple JavaScript charting library for HTML5 Canvas with animated charts\n\nBank of America',
+  'Day.js':'Lightweight 2KB date manipulation library with a Moment.js-compatible API\n\nBank of America',
+  'Design tokens':'Platform-agnostic design variables (colors, spacing, typography) shared across platforms\n\nGDS component library (Bank of America)',
+  'Formik':'Form state management and validation library for React\n\nBank of America',
+  'Framer Motion':'Production-ready declarative animation library for React with spring physics\n\nInquire to learn more.',
+  'GSAP':'GreenSock Animation Platform — high-performance JavaScript animation library for complex sequences\n\nBank of America',
+  'Htmx':'HTML extension library for AJAX, CSS transitions, WebSockets, and Server-Sent Events without JavaScript\n\nInquire to learn more.',
+  'Knockout.js':'JavaScript MVVM library with declarative data bindings and automatic UI updates\n\nBank of America — legacy frontend',
+  'Leaflet':'Lightweight open-source JavaScript library for mobile-friendly interactive maps\n\nBank of America',
+  'Lodash':'JavaScript utility library providing helper functions for arrays, objects, strings, and functions\n\nBank of America',
+  'Material UI':'React component library implementing Google\'s Material Design specification\n\nBank of America',
+  'MobX':'State management library using reactive programming and observable state for React\n\nInquire to learn more.',
+  'Moment.js':'Legacy JavaScript date/time parsing, formatting, and manipulation library\n\nBank of America — legacy projects',
+  'Next.js':'React framework with server-side rendering, file-based routing, and static site generation\n\nInquire to learn more.',
+  'Radix UI':'Unstyled, fully accessible React component primitives for building design systems\n\nInquire to learn more.',
+  'React Hook Form':'Performant React form library using native HTML input refs to minimize re-renders\n\nBank of America',
+  'React Hooks':'React API for using state, effects, and context in function components\n\nBank of America — modern React',
+  'React Router':'Declarative client-side routing library for React single-page applications\n\nBank of America',
+  'Recharts':'Composable charting library built on React and D3.js\n\nBank of America',
+  'Redux':'Predictable state container for JavaScript apps using a single immutable store\n\nBank of America',
+  'SWR':'Stale-While-Revalidate — React data-fetching hook with caching and revalidation by Vercel\n\nBank of America',
+  'Socket.io':'Real-time bidirectional event-based communication library over WebSockets with fallbacks\n\nBank of America',
+  'Storybook':'UI component development environment for building and documenting components in isolation\n\nGDS component library (Bank of America)',
+  'Svelte':'Compile-time JavaScript framework with no virtual DOM — compiles to vanilla JS\n\nInquire to learn more.',
+  'Tanstack Query':'Async state management and server data-fetching/caching library for React\n\nBank of America',
+  'Three.js':'JavaScript 3D graphics library that renders scenes using WebGL\n\nBank of America — Datastrology visualizations',
+  'Vue.js':'Progressive JavaScript framework for building user interfaces with a reactive data system\n\nInquire to learn more.',
+  'Zod':'TypeScript-first schema declaration and validation library with static type inference\n\nBank of America',
+  'Zustand':'Lightweight, unopinionated React state management using a simplified store API\n\nBank of America',
+  'shadcn/ui':'Accessible, customizable React component collection using Radix UI and Tailwind CSS\n\nInquire to learn more.',
+  'jQuery UI':'jQuery-based UI interactions, widgets (datepicker, dialog, autocomplete), and effects\n\nBank of America — legacy frontend',
+
+  // Styling
+  'CSS Animations':'Keyframe-based CSS system for animating HTML elements without JavaScript\n\nUsed across all web projects',
+  'CSS Grid':'Two-dimensional CSS layout system for rows and columns\n\nUsed across all web projects',
+  'CSS Modules':'Locally scoped CSS classes at build time to prevent style conflicts\n\nBank of America',
+  'CSS Variables':'Custom CSS properties (--var) for reusable, theme-able values in stylesheets\n\nGDS component library (Bank of America)',
+  'BEM':'Block Element Modifier — CSS naming methodology for scalable, maintainable stylesheets\n\nBank of America',
+  'Flexbox':'CSS Flexible Box Layout for one-dimensional responsive alignment and distribution\n\nUsed across all web projects',
+  'SASS / SCSS':'Syntactically Awesome Stylesheets / SCSS — CSS preprocessor adding variables, nesting, and mixins\n\nBank of America',
+  'Less':'Leaner Style Sheets — CSS preprocessor extending CSS with variables and functions\n\nBank of America — legacy styling',
+  'PostCSS':'Tool for transforming CSS with JavaScript plugins (autoprefixer, cssnano, etc.)\n\nBank of America',
+  'Styled Components':'CSS-in-JS library for writing component-scoped styles in React using tagged template literals\n\nBank of America',
+  'Mobile-first':'Design methodology starting with mobile screen sizes and progressively enhancing for larger screens\n\nUsed across all web projects',
+  'Accessibility (WCAG 2.1)':'Web Content Accessibility Guidelines 2.1 — international standard for accessible web design\n\nBank of America — GDS component library',
+
+  // Build tools
+  'Babel':'JavaScript transpiler converting modern ES6+ syntax to backward-compatible ES5 for older browsers\n\nBank of America',
+  'Cake':'C# Make — cross-platform build automation system using a C# DSL\n\nBank of America',
+  'ESLint':'Pluggable static analysis tool for identifying and fixing JavaScript/TypeScript code problems\n\nBank of America',
+  'Grunt':'JavaScript task runner automating repetitive build tasks via a configuration file\n\nBank of America — legacy build pipeline',
+  'Gulp':'Stream-based JavaScript task runner for build automation using code over configuration\n\nBank of America — legacy build pipeline',
+  'Lerna':'Monorepo management tool for versioning and publishing multiple JavaScript packages\n\nBank of America',
+  'MSBuild':'Microsoft Build Engine — build platform for .NET and C++ projects\n\nBank of America & Kimberly-Clark',
+  'Nx':'Monorepo build tool with caching, code generation, and dependency graph for JS/TS projects\n\nBank of America',
+  'Parcel':'Zero-configuration web application bundler with fast incremental builds\n\nInquire to learn more.',
+  'Prettier':'Opinionated code formatter enforcing consistent style across JavaScript, TypeScript, and CSS\n\nBank of America',
+  'Rollup':'JavaScript module bundler optimized for ES modules and tree-shaking for libraries\n\nInquire to learn more.',
+  'Turborepo':'High-performance monorepo build system with remote caching for JavaScript/TypeScript projects\n\nBank of America',
+  'Vite':'Next-generation frontend build tool using native ES modules for near-instant HMR\n\nBank of America',
+  'Webpack':'Module bundler transforming JavaScript, CSS, and assets into optimized bundles\n\nBank of America',
+  'esbuild':'Extremely fast JavaScript and TypeScript bundler and minifier written in Go\n\nBank of America',
+  'npm':'Node Package Manager — JavaScript package registry and dependency manager\n\nUsed across all JavaScript projects',
+  'pnpm':'Fast, disk-efficient Node.js package manager using hard links and a content-addressable store\n\nInquire to learn more.',
+  'Yarn':'Fast, reliable JavaScript package manager with workspaces and deterministic installs\n\nBank of America',
+
+  // Testing
+  'BDD':'Behavior-Driven Development — writing tests in human-readable Given/When/Then (Gherkin) format\n\nBank of America',
+  'Bogus':'Fake data generator for .NET generating realistic test fixtures with Fluent API\n\nBank of America',
+  'E2E testing':'End-to-End testing — automated tests simulating complete real user workflows in a browser\n\nBank of America',
+  'Integration testing':'Testing interactions between multiple components, services, or layers together\n\nBank of America',
+  'Moq':'Most popular .NET mocking framework for creating mock and stub objects in unit tests\n\nBank of America',
+  'MSTest':'Microsoft\'s built-in .NET unit testing framework integrated with Visual Studio\n\nKimberly-Clark & Bank of America',
+  'NUnit':'Popular open-source unit testing framework for .NET with rich assertion support\n\nBank of America',
+  'Playwright (concepts)':'Browser automation and cross-browser end-to-end testing framework by Microsoft\n\nInquire to learn more.',
+  'QA process management':'Organizing, planning, and running quality assurance workflows, test plans, and cycles\n\nKimberly-Clark & Bank of America',
+  'Selenium (concepts)':'Browser automation framework for web application testing across browsers\n\nBank of America',
+  'SpecFlow':'Behavior-Driven Development framework for .NET using Gherkin syntax\n\nBank of America',
+  'SonarQube (concepts)':'Static code analysis platform detecting bugs, vulnerabilities, and code smells\n\nBank of America',
+  'Static analysis':'Analyzing source code without executing it to detect bugs, style issues, and vulnerabilities\n\nBank of America',
+  'UAT':'User Acceptance Testing — validating that software meets business requirements with real end users\n\nKimberly-Clark & Bank of America',
+  'Unit testing':'Testing individual units of code (functions, classes) in isolation from dependencies\n\nUsed across all projects',
+  'k6 (concepts)':'Open-source load testing tool for performance and stress testing of HTTP services\n\nBank of America',
+  'Code coverage':'Percentage of source code lines executed by automated tests\n\nBank of America',
+  'Code review':'Systematic peer examination of source code changes for quality, bugs, and best practices\n\nBank of America',
+  'xUnit':'Open-source unit testing framework for .NET from the creator of NUnit\n\nBank of America',
+
+  // Cloud & infrastructure
+  'Azure':'Microsoft\'s cloud computing platform for hosting, storage, AI, and managed services\n\nBank of America',
+  'Azure API Management':'Managed gateway for publishing, securing, analyzing, and monitoring APIs at scale\n\nBank of America',
+  'Azure Active Directory':'Microsoft\'s cloud identity and access management service (now Entra ID)\n\nBank of America',
+  'Azure App Service':'Fully managed platform-as-a-service for hosting web apps, APIs, and mobile backends\n\nBank of America',
+  'Azure Application Insights':'Application performance monitoring and analytics service in Azure\n\nBank of America',
+  'Azure Blob Storage':'Massively scalable unstructured object storage for any type of data in Azure\n\nBank of America',
+  'Azure Cache for Redis':'Fully managed in-memory data store on Azure based on Redis\n\nBank of America',
+  'Azure Cosmos DB':'Globally distributed, multi-model NoSQL database service with multiple APIs\n\nBank of America',
+  'Azure Data Studio':'Cross-platform database tool for managing SQL Server, Azure SQL, and PostgreSQL\n\nBank of America',
+  'Azure Event Grid':'Fully managed event routing service for reactive architectures using a publish-subscribe model\n\nBank of America',
+  'Azure Functions':'Serverless compute service for running event-triggered code on demand in Azure\n\nBank of America',
+  'Azure Key Vault':'Cloud service for securely storing and accessing secrets, keys, and certificates\n\nBank of America',
+  'Azure Monitor':'Full-stack monitoring and diagnostics platform for Azure resources and applications\n\nBank of America',
+  'Azure OpenAI':'Azure-hosted access to OpenAI models (GPT, embeddings, DALL-E) with enterprise security\n\nBank of America',
+  'Azure Pipelines':'Continuous Integration and Continuous Delivery service within Azure DevOps\n\nBank of America',
+  'Azure SQL':'Fully managed relational database service based on SQL Server in Azure\n\nBank of America',
+  'Azure Service Bus':'Managed enterprise message broker for reliable asynchronous messaging between services\n\nBank of America — Graphite event pipeline',
+  'Docker Compose':'Tool for defining and running multi-container Docker applications via a YAML file\n\nInquire to learn more.',
+  'GitHub Actions':'Workflow automation built into GitHub for CI/CD, scripting, and event-driven automation\n\nInquire to learn more.',
+  'IIS':'Internet Information Services — Microsoft\'s extensible web server for Windows\n\nKimberly-Clark & Bank of America',
+  'Kubernetes (concepts)':'Container orchestration system automating deployment, scaling, and management of containers\n\nBank of America',
+  'Linux (Ubuntu)':'Open-source Unix-like operating system; Ubuntu is the most widely used Linux distribution\n\nBank of America & personal development',
+  'Nginx':'High-performance HTTP web server, reverse proxy, and load balancer\n\nBank of America',
+  'Terraform (concepts)':'Infrastructure-as-Code tool for provisioning and managing cloud resources declaratively\n\nBank of America',
+  'Windows Server':'Microsoft\'s server operating system for hosting services and managing enterprise infrastructure\n\nKimberly-Clark & Bank of America',
+  'WSL2':'Windows Subsystem for Linux 2 — runs a full Linux kernel natively inside Windows\n\nPersonal development environment',
+
+  // Developer tools
+  'Beyond Compare':'File and folder diff and synchronization tool for comparing code and directories\n\nUsed across all projects',
+  'Charles Proxy':'HTTP/HTTPS proxy and monitor for inspecting and debugging web and API traffic\n\nBank of America',
+  'Chrome DevTools':'Browser-based developer tools for debugging, profiling, and inspecting web pages\n\nUsed across all web projects',
+  'Fiddler':'HTTP/HTTPS debugging proxy for capturing, inspecting, and replaying web traffic\n\nBank of America & Kimberly-Clark',
+  'FileZilla':'Open-source FTP, FTPS, and SFTP client for transferring files to servers\n\nBag of Games & personal projects',
+  'GitKraken':'Cross-platform Git GUI client with visual branch and merge management\n\nPersonal and professional projects',
+  'JetBrains Rider':'Cross-platform .NET IDE from JetBrains with deep refactoring and code analysis\n\nPersonal development',
+  'LinqPad':'Lightweight .NET scripting tool for querying databases with LINQ and testing code snippets\n\nBank of America',
+  'PowerShell ISE':'PowerShell Integrated Scripting Environment — IDE for writing and running PowerShell scripts\n\nBank of America',
+  'SSMS':'SQL Server Management Studio — GUI for administering, querying, and managing SQL Server\n\nBank of America & Kimberly-Clark',
+  'Swagger / OpenAPI':'OpenAPI Specification and Swagger tooling for documenting and testing REST APIs interactively\n\nBank of America',
+  'Sysinternals':'Suite of advanced Windows system utilities for diagnostics, monitoring, and troubleshooting\n\nBank of America',
+  'VS Code':'Visual Studio Code — lightweight, extensible code editor by Microsoft with massive extension ecosystem\n\nPersonal and professional projects',
+  'Visual Studio 2005–2022':'Microsoft\'s full-featured IDE for .NET and C++ development (versions 2005 through 2022)\n\nPrimary IDE — Bank of America & Kimberly-Clark',
+  'WinSCP':'Windows SCP/SFTP/FTP client for secure file transfers between local and remote machines\n\nPersonal and Bag of Games projects',
+  'Windows Terminal':'Modern multi-tab terminal application for PowerShell, CMD, WSL, and SSH\n\nPersonal development environment',
+
+  // Databases & storage
+  'MariaDB':'Community-developed fork of MySQL with performance improvements and added features\n\nInquire to learn more.',
+  'MongoDB (concepts)':'Document-oriented NoSQL database storing data as flexible BSON/JSON documents\n\nBank of America — architectural awareness',
+  'MySQL':'Most widely used open-source relational database management system\n\nBag of Games',
+  'OpenSearch':'Open-source distributed search and analytics engine forked from Elasticsearch\n\nBank of America',
+  'PostgreSQL':'Advanced open-source relational database with strong SQL compliance and extensibility\n\nInquire to learn more.',
+  'Redis':'In-memory data store used as a cache, message broker, and session store\n\nBank of America',
+  'SQLite':'Lightweight, serverless, self-contained embedded SQL database engine\n\nPersonal projects — Tutor, Ahab',
+  'CSV parsing':'Reading and processing comma-separated values text files as structured data\n\nUsed across all data-driven projects',
+  'CTEs':'Common Table Expressions — temporary named result sets defined within a SQL query\n\nBank of America',
+  'Database design':'Planning relational schemas, tables, primary/foreign keys, and relationships for a system\n\nBank of America & Kimberly-Clark',
+  'Excel generation (EPPlus)':'Generating Excel spreadsheets in .NET using the EPPlus library without Office installed\n\nBank of America',
+  'Full-text search':'Searching the entire text content of documents rather than metadata fields only\n\nBank of America — Graphite, Continuous Monitoring',
+  'Indexing strategies':'Designing database indexes (clustered, non-clustered, covering) to optimize query performance\n\nBank of America',
+  'Normalization':'Database design process eliminating redundancy by decomposing tables into smaller ones\n\nBank of America & Kimberly-Clark',
+  'PL/SQL':'Procedural Language/SQL — Oracle\'s procedural extension to SQL for stored procedures and triggers\n\nInquire to learn more.',
+  'Query optimization':'Rewriting SQL queries and adding indexes to maximize execution speed\n\nBank of America',
+  'SQL Server 2005–2022':'Microsoft\'s enterprise relational database management system, versions 2005 through 2022\n\nBank of America & Kimberly-Clark — all data platforms',
+  'Stored procedures':'Pre-compiled SQL routines stored in a database for reuse and performance\n\nBank of America & Kimberly-Clark',
+  'Triggers':'Database objects that automatically execute SQL in response to INSERT, UPDATE, or DELETE events\n\nBank of America & Kimberly-Clark',
+  'Vector databases':'Databases optimized for storing and querying high-dimensional embedding vectors\n\nTutor — RAG pipeline',
+  'Views':'Named SQL queries stored in the database as virtual tables\n\nBank of America & Kimberly-Clark',
+  'Window functions':'SQL functions (ROW_NUMBER, RANK, LAG, etc.) computing results across a sliding row set\n\nBank of America',
+
+  // Architecture & patterns
+  'API Gateway':'Server acting as a single entry point routing requests to downstream microservices\n\nBank of America',
+  'API design':'Designing clean, consistent, versioned, and developer-friendly APIs\n\nBank of America',
+  'API versioning':'Managing backward-compatible API changes across multiple concurrent versions\n\nBank of America',
+  'Architecture decision records':'Lightweight documents capturing significant architectural decisions and their rationale\n\nBank of America',
+  'BFF pattern':'Backend For Frontend — tailored API layer serving the specific needs of a single client type\n\nBank of America',
+  'Circuit breaker':'Fault tolerance pattern that stops calling a failing service to allow it to recover\n\nBank of America — Polly',
+  'Clean architecture':'Dependency inversion architecture separating business logic from frameworks and infrastructure\n\nBank of America',
+  'DDD':'Domain-Driven Design — modeling software around the core business domain and its language\n\nBank of America',
+  'Event Sourcing':'Storing all state changes as an immutable sequence of events rather than current state\n\nBank of America',
+  'Feature flags':'Runtime toggles for enabling or disabling features without a new deployment\n\nBank of America',
+  'Hexagonal architecture':'Ports and adapters pattern isolating application core logic from external systems\n\nBank of America',
+  'Message queues':'Asynchronous first-in/first-out buffers enabling decoupled communication between services\n\nBank of America — Azure Service Bus',
+  'Outbox pattern':'Reliably publishing events by writing to an outbox table in the same transaction as the entity\n\nBank of America',
+  'Pub/Sub':'Publisher/Subscriber messaging pattern for broadcasting events to multiple decoupled consumers\n\nBank of America',
+  'Rate limiting':'Restricting the number of API requests a client can make in a time window\n\nBank of America',
+  'Repository pattern':'Abstraction layer between data access logic and business logic enabling testability\n\nBank of America',
+  'Saga pattern':'Managing distributed transactions as a sequence of local transactions with compensating actions\n\nBank of America',
+  'SOLID':'Five OOP design principles: Single responsibility, Open/closed, Liskov substitution, Interface segregation, Dependency inversion\n\nApplied across all professional projects',
+  'Self-documenting code':'Writing code that expresses intent clearly enough to reduce the need for comments\n\nApplied across all projects',
+  'Clean code':'Writing readable, maintainable, and expressive source code following established principles\n\nApplied across all projects',
+  'DRY / KISS / YAGNI':'Don\'t Repeat Yourself / Keep It Simple Stupid / You Aren\'t Gonna Need It — core engineering principles\n\nApplied across all projects',
+  'Documentation':'Writing technical docs, API references, and inline comments to support maintainability\n\nBank of America',
+  'Mentoring':'Guiding and developing less-experienced developers through code review and pairing\n\nBank of America',
+  'Stakeholder communication':'Presenting technical work, decisions, and tradeoffs to non-technical stakeholders\n\nBank of America',
+  'Technical debt management':'Tracking and systematically resolving accumulated poor design decisions\n\nBank of America',
+  'Pair programming':'Two developers collaborating at one workstation, one writing code and one reviewing in real time\n\nBank of America',
+
+  // Security
+  'ABAC':'Attribute-Based Access Control — authorization model granting access based on user and resource attributes\n\nBank of America',
+  'AES encryption':'Advanced Encryption Standard — symmetric block cipher for secure data encryption (128/192/256-bit)\n\nBank of America',
+  'CIS benchmarks':'Center for Internet Security benchmarks — security configuration best practice guidelines\n\nContinuous Monitoring (Bank of America)',
+  'CORS':'Cross-Origin Resource Sharing — browser security policy controlling which domains can make API requests\n\nBank of America',
+  'CSP':'Content Security Policy — HTTP header restricting which resources a browser may load to prevent XSS\n\nBank of America',
+  'CSRF protection':'Cross-Site Request Forgery protection — preventing malicious sites from submitting requests as logged-in users\n\nBank of America',
+  'HMAC':'Hash-based Message Authentication Code — cryptographic signature verifying message integrity and authenticity\n\nBank of America',
+  'HTTPS / TLS':'Hypertext Transfer Protocol Secure / Transport Layer Security — encrypted web communication protocol\n\nUsed across all web projects',
+  'LDAP':'Lightweight Directory Access Protocol — open standard for accessing directory services like Active Directory\n\nBank of America & Kimberly-Clark',
+  'MFA':'Multi-Factor Authentication — requiring two or more verification factors (password + OTP) for access\n\nBank of America',
+  'RBAC':'Role-Based Access Control — authorization model assigning permissions to user roles rather than individuals\n\nBank of America',
+  'RSA encryption':'Rivest–Shamir–Adleman — asymmetric public-key cryptographic algorithm for encryption and digital signatures\n\nBank of America',
+  'SAML 2.0':'Security Assertion Markup Language 2.0 — XML-based standard for SSO and cross-domain identity federation\n\nBank of America',
+  'SAST / DAST':'Static/Dynamic Application Security Testing — automated scanning for vulnerabilities in code and running apps\n\nContinuous Monitoring (Bank of America)',
+  'SIEM concepts':'Security Information and Event Management — real-time threat monitoring, logging, and alerting platforms\n\nContinuous Monitoring (Bank of America)',
+  'STRIDE':'Threat modeling framework: Spoofing, Tampering, Repudiation, Information disclosure, Denial of service, Elevation of privilege\n\nBank of America',
+  'SQL injection prevention':'Parameterizing queries and validating input to prevent SQL injection attacks (OWASP Top 1)\n\nApplied across all database projects',
+  'Vulnerability scanning':'Automated discovery of security weaknesses in systems, applications, and networks\n\nContinuous Monitoring (Bank of America)',
+  'Windows Authentication':'Integrated Windows security using Kerberos or NTLM for authenticating IIS web applications\n\nKimberly-Clark & Bank of America',
+  'XSS prevention':'Cross-Site Scripting prevention — encoding output and setting CSP headers to block script injection\n\nApplied across all web projects',
+  'Argon2':'Winner of the Password Hashing Competition — memory-hard password hashing algorithm resistant to GPU attacks\n\nBank of America',
+  'bcrypt':'Adaptive password hashing function using a cost factor to resist brute-force attacks\n\nBank of America',
+  'Pen testing concepts':'Penetration testing — simulating cyberattacks to discover and validate exploitable vulnerabilities\n\nM.S. Information Security coursework',
+  'Threat modeling':'Structured process for identifying, prioritizing, and addressing security threats during design\n\nBank of America',
+
+  // AI / ML
+  'Anomaly detection':'Machine learning technique for identifying unusual patterns or outliers in data\n\nTrident — phishing detection (Bank of America)',
+  'Backpropagation':'Algorithm for training neural networks by computing gradients and propagating errors backward\n\nIdiotProof — neural network weight learning',
+  'Backtesting':'Simulating a trading strategy on historical market data to evaluate its performance\n\nIdiotProof, Ahab, Gappy',
+  'BM25':'Best Match 25 — probabilistic ranking function used in full-text search engines\n\nBank of America — Graphite search',
+  'Chain-of-thought':'Prompting technique guiding LLMs to reason through problems step by step before answering\n\nTutor AI platform',
+  'Chunking strategies':'Methods for splitting documents into appropriately sized segments for RAG pipelines\n\nTutor — RAG pipeline',
+  'Cosine similarity':'Mathematical measure of similarity between two vectors based on the angle between them\n\nTutor — semantic search',
+  'Few-shot prompting':'Providing example input/output pairs in the prompt to guide LLM behavior\n\nTutor AI platform',
+  'Gradient descent':'Iterative optimization algorithm minimizing a loss function by moving in the direction of steepest descent\n\nIdiotProof — neural network training',
+  'MinHash':'Probabilistic algorithm for efficiently estimating the Jaccard similarity between large sets\n\nTutor — concept matching',
+  'Monte Carlo simulation':'Using repeated random sampling to model probability distributions and outcomes\n\nIdiotProof — risk modeling',
+  'Prompt engineering':'Crafting effective prompts to control LLM behavior, output format, and reasoning quality\n\nTutor, ChatGPT_To_Claude',
+  'Semantic Kernel':'Microsoft\'s open-source SDK for integrating LLMs into .NET applications with plugins\n\nBank of America',
+  'Semantic search':'Search that understands query intent and meaning using vector similarity rather than keywords\n\nTutor — knowledge graph search',
+  'SimHash':'Locality-sensitive hashing variant for detecting near-duplicate text documents\n\nTutor — concept matching engine',
+  'TF-IDF':'Term Frequency–Inverse Document Frequency — statistical measure of word relevance in a document collection\n\nBank of America — Trident',
+  'Tokenization':'Splitting text into tokens (words, subwords, or characters) for NLP and LLM processing\n\nTutor — RAG pipeline',
+  'Tool use / function calling':'LLM capability to call external functions or APIs via structured JSON schema definitions\n\nTutor AI platform',
+  'LSH (Locality-Sensitive Hashing)':'Locality-Sensitive Hashing — approximate nearest-neighbor search reducing high-dimensional comparison cost\n\nTutor — concept matching',
+
+  // Finance & trading
+  'Automated order execution':'Programmatically placing buy/sell orders through a broker API without manual intervention\n\nAhab, Gappy, IdiotProof',
+  'Candlestick patterns':'Chart formations (hammer, engulfing, doji, etc.) representing price action in financial markets\n\nAhab, Gappy, IdiotProof',
+  'Drawdown analysis':'Measuring peak-to-trough decline in portfolio or strategy equity over a time period\n\nIdiotProof — backtesting engine',
+  'IB Gateway':'Interactive Brokers\' headless API gateway for connecting algorithmic trading systems\n\nAhab, Gappy, IdiotProof',
+  'IdiotScript':'Custom domain-specific language designed for defining trading strategy logic in IdiotProof\n\nIdiotProof',
+  'Interactive Brokers API (IBKR)':'Programmatic access to Interactive Brokers brokerage via the TWS API for live trading\n\nAhab, Gappy, IdiotProof',
+  'Live trading':'Executing real buy/sell orders on a live brokerage account with real capital\n\nAhab, Gappy, IdiotProof',
+  'Market/Limit/Stop/OCO orders':'Fundamental order types for trade execution: Market (immediate), Limit (price), Stop (trigger), One-Cancels-Other\n\nAhab, Gappy, IdiotProof',
+  'Mean reversion':'Trading strategy betting that prices will revert toward a historical average after deviating\n\nAhab, Gappy',
+  'Momentum strategies':'Trading strategies entering positions in the direction of a strong price trend\n\nAhab, IdiotProof',
+  'Paper trading':'Simulated trading using fake capital to test strategies without financial risk\n\nAhab, Gappy, IdiotProof',
+  'Pine Script':'TradingView\'s proprietary scripting language for creating custom indicators and strategies\n\nPersonal trading research',
+  'Position management':'Tracking, sizing, and managing open trading positions and total portfolio exposure\n\nAhab, Gappy, IdiotProof',
+  'Risk management':'Strategies to limit financial loss including stop losses, position sizing, and drawdown limits\n\nAhab, Gappy, IdiotProof',
+  'Sharpe ratio':'Risk-adjusted return metric measuring excess return per unit of volatility\n\nIdiotProof — strategy evaluation',
+  'Support & resistance':'Price levels where buying or selling pressure has historically reversed price direction\n\nAhab, Gappy, IdiotProof',
+  'TWS API':'Trader Workstation API — Interactive Brokers\' primary socket-based API for programmatic trading\n\nAhab, Gappy, IdiotProof',
+  'Technical indicators (RSI, MACD, ADX, VWAP, EMA, Bollinger Bands, ATR)':'Relative Strength Index, MACD, Average Directional Index, Volume-Weighted Average Price, Exponential Moving Average, Bollinger Bands, Average True Range\n\nAhab, Gappy, IdiotProof',
+  'TradingView':'Web-based charting platform and community for technical market analysis\n\nPersonal trading research',
+  'Trend following':'Trading strategy entering and holding positions in the direction of an established market trend\n\nAhab, IdiotProof',
+  'Volume analysis':'Interpreting trading volume to confirm price moves and identify breakouts or reversals\n\nAhab, Gappy, IdiotProof',
+  'Walk-forward optimization':'Validating strategy parameters by training on one period and testing on unseen out-of-sample data\n\nIdiotProof',
+  'OHLCV data':'Open/High/Low/Close/Volume — standard candlestick market data format for price history\n\nAhab, Gappy, IdiotProof',
+
+  // Game dev
+  'Compute Shaders':'GPU programs for general-purpose parallel computation (physics, particles, procedural data)\n\nGridGame2026',
+  'ECS (concepts)':'Entity Component System — data-oriented game architecture pattern separating data from behavior\n\nGridGame2026',
+  'Level design':'Designing the spatial layout, objectives, and flow of game levels\n\nGridGame2026',
+  'NavMesh':'Navigation Mesh — precomputed walkable surface used by Unity\'s AI pathfinding system\n\nGridGame2026',
+  'Narrative design':'Crafting in-game story, world lore, dialogue, and character arcs\n\nGridGame2026 — self-authored world lore',
+  'Particle systems':'Engine simulation of large numbers of small particles for effects like fire, smoke, and explosions\n\nGridGame2026',
+  'Perlin noise':'Gradient noise function producing smooth, natural-looking patterns for terrain and texture generation\n\nGridGame2026 — procedural generation',
+  'Performance optimization':'Profiling and optimizing CPU/GPU usage, memory, and draw calls for smooth gameplay\n\nGridGame2026',
+  'Post-processing':'Screen-space image effects (bloom, depth of field, color grading) applied after the main render pass\n\nGridGame2026',
+  'Sprite rendering':'Rendering 2D images (sprites) in a game engine with transformation, layering, and animation\n\nGridGame2026',
+  'State machines':'Models computing behavior as a set of states and well-defined transitions between them\n\nGridGame2026 & Neko AI',
+  'Tilemaps':'Grid-based 2D level construction using repeating tile images in a game engine\n\nGridGame2026',
+  'Unity Animator':'Unity\'s state machine-based animation controller for blending and transitioning animations\n\nGridGame2026',
+  'Unity C# scripting':'Writing MonoBehaviour and game logic scripts in C# within the Unity engine\n\nGridGame2026',
+  'Unity Canvas UI':'Unity\'s UI system built on a Canvas component for menus, HUD, and overlays\n\nGridGame2026',
+  'Unity Input System':'Unity\'s modern input handling package supporting keyboard, mouse, gamepad, and touch\n\nGridGame2026',
+  'Unity Physics':'Unity\'s physics simulation using Rigidbody, Collider, and physics materials\n\nGridGame2026',
+  'Unity Profiler':'Unity\'s built-in performance analysis tool for diagnosing CPU, GPU, and memory bottlenecks\n\nGridGame2026',
+  'URP / HDRP':'Universal Render Pipeline / High Definition Render Pipeline — Unity\'s scriptable rendering pipelines for mobile and high-fidelity graphics\n\nGridGame2026',
+  'World building':'Designing the fictional universe, geography, cultures, and lore of a game world\n\nGridGame2026 — self-authored lore',
+  'GLSL':'OpenGL Shading Language — C-like language for writing vertex and fragment shaders\n\nInquire to learn more.',
+
+  // Web & CMS
+  'Open Graph':'Meta tag protocol controlling how URLs appear when shared on social media platforms\n\nBag of Games',
+  'PHP CMS development':'Building custom content management systems using PHP as the server-side language\n\nBag of Games',
+  'SEO optimization':'Technical and content strategies to improve search engine rankings and organic traffic\n\nBag of Games',
+  'Sitemap generation':'Creating XML sitemaps to help search engines discover and index site pages\n\nBag of Games',
+  'Social media integration':'Connecting websites and apps to social platforms via their APIs and share features\n\nBag of Games',
+  'Structured data':'Schema.org JSON-LD markup helping search engines understand page content\n\nBag of Games',
+  'WordPress REST API':'WordPress\'s built-in REST API for headless and programmatic content management\n\nBag of Games',
+  'WordPress plugin dev':'Creating custom functionality extensions for WordPress using PHP hooks and filters\n\nBag of Games',
+  'WordPress theme dev':'Building custom visual templates for WordPress defining layout, style, and page structure\n\nBag of Games',
+  'Core Web Vitals':'Google\'s user experience metrics: Largest Contentful Paint, Interaction to Next Paint, Cumulative Layout Shift\n\nBag of Games',
+  'Page speed optimization':'Techniques for improving web page load time including minification, lazy loading, and CDN use\n\nBag of Games',
+  'Custom CMS development':'Building bespoke content management systems tailored to specific workflow needs\n\nKimberly-Clark — RADAR X, RIM',
+
+  // Data formats & protocols
+  'JSON':'JavaScript Object Notation — lightweight, human-readable data interchange format\n\nUsed across all projects',
+  'Markdown':'Lightweight markup language converting plain text to formatted HTML\n\nUsed across all projects for docs',
+  'Protobuf':'Protocol Buffers — Google\'s language-neutral binary serialization format used with gRPC\n\nBank of America',
+  'REGEX / Regex':'Regular Expressions — pattern matching language for searching, validating, and transforming text\n\nUsed across all projects',
+  'Regex':'Regular Expressions — pattern matching language for searching, validating, and transforming text\n\nUsed across all projects',
+  'SVG':'Scalable Vector Graphics — XML-based vector image format resolution-independent at any size\n\nBank of America — Datastrology, resume site',
+  'SSE':'Server-Sent Events — one-way server-to-client streaming over HTTP without WebSockets\n\nBank of America',
+  'WebGL':'Web Graphics Library — JavaScript API for rendering 2D and 3D graphics in the browser using the GPU\n\nBank of America — Datastrology',
+  'WebRTC':'Web Real-Time Communication — API enabling peer-to-peer audio, video, and data channels\n\nBank of America',
+  'Webhooks':'User-defined HTTP callbacks triggered automatically when events occur in external services\n\nBank of America',
+  'XSLT':'Extensible Stylesheet Language Transformations — language for transforming XML documents into other formats\n\nKimberly-Clark',
+  'XPath':'XML Path Language — syntax for navigating and selecting nodes in XML documents\n\nKimberly-Clark',
+  'XSLT transformation':'Applying XSLT stylesheets to transform XML data into HTML, text, or other XML structures\n\nKimberly-Clark — document management',
+  'YAML':'YAML Ain\'t Markup Language — human-readable data serialization format for configuration files\n\nUsed across DevOps and config files',
+  'Canvas API':'HTML5 JavaScript API for drawing 2D graphics, animations, and pixel manipulation\n\nResume site animations (this site)',
+  'CSV parsing':'Reading and processing Comma-Separated Values text files as structured tabular data\n\nIdiotProof, Ahab — market data ingestion',
+
+  // Other languages
+  'Bash':'Bourne Again Shell — Unix command-line shell and scripting language for automation\n\nPersonal development and DevOps',
+  'Lua':'Lightweight, embeddable scripting language often used in game engines and embedded systems\n\nPersonal projects',
+  'Python':'High-level, interpreted general-purpose language widely used in data science and scripting\n\nInquire to learn more.',
+  'VB6':'Visual Basic 6 — legacy COM-based Windows application development language (pre-.NET)\n\nInquire to learn more.',
+
+  // Agile & process
+  'Agile / Scrum':'Iterative development methodology with sprints, daily standups, and retrospectives\n\nBank of America — all teams',
+  'Backlog grooming':'Agile ceremony for reviewing, refining, and prioritizing upcoming work in the product backlog\n\nBank of America',
+  'Kanban':'Visual workflow management method using boards and WIP limits to optimize flow\n\nBank of America',
+  'Sprint planning':'Agile ceremony where the team selects and commits to work for the upcoming sprint\n\nBank of America',
+  'Patent filing':'Process of preparing and submitting a patent application to the USPTO\n\nBank of America — 3 patents filed',
+  'SDK design':'Designing software development kits for clean, ergonomic developer consumption\n\nBank of America',
+
+  // Data viz & rendering
+  'D3.js':'Data-Driven Documents — JavaScript library for creating dynamic, interactive data visualizations using SVG\n\nBank of America — Datastrology',
+  'Force-layout graphs':'Physics-based graph visualization using attraction/repulsion forces to position nodes\n\nDatastrology — Patent Pending (Bank of America)',
+  'Graph algorithms':'Algorithms operating on graph structures: BFS, DFS, Dijkstra, shortest path, cycle detection\n\nBank of America — Datastrology',
+  'BFS / DFS':'Breadth-First Search / Depth-First Search — fundamental graph traversal algorithms\n\nBank of America — Datastrology',
+  'A* pathfinding':'A-star — graph traversal algorithm finding the shortest path using a heuristic cost estimate\n\nGridGame2026 — unit movement',
+  'Real-time data pipelines':'Systems for processing and transforming streaming data with minimal latency\n\nGraphite (Bank of America)',
+  'Cross-SOR data unification':'Consolidating data from multiple Systems of Record (SQL, REST, Elasticsearch) into one live view\n\nGraphite (Bank of America)',
+  'ETL concepts':'Extract, Transform, Load — moving, cleaning, and transforming data between source and target systems\n\nBank of America',
+
+  // Misc
+  'Log analysis':'Parsing, aggregating, and interpreting log data to diagnose issues or detect threats\n\nContinuous Monitoring (Bank of America)',
+  'Phishing detection':'Machine learning classification of phishing emails and URLs using NLP and behavioral signals\n\nTrident (Bank of America)',
+  'GitHub':'Web-based platform for hosting Git repositories with collaboration and issue tracking\n\nAll personal projects',
+  'PDF generation':'Programmatically creating PDF documents from templates or data using libraries\n\nBank of America',
+  'Adobe XD':'Vector-based UI/UX design and prototyping tool by Adobe for web and mobile\n\nBank of America — GDS component library',
+  'CDC':'Change Data Capture — tracking and recording database row-level changes for real-time sync\n\nBank of America — Graphite',
+  'Content strategy':'Planning, creating, and managing content to achieve business and audience goals\n\nBag of Games — 90+ articles',
+  'Figma':'Collaborative web-based UI/UX design and prototyping tool with real-time multiplayer\n\nBank of America — GDS component library',
+  'LINQ':'Language Integrated Query — .NET syntax for querying collections, databases, and XML in C#\n\nUsed across all .NET projects',
+  'OpenID Connect':'Identity layer built on top of OAuth 2.0 providing user authentication and profile info\n\nBank of America',
+  'RabbitMQ':'Open-source message broker implementing AMQP for reliable asynchronous messaging\n\nBank of America',
+  'Sketch':'macOS vector design tool for UI/UX prototyping and design systems\n\nBank of America — GDS component library',
 };
+
+// ── SKILLS ──────────────────────────────────────────────────────────────────
+// Parsed from tooltips at startup. "\n\n" split extracts desc + impl.
+// Shape: { [tagText]: { desc: string, impl: string, fam: number (10–100) } }
+//
+// `fam` is familiarity — defaults to 80 ("Adept") for everything.
+// It's user-adjustable per-tag via the tooltip UI and persisted to localStorage,
+// so if you think I'm overrating myself on Kubernetes, click it down.
+// I promise I won't know.
+//
+// The SKILLS object is built by splitting each tooltip string on \n\n — a cheap
+// convention that avoids wrapping every entry in a structured object literal.
+// The tradeoff: the delimiter is implicit, so a tooltip that accidentally contains
+// a blank line would silently corrupt its own `impl` field. A schema (Zod, JSON
+// Schema, etc.) would catch that at build time — though there is no build time here.
+//
+// One alternative: store tooltips as a Map<string, {desc, impl}> for semantic
+// clarity, but plain objects win on JSON serializability and spread syntax ease.
+//
+// What's your preferred pattern for small structured datasets like this?
+//
+const _savedFam = (() => { try { return JSON.parse(localStorage.getItem('tag-familiarity')||'{}'); } catch(e){ return {}; } })();
+const SKILLS = {};
+Object.entries(tooltips).forEach(([k, v]) => {
+  const [desc='', impl=''] = v.split('\n\n');
+  SKILLS[k] = { desc, impl, fam: _savedFam[k] !== undefined ? _savedFam[k] : 80 };
+});
+function saveSkillFam() {
+  const out = {};
+  Object.entries(SKILLS).forEach(([k,s]) => { if (s.fam !== 80) out[k] = s.fam; });
+  try { localStorage.setItem('tag-familiarity', JSON.stringify(out)); } catch(e) {}
+}
 
 const D = {
   summary: `Principal-level full-stack engineer with 20+ years architecting high-impact systems for Fortune 500 organizations. Inventor with three patents across UI innovation, security platforms, and data visualization. Depth across the entire stack — from pixel-perfect UI/UX and component library design to distributed backend architecture, multi-threaded data engines, and machine learning pipelines. Equally fluent designing systems and implementing them. Driven by craft: clean, self-documenting, performant code that solves hard problems elegantly. Currently completing an M.S. in Information Security (B.B.A. Computer Science, Summa Cum Laude).`,
@@ -1429,18 +1468,9 @@ const D = {
   ],
 
   corporate:[
-    {role:'CEO',entity:'MindAttic Interactive',type:'LLC',address:'5940 S Rainbow Blvd Ste 400 #46782, Las Vegas, NV 89118',formed:'Jul. 10, 2017',entityId:'E0324622017-8',
-     desc:'MindAttic Interactive is a software and interactive media company focused on building creative tools, games, and digital experiences. Founded in 2017, the company develops full-stack web applications, browser-based simulations, and proprietary game engines — with an emphasis on performance, originality, and user-driven design.'},
-    {role:'President',entity:'MindAttic Cares',type:'501(c)(3) Nonprofit',address:'5940 S Rainbow Blvd Ste 400 #46782, Las Vegas, NV 89118',formed:'Sept. 29, 2025',entityId:'E52286842025-3',
-     desc:'MindAttic Cares is a 501(c)(3) nonprofit organization dedicated to serving charitable, educational, and social missions that benefit the public. The organization provides digital access, support, and educational assistance. Its goal is to help individuals who lack the means to access education, entertainment, and resources in the digital space.'},
+    {role:'CEO',entity:'MindAttic Interactive',type:'LLC',address:'5940 S Rainbow Blvd Ste 400 #46782, Las Vegas, NV 89118',formed:'Jul. 10, 2017',entityId:'E0324622017-8'},
+    {role:'President',entity:'MindAttic Cares',type:'501(c)(3) Nonprofit',address:'5940 S Rainbow Blvd Ste 400 #46782, Las Vegas, NV 89118',formed:'Sept. 29, 2025',entityId:'E52286842025-3'},
   ],
-
-  philanthropy:{
-    entity:'MindAttic Cares',
-    type:'501(c)(3) Nonprofit',
-    url:'https://mindatticcares.com/',
-    desc:'MindAttic Cares is a 501(c)(3) nonprofit organization dedicated to serving charitable, educational, and social missions that benefit the public. The organization provides digital access, support, and educational assistance. Its goal is to help individuals who lack the means to access education, entertainment, and resources in the digital space.',
-  },
 };
 
 // ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -1508,11 +1538,11 @@ function buildTooltip(key) {
   const pct = s.fam;
   const level = famLevel(pct);
   const safeKey = key.replace(/'/g, "\\'");
-  const implBlock = s.experience
-    ? `<span class="tip-label">Experience</span><span class="tip-ryan">${s.experience}</span>`
+  const implBlock = s.impl
+    ? `<span class="tip-label">Experience</span><span class="tip-ryan">${s.impl}</span>`
     : '';
   return `<span class="tag-tooltip">`
-    + `<span class="tip-label">Overview</span><span class="tip-desc">${s.overview}</span>`
+    + `<span class="tip-label">Overview</span><span class="tip-desc">${s.desc}</span>`
     + implBlock
     + `<span class="tip-bar">`
     +   `<span class="tip-bar-header"><span>Familiarity</span>`
@@ -1596,19 +1626,7 @@ function corpHTML(){
       <span class="r-job-dates">Est. ${c.formed}</span>
     </div>
     <div class="r-job-meta">${c.type} · ${c.address}</div>
-    ${c.desc?`<div class="r-job-bullets"><p style="margin:4px 0 0;color:var(--text2);font-size:12px;line-height:1.55;">${c.desc}</p></div>`:''}
   </div>`).join('');
-}
-
-function philanthHTML(){
-  const p = D.philanthropy;
-  return `<div class="r-corp">
-    <div class="r-job-header">
-      <div><span class="r-job-title">President</span><span style="color:var(--text3);margin:0 6px">·</span><span class="r-job-company"><a href="${p.url}" target="_blank" rel="noopener" style="color:inherit;text-decoration:none;border-bottom:1px solid rgba(107,163,232,0.25);">${p.entity}</a></span></div>
-      <span class="r-job-dates">${p.type}</span>
-    </div>
-    <div class="r-job-bullets"><p style="margin:4px 0 0;color:var(--text2);font-size:12px;line-height:1.55;">${p.desc}</p></div>
-  </div>`;
 }
 
 function skillsHTML(list){
@@ -1662,8 +1680,6 @@ function render(profile) {
       ${expHTML(D.experience)}
       ${secHTML('Corporate')}
       ${corpHTML()}
-      ${secHTML('Philanthropy')}
-      ${philanthHTML()}
       ${secHTML('Personal Projects')}
       ${projHTML(D.projects)}
       ${secHTML('Education')}
@@ -1681,8 +1697,6 @@ function render(profile) {
       ${expHTML(D.experience)}
       ${secHTML('Corporate')}
       ${corpHTML()}
-      ${secHTML('Philanthropy')}
-      ${philanthHTML()}
       ${secHTML('Personal Projects')}
       ${projHTML(D.projects)}
       ${secHTML('Education')}
@@ -1714,7 +1728,7 @@ function render(profile) {
 // ║                                                                               ║
 // ║  Everything here is localStorage — no server, no cookie, no session ID.      ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
-let currentProfile = 'complete';
+let currentProfile = 'classic';
 let currentTheme = 'dark';
 let fxAnim = null;
 
@@ -5945,7 +5959,7 @@ function init() {
     wrap.appendChild(tbName);
   }
   let p='classic', t='light';
-  try{ p=localStorage.getItem('resume-profile')||'complete'; }catch(e){}
+  try{ p=localStorage.getItem('resume-profile')||'classic'; }catch(e){}
   try{ t=localStorage.getItem('resume-theme')||'light'; }catch(e){}
 
   document.getElementById('profile-picker').value = p;
@@ -6299,7 +6313,7 @@ Object.assign(window, {
 ║                                                                              ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 -->
-<footer style="height:100vh;width:100vw;display:flex;align-items:center;justify-content:center;">
+<footer style="height:15vh;width:100vw;display:flex;align-items:center;justify-content:center;">
   <span style="font-family:var(--font-resume);font-size:12px;color:var(--text3);">© <script>document.write(new Date().getFullYear())</script> Ryan DeBraal</span>
 </footer>
 </body></html>
