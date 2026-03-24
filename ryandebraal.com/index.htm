@@ -3045,7 +3045,7 @@ const NEKO_SPRITE_COUNT = 32;
           break;
 
         case NekoState.AWAKE:
-          if (this.stateCount >= AWAKE_TIME + Math.floor(Math.random() * 20)) {
+          if (this.stateCount >= 6) { // ~100 ms at 120 fps (stateCount ticks every 2 frames)
             this.calcDirection(this.moveDX, this.moveDY);
           }
           break;
