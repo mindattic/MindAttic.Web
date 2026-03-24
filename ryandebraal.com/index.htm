@@ -3394,12 +3394,57 @@ function cycleSingleNeko(neko) {
   }
 }
 
+function nekoRestSequence(neko) {
+  neko.behaviorMode = -1; // freeze behavior so nothing else overwrites
+  neko.catAI = undefined; neko.catTimer = 0;
+  const doSleep = Math.random() < 0.55 && Date.now() >= (neko.sleepCooldownUntil || 0);
+  if (doSleep) {
+    // Yawn → sleep for a random duration → wake and resume cycling
+    neko.setState(NekoState.YAWN);
+    const tid1 = setTimeout(() => {
+      if (!themeNekos.includes(neko)) return;
+      neko.setState(NekoState.SLEEP);
+      const sleepDuration = 8000 + Math.random() * 16000; // 8–24 s
+      const tid2 = setTimeout(() => {
+        if (!themeNekos.includes(neko)) return;
+        neko.sleepCooldownUntil = Date.now() + 10000;
+        neko.setState(NekoState.AWAKE);
+        cycleSingleNeko(neko);
+        scheduleBehaviorCycle(neko);
+      }, sleepDuration);
+      nekoBehaviorTimers.push(tid2);
+    }, 900);
+    nekoBehaviorTimers.push(tid1);
+  } else {
+    // Scratch for a bit → resume
+    neko.setState(NekoState.SCRATCH);
+    const scratchDuration = 2000 + Math.random() * 3500;
+    const tid = setTimeout(() => {
+      if (!themeNekos.includes(neko)) return;
+      neko.setState(NekoState.AWAKE);
+      cycleSingleNeko(neko);
+      scheduleBehaviorCycle(neko);
+    }, scratchDuration);
+    nekoBehaviorTimers.push(tid);
+  }
+}
+
 function scheduleBehaviorCycle(neko) {
   const delay = 8000 + Math.random() * 12000; // 8–20 seconds
   const tid = setTimeout(() => {
     if (!themeNekos.includes(neko)) return; // already despawned
-    cycleSingleNeko(neko);
-    scheduleBehaviorCycle(neko); // schedule next cycle
+    // If already resting from a collision interaction, don't interrupt — just reschedule
+    if (isNekoResting(neko)) {
+      scheduleBehaviorCycle(neko);
+      return;
+    }
+    // 28% chance: take a spontaneous break (scratch or nap)
+    if (Math.random() < 0.28) {
+      nekoRestSequence(neko);
+    } else {
+      cycleSingleNeko(neko);
+      scheduleBehaviorCycle(neko);
+    }
   }, delay);
   nekoBehaviorTimers.push(tid);
 }
