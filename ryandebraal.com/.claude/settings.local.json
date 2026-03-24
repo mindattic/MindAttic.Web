@@ -50,7 +50,22 @@
       "WebFetch(domain:www.onlinewebfonts.com)",
       "WebFetch(domain:pic.onlinewebfonts.com)",
       "WebFetch(domain:www.visiwig.com)",
-      "WebFetch(domain:cdn.worldvectorlogo.com)"
+      "WebFetch(domain:cdn.worldvectorlogo.com)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(cd:*)",
+      "Bash(sed -n '5590,5593p' \"D:/Projects/MindAttic/Resume/index.htm\")",
+      "Bash(sed -n '5700,5703p' \"D:/Projects/MindAttic/Resume/index.htm\")",
+      "Bash(sed -n '5755,5758p' \"D:/Projects/MindAttic/Resume/index.htm\")",
+      "Bash(grep -v \"^.*//.*$\")",
+      "Bash(cmd.exe /c \"dir R:\\\\Desktop\\\\m-cares-red.png\")",
+      "Bash(cmd.exe /c \"dir R:\\\\Desktop\\\\m-cares-red.png 2>&1\")",
+      "Bash(find /r/Desktop -name *.png)",
+      "Bash(base64 -w0 \"R:/Desktop/MindAttic/Assets/mc-icon-tiny.png\")",
+      "Bash(base64 -w0 \"R:/Desktop/MindAttic/Assets/m-icon-tiny.png\")",
+      "Bash(sed -n '869,875p' \"D:/Projects/MindAttic/Resume/index.htm\")",
+      "Bash(sed -n '1368,1372p' \"D:/Projects/MindAttic/Resume/index.htm\")",
+      "Bash(node:*)"
     ]
   }
 }
