@@ -319,7 +319,7 @@ select.tb-sel:hover{border-color:var(--accent);}
 /* ── HEADER ── */
 .r-name{font-family:var(--font-resume);font-size:36px;font-weight:400;text-align:center;color:var(--text);letter-spacing:-0.01em;margin-bottom:5px;}
 .r-title{text-align:center;font-size:13px;color:var(--accent);letter-spacing:0.03em;margin-bottom:5px;font-family:var(--font-resume);}
-.r-contact{text-align:center;font-size:12px;color:var(--text3);font-family:var(--font-resume);padding-bottom:5px;}
+.r-contact{display:flex;flex-wrap:wrap;justify-content:center;gap:2px;font-size:12px;color:var(--text3);font-family:var(--font-resume);padding-bottom:5px;}
 .r-contact a{color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(107,163,232,0.2);transition:border-color 0.2s,color 0.2s;}
 .r-contact a:hover{border-bottom-color:var(--accent);}
 [data-theme="light"] .r-contact a{border-bottom-color:rgba(27,79,140,0.2);}
@@ -768,11 +768,30 @@ select.tb-sel:hover{border-color:var(--accent);}
   <div class="r-name">Ryan DeBraal</div>
   <div class="r-title">Principal Full-Stack Software Engineer · CEO, MindAttic LLC · President, MindAttic Cares</div>
   <div class="r-contact">
-    <a href="mailto:ryandebraal@mindattic.com">ryandebraal@mindattic.com</a> &nbsp;·&nbsp;
-    <a href="https://www.linkedin.com/in/ryandebraal/" target="_blank">linkedin.com/in/ryandebraal</a> &nbsp;·&nbsp;
-    <a href="https://github.com/mindattic" target="_blank">github.com/mindattic</a> &nbsp;·&nbsp;
-    <a href="https://mindattic.com/" target="_blank">mindattic.com</a> &nbsp;·&nbsp;
-    <a href="https://mindatticcares.com/" target="_blank">mindatticcares.com</a>
+    <a class="tb-link" href="mailto:ryandebraal@mindattic.com" title="ryandebraal@mindattic.com">
+      <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      Email
+    </a>
+    <a class="tb-link" href="https://www.linkedin.com/in/ryandebraal/" target="_blank" rel="noopener" title="LinkedIn">
+      <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
+      LinkedIn
+    </a>
+    <a class="tb-link" href="https://github.com/mindattic" target="_blank" rel="noopener" title="GitHub">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      GitHub
+    </a>
+    <a class="tb-link" href="https://www.youtube.com/@MindAttic" target="_blank" rel="noopener" title="YouTube">
+      <svg viewBox="0 0 24 24"><path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81zM10 15V9l5.2 3-5.2 3z"/></svg>
+      YouTube
+    </a>
+    <a class="tb-link" href="https://mindattic.com/" target="_blank" rel="noopener" title="mindattic.com">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIbSURBVDhPpZMxSyNxEMV/m81qDEhC3CYBFUV0C8uASLCxSGGRIq0g6DcQO1GCH8HKVrRIG+zEJqRIp5I2RRAhJIWaKBgW1t13zeV/Kngc3CvfvPeGGWYsSeI/EPtOfMY4O4qi7yUDq9ls6vj4mI+PD1ZWVtjY2CCZTFIul78I7+7uqNfrvL6+cnt7SxiGnJycwMPDgw4PD7W8vCxAiURCgOr1uj6jWCwK0OTkpFzXVaVSUb/fF2PBcDjU3Nyc4vG4EomEKpWKMQ8GA2WzWbmuq+npae3s7Jia2UEqleL09JT19XUcx6FareL7PgCDwQDbtkkmk4RhiOd5ZjQTMBqNyGQyNBoNcrkc7XabRqMBwMLCAq1Wi/n5eUajkTHzOWBqaoqrqysASqUSAGdnZwRBQBRFZDIZXNcFwHGcse1PgGVZDIdDOp0Oe3t7pNNpbm5u2NzcJAxDY+B3szG+3MHz8zO+7+N5Hmtra7y/v+N5nun48vIC3+7CBDw9PXF/f08qlQJga2uLWCzGwcGBEVuWBUA6nTacCbi8vKTb7WLbNgCFQoEoigiCwIh7vR4AnU7HcNRqNS0tLQkQoO3tbUnS29ubVldX9fj4KEna398XoImJCcXjcR0dHSkIAlnX19c6Pz8nm82yuLjI7Ows+XyeXC5HEAQ4joPv+1xcXBCGIbZt0263mZmZYXd3F0s/fKMkM/Pf8OM3/osZ4BeNOBOfvUnXuwAAAABJRU5ErkJggg==" alt="mindattic">
+      MindAttic
+    </a>
+    <a class="tb-link" href="https://mindatticcares.com/" target="_blank" rel="noopener" title="mindatticcares.com">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAITSURBVDhPpZM9S6NBFIXPvGLeSAyGBPGDKGvjb7DQwghK9A8oFqaw0UKDjaVNWBC0EewUIVpZiaVYuEqwFQQLKzGFYdVE8SuS13m2yJpNgtvsnmrm8pxzZ+BeA6B/Fcipr9ULkP7WwxgZay2JREIXFxcKhULq6+tTb2+vIpGIRkdHa/j37W29Li4Kz1NgbU3u+LgEsLW1xcTEBJLw+VyMMbiuSzab5VNvq6vkOzt529ggHw5z39SELZVQhQDm55NIorW1lcbGRtLpNAAfV1c89PdjS6Vy2MoKtxIf19e1AY+PjwwPD9PR0UkgEGBkZAQAL53GOz+vcM/T09y7LkBtwNnZGQDJZBLHcWhpCXGVzcLrK7aKuzWGl7k5qA/Y3d0lk8lw/OMYx3Hw+/3MzsyQy+crzMvCArcStliE+oDDw0NSqRQAsdgQwWAQSWxubgJgCwV+ShR3diqemjm4ublRsViUJCWmpvT09KRoNKr42Jgk6TmVkn92Vu7kZMXjVA/i3t6empubJUmDsUE1NDQoHo+ro61NXF7q4+5OwfX1Mvzb5xhj5HmeMpmMDg4OVCg8SJKi0ai6u7tVeCjf3/f3FVxa+mM25vMMAwMDSEISXV1dHB0dAZCYSvB9eRmA95OTyr+rZQBOT0+Vy+UUDkfU0/NNPp9P7e3t5Q6SZK3kfL02xlqL+XxOlQB9Va+X4X/WWdIvg/e4HAGp198AAAAASUVORK5CYII=" alt="mindatticcares">
+      MindAttic Cares
+    </a>
   </div>
   <div id="resume-body">
     </div>
