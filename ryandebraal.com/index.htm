@@ -4963,11 +4963,14 @@ function startSynthwave() {
 
     for (let row = 0; row < numH; row++) {
       const p0 = ((row       / numH) + scrollBase) % 1.0;
-      const p1 = (((row + 1) / numH) + scrollBase) % 1.0;
-      if (p1 < p0) continue;               // skip the single wrap-around row
+      const p1raw = (((row + 1) / numH) + scrollBase) % 1.0;
+      // On wrap, extend to 1.0 so the segment reaches the screen bottom
+      // rather than vanishing, eliminating the flicker gap.
+      const p1 = p1raw < p0 ? 1.0 : p1raw;
       const q0 = p0 * p0, q1 = p1 * p1;
       const y0 = horizon + groundH * q0;
       const y1 = horizon + groundH * q1;
+      if (y0 > h + 40) continue;  // well past viewport, skip
       const alpha = Math.min(0.80, p1 * 0.62 + 0.05);
 
       // Horizontal line at the near edge of this cell
