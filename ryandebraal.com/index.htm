@@ -72,7 +72,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ryan DeBraal — Resume</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Roboto:wght@300;400;500;700&family=Lato:wght@300;400;700&display=swap');
 @font-face {
   font-family: 'Outfit';
   font-style: normal;
@@ -616,25 +615,6 @@ select.tb-sel:hover{border-color:var(--accent);}
           </select>
         </div>
       </div>
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-        <span class="tb-label">Font</span>
-        <select class="tb-sel" id="font-picker" onchange="setFont(this.value)" style="font-family: Outfit, system-ui, sans-serif;">
-          <option value="'Outfit',system-ui,sans-serif" style="font-family:'Outfit',sans-serif" selected="">Outfit</option>
-          <option value="'Times New Roman',Times,serif" style="font-family:'Times New Roman',serif">Times New Roman</option>
-          <option value="Arial,Helvetica,sans-serif" style="font-family:Arial,sans-serif">Arial</option>
-          <option value="Aptos,Calibri,sans-serif" style="font-family:Aptos,Calibri,sans-serif">Aptos</option>
-          <option value="Calibri,sans-serif" style="font-family:Calibri,sans-serif">Calibri</option>
-          <option value="'Roboto',sans-serif" style="font-family:'Roboto',sans-serif">Roboto</option>
-          <option value="'Lato',sans-serif" style="font-family:'Lato',sans-serif">Lato</option>
-          <option value="Georgia,serif" style="font-family:Georgia,serif">Georgia</option>
-        </select>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;width:100%;">
-        <span class="tb-label">Size</span>
-        <button class="tb-btn" onclick="adjustFontSize(-1)" title="Decrease font size" style="padding:5px 9px;font-size:15px;line-height:1;">A−</button>
-        <span id="font-size-label" style="font-size:11px;color:var(--text3);flex:1;text-align:center;">100%</span>
-        <button class="tb-btn" onclick="adjustFontSize(1)" title="Increase font size" style="padding:5px 9px;font-size:15px;line-height:1;margin-left:auto;">A+</button>
-      </div>
       <div style="border-top:1px solid var(--border);margin-top:10px;padding-top:10px;display:flex;flex-direction:column;gap:6px;">
         <button class="tb-btn" onclick="openSettings()" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">Settings</button>
         <button class="tb-btn" onclick="openAttributions()" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">Attributions</button>
@@ -676,8 +656,8 @@ select.tb-sel:hover{border-color:var(--accent);}
       </div>
       <div style="margin-bottom:18px;">
         <div style="font-weight:600;color:var(--text);margin-bottom:4px;">Google Fonts</div>
-        <div>DM Serif Display, Outfit, DM Mono, Roboto, Lato</div>
-        <div style="color:var(--text3);font-size:12px;">Licensed under SIL Open Font License 1.1 / Apache License 2.0</div>
+        <div>Outfit (embedded)</div>
+        <div style="color:var(--text3);font-size:12px;">Licensed under SIL Open Font License 1.1</div>
       </div>
     </div>
     <div style="display:flex;justify-content:flex-end;padding:12px 20px;border-top:1px solid var(--border);">
@@ -1725,36 +1705,11 @@ function setTheme(t) {
   updateThemeSwatch(t);
 }
 
-function setFont(f) {
-  document.documentElement.style.setProperty('--font-resume', f);
-  document.getElementById('font-picker').style.fontFamily = f;
-  try{ localStorage.setItem('resume-font',f); }catch(e){}
-}
-
-let currentFontScale = 100;
-function adjustFontSize(delta) {
-  currentFontScale = Math.max(70, Math.min(200, currentFontScale + delta * 5));
-  document.getElementById('resume').style.zoom = currentFontScale / 100;
-  document.getElementById('font-size-label').textContent = currentFontScale + '%';
-  try{ localStorage.setItem('resume-fontsize', currentFontScale); }catch(e){}
-}
-function initFontSize() {
-  try{ const s = localStorage.getItem('resume-fontsize'); if(s) currentFontScale = parseInt(s,10)||100; }catch(e){}
-  // Migrate old px values to percentage
-  if (currentFontScale < 50) currentFontScale = 100;
-  document.getElementById('resume').style.zoom = currentFontScale / 100;
-  document.getElementById('font-size-label').textContent = currentFontScale + '%';
-}
 
 function resetDefaults() {
-  try{ localStorage.removeItem('resume-theme'); localStorage.removeItem('resume-font'); localStorage.removeItem('resume-fontsize'); localStorage.removeItem('resume-profile'); localStorage.removeItem('neko-color'); }catch(e){}
+  try{ localStorage.removeItem('resume-theme'); localStorage.removeItem('resume-profile'); localStorage.removeItem('neko-color'); }catch(e){}
   setTheme('light');
   document.getElementById('theme-picker').value = 'light';
-  setFont("'Outfit',system-ui,sans-serif");
-  document.getElementById('font-picker').value = "'Outfit',system-ui,sans-serif";
-  currentFontScale = 100;
-  document.getElementById('resume').style.zoom = 1;
-  document.getElementById('font-size-label').textContent = '100%';
   setProfile('classic');
   document.getElementById('profile-picker').value = 'classic';
   // Dismiss neko if running, restore sleeping icon
@@ -5479,20 +5434,16 @@ function init() {
     wrap.appendChild(tbImg);
     wrap.appendChild(tbName);
   }
-  let p='classic', t='light', f="'Outfit',system-ui,sans-serif";
+  let p='classic', t='light';
   try{ p=localStorage.getItem('resume-profile')||'classic'; }catch(e){}
   try{ t=localStorage.getItem('resume-theme')||'light'; }catch(e){}
-  try{ f=localStorage.getItem('resume-font')||f; }catch(e){}
 
   document.getElementById('profile-picker').value = p;
   document.getElementById('theme-picker').value = t;
-  document.getElementById('font-picker').value = f;
 
   render(p); currentProfile=p;
   const cb=document.getElementById('profile-cycle-btn'); if(cb) cb.innerHTML=profileLabels[p]||p;
-  setFont(f);
   setTheme(t);
-  initFontSize();
   initNekoColor();
 
   // ── TOOLTIP SYSTEM ────────────────────────────────────────────────────────
@@ -5772,7 +5723,7 @@ function randomTheme() {
 // What's the largest public API surface you'd be comfortable with on window before
 // reaching for a module system, even with no bundler?
 Object.assign(window, {
-  setProfile, cycleProfile, setTheme, cycleTheme, updateThemeSwatch, setFont, adjustFontSize, resetDefaults,
+  setProfile, cycleProfile, setTheme, cycleTheme, updateThemeSwatch, resetDefaults,
   toggleExportMenu, exportMD, exportHTML, printResume,
   toggleMoreMenu, toggleNeko, setNekoColor, openAvatarLightbox, closeAvatarLightbox,
   toggleResumeNav, closeResumeNav, buildNavLinks,
@@ -5809,7 +5760,7 @@ Object.assign(window, {
 ║  Licensed under GPL v3                                                       ║
 ║                                                                              ║
 ║  Google Fonts                                                                ║
-║  DM Serif Display, Outfit, DM Mono, Roboto, Lato                            ║
+║  Outfit (embedded as base64 woff2 — zero external font dependencies)        ║
 ║  Licensed under SIL Open Font License 1.1 / Apache License 2.0              ║
 ║                                                                              ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
