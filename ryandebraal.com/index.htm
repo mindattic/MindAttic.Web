@@ -5000,23 +5000,6 @@ function startSynthwave() {
     ctx.beginPath(); ctx.moveTo(vp.x, vp.y); ctx.lineTo(vp.x - roadW, h); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(vp.x, vp.y); ctx.lineTo(vp.x + roadW, h); ctx.stroke();
 
-    // Dashed centre line — rushes from horizon toward viewer
-    const dashCount = 10;
-    const dashFrac  = 0.055;   // fraction of [0,1] each dash occupies
-    const gapFrac   = 0.055;   // gap between dashes
-    const vScroll   = t * 0.05;
-    for (let d = 0; d < dashCount; d++) {
-      const p0 = ((d / dashCount + vScroll) % 1);
-      const p1 = Math.min(p0 + dashFrac, 1);
-      if (p1 - p0 < 0.005) continue;
-      const q0 = p0 * p0, q1 = p1 * p1;      // perspective warp
-      const x0 = vp.x,            y0 = horizon + groundH * q0;
-      const x1 = vp.x,            y1 = horizon + groundH * q1;
-      ctx.strokeStyle = `rgba(255,220,80,${(q0 * 0.80 + 0.05).toFixed(2)})`;
-      ctx.lineWidth   = 0.5 + q0 * 2.5;
-      ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
-    }
-
     t += 0.040; // drive speed — increase for faster forward motion
 
     // Scanline overlay for CRT feel
