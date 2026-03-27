@@ -945,6 +945,7 @@ const tooltips = {
   '.NET':'Microsoft application platform spanning web, desktop, mobile, and cloud\n\nUsed across all professional and personal projects',
   'HTML/CSS3':'Markup and styling languages for structuring and designing web interfaces\n\nUsed across all web projects',
   'GraphQL':'Query language for APIs enabling clients to request exactly the data they need\n\nBank of America — Graphite',
+  'Node.js':'JavaScript runtime built on V8 for server-side and tooling applications\n\nBuild tooling, scripting, and dev workflows across projects',
 
   // .NET ecosystem
   '.NET Framework':'Original Windows-only Microsoft application platform\n\nKimberly-Clark & early Bank of America projects',
@@ -1338,6 +1339,8 @@ const tooltips = {
   'OpenID Connect':'Identity layer built on top of OAuth 2.0 providing user authentication and profile info\n\nBank of America',
   'RabbitMQ':'Open-source message broker implementing AMQP for reliable asynchronous messaging\n\nBank of America',
   'Sketch':'macOS vector design tool for UI/UX prototyping and design systems\n\nBank of America — GDS component library',
+  'Written Communication':'Clear, structured technical and business writing for diverse audiences\n\nPatent filings, architecture docs, stakeholder presentations — all roles',
+  'Oral Communication':'Effective verbal communication in technical discussions, presentations, and cross-team collaboration\n\nStakeholder meetings, sprint ceremonies, mentoring — all roles',
 };
 
 // ── SKILLS ──────────────────────────────────────────────────────────────────
@@ -1361,14 +1364,109 @@ const tooltips = {
 // What's your preferred pattern for small structured datasets like this?
 //
 const _savedFam = (() => { try { return JSON.parse(localStorage.getItem('tag-familiarity')||'{}'); } catch(e){ return {}; } })();
+const _defaultFam = {
+  'C#': 99, 'JavaScript': 96, 'TypeScript': 96, 'REST APIs': 96, 'React': 96, 'Angular': 96,
+  'GraphQL': 96, 'GraphQL (HotChocolate)': 96, 'SQL': 88, 'Written Communication': 92, 'Oral Communication': 88,
+  '.NET / ASP.NET Core': 90, 'Elasticsearch': 81, 'RAG pipelines': 80, 'LSH/SimHash': 84, 'Genetic algorithms': 83,
+  'Neural networks': 83, 'LLM integration': 82, 'Force-layout graph engines': 81, 'Bidirectional push/pull sync': 90,
+  'Unity': 88, 'ShaderLab': 81, 'Interactive Brokers API': 89, 'NIST frameworks': 86, 'PHP': 80, 'VB.NET': 80,
+  'PowerShell': 81, 'Batch files': 83, '.NET MAUI': 83, 'Backtesting frameworks': 88, 'SignalR': 89,
+  'WebSockets': 80, 'Microservices': 88, 'Event-driven architecture': 83, 'Multi-threading': 90, 'CQRS': 88,
+  'Cross-source real-time data unification': 86, 'Vector embeddings': 83, 'Vulnerability management': 87,
+  'Threat detection': 89, 'OWASP Top 10': 84, 'OAuth 2.0': 80, 'JWT': 82, 'Active Directory': 86,
+  'Penetration testing concepts': 85, 'HLSL': 84, 'Procedural generation': 82, 'Pathfinding (A*)': 83,
+  'Custom render pipelines': 85, 'Algorithmic trading': 81, 'DSL design': 81, 'Backtesting engines': 86,
+  'Position sizing': 81, 'Gap trading': 85, 'Technical indicators': 85, 'Git': 89, 'CI/CD': 84,
+  'Agile/Scrum': 80, 'TDD': 87, 'QA/UAT': 88, 'Azure DevOps': 81, 'Docker': 86, 'Visual Studio': 81,
+  'Postman': 88, 'Performance tuning': 84, 'Blazor': 90, 'NLP': 89, 'OpenAI API': 85, 'Anthropic API': 89,
+  'Phishing correlation': 83, 'Shader Graph': 81, 'jQuery': 80, 'WordPress': 90, 'HTML': 83, 'CSS': 84,
+  'SEO': 81, 'ASP.NET': 83, 'SQL Server': 81, 'XML': 86, 'Bootstrap': 84, 'Tailwind CSS': 87,
+  'Component library design': 90, 'Responsive design': 85, 'Real-time UI': 82, 'T-SQL': 85, 'HTML5': 85,
+  'CSS3': 83, 'ASP.NET Core': 90, '.NET': 84, 'HTML/CSS3': 90, 'Node.js': 90, '.NET Framework': 81,
+  '.NET Core': 89, '.NET 5–10': 90, 'ASP.NET MVC': 82, 'ASP.NET Web API': 88, 'ASP.NET Web Forms': 83,
+  'AutoMapper': 82, 'Blazor Server': 87, 'Blazor WASM': 86, 'Dapper': 84, 'PetaPoco': 90, 'EF Core': 88,
+  'EF Core migrations': 83, 'Entity Framework 6': 90, 'Hangfire': 85, 'HttpClient': 80, 'MAUI': 83,
+  'MediatR': 80, 'Newtonsoft.Json': 85, 'OData': 86, 'Polly': 84, 'Quartz.NET': 81, 'RestSharp': 83,
+  'Serilog': 89, 'System.Text.Json': 85, 'WCF': 83, 'WPF': 90, 'WinForms': 87, 'Worker Services': 86,
+  'gRPC': 90, 'ADO.NET': 87, 'FluentValidation': 82, 'FluentAssertions': 84, 'Alpine.js': 82,
+  'AngularJS': 83, 'Ant Design': 88, 'Axios': 88, 'Backbone.js': 84, 'Bootstrap 3–5': 89, 'Chakra UI': 86,
+  'Chart.js': 89, 'Day.js': 86, 'Design tokens': 85, 'Formik': 83, 'Framer Motion': 82, 'GSAP': 88,
+  'Htmx': 87, 'Knockout.js': 81, 'Leaflet': 80, 'Lodash': 81, 'Material UI': 82, 'MobX': 90,
+  'Moment.js': 82, 'Next.js': 90, 'Radix UI': 86, 'React Hook Form': 89, 'React Hooks': 81,
+  'React Router': 86, 'Recharts': 86, 'Redux': 89, 'SWR': 87, 'Socket.io': 88, 'Storybook': 84,
+  'Svelte': 88, 'Tanstack Query': 80, 'Three.js': 90, 'Vue.js': 81, 'Zod': 90, 'Zustand': 88,
+  'shadcn/ui': 84, 'jQuery UI': 90, 'CSS Animations': 85, 'CSS Grid': 81, 'CSS Modules': 84,
+  'CSS Variables': 86, 'BEM': 82, 'Flexbox': 87, 'SASS / SCSS': 80, 'Less': 84, 'PostCSS': 88,
+  'Styled Components': 82, 'Mobile-first': 88, 'Accessibility (WCAG 2.1)': 81, 'Babel': 90, 'Cake': 84,
+  'ESLint': 90, 'Grunt': 88, 'Gulp': 89, 'Lerna': 83, 'MSBuild': 82, 'Nx': 85, 'Parcel': 82,
+  'Prettier': 88, 'Rollup': 88, 'Turborepo': 80, 'Vite': 89, 'Webpack': 85, 'esbuild': 87, 'npm': 80,
+  'pnpm': 81, 'Yarn': 85, 'BDD': 84, 'Bogus': 83, 'E2E testing': 80, 'Integration testing': 83,
+  'Moq': 89, 'MSTest': 81, 'NUnit': 81, 'Playwright (concepts)': 87, 'QA process management': 81,
+  'Selenium (concepts)': 88, 'SpecFlow': 82, 'SonarQube (concepts)': 82, 'Static analysis': 90, 'UAT': 87,
+  'Unit testing': 88, 'k6 (concepts)': 82, 'Code coverage': 84, 'Code review': 88, 'xUnit': 89,
+  'Azure': 86, 'Azure API Management': 83, 'Azure Active Directory': 88, 'Azure App Service': 83,
+  'Azure Application Insights': 84, 'Azure Blob Storage': 86, 'Azure Cache for Redis': 90,
+  'Azure Cosmos DB': 90, 'Azure Data Studio': 85, 'Azure Event Grid': 87, 'Azure Functions': 88,
+  'Azure Key Vault': 87, 'Azure Monitor': 81, 'Azure OpenAI': 83, 'Azure Pipelines': 83, 'Azure SQL': 81,
+  'Azure Service Bus': 85, 'Docker Compose': 80, 'GitHub Actions': 89, 'IIS': 88,
+  'Kubernetes (concepts)': 83, 'Linux (Ubuntu)': 89, 'Nginx': 83, 'Terraform (concepts)': 80,
+  'Windows Server': 81, 'WSL2': 90, 'Beyond Compare': 80, 'Charles Proxy': 83, 'Chrome DevTools': 81,
+  'Fiddler': 80, 'FileZilla': 85, 'GitKraken': 81, 'JetBrains Rider': 88, 'LinqPad': 83,
+  'PowerShell ISE': 84, 'SSMS': 90, 'Swagger / OpenAPI': 87, 'Sysinternals': 83, 'VS Code': 88,
+  'Visual Studio 2005–2022': 82, 'WinSCP': 89, 'Windows Terminal': 89, 'MariaDB': 87,
+  'MongoDB (concepts)': 83, 'MySQL': 87, 'OpenSearch': 86, 'PostgreSQL': 83, 'Redis': 81, 'SQLite': 81,
+  'CSV parsing': 80, 'CTEs': 86, 'Database design': 85, 'Excel generation (EPPlus)': 86,
+  'Full-text search': 86, 'Indexing strategies': 87, 'Normalization': 80, 'PL/SQL': 90,
+  'Query optimization': 90, 'SQL Server 2005–2022': 90, 'Stored procedures': 81, 'Triggers': 80,
+  'Vector databases': 86, 'Views': 85, 'Window functions': 81, 'API Gateway': 83, 'API design': 83,
+  'API versioning': 83, 'Architecture decision records': 88, 'BFF pattern': 87, 'Circuit breaker': 82,
+  'Clean architecture': 86, 'DDD': 82, 'Event Sourcing': 84, 'Feature flags': 87,
+  'Hexagonal architecture': 83, 'Message queues': 81, 'Outbox pattern': 87, 'Pub/Sub': 88,
+  'Rate limiting': 81, 'Repository pattern': 80, 'Saga pattern': 90, 'SOLID': 88,
+  'Self-documenting code': 80, 'Clean code': 81, 'DRY / KISS / YAGNI': 83, 'Documentation': 82,
+  'Mentoring': 86, 'Stakeholder communication': 87, 'Technical debt management': 87, 'Pair programming': 83,
+  'ABAC': 86, 'AES encryption': 80, 'CIS benchmarks': 82, 'CORS': 86, 'CSP': 80, 'CSRF protection': 86,
+  'HMAC': 84, 'HTTPS / TLS': 87, 'LDAP': 84, 'MFA': 86, 'RBAC': 88, 'RSA encryption': 90,
+  'SAML 2.0': 87, 'SAST / DAST': 82, 'SIEM concepts': 83, 'STRIDE': 84, 'SQL injection prevention': 83,
+  'Vulnerability scanning': 80, 'Windows Authentication': 89, 'XSS prevention': 88, 'Argon2': 80,
+  'bcrypt': 85, 'Pen testing concepts': 80, 'Threat modeling': 80, 'Anomaly detection': 89,
+  'Backpropagation': 87, 'Backtesting': 88, 'BM25': 88, 'Chain-of-thought': 82, 'Chunking strategies': 80,
+  'Cosine similarity': 88, 'Few-shot prompting': 81, 'Gradient descent': 82, 'MinHash': 81,
+  'Monte Carlo simulation': 89, 'Prompt engineering': 81, 'Semantic Kernel': 90, 'Semantic search': 83,
+  'SimHash': 86, 'TF-IDF': 81, 'Tokenization': 89, 'Tool use / function calling': 83,
+  'LSH (Locality-Sensitive Hashing)': 89, 'Automated order execution': 89, 'Candlestick patterns': 80,
+  'Drawdown analysis': 89, 'IB Gateway': 81, 'IdiotScript': 86, 'Interactive Brokers API (IBKR)': 90,
+  'Live trading': 89, 'Market/Limit/Stop/OCO orders': 89, 'Mean reversion': 88, 'Momentum strategies': 85,
+  'Paper trading': 84, 'Pine Script': 83, 'Position management': 90, 'Risk management': 85,
+  'Sharpe ratio': 83, 'Support & resistance': 84, 'TWS API': 86,
+  'Technical indicators (RSI, MACD, ADX, VWAP, EMA, Bollinger Bands, ATR)': 82, 'TradingView': 90,
+  'Trend following': 90, 'Volume analysis': 84, 'Walk-forward optimization': 87, 'OHLCV data': 85,
+  'Compute Shaders': 81, 'ECS (concepts)': 80, 'Level design': 87, 'NavMesh': 89, 'Narrative design': 89,
+  'Particle systems': 81, 'Perlin noise': 81, 'Performance optimization': 88, 'Post-processing': 83,
+  'Sprite rendering': 88, 'State machines': 84, 'Tilemaps': 82, 'Unity Animator': 85,
+  'Unity C# scripting': 81, 'Unity Canvas UI': 83, 'Unity Input System': 85, 'Unity Physics': 84,
+  'Unity Profiler': 82, 'URP / HDRP': 87, 'World building': 88, 'GLSL': 84, 'Open Graph': 89,
+  'PHP CMS development': 90, 'SEO optimization': 88, 'Sitemap generation': 80,
+  'Social media integration': 90, 'Structured data': 88, 'WordPress REST API': 84,
+  'WordPress plugin dev': 90, 'WordPress theme dev': 81, 'Core Web Vitals': 82,
+  'Page speed optimization': 84, 'Custom CMS development': 81, 'JSON': 81, 'Markdown': 88,
+  'Protobuf': 82, 'REGEX / Regex': 84, 'Regex': 84, 'SVG': 89, 'SSE': 83, 'WebGL': 85, 'WebRTC': 83,
+  'Webhooks': 90, 'XSLT': 90, 'XPath': 84, 'XSLT transformation': 88, 'YAML': 87, 'Canvas API': 84,
+  'Bash': 81, 'Lua': 90, 'Python': 86, 'VB6': 84, 'Agile / Scrum': 80, 'Backlog grooming': 80,
+  'Kanban': 85, 'Sprint planning': 82, 'Patent filing': 90, 'SDK design': 84, 'D3.js': 82,
+  'Force-layout graphs': 87, 'Graph algorithms': 88, 'BFS / DFS': 86, 'A* pathfinding': 88,
+  'Real-time data pipelines': 80, 'Cross-SOR data unification': 81, 'ETL concepts': 81, 'Log analysis': 82,
+  'Phishing detection': 88, 'GitHub': 80, 'PDF generation': 85, 'Adobe XD': 89, 'CDC': 88,
+  'Content strategy': 82, 'Figma': 86, 'LINQ': 82, 'OpenID Connect': 80, 'RabbitMQ': 84, 'Sketch': 85
+};
 const SKILLS = {};
 Object.entries(tooltips).forEach(([k, v]) => {
   const [desc='', impl=''] = v.split('\n\n');
-  SKILLS[k] = { desc, impl, fam: _savedFam[k] !== undefined ? _savedFam[k] : 80 };
+  SKILLS[k] = { desc, impl, fam: _savedFam[k] !== undefined ? _savedFam[k] : (_defaultFam[k] || 90) };
 });
 function saveSkillFam() {
   const out = {};
-  Object.entries(SKILLS).forEach(([k,s]) => { if (s.fam !== 80) out[k] = s.fam; });
+  Object.entries(SKILLS).forEach(([k,s]) => { if (s.fam !== (_defaultFam[k] || 90)) out[k] = s.fam; });
   try { localStorage.setItem('tag-familiarity', JSON.stringify(out)); } catch(e) {}
 }
 
@@ -1378,7 +1476,7 @@ const D = {
   pitchSummary: `Principal full-stack engineer with 20+ years building systems most teams would call ambitious. Two US patents. ML-driven security platforms. Real-time cross-source data engines. Autonomous AI trading systems. Force-layout knowledge graphs. I code — I don't manage. Looking for a remote principal or staff IC role where my vision shapes the product.`,
 
   skillsCore: [
-    {label:'Languages', items:['C#','JavaScript','TypeScript','PHP','VB.NET','SQL','T-SQL','PowerShell','XML','HTML5','CSS3','ShaderLab']},
+    {label:'Languages', items:['C#','JavaScript','TypeScript','Node.js','PHP','VB.NET','SQL','T-SQL','PowerShell','XML','HTML5','CSS3','ShaderLab']},
     {label:'Frontend & UI/UX', items:['React','Angular','jQuery','Bootstrap','Tailwind CSS','Component library design','Responsive design','Force-layout graph engines','Real-time UI','.NET MAUI','Blazor']},
     {label:'Backend & Systems', items:['ASP.NET Core','REST APIs','GraphQL (HotChocolate)','WebSockets','Microservices','Event-driven architecture','Multi-threading','SignalR','CQRS']},
     {label:'Data & Sync', items:['Cross-source real-time data unification','Bidirectional push/pull sync','Elasticsearch','SQL Server','Vector embeddings','Backtesting frameworks']},
@@ -1386,11 +1484,11 @@ const D = {
     {label:'Security', items:['Vulnerability management','Threat detection','NIST frameworks','OWASP Top 10','OAuth 2.0','JWT','Active Directory','Penetration testing concepts']},
     {label:'Game Dev', items:['Unity','ShaderLab','HLSL','Shader Graph','Procedural generation','Pathfinding (A*)','Custom render pipelines']},
     {label:'Finance & Trading', items:['Interactive Brokers API','Algorithmic trading','DSL design','Backtesting engines','Position sizing','Gap trading','Technical indicators']},
-    {label:'Tools & Practices', items:['Git','CI/CD','Agile/Scrum','TDD','QA/UAT','Azure DevOps','Docker','Visual Studio','Postman','Performance tuning']},
+    {label:'Tools & Practices', items:['Git','CI/CD','Agile/Scrum','TDD','QA/UAT','Azure DevOps','Docker','Visual Studio','Postman','Performance tuning','Written Communication','Oral Communication']},
   ],
 
   skillsComplete: [
-    {label:'Languages', items:['C#','JavaScript','TypeScript','PHP','VB.NET','VB6','SQL','T-SQL','PL/SQL','HTML5','CSS3','XML','XSLT','XPath','JSON','YAML','PowerShell','Bash','Python','Lua','ShaderLab','HLSL','GLSL','Markdown','Regex']},
+    {label:'Languages', items:['C#','JavaScript','TypeScript','Node.js','PHP','VB.NET','VB6','SQL','T-SQL','PL/SQL','HTML5','CSS3','XML','XSLT','XPath','JSON','YAML','PowerShell','Bash','Python','Lua','ShaderLab','HLSL','GLSL','Markdown','Regex']},
     {label:'C# / .NET Ecosystem', items:['.NET Framework','.NET Core','.NET 5–10','ASP.NET Web Forms','ASP.NET MVC','ASP.NET Core','ASP.NET Web API','WCF','SignalR','MAUI','Blazor Server','Blazor WASM','WPF','WinForms','Worker Services','Quartz.NET','Hangfire','LINQ','Entity Framework 6','EF Core','Dapper','ADO.NET','AutoMapper','MediatR','FluentValidation','Polly','Serilog','Newtonsoft.Json','System.Text.Json','RestSharp','HttpClient','gRPC','Protobuf','GraphQL (HotChocolate)','OData','xUnit','NUnit','MSTest','Moq','FluentAssertions']},
     {label:'Frontend Frameworks', items:['React','React Hooks','React Router','Next.js','Angular','AngularJS','Vue.js','Svelte','jQuery','jQuery UI','Backbone.js','Knockout.js','Alpine.js','Htmx','Redux','Zustand','MobX','Tanstack Query','SWR','Axios','Socket.io','Lodash','Moment.js','Day.js','Zod','Formik','React Hook Form','Framer Motion','GSAP','Three.js','D3.js','Chart.js','Recharts','Leaflet']},
     {label:'Styling & Design', items:['CSS3','CSS Grid','Flexbox','CSS Variables','CSS Animations','Tailwind CSS','Bootstrap 3–5','Material UI','Ant Design','Chakra UI','Radix UI','shadcn/ui','Styled Components','CSS Modules','SASS / SCSS','Less','PostCSS','BEM','Figma','Adobe XD','Sketch','Storybook','Design tokens','Responsive design','Mobile-first','Accessibility (WCAG 2.1)']},
@@ -1406,7 +1504,7 @@ const D = {
     {label:'CMS & Content', items:['WordPress','WordPress plugin dev','WordPress theme dev','WordPress REST API','PHP CMS development','Custom CMS development','SEO optimization','Structured data','Open Graph','Sitemap generation','Page speed optimization','Core Web Vitals','Content strategy','Social media integration']},
     {label:'Testing & Quality', items:['Unit testing','Integration testing','E2E testing','TDD','BDD','xUnit','NUnit','MSTest','Moq','FluentAssertions','Bogus','SpecFlow','Playwright (concepts)','Selenium (concepts)','k6 (concepts)','Code coverage','Static analysis','SonarQube (concepts)','QA process management','UAT']},
     {label:'Tools & Workflow', items:['Visual Studio 2005–2022','VS Code','JetBrains Rider','LinqPad','SSMS','Azure Data Studio','Postman','Swagger / OpenAPI','Fiddler','Charles Proxy','Chrome DevTools','Git','GitHub','GitKraken','Beyond Compare','PowerShell ISE','Windows Terminal','WSL2','FileZilla','WinSCP','Sysinternals']},
-    {label:'Engineering Practices', items:['Agile / Scrum','Kanban','Sprint planning','Backlog grooming','Technical debt management','Architecture decision records','Self-documenting code','Clean code','DRY / KISS / YAGNI','Code review','Pair programming','Documentation','Patent filing','API design','SDK design','Mentoring','Stakeholder communication']},
+    {label:'Engineering Practices', items:['Agile / Scrum','Kanban','Sprint planning','Backlog grooming','Technical debt management','Architecture decision records','Self-documenting code','Clean code','DRY / KISS / YAGNI','Code review','Pair programming','Documentation','Patent filing','API design','SDK design','Mentoring','Stakeholder communication','Written Communication','Oral Communication']},
   ],
 
   experience: [
