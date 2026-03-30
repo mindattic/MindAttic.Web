@@ -792,8 +792,8 @@ select.tb-sel:hover{border-color:var(--accent);}
 //
 const SETTINGS_DEFAULTS = {
   neko_fps:120, neko_speed:24, neko_stop_time:4, neko_wash_time:10, neko_scratch_time:4,
-  snow_pile_rate_min:1.0, snow_pile_rate_max:4.0, snow_smooth_speed:0.03,
-  snow_spread:2.5, snow_max_height:0.32, snow_flake_count:140,
+  snow_pile_rate_min:2.5, snow_pile_rate_max:8.0, snow_smooth_speed:0.06,
+  snow_spread:2.5, snow_max_height:0.32, snow_flake_count:200,
   leaf_count:40,
   plant_grow_fast:0.3, plant_grow_slow:0.15,
   skill_fill_start_speed:8, skill_fill_decay:0.06,
@@ -1622,7 +1622,7 @@ function buildTooltip(key) {
     + implBlock
     + `<span class="tip-bar">`
     +   `<span class="tip-bar-header"><span>Familiarity</span>`
-    +   `<span class="tip-bar-level" onclick="cycleTagLevel(this,'${safeKey}')">${level} <span class="tip-bar-pct">(${pct}%)</span></span></span>`
+    +   `<span class="tip-bar-level" onclick="cycleTagLevel(this,'${safeKey}')">${level}</span></span>`
     +   `<span class="tip-bar-track"><span class="tip-bar-fill" style="width:${pct}%"></span></span>`
     + `</span>`
     + `</span>`;
@@ -1639,8 +1639,7 @@ function cycleTagLevel(el, key) {
   const bar = el.closest('.tip-bar');
   if (!bar) return;
   const pctSpan = el.querySelector('.tip-bar-pct');
-  el.firstChild.textContent = famLevel(s.fam) + ' ';
-  if (pctSpan) pctSpan.textContent = `(${s.fam}%)`;
+  el.firstChild.textContent = famLevel(s.fam);
   const fill = bar.querySelector('.tip-bar-fill');
   if (fill) fill.style.width = s.fam + '%';
 }
@@ -1943,7 +1942,13 @@ function crtChannelChange() {
   var ctx = overlay.getContext('2d');
   var w = overlay.width, h = overlay.height;
   var start = performance.now();
-  var duration = 300;
+  var duration = 200 + Math.floor(Math.random() * 150);
+  var squeezeSpeed = 2 + Math.random() * 2;
+  var tintR = Math.floor(Math.random() * 40);
+  var tintG = Math.floor(Math.random() * 40);
+  var tintB = Math.floor(Math.random() * 40);
+  var hShiftChance = 0.02 + Math.random() * 0.06;
+  var hShiftMax = 10 + Math.floor(Math.random() * 30);
 
   function drawStatic() {
     var elapsed = performance.now() - start;
@@ -1955,10 +1960,16 @@ function crtChannelChange() {
     var imgData = ctx.createImageData(w, h);
     var d = imgData.data;
     var fade = 1 - pct;
-    // scanline squeeze effect: black bars closing from top/bottom
-    var squeeze = Math.max(0, 1 - pct * 3);
+    var squeeze = Math.max(0, 1 - pct * squeezeSpeed);
     var barTop = Math.floor((1 - squeeze) * h * 0.5);
     var barBot = h - barTop;
+    // random horizontal shift bands
+    var shiftY = -1, shiftH = 0, shiftX = 0;
+    if (Math.random() < hShiftChance) {
+      shiftY = Math.floor(Math.random() * h);
+      shiftH = 5 + Math.floor(Math.random() * 40);
+      shiftX = Math.floor((Math.random() - 0.5) * hShiftMax * 2);
+    }
     for (var i = 0; i < d.length; i += 4) {
       var px = (i / 4) | 0;
       var y = (px / w) | 0;
@@ -1967,18 +1978,30 @@ function crtChannelChange() {
         d[i+3] = Math.floor(255 * fade);
       } else {
         var v = (Math.random() * 255) | 0;
-        d[i] = d[i+1] = d[i+2] = v;
-        d[i+3] = Math.floor(200 * fade);
+        d[i] = Math.min(255, v + tintR);
+        d[i+1] = Math.min(255, v + tintG);
+        d[i+2] = Math.min(255, v + tintB);
+        var opacity = y >= shiftY && y < shiftY + shiftH ? 240 : 200;
+        d[i+3] = Math.floor(opacity * fade);
       }
     }
     ctx.putImageData(imgData, 0, 0);
     // horizontal distortion lines
-    var lineCount = 3 + Math.floor(Math.random() * 5);
+    var lineCount = 2 + Math.floor(Math.random() * 8);
     for (var l = 0; l < lineCount; l++) {
       var ly = Math.floor(Math.random() * h);
-      var lh = 1 + Math.floor(Math.random() * 3);
-      ctx.fillStyle = 'rgba(255,255,255,' + (0.3 * fade) + ')';
+      var lh = 1 + Math.floor(Math.random() * 4);
+      var lop = (0.15 + Math.random() * 0.35) * fade;
+      ctx.fillStyle = 'rgba(255,255,255,' + lop + ')';
       ctx.fillRect(0, ly, w, lh);
+    }
+    // occasional color flash band
+    if (Math.random() < 0.15) {
+      var bandY = Math.floor(Math.random() * h);
+      var bandH = 2 + Math.floor(Math.random() * 8);
+      var colors = ['rgba(255,0,0,','rgba(0,255,0,','rgba(0,0,255,','rgba(255,255,0,'];
+      ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)] + (0.2 * fade) + ')';
+      ctx.fillRect(0, bandY, w, bandH);
     }
     requestAnimationFrame(drawStatic);
   }
@@ -2589,7 +2612,7 @@ function createWinterLayer() {
 
   const flakes = Array.from({length:AppSettings.snow_flake_count},()=>({
     x:Math.random()*canvas.width, y:Math.random()*canvas.height,
-    size:1.5+Math.random()*4.5, speed:0.4+Math.random()*1.4,
+    size:1.5+Math.random()*4.5, speed:0.8+Math.random()*2.2,
     drift:Math.random()*Math.PI*2, driftSpeed:0.008+Math.random()*0.018,
     alpha:0.55+Math.random()*0.45, spin:Math.random()*Math.PI*2,
     spinSpeed:(Math.random()-0.5)*0.04,
@@ -5631,7 +5654,7 @@ function startSynthwave() {
 function startSand() {
   const W = () => canvas.width, H = () => canvas.height;
   const GRIT_N    = 1800;
-  const SAND_PILE = 0.5;
+  const SAND_PILE = 1.5;
   const DUNE_COLS = 90;   // horizontal sample columns for dune profile
   let t = 0;
 
@@ -5715,9 +5738,9 @@ function startSand() {
   // drizzle:   background growth rate (back dunes drizzle fastest).
   // pileScale: multiplier on SAND_PILE impact deposit.
   const dunes = [
-    { h: new Float32Array(DUNE_COLS), acc: new Float32Array(DUNE_COLS), baseYFrac: 1.00, maxFrac: 0.38, drizzle: 0.040, pileScale: 1.40 },
-    { h: new Float32Array(DUNE_COLS), acc: new Float32Array(DUNE_COLS), baseYFrac: 1.00, maxFrac: 0.24, drizzle: 0.024, pileScale: 1.00 },
-    { h: new Float32Array(DUNE_COLS), acc: new Float32Array(DUNE_COLS), baseYFrac: 1.00, maxFrac: 0.14, drizzle: 0.014, pileScale: 0.70 },
+    { h: new Float32Array(DUNE_COLS), acc: new Float32Array(DUNE_COLS), baseYFrac: 1.00, maxFrac: 0.38, drizzle: 0.12, pileScale: 1.40 },
+    { h: new Float32Array(DUNE_COLS), acc: new Float32Array(DUNE_COLS), baseYFrac: 1.00, maxFrac: 0.24, drizzle: 0.07, pileScale: 1.00 },
+    { h: new Float32Array(DUNE_COLS), acc: new Float32Array(DUNE_COLS), baseYFrac: 1.00, maxFrac: 0.14, drizzle: 0.04, pileScale: 0.70 },
   ];
 
   function updateDunes(w, h, wind) {
