@@ -3270,7 +3270,28 @@ const NEKO_SPRITE_COUNT = 32;
           break;
 
         case NekoState.AWAKE:
-          if (this.stateCount >= 6) { // ~100 ms at 120 fps (stateCount ticks every 2 frames)
+          if (this._wallBounce && this.tickCount >= 1) {
+            // ~100ms surprise then run opposite direction from top/bottom wall
+            const bounceDir = this._wallBounce;
+            this._wallBounce = null;
+            if (bounceDir === 'top') {
+              this.targetX = Math.random() * this.boundsWidth;
+              this.targetY = this.boundsHeight * 0.5 + Math.random() * this.boundsHeight * 0.5;
+            } else {
+              this.targetX = Math.random() * this.boundsWidth;
+              this.targetY = Math.random() * this.boundsHeight * 0.5;
+            }
+            this.oldTargetX = -99999; this.oldTargetY = -99999;
+            this.catAI = undefined; this.catTimer = 0;
+            const bdx = this.targetX - this.logicX - SPRITE_SIZE / 2;
+            const bdy = this.targetY - this.logicY - SPRITE_SIZE + 1;
+            const bdist = Math.sqrt(bdx * bdx + bdy * bdy);
+            if (bdist > 0) {
+              this.moveDX = Math.trunc((this.speed * bdx) / bdist);
+              this.moveDY = Math.trunc((this.speed * bdy) / bdist);
+            }
+            this.calcDirection(this.moveDX, this.moveDY);
+          } else if (this.tickCount >= 1) { // ~100ms shocked duration
             this.calcDirection(this.moveDX, this.moveDY);
           }
           break;
@@ -3286,11 +3307,13 @@ const NEKO_SPRITE_COUNT = 32;
           // Calculate new position using preserved moveDX/moveDY
           let newX = this.logicX + this.moveDX;
           let newY = this.logicY + this.moveDY;
-          const wasOutside =
-            newX <= 0 ||
-            newX >= this.boundsWidth ||
-            newY <= 0 ||
-            newY >= this.boundsHeight;
+
+          // Check which boundaries are hit (before clamping)
+          const hitLeft = newX <= 0;
+          const hitRight = newX >= this.boundsWidth;
+          const hitTop = newY <= 0;
+          const hitBottom = newY >= this.boundsHeight;
+          const wasOutside = hitLeft || hitRight || hitTop || hitBottom;
 
           // Update direction
           this.calcDirection(this.moveDX, this.moveDY);
@@ -3300,9 +3323,16 @@ const NEKO_SPRITE_COUNT = 32;
           newY = Math.max(0, Math.min(this.boundsHeight, newY));
           const notMoved = newX === this.logicX && newY === this.logicY;
 
-          // Stop if we can't go further
+          // Wall reactions
           if (wasOutside && notMoved) {
-            this.setState(NekoState.STOP);
+            if (hitLeft || hitRight) {
+              // Scratch the side wall
+              this.setState(hitLeft ? NekoState.L_CLAW : NekoState.R_CLAW);
+            } else {
+              // Surprised by top/bottom — brief shock then bounce away
+              this._wallBounce = hitTop ? 'top' : 'bottom';
+              this.setState(NekoState.AWAKE);
+            }
           } else {
             this.logicX = newX;
             this.logicY = newY;
@@ -3596,6 +3626,7 @@ const NEKO_BEHAVIORS = [
   BehaviorMode.RUN_AROUND,
 ];
 const NEKO_MIN_DIST = 60; // minimum pixel distance — detect overlaps earlier
+const NEKO_AVOID_DIST = 130; // soft avoidance radius — steer away before colliding
 
 function randomNekoBehavior(exclude) {
   const pool = NEKO_BEHAVIORS.filter(b => b !== exclude);
@@ -3731,6 +3762,32 @@ function nekoFlee(neko) {
 }
 
 function nekoCollisionTick() {
+  // Soft avoidance: moving nekos steer away from each other before colliding
+  for (let i = 0; i < themeNekos.length; i++) {
+    const a = themeNekos[i];
+    if (!isNekoMoving(a)) continue;
+    let avoidX = 0, avoidY = 0;
+    for (let j = 0; j < themeNekos.length; j++) {
+      if (i === j) continue;
+      const b = themeNekos[j];
+      const dx = a.logicX - b.logicX, dy = a.logicY - b.logicY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < NEKO_AVOID_DIST && dist > NEKO_MIN_DIST && dist > 0) {
+        // Strength increases as they get closer
+        const strength = (NEKO_AVOID_DIST - dist) / (NEKO_AVOID_DIST - NEKO_MIN_DIST);
+        avoidX += (dx / dist) * strength * 2.5;
+        avoidY += (dy / dist) * strength * 2.5;
+      }
+    }
+    if (avoidX !== 0 || avoidY !== 0) {
+      a.logicX += avoidX;
+      a.logicY += avoidY;
+      a.logicX = Math.max(0, Math.min(a.boundsWidth, a.logicX));
+      a.logicY = Math.max(0, Math.min(a.boundsHeight, a.logicY));
+    }
+  }
+
+  // Hard collision: push apart and trigger social interactions
   for (let i = 0; i < themeNekos.length; i++) {
     for (let j = i + 1; j < themeNekos.length; j++) {
       const a = themeNekos[i], b = themeNekos[j];
