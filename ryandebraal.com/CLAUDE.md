@@ -1,5 +1,8 @@
 # Project Rules
 
+## Code Style
+- Do NOT use underscore-prefixed variables (e.g., `_myField`). Use `camelCase` for private fields without the underscore prefix.
+
 ## /commit
 - Stage changed files, auto-generate a descriptive commit message, commit, push, and print the commit hash
 - Always end with: "To revert: `/revert <hash>`"
