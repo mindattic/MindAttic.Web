@@ -6771,9 +6771,18 @@ function resetAllSettings() {
 }
 
 // ── RANDOM THEME ──────────────────────────────────────────────────────────
+// Track which themes the user has seen this rotation. Once every theme has
+// been visited, the set resets — but the current theme stays "seen" so we
+// never pick it again as the very next roll.
+let seenThemes = new Set([currentTheme]);
 function randomTheme() {
-  const others = THEME_ORDER.filter(t => t !== currentTheme);
-  const pick = others[Math.floor(Math.random() * others.length)];
+  let candidates = THEME_ORDER.filter(t => !seenThemes.has(t));
+  if (candidates.length === 0) {
+    seenThemes = new Set([currentTheme]);
+    candidates = THEME_ORDER.filter(t => !seenThemes.has(t));
+  }
+  const pick = candidates[Math.floor(Math.random() * candidates.length)];
+  seenThemes.add(pick);
   setTheme(pick);
   document.getElementById('theme-picker').value = pick;
   const tm = document.getElementById('theme-picker-mobile');
