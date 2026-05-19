@@ -8,9 +8,13 @@
 - Currently: the CBG (Console Background) cyberpunk effects suite (CSS + JS) used by StreetSamurai and mindattic.com.
 - Raw source distribution. No NuGet, no npm. Consumers run a PowerShell sync script to pull copies in.
 
+## Layout
+- `cbg/` — the CBG (Console Background) bundle: `console-bg.js` engine + companion JS/CSS/HTML + `assets/` (parallax textures).
+- `sync/` — PowerShell distribution scripts. `sync-all.ps1` is the umbrella runner; `/sync` slash command wraps it.
+
 ## Sync targets
-- `mindattic.com/index.htm` — inlined between `<!-- BEGIN MINDATTIC.SHARED:FRONTPAGE --> ... <!-- END MINDATTIC.SHARED:FRONTPAGE -->` markers.
-- `StreetSamurai/v3/StreetSamurai.Blazor/wwwroot/` — JS files copied into `js/`, CSS injected between markers in `app.css`.
+- `mindattic.com/index.htm` — inlined between `<!-- BEGIN MINDATTIC.SHARED:CBG --> ... <!-- END MINDATTIC.SHARED:CBG -->` markers.
+- `StreetSamurai/v3/StreetSamurai.Blazor/wwwroot/` — JS files copied into `js/`, CSS injected between `/* == BEGIN/END MINDATTIC.SHARED:CBG.CSS == */` markers in `app.css`.
 
 ## Editing rule
-- Edit only in `frontpage/`. Re-run consumer sync scripts after any change. Downstream copies are derived artifacts.
+- Edit only in `cbg/`. Re-run `sync/sync-all.ps1` (or `/sync`) after any change. Downstream copies are derived artifacts.
