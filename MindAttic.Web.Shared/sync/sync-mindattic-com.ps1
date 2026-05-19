@@ -32,14 +32,35 @@ if (-not (Test-Path $TargetIndex)) { throw "Target not found: $TargetIndex" }
 $html = [System.IO.File]::ReadAllText((Join-Path $fp 'frontpage.html'), $utf8)
 $css  = [System.IO.File]::ReadAllText((Join-Path $fp 'frontpage.css'),  $utf8)
 
+# Inline the parallax circuit-board textures as base64 data URIs. console-bg.js
+# reads window.__cbgCircuitboardSrcs if defined; StreetSamurai's MediaController
+# serves them via /api/media/... instead, so we only emit this override when
+# the JPEG assets exist alongside the bundle.
+$texSrcs = @('circuitboard.00.jpg', 'circuitboard.01.jpg', 'circuitboard.02.jpg')
+$texOverride = ''
+$texDir = Join-Path $fp 'assets'
+if (Test-Path $texDir) {
+    $dataUris = $texSrcs | ForEach-Object {
+        $tp = Join-Path $texDir $_
+        if (Test-Path $tp) {
+            $bytes = [System.IO.File]::ReadAllBytes($tp)
+            $b64   = [Convert]::ToBase64String($bytes)
+            "'data:image/jpeg;base64,$b64'"
+        } else { "null" }
+    }
+    $texOverride = "/* ---- circuitboard textures (base64 inline) ---- */`r`n" +
+                   "window.__cbgCircuitboardSrcs = [`r`n  " + ($dataUris -join ",`r`n  ") + "`r`n];`r`n"
+}
+
 # Concatenate JS in the same order StreetSamurai loads them. loader.js + tv-static.js
 # expose tiny globals that console-bg.js / page navigation may reach for; home-bg.js
 # only exposes window.homeBg (idle unless invoked); scan-glitch.js self-starts on load;
-# console-bg.js does the heavy lifting.
+# console-bg.js does the heavy lifting. The texture override (if any) must come
+# before console-bg.js so its TEX_SRCS picks it up at module-init time.
 $jsParts = @('loader.js', 'tv-static.js', 'home-bg.js', 'scan-glitch.js', 'console-bg.js')
-$jsConcat = ($jsParts | ForEach-Object {
+$jsConcat = $texOverride + "`r`n" + (($jsParts | ForEach-Object {
     "/* ---- $_ ---- */`r`n" + [System.IO.File]::ReadAllText((Join-Path $fp $_), $utf8)
-}) -join "`r`n`r`n"
+}) -join "`r`n`r`n")
 
 $begin = '<!-- BEGIN MINDATTIC.SHARED:FRONTPAGE -->'
 $end   = '<!-- END MINDATTIC.SHARED:FRONTPAGE -->'
