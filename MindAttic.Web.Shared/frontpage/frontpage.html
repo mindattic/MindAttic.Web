@@ -1,0 +1,14 @@
+<!-- ════════════════════════════════════════════════════════════════════════
+     MindAttic.Shared - frontpage.html
+     The DOM scaffolding the CBG effects expect.
+
+       .cbg-sl-fine     : fine scan-line overlay (#ff0033 1px gradient)
+       .cbg-sl-coarse   : coarse scan-line overlay (#ff2633 1px/7px gradient)
+       .console-bg-host : positioned host that console-bg.js paints into
+
+     These three fixed-position layers sit behind everything (z-index: 0)
+     and are pointer-events: none so they never intercept clicks.
+     ════════════════════════════════════════════════════════════════════════ -->
+<div class="cbg-sl-fine"     aria-hidden="true"></div>
+<div class="cbg-sl-coarse"   aria-hidden="true"></div>
+<div class="console-bg-host" aria-hidden="true"></div>
