@@ -1,8 +1,8 @@
 # MindAttic.Shared
 
-Shared front-end assets used across MindAttic web properties.
+**Cyberpunk in a `<script>` tag.** Drop-in CSS+JS that turns any web page into a living terminal — console windows boot at the edges, artifact glyph swarms drift in formation, network tracers fork and ack across the grid, Morse pulsars blink in code, folder-rip heists exfiltrate files in real time, and a parallax circuit-board hums behind it all under static scan-lines. 17 named effects, content-aware spawning that stays out of your layout, zero build step.
 
-Currently ships the **CBG (Console Background) cyberpunk effects** — the animated console windows, scan-line overlays, artifact glyph swarms, error popups, network tracers, Morse pulsars, folder-rip heists, and friends that paint the StreetSamurai home page background and now mindattic.com.
+Shared front-end assets for MindAttic web properties. Currently ships the **CBG (Console Background) cyberpunk effects** suite — powering the StreetSamurai home page background and now mindattic.com.
 
 ## Layout
 
