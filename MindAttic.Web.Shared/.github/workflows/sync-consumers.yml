@@ -89,7 +89,7 @@ jobs:
             - `wwwroot/js/*.js` overwritten with fresh CBG copies
             - `wwwroot/app.css` marker block regenerated
           branch: auto/sync-cbg
-          base: main
+          base: master
           delete-branch: true
           author: "MindAttic Content Bot <noreply@mindattic.com>"
           committer: "MindAttic Content Bot <noreply@mindattic.com>"
