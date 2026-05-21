@@ -1,8 +1,8 @@
-# MindAttic.Shared
+# MindAttic.Content
 
 **Cyberpunk in a `<script>` tag.** Drop-in CSS+JS that turns any web page into a living terminal — console windows boot at the edges, artifact glyph swarms drift in formation, network tracers fork and ack across the grid, Morse pulsars blink in code, folder-rip heists exfiltrate files in real time, and a parallax circuit-board hums behind it all under static scan-lines. 17 named effects, content-aware spawning that stays out of your layout, zero build step.
 
-Shared front-end assets for MindAttic web properties. Currently ships the **CBG (Console Background) cyberpunk effects** suite — powering the StreetSamurai home page background and now mindattic.com.
+Optional front-end content for MindAttic web properties. Consumers don't depend on this repo directly — they receive updates through delivery pipelines (jsDelivr CDN at runtime, GitHub Actions PRs for in-repo copies). Currently ships the **CBG (Console Background) cyberpunk effects** suite — powering the StreetSamurai home page background and mindattic.com.
 
 ## Layout
 
@@ -24,32 +24,43 @@ sync/
 └── bootstrap-textures.ps1   # one-shot: refresh cbg/assets/ from StreetSamurai source
 ```
 
-## Consumers
+## Delivery pipelines
 
-| Site | Mechanism | Trigger |
+See [`.github/PIPELINES.md`](.github/PIPELINES.md) for the full setup (incl. one-time PAT step) and CDN URL/tagging conventions.
+
+| Pipeline | What it does | When it runs |
 |---|---|---|
-| `mindattic.com` | Marker block in `index.htm`, all assets inlined as `<style>` + `<script>` | `deploy.ps1` runs sync first |
-| `StreetSamurai` | Files copied into `wwwroot/js/` + marker block in `wwwroot/app.css` | manual `sync-streetsamurai.ps1` (or pre-build hook) |
+| **jsDelivr CDN** | Serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@<ref>/cbg/<file>` — versioned, edge-cached, no infra to run | Continuously; cache-immutable for `@v*` tags |
+| **GitHub Actions cross-repo sync** | On push to `main`, opens PRs against `mindattic/mindattic.com` and `mindattic/StreetSamurai` with refreshed marker blocks / wwwroot copies | Every push to `main` (workflow: [`.github/workflows/sync-consumers.yml`](.github/workflows/sync-consumers.yml)) |
+| **PowerShell `sync/*.ps1`** | Local dev fallback — same logic as the Action, runs against your working copies | Manual (`sync/sync-all.ps1` or `/sync`) |
 
-The "no NuGet" rule applies: this is raw source distribution by file copy.
-A NuGet/npm package may follow later.
+```html
+<!-- pinned production -->
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@v1.0.0/cbg/console-bg.js"></script>
+<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@v1.0.0/cbg/frontpage.css">
+```
+
+| Consumer | Runtime source | In-repo copy |
+|---|---|---|
+| `mindattic.com` | CDN `<script src=…>` (preferred) **or** inlined marker block in `index.htm` | Marker block refreshed by GitHub Action |
+| `StreetSamurai` (Blazor) | CDN at runtime **or** `wwwroot/js/*.js` | `wwwroot/js/*` + `wwwroot/app.css` marker block refreshed by GitHub Action |
 
 ## Editing the effects
 
-Edit files in `cbg/` here. Then run `sync/sync-all.ps1` (or `/sync`) to push to
-all consumers. Both consumers should produce **byte-identical** rendered output
-for the effect bundle.
+Edit files in `cbg/` here. Commit + push to `main` and the Action delivers to
+both consumers. Or run `sync/sync-all.ps1` (or `/sync`) locally for fast
+iteration without round-tripping through GitHub.
 
 ```powershell
-# from MindAttic.Shared — push to all consumers in one shot
+# from MindAttic.Content — push to all consumers in one shot (local)
 powershell -File sync/sync-all.ps1
 
 # or invoke an individual target from the consumer side
-powershell -File ../MindAttic.Shared/sync/sync-mindattic-com.ps1
-powershell -File ../MindAttic.Shared/sync/sync-streetsamurai.ps1
+powershell -File ../MindAttic.Content/sync/sync-mindattic-com.ps1
+powershell -File ../MindAttic.Content/sync/sync-streetsamurai.ps1
 ```
 
-## Keepout zones (shared)
+## Keepout zones
 
 `console-bg.js` ships a keepout system that prevents effects from spawning
 behind your page content. The placer (`bestPos` / `safePos`) weights overlap

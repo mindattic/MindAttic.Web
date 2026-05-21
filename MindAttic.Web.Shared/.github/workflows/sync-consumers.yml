@@ -1,0 +1,95 @@
+name: Sync content to consumers
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'cbg/**'
+      - 'sync/**'
+      - '.github/workflows/sync-consumers.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync-mindattic-com:
+    name: Sync into mindattic.com
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MindAttic.Content
+        uses: actions/checkout@v4
+        with:
+          path: content
+
+      - name: Checkout mindattic.com
+        uses: actions/checkout@v4
+        with:
+          repository: mindattic/mindattic.com
+          path: mindattic-com
+          token: ${{ secrets.CONSUMER_REPO_TOKEN }}
+
+      - name: Run sync-mindattic-com.ps1
+        shell: pwsh
+        run: |
+          ./content/sync/sync-mindattic-com.ps1 `
+            -ContentRoot "$PWD/content" `
+            -TargetIndex "$PWD/mindattic-com/index.htm"
+
+      - name: Open or update PR if there are changes
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: mindattic-com
+          token: ${{ secrets.CONSUMER_REPO_TOKEN }}
+          commit-message: "chore(cbg): sync from MindAttic.Content@${{ github.sha }}"
+          title: "Sync CBG bundle from MindAttic.Content"
+          body: |
+            Automated sync from [MindAttic.Content@${{ github.sha }}](https://github.com/mindattic/MindAttic.Content/commit/${{ github.sha }}).
+
+            Marker block in `index.htm` regenerated from `cbg/*` sources.
+          branch: auto/sync-cbg
+          base: main
+          delete-branch: true
+          author: "MindAttic Content Bot <noreply@mindattic.com>"
+          committer: "MindAttic Content Bot <noreply@mindattic.com>"
+
+  sync-streetsamurai:
+    name: Sync into StreetSamurai
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MindAttic.Content
+        uses: actions/checkout@v4
+        with:
+          path: content
+
+      - name: Checkout StreetSamurai
+        uses: actions/checkout@v4
+        with:
+          repository: mindattic/StreetSamurai
+          path: streetsamurai
+          token: ${{ secrets.CONSUMER_REPO_TOKEN }}
+
+      - name: Run sync-streetsamurai.ps1
+        shell: pwsh
+        run: |
+          ./content/sync/sync-streetsamurai.ps1 `
+            -ContentRoot "$PWD/content" `
+            -BlazorRoot "$PWD/streetsamurai/v3/StreetSamurai.Blazor"
+
+      - name: Open or update PR if there are changes
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: streetsamurai
+          token: ${{ secrets.CONSUMER_REPO_TOKEN }}
+          commit-message: "chore(cbg): sync from MindAttic.Content@${{ github.sha }}"
+          title: "Sync CBG bundle from MindAttic.Content"
+          body: |
+            Automated sync from [MindAttic.Content@${{ github.sha }}](https://github.com/mindattic/MindAttic.Content/commit/${{ github.sha }}).
+
+            - `wwwroot/js/*.js` overwritten with fresh CBG copies
+            - `wwwroot/app.css` marker block regenerated
+          branch: auto/sync-cbg
+          base: main
+          delete-branch: true
+          author: "MindAttic Content Bot <noreply@mindattic.com>"
+          committer: "MindAttic Content Bot <noreply@mindattic.com>"

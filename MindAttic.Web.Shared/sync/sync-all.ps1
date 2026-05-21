@@ -1,9 +1,13 @@
 # ====================================================================
-# MindAttic.Shared -> all consumers
+# MindAttic.Content -> all consumers (local dev delivery)
 # Runs every downstream sync script in sync/ that matches sync-*.ps1
 # (except this file). Currently:
 #   - sync-mindattic-com.ps1  → mindattic.com/index.htm (inline)
 #   - sync-streetsamurai.ps1  → StreetSamurai.Blazor/wwwroot/
+#
+# Production delivery happens via .github/workflows/sync-consumers.yml
+# (push-triggered cross-repo PRs). This script is the local equivalent
+# for fast iteration without round-tripping through GitHub.
 #
 # Idempotent. Safe to re-run after any edit under cbg/.
 #

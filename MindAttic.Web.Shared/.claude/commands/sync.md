@@ -1,5 +1,5 @@
 ---
-description: Sync MindAttic.Shared cbg/ to both consumers (mindattic.com + StreetSamurai)
+description: Sync MindAttic.Content cbg/ to both consumers (mindattic.com + StreetSamurai)
 ---
 
 Run `sync/sync-all.ps1` from the repo root. Use the PowerShell tool. Do not edit the script or substitute your own commands — just execute it and report the output verbatim.
