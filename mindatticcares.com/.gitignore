@@ -1,2 +1,5 @@
 .vs/
 *.user
+
+# FTP deploy credentials — never commit
+/settings.json
