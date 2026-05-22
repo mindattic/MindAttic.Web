@@ -1776,6 +1776,7 @@ function toggleThemeRotation() {
 
 function startThemeRotation() {
   themeRotationPaused = false;
+  try { localStorage.setItem('resume-theme-rotation-paused', '0'); } catch(e) {}
   var ri = document.getElementById('rotate-icon');
   ri.innerHTML = '&#10074;&#10074;';
   ri.style.transform = 'translate(-55%,-48%)';
@@ -1795,6 +1796,7 @@ function startThemeRotation() {
 
 function stopThemeRotation() {
   themeRotationPaused = true;
+  try { localStorage.setItem('resume-theme-rotation-paused', '1'); } catch(e) {}
   var ri = document.getElementById('rotate-icon');
   ri.innerHTML = '&#9654;';
   ri.style.transform = 'translate(calc(-50% + 5%),-48%)';
@@ -1891,6 +1893,7 @@ function updateThemeSwatch(t) {
   sw.innerHTML = `<span style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:15px;color:${m.sc};text-shadow:0 1px 3px rgba(0,0,0,0.5);line-height:1;pointer-events:none;">${m.sym}</span>`;
 }
 function cycleTheme() {
+  stopThemeRotation();
   const idx = THEME_ORDER.indexOf(currentTheme);
   const next = THEME_ORDER[(idx + 1) % THEME_ORDER.length];
   setTheme(next);
@@ -1923,6 +1926,7 @@ function closeThemeMenu() {
   if (trigger) trigger.setAttribute('aria-expanded', 'false');
 }
 function pickTheme(t) {
+  stopThemeRotation();
   setTheme(t);
   document.getElementById('theme-picker').value = t;
   closeThemeMenu();
@@ -6347,8 +6351,14 @@ function init() {
   setTheme(t);
   initNekoColor();
 
-  // Start theme rotation by default
-  startThemeRotation();
+  // Start theme rotation by default, unless the user previously paused it
+  let rotationPausedOnLoad = false;
+  try { rotationPausedOnLoad = localStorage.getItem('resume-theme-rotation-paused') === '1'; } catch(e) {}
+  if (rotationPausedOnLoad) {
+    stopThemeRotation();
+  } else {
+    startThemeRotation();
+  }
 
   // Wire up skill search
   var searchInput = document.getElementById('skill-search');
@@ -6643,6 +6653,7 @@ function resetAllSettings() {
 // never pick it again as the very next roll.
 let seenThemes = new Set([currentTheme]);
 function randomTheme() {
+  stopThemeRotation();
   let candidates = THEME_ORDER.filter(t => !seenThemes.has(t));
   if (candidates.length === 0) {
     seenThemes = new Set([currentTheme]);
