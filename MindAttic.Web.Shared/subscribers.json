@@ -1,0 +1,61 @@
+{
+  "$comment": "Canonical map of which MindAttic.Components components flow to each downstream subscriber, with per-subscriber configuration. The sync scripts read this file to drive their splicing -- edit THIS file (not the sync scripts) when adding or removing subscriptions. The 'components' section is the registry of available components; the 'subscribers' section binds them to subscribers. Marker names are base names (without .CSS suffix); each subscriber kind appends the suffix it needs.",
+
+  "components": {
+    "OutfitFont":  { "type": "font-css",    "marker": "OUTFITFONT",  "cssFile": "OutfitFont/outfit-font.css",   "jsonFile": "OutfitFont/outfit-font.json", "htmlFile": "OutfitFont/outfit-font.html" },
+    "AtticFont":   { "type": "font-css",    "marker": "ATTICFONT",   "cssFile": "AtticFont/attic-font.css",     "jsonFile": "AtticFont/attic-font.json",   "htmlFile": "AtticFont/attic-font.html"  },
+    "BackHomeM":   { "type": "static-css",  "marker": "BACKHOMEM",   "cssFile": "BackHomeM/back-home-m.css" },
+    "Cyberspace":  { "type": "html-bundle", "marker": "CYBERSPACE",  "htmlFile": "Cyberspace/frontpage.html",   "cssFile": "Cyberspace/frontpage.css",     "jsFiles": ["Cyberspace/loader.js", "Cyberspace/tv-static.js", "Cyberspace/home-bg.js", "Cyberspace/console-bg.js"], "assetsDir": "Cyberspace/assets" },
+    "PinFooter":   { "type": "html-bundle", "marker": "PINFOOTER",   "htmlFile": "PinFooter/pin-footer.html",   "cssFile": "PinFooter/pin-footer.css",     "jsFiles": ["PinFooter/pin-footer.js"] },
+    "WebSnapshot": { "type": "html-bundle", "marker": "WEBSNAPSHOT",                                             "cssFile": "WebSnapshot/web-snapshot.css", "jsFiles": ["WebSnapshot/web-snapshot-viewer.js"] }
+  },
+
+  "subscribers": {
+    "mindattic.com": {
+      "kind":       "html-inline",
+      "target":     "D:/Projects/MindAttic/mindattic.com/index.htm",
+      "syncScript": "sync-mindattic-com.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont",   "applyToSelector": ".site-name" },
+        { "component": "Cyberspace"  },
+        { "component": "PinFooter"   },
+        { "component": "WebSnapshot" }
+      ]
+    },
+
+    "StreetSamurai": {
+      "kind":       "blazor-wwwroot",
+      "target":     "D:/Projects/MindAttic/StreetSamurai/v3/StreetSamurai.Blazor",
+      "syncScript": "sync-streetsamurai.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont",  "applyToSelector": null },
+        { "component": "Cyberspace" },
+        { "component": "PinFooter", "jsOnly": true }
+      ]
+    },
+
+    "Claudia": {
+      "kind":       "build-html-js",
+      "target":     "D:/Projects/MindAttic/Claudia/scripts/cli/build-html.js",
+      "syncScript": "sync-claudia.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont",  "applyToSelector": "#claudia" },
+        { "component": "BackHomeM"  }
+      ]
+    },
+
+    "ChiMesh": {
+      "kind":       "build-html-js",
+      "target":     "D:/Projects/MindAttic/ChiMesh/scripts/cli/build-html.js",
+      "syncScript": "sync-chimesh.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont", "applyToSelector": "#chimesh" },
+        { "component": "BackHomeM" }
+      ]
+    }
+  }
+}

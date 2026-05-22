@@ -1,0 +1,13 @@
+{
+  "mode": "handheld",
+  "align": "top-center",
+  "overflow": 0.1,
+  "innerWidth": 150,
+  "innerHeight": 225,
+  "outerWidth": 165,
+  "outerHeight": 248,
+  "restX": 0,
+  "restY": 11.5,
+  "inputWidth": 850,
+  "inputHeight": 1300
+}

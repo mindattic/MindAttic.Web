@@ -1,5 +1,5 @@
 ---
-description: Alias for /sync — copy the cyberspace/ bundle into mindattic.com and StreetSamurai
+description: Alias for /sync — push every subscribed component into mindattic.com, StreetSamurai, Claudia, and ChiMesh
 ---
 
 Run `sync/sync-all.ps1` from the repo root. Use the PowerShell tool. Do not edit the script or substitute your own commands — just execute it and report the output verbatim.

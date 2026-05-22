@@ -1,0 +1,33 @@
+<!-- ════════════════════════════════════════════════════════════════════════
+     MindAttic.Components - WebSnapshot/web-snapshot.html
+
+     The viewer ONLY adds wobble behavior — hosts size their own .web-snapshot
+     container however they want. Mark any container with class `.web-snapshot`
+     and the JS will animate the inner <img>.
+
+     Markup form A (fetch the .b64.txt from disk; viewer reads sibling meta.json):
+
+       <div class="web-snapshot" style="width:150px;height:225px"
+            data-src="previews/ryandebraal.b64.txt">
+         <img alt="ryandebraal.com">
+       </div>
+
+     Markup form B (inline data URI; pass meta as JSON via data-meta):
+
+       <div class="web-snapshot" style="width:150px;height:225px"
+            data-meta='{"mode":"handheld","outerWidth":165,"outerHeight":248,
+                        "innerWidth":150,"innerHeight":225,"restX":0,"restY":11.5}'>
+         <img src="data:image/png;base64,…">
+       </div>
+
+     Companion CSS: web-snapshot.css   (behavior only — no default size)
+     Companion JS:  web-snapshot-viewer.js
+     ════════════════════════════════════════════════════════════════════════ -->
+
+<link rel="stylesheet" href="web-snapshot.css">
+<script src="web-snapshot-viewer.js" defer></script>
+
+<div class="web-snapshot" style="display:inline-block;width:150px;height:225px;line-height:0"
+     data-src="previews/ryandebraal.b64.txt">
+  <img alt="ryandebraal.com preview">
+</div>

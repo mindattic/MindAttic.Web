@@ -1,0 +1,181 @@
+name: Sync content to subscribers
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'AtticFont/**'
+      - 'BackHomeM/**'
+      - 'Cyberspace/**'
+      - 'OutfitFont/**'
+      - 'PinFooter/**'
+      - 'WebSnapshot/**'
+      - 'subscribers.json'
+      - 'sync/**'
+      - '.github/workflows/sync-subscribers.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync-mindattic-com:
+    name: Sync into mindattic.com
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MindAttic.Components
+        uses: actions/checkout@v4
+        with:
+          path: content
+
+      - name: Checkout mindattic.com
+        uses: actions/checkout@v4
+        with:
+          repository: mindattic/mindattic.com
+          path: mindattic-com
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+
+      - name: Run sync-mindattic-com.ps1
+        shell: pwsh
+        run: |
+          ./content/sync/sync-mindattic-com.ps1 `
+            -ContentRoot "$PWD/content" `
+            -TargetIndex "$PWD/mindattic-com/index.htm"
+
+      - name: Open or update PR if there are changes
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: mindattic-com
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+          commit-message: "chore(components): sync from MindAttic.Components@${{ github.sha }}"
+          title: "Sync from MindAttic.Components"
+          body: |
+            Automated sync from [MindAttic.Components@${{ github.sha }}](https://github.com/mindattic/MindAttic.Components/commit/${{ github.sha }}).
+
+            Marker blocks in `index.htm` regenerated from canonical sources.
+          branch: auto/sync-components
+          base: main
+          delete-branch: true
+          author: "MindAttic Components Bot <noreply@mindattic.com>"
+          committer: "MindAttic Components Bot <noreply@mindattic.com>"
+
+  sync-streetsamurai:
+    name: Sync into StreetSamurai
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MindAttic.Components
+        uses: actions/checkout@v4
+        with:
+          path: content
+
+      - name: Checkout StreetSamurai
+        uses: actions/checkout@v4
+        with:
+          repository: mindattic/StreetSamurai
+          path: streetsamurai
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+
+      - name: Run sync-streetsamurai.ps1
+        shell: pwsh
+        run: |
+          ./content/sync/sync-streetsamurai.ps1 `
+            -ContentRoot "$PWD/content" `
+            -BlazorRoot "$PWD/streetsamurai/v3/StreetSamurai.Blazor"
+
+      - name: Open or update PR if there are changes
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: streetsamurai
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+          commit-message: "chore(components): sync from MindAttic.Components@${{ github.sha }}"
+          title: "Sync from MindAttic.Components"
+          body: |
+            Automated sync from [MindAttic.Components@${{ github.sha }}](https://github.com/mindattic/MindAttic.Components/commit/${{ github.sha }}).
+
+            - `wwwroot/js/*.js` overwritten with fresh copies
+            - `wwwroot/app.css` marker blocks regenerated
+          branch: auto/sync-components
+          base: master
+          delete-branch: true
+          author: "MindAttic Components Bot <noreply@mindattic.com>"
+          committer: "MindAttic Components Bot <noreply@mindattic.com>"
+
+  sync-claudia:
+    name: Sync into Claudia
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MindAttic.Components
+        uses: actions/checkout@v4
+        with:
+          path: content
+
+      - name: Checkout Claudia
+        uses: actions/checkout@v4
+        with:
+          repository: mindattic/Claudia
+          path: claudia
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+
+      - name: Run sync-claudia.ps1
+        shell: pwsh
+        run: |
+          ./content/sync/sync-claudia.ps1 `
+            -ContentRoot "$PWD/content" `
+            -ClaudiaRoot "$PWD/claudia"
+
+      - name: Open or update PR if there are changes
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: claudia
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+          commit-message: "chore(components): sync from MindAttic.Components@${{ github.sha }}"
+          title: "Sync from MindAttic.Components"
+          body: |
+            Automated sync from [MindAttic.Components@${{ github.sha }}](https://github.com/mindattic/MindAttic.Components/commit/${{ github.sha }}).
+
+            CSS marker blocks in `scripts/cli/build-html.js` regenerated. Run `node scripts/cli/build-html.js` to materialize into Claudia.htm / index.htm.
+          branch: auto/sync-components
+          base: main
+          delete-branch: true
+          author: "MindAttic Components Bot <noreply@mindattic.com>"
+          committer: "MindAttic Components Bot <noreply@mindattic.com>"
+
+  sync-chimesh:
+    name: Sync into ChiMesh
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MindAttic.Components
+        uses: actions/checkout@v4
+        with:
+          path: content
+
+      - name: Checkout ChiMesh
+        uses: actions/checkout@v4
+        with:
+          repository: mindattic/ChiMesh
+          path: chimesh
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+
+      - name: Run sync-chimesh.ps1
+        shell: pwsh
+        run: |
+          ./content/sync/sync-chimesh.ps1 `
+            -ContentRoot "$PWD/content" `
+            -ChiMeshRoot "$PWD/chimesh"
+
+      - name: Open or update PR if there are changes
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: chimesh
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+          commit-message: "chore(components): sync from MindAttic.Components@${{ github.sha }}"
+          title: "Sync from MindAttic.Components"
+          body: |
+            Automated sync from [MindAttic.Components@${{ github.sha }}](https://github.com/mindattic/MindAttic.Components/commit/${{ github.sha }}).
+
+            CSS marker blocks in `scripts/cli/build-html.js` regenerated. Run `node scripts/cli/build-html.js` to materialize into ChiMesh.htm / index.htm.
+          branch: auto/sync-components
+          base: main
+          delete-branch: true
+          author: "MindAttic Components Bot <noreply@mindattic.com>"
+          committer: "MindAttic Components Bot <noreply@mindattic.com>"
