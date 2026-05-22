@@ -4683,6 +4683,8 @@ window.consoleBg = (function () {
     var texLayers = null;   // built once; images reused across navigations
     var texRaf    = null;
     var texTimer  = null;
+    var texResizeBound = false;
+    var texCanvas = null;
 
     function initTextures() {
         var host = getHost();
@@ -4698,7 +4700,19 @@ window.consoleBg = (function () {
         }
         canvas.width  = window.innerWidth;
         canvas.height = window.innerHeight;
+        texCanvas = canvas;
         var ctx = canvas.getContext('2d');
+
+        // Keep the canvas in sync with the viewport — without this the parallax
+        // texture only paints the original window area after a maximize/resize.
+        if (!texResizeBound) {
+            window.addEventListener('resize', function () {
+                if (!texCanvas) return;
+                if (texCanvas.width  !== window.innerWidth)  texCanvas.width  = window.innerWidth;
+                if (texCanvas.height !== window.innerHeight) texCanvas.height = window.innerHeight;
+            });
+            texResizeBound = true;
+        }
 
         // Build layer descriptors once; images survive page navigations
         if (!texLayers) {
@@ -4734,9 +4748,10 @@ window.consoleBg = (function () {
 
         // Restart animation loop on the (possibly new) canvas
         if (texRaf) cancelAnimationFrame(texRaf);
-        var w = canvas.width, h = canvas.height;
 
         function frame() {
+            // Read live so a resize-driven canvas.width/height change takes effect immediately.
+            var w = canvas.width, h = canvas.height;
             ctx.clearRect(0, 0, w, h);
             texLayers.forEach(function (t) {
                 if (!t.img.complete || !t.img.naturalWidth) return;
