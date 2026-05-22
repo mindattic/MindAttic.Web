@@ -1,4 +1,4 @@
-﻿<!-- Last Updated: 2026-05-22T17:34:21Z -->
+﻿<!-- Last Updated: 2026-05-22T18:32:28Z -->
 <!DOCTYPE html>
 <html lang="en" data-theme="light" data-profile="classic">
 <head>
@@ -6268,61 +6268,61 @@ function runPdfExport(opts) {
   var em = document.getElementById('export-menu'); if (em) em.style.display='none';
   var mm = document.getElementById('more-menu'); if (mm) mm.style.display='none';
 
-  // 1. Clone the entire document and strip interactive chrome
-  var clone = document.documentElement.cloneNode(true);
-  var tb = clone.querySelector('#toolbar');       if (tb) tb.remove();
-  var fx = clone.querySelector('#fx-canvas');      if (fx) fx.remove();
-  var sp = clone.querySelector('#snow-pile-svg');   if (sp) sp.remove();
-  ['#resume-nav-btn','#resume-nav-menu'].forEach(function(sel) {
-    var el = clone.querySelector(sel); if (el) el.remove();
-  });
-  clone.querySelectorAll('script').forEach(function(s) { s.remove(); });
-  clone.setAttribute('data-theme', 'light');
-  if (mode) clone.setAttribute('data-print-mode', mode);
+  var resume = document.getElementById('resume');
+  if (!resume) return;
+  var html = document.documentElement;
 
-  // CV mode: split #resume-body sections into a two-column grid before capture
-  if (mode === 'cv') {
-    var rb = clone.querySelector('#resume-body');
-    if (rb) reorganizeForCV(rb);
+  // Snapshot live state we're about to mutate so we can put it back after.
+  // (We capture directly from the live DOM rather than a hidden iframe —
+  // html2canvas is unreliable against off-screen iframes.)
+  var prevTheme = html.getAttribute('data-theme');
+  var prevMode = html.getAttribute('data-print-mode');
+  var fx = document.getElementById('fx-canvas');
+  var prevFxDisplay = fx ? fx.style.display : '';
+  var sp = document.getElementById('snow-pile-svg');
+  var prevSpDisplay = sp ? sp.style.display : '';
+  var resumeBody = document.getElementById('resume-body');
+  var savedResumeBodyHTML = null;
+
+  // Hide animated chrome so it doesn't bleed into the snapshot.
+  if (fx) fx.style.display = 'none';
+  if (sp) sp.style.display = 'none';
+  html.setAttribute('data-theme', 'light');
+  if (mode) html.setAttribute('data-print-mode', mode);
+
+  // CV mode: regroup flat .r-sec sections into a two-column grid.
+  if (mode === 'cv' && resumeBody) {
+    savedResumeBodyHTML = resumeBody.innerHTML;
+    reorganizeForCV(resumeBody);
   }
 
-  var htmlStr = '<!DOCTYPE html>\n' + clone.outerHTML;
+  function restore() {
+    if (prevTheme !== null) html.setAttribute('data-theme', prevTheme); else html.removeAttribute('data-theme');
+    if (prevMode !== null) html.setAttribute('data-print-mode', prevMode); else html.removeAttribute('data-print-mode');
+    if (fx) fx.style.display = prevFxDisplay;
+    if (sp) sp.style.display = prevSpDisplay;
+    if (savedResumeBodyHTML !== null && resumeBody) {
+      resumeBody.innerHTML = savedResumeBodyHTML;
+      var searchInput = document.getElementById('skill-search');
+      if (searchInput && searchInput.value) filterSkills(searchInput.value);
+    }
+  }
 
-  var iframe = document.createElement('iframe');
-  iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:8.5in;height:11in;border:none;';
-
-  // Append, write the clone, then wait for the iframe's fonts to settle and
-  // two animation frames so the first paint has flushed. We deliberately do
-  // not use iframe.addEventListener('load', ...) — appending an iframe fires a
-  // load event for its initial about:blank document before our content is
-  // written, and { once: true } would consume that early event and never see
-  // the real one.
-  document.body.appendChild(iframe);
-  iframe.contentDocument.open();
-  iframe.contentDocument.write(htmlStr);
-  iframe.contentDocument.close();
-
-  var doc = iframe.contentDocument;
-  var win = iframe.contentWindow;
-  var fontsReady = (doc && doc.fonts && doc.fonts.ready) || Promise.resolve();
+  var fontsReady = (document.fonts && document.fonts.ready) || Promise.resolve();
   fontsReady.then(function() {
-    win.requestAnimationFrame(function() {
-      win.requestAnimationFrame(function() {
-        var target = doc.getElementById('resume');
-        if (!target) { document.body.removeChild(iframe); return; }
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
         var opt = {
           margin:       [0.3, 0.3, 0.3, 0.3],
           filename:     filename,
           image:        { type: 'jpeg', quality: 0.98 },
-          html2canvas:  { scale: 2, useCORS: true, letterRendering: true, windowWidth: target.scrollWidth },
+          html2canvas:  { scale: 2, useCORS: true, letterRendering: true, windowWidth: resume.scrollWidth },
           jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
           pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
         };
-        html2pdf().set(opt).from(target).save().then(function() {
-          document.body.removeChild(iframe);
-        }).catch(function(err) {
+        html2pdf().set(opt).from(resume).save().then(restore).catch(function(err) {
           console.error('PDF export failed:', err);
-          document.body.removeChild(iframe);
+          restore();
         });
       });
     });
