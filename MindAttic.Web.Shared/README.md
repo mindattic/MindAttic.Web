@@ -2,21 +2,21 @@
 
 **Cyberpunk in a `<script>` tag.** Drop-in CSS+JS that turns any web page into a living terminal — console windows boot at the edges, artifact glyph swarms drift in formation, network tracers fork and ack across the grid, Morse pulsars blink in code, folder-rip heists exfiltrate files in real time, and a parallax circuit-board hums behind it all under static scan-lines. 17 named effects, content-aware spawning that stays out of your layout, zero build step.
 
-Optional front-end content for MindAttic web properties. Consumers don't depend on this repo directly — they receive updates through delivery pipelines (jsDelivr CDN at runtime, GitHub Actions PRs for in-repo copies). Currently ships the **CBG (Console Background) cyberpunk effects** suite — powering the StreetSamurai home page background and mindattic.com.
+Optional front-end content for MindAttic web properties. Consumers don't depend on this repo directly — they receive updates through delivery pipelines (jsDelivr CDN at runtime, GitHub Actions PRs for in-repo copies). Currently ships the **CYBERSPACE (Console Background) cyberpunk effects** suite — powering the StreetSamurai home page background and mindattic.com.
 
 ## Layout
 
 ```
-cbg/
+Cyberspace/
 ├── frontpage.html      # DOM scaffolding (3 fixed-position layer divs)
-├── frontpage.css       # all CBG rules + scan-lines + neon flicker keyframes
+├── frontpage.css       # all CYBERSPACE rules + scan-lines + neon flicker keyframes
 ├── console-bg.js       # the animation engine (17 effects)
 ├── home-bg.js          # torn-edge portrait compositor
 ├── tv-static.js        # navigation-transition TV-static overlay
 ├── loader.js           # tiny global loader show/hide helper
 └── assets/             # parallax textures (circuitboard.00..02.png)
 
-pin-footer/             # standalone group (own sync marker pair)
+PinFooter/             # standalone group (own sync marker pair)
 ├── pin-footer.html     # usage comment (consumers add `.pin-when-short` class)
 ├── pin-footer.css      # `.pin-when-short.pinned` rule
 └── pin-footer.js       # toggles `.pinned` when document is shorter than viewport
@@ -25,7 +25,7 @@ sync/
 ├── sync-all.ps1             # umbrella runner: invokes every sync-*.ps1
 ├── sync-mindattic-com.ps1   # inlines the bundle into mindattic.com/index.htm
 ├── sync-streetsamurai.ps1   # overwrites StreetSamurai wwwroot copies
-└── bootstrap-textures.ps1   # one-shot: refresh cbg/assets/ from StreetSamurai source
+└── bootstrap-textures.ps1   # one-shot: refresh Cyberspace/assets/ from StreetSamurai source
 ```
 
 ## Delivery pipelines
@@ -34,14 +34,14 @@ See [`.github/PIPELINES.md`](.github/PIPELINES.md) for the full setup (incl. one
 
 | Pipeline | What it does | When it runs |
 |---|---|---|
-| **jsDelivr CDN** | Serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@<ref>/cbg/<file>` — versioned, edge-cached, no infra to run | Continuously; cache-immutable for `@v*` tags |
+| **jsDelivr CDN** | Serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@<ref>/Cyberspace/<file>` — versioned, edge-cached, no infra to run | Continuously; cache-immutable for `@v*` tags |
 | **GitHub Actions cross-repo sync** | On push to `main`, opens PRs against `mindattic/mindattic.com` and `mindattic/StreetSamurai` with refreshed marker blocks / wwwroot copies | Every push to `main` (workflow: [`.github/workflows/sync-consumers.yml`](.github/workflows/sync-consumers.yml)) |
 | **PowerShell `sync/*.ps1`** | Local dev fallback — same logic as the Action, runs against your working copies | Manual (`sync/sync-all.ps1` or `/sync`) |
 
 ```html
 <!-- pinned production -->
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@v1.0.0/cbg/console-bg.js"></script>
-<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@v1.0.0/cbg/frontpage.css">
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@v1.0.0/Cyberspace/console-bg.js"></script>
+<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@v1.0.0/Cyberspace/frontpage.css">
 ```
 
 | Consumer | Runtime source | In-repo copy |
@@ -51,7 +51,7 @@ See [`.github/PIPELINES.md`](.github/PIPELINES.md) for the full setup (incl. one
 
 ## Editing the effects
 
-Edit files in `cbg/` here. Commit + push to `main` and the Action delivers to
+Edit files in `Cyberspace/` here. Commit + push to `main` and the Action delivers to
 both consumers. Or run `sync/sync-all.ps1` (or `/sync`) locally for fast
 iteration without round-tripping through GitHub.
 
@@ -73,7 +73,7 @@ in the margins around them.
 
 Baked-in selectors — any host gets these for free:
 
-- `.cbg-keepout` — opt-in marker. Add this class to any container you want
+- `.cyberspace-keepout` — opt-in marker. Add this class to any container you want
   protected.
 - `main` — the top-level page-content element. Both StreetSamurai and
   mindattic.com use `<main>` for their content area.
@@ -81,7 +81,7 @@ Baked-in selectors — any host gets these for free:
 - `.board-grid` — any tab/tile board.
 
 Hosts can extend the list at runtime by setting
-`window.__cbgKeepoutSelectors` to a CSS selector string (comma-separated)
+`window.__cyberspaceKeepoutSelectors` to a CSS selector string (comma-separated)
 before `console-bg.js` evaluates the keepout for a given placement.
 
 ## Effect catalog
@@ -100,7 +100,7 @@ entirely.
 | **TREMOR**  | `spawnWarning`            | `FX_WARN` / 1%             | Warning popup |
 | **LEAK**    | `spawnMemo`               | `FX_MEMO` / 4%             | Leaked corporate memo, character-by-character erase |
 | **SCHEMATIC**| `spawnGeoWindow`         | `FX_GEO` / 10%             | Geometric schematic window (polyhedra + element-report text) |
-| **CASCADE** | `spawnCascade`            | `FX_CASCADE` / 3%          | Burst of 3–6 cascaded console windows (uses `cbg-cascade` class) |
+| **CASCADE** | `spawnCascade`            | `FX_CASCADE` / 3%          | Burst of 3–6 cascaded console windows (uses `cyberspace-cascade` class) |
 | **ARTIFACT**| `spawnArtifact`           | `FX_ARTIFACT` / 12%        | Floating glyph cluster — see variants below |
 | **FRAGMENT**| `spawnFrag`               | `FX_FRAG` / 40%            | Floating code fragments (most frequent effect) |
 | **TRACE**   | `spawnNetConnect`         | `FX_NET` / 8%              | Tron-cycle network wire route — see sub-behaviors |
@@ -153,12 +153,12 @@ entirely.
 | **DEVOUR**   | Cell consume-and-convert (cell adopts wasp glyph then dissolves) |
 | **DISPERSE** | Wasps scatter and fade after kill |
 
-### Standalone (non-CBG) bundled effects
+### Standalone (non-CYBERSPACE) bundled effects
 
 | File             | What it does |
 |------------------|--------------|
 | `loader.js`      | Small load-state helpers (tiny globals consumed by `console-bg.js`) |
 | `tv-static.js`   | TV-static fade overlay during page transitions |
 | `home-bg.js`     | Torn-edge portrait compositor — exposes `window.homeBg`, idle unless invoked |
-| `console-bg.js` parallax | Slow-scrolling circuit-board texture layer. Hosts can override the source list via `window.__cbgCircuitboardSrcs` — mindattic.com inlines them as base64; StreetSamurai serves them via `/api/media/...`. |
-| Scan-line CSS    | Static scan-line overlay defined in `cbg/frontpage.css` (no JS). |
+| `console-bg.js` parallax | Slow-scrolling circuit-board texture layer. Hosts can override the source list via `window.__cyberspaceCircuitboardSrcs` — mindattic.com inlines them as base64; StreetSamurai serves them via `/api/media/...`. |
+| Scan-line CSS    | Static scan-line overlay defined in `Cyberspace/frontpage.css` (no JS). |

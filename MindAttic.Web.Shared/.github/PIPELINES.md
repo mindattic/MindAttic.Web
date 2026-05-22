@@ -9,7 +9,7 @@ Every file in this repo is served by [jsDelivr](https://www.jsdelivr.com/) at a 
 **URL shape:**
 
 ```
-https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@<ref>/cbg/<file>
+https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@<ref>/cyberspace/<file>
 ```
 
 Where `<ref>` is any of:
@@ -24,11 +24,11 @@ Where `<ref>` is any of:
 
 ```html
 <!-- pinned, production -->
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@v1.0.0/cbg/console-bg.js"></script>
-<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@v1.0.0/cbg/frontpage.css">
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@v1.0.0/cyberspace/console-bg.js"></script>
+<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@v1.0.0/cyberspace/frontpage.css">
 
 <!-- bleeding edge (dev only) -->
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@main/cbg/console-bg.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Content@main/cyberspace/console-bg.js"></script>
 ```
 
 **Cutting a release:**
@@ -41,18 +41,18 @@ git push --tags
 
 **Purging the cache (rare, only needed for branch refs):**
 
-`https://purge.jsdelivr.net/gh/mindattic/MindAttic.Content@main/cbg/console-bg.js` — GET to purge.
+`https://purge.jsdelivr.net/gh/mindattic/MindAttic.Content@main/cyberspace/console-bg.js` — GET to purge.
 
 ## Pipeline 2 — GitHub Actions cross-repo sync (in-repo copies)
 
-`.github/workflows/sync-consumers.yml` runs on every push to `main` that touches `cbg/**`, `sync/**`, or the workflow itself.
+`.github/workflows/sync-consumers.yml` runs on every push to `main` that touches `cyberspace/**`, `sync/**`, or the workflow itself.
 
 For each consumer it:
 
 1. Checks out MindAttic.Content
 2. Checks out the consumer repo (using a fine-grained PAT)
 3. Runs the matching `sync/sync-*.ps1` script with `-ContentRoot` and consumer paths supplied
-4. Opens (or updates) a PR titled "Sync CBG bundle from MindAttic.Content" on branch `auto/sync-cbg`
+4. Opens (or updates) a PR titled "Sync CYBERSPACE bundle from MindAttic.Content" on branch `auto/sync-cyberspace`
 
 This pipeline exists because some consumers benefit from carrying a local copy:
 
@@ -83,7 +83,7 @@ The workflow will now succeed.
 
 ## Pipeline 3 — PowerShell `sync/*.ps1` (local dev fallback)
 
-For fast iteration without pushing to GitHub, the `sync/sync-all.ps1` script does the same work locally against your working copies of the consumer repos. Run it after any edit under `cbg/`:
+For fast iteration without pushing to GitHub, the `sync/sync-all.ps1` script does the same work locally against your working copies of the consumer repos. Run it after any edit under `cyberspace/`:
 
 ```powershell
 powershell -File sync/sync-all.ps1

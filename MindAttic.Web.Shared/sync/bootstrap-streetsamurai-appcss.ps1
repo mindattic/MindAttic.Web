@@ -1,4 +1,4 @@
-# One-shot: replace app.css lines 1079..1803 (the CBG block) with the marker pair.
+# One-shot: replace app.css lines 1079..1803 (the CYBERSPACE block) with the marker pair.
 # After this runs, sync-streetsamurai.ps1 can keep the block in sync.
 # Uses UTF-8 reading to preserve non-ASCII characters elsewhere in the file.
 $src = 'D:/Projects/MindAttic/StreetSamurai/v3/StreetSamurai.Blazor/wwwroot/app.css'
@@ -12,10 +12,10 @@ $before = $lines[0..1077]
 $after  = $lines[1803..($lines.Count - 1)]
 
 $placeholder = @(
-    '/* == BEGIN MINDATTIC.CONTENT:CBG.CSS == */',
+    '/* == BEGIN MINDATTIC.CONTENT:CYBERSPACE.CSS == */',
     '/* MindAttic.Content rewrites this block. Do not hand-edit. */',
-    '/* == END MINDATTIC.CONTENT:CBG.CSS == */'
+    '/* == END MINDATTIC.CONTENT:CYBERSPACE.CSS == */'
 )
 $new = ($before + $placeholder + $after) -join "`r`n"
 [System.IO.File]::WriteAllText($src, $new, $utf8)
-Write-Output "Replaced CBG block in $src with marker pair"
+Write-Output "Replaced CYBERSPACE block in $src with marker pair"

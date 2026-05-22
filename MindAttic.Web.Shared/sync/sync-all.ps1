@@ -9,7 +9,7 @@
 # (push-triggered cross-repo PRs). This script is the local equivalent
 # for fast iteration without round-tripping through GitHub.
 #
-# Idempotent. Safe to re-run after any edit under cbg/.
+# Idempotent. Safe to re-run after any edit under cyberspace/.
 #
 # Usage:
 #   powershell -File sync-all.ps1
