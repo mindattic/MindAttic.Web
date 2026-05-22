@@ -1,4 +1,4 @@
-﻿<!-- Last Updated: 2026-05-22T14:19:19Z -->
+﻿<!-- Last Updated: 2026-05-22T14:25:04Z -->
 <!DOCTYPE html>
 <html lang="en" data-theme="light" data-profile="classic">
 <head>
@@ -548,6 +548,82 @@ select.tb-sel:hover{border-color:var(--accent);}
 #avatar-lightbox .lb-img{width:400px;height:400px;border-radius:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);animation:lb-in 0.25s ease-out;}
 @keyframes lb-in{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
 @keyframes dice-spin{from{transform:rotate(0deg) scale(1)}50%{transform:rotate(360deg) scale(1.2)}to{transform:rotate(720deg) scale(1)}}
+
+/* ── PRINT MODES (drive Export → Print Page / Print Document / Print CV) ──
+   These rules only activate when <html data-print-mode="..."> is set, which
+   only happens inside the cloned iframe used by exportPrint*() — never on
+   the live page. */
+[data-print-mode] body{background:#fff!important;}
+[data-print-mode] body::before,
+[data-print-mode] body::after,
+[data-print-mode] #fx-canvas,
+[data-print-mode] #snow-pile-svg{display:none!important;}
+[data-print-mode] .tag{box-shadow:none!important;text-shadow:none!important;transition:none!important;animation:none!important;}
+[data-print-mode] #resume{box-shadow:none!important;}
+[data-print-mode] hr{box-shadow:none!important;}
+
+/* Print Page — cleanup only; keep pills/layout, lose chrome */
+[data-print-mode="page"] #resume{background:#fff!important;border:none!important;border-radius:0!important;}
+
+/* Print Document — looks like a Word/PDF resume, pills become inline comma list */
+[data-print-mode="document"] body{color:#111!important;}
+[data-print-mode="document"] #resume{background:#fff!important;border:none!important;border-radius:0!important;padding:0.4in 0.5in!important;color:#111!important;}
+[data-print-mode="document"] .r-name,
+[data-print-mode="document"] .r-job-title,
+[data-print-mode="document"] .r-edu-degree,
+[data-print-mode="document"] .r-project-name,
+[data-print-mode="document"] .r-patent-title,
+[data-print-mode="document"] .r-job-bullets li strong{color:#111!important;}
+[data-print-mode="document"] .r-title,
+[data-print-mode="document"] .r-summary,
+[data-print-mode="document"] .r-job-bullets li,
+[data-print-mode="document"] .r-edu-school,
+[data-print-mode="document"] .r-project-desc,
+[data-print-mode="document"] .r-patent-desc{color:#222!important;}
+[data-print-mode="document"] .r-job-dates,
+[data-print-mode="document"] .r-edu-dates,
+[data-print-mode="document"] .r-job-meta{color:#555!important;}
+[data-print-mode="document"] .r-sec{color:#111!important;border-bottom-color:#999!important;}
+[data-print-mode="document"] .r-job-company,
+[data-print-mode="document"] .r-contact a,
+[data-print-mode="document"] .r-edu-note,
+[data-print-mode="document"] .r-patent-num{color:#111!important;}
+[data-print-mode="document"] .r-contact a{border-bottom:none!important;}
+[data-print-mode="document"] .r-job-bullets li::before{color:#111!important;}
+[data-print-mode="document"] .tag{background:transparent!important;border:none!important;padding:0!important;margin:0!important;color:#111!important;font-weight:400!important;display:inline!important;border-radius:0!important;font-size:12px!important;}
+[data-print-mode="document"] .tag + .tag::before{content:", ";color:#111;}
+[data-print-mode="document"] .r-skill-tags{display:inline!important;line-height:1.6!important;}
+[data-print-mode="document"] .r-skill-row{display:block!important;margin-bottom:8px!important;}
+[data-print-mode="document"] .r-skill-label{display:inline!important;margin-right:6px!important;min-width:0!important;}
+[data-print-mode="document"] .r-skill-label::after{content:":";}
+[data-print-mode="document"] hr{border-color:#ccc!important;}
+
+/* Print CV — two-column ATS-friendly with serif body */
+[data-print-mode="cv"] body{background:#fff!important;color:#111!important;font-family:Georgia,'Times New Roman',serif!important;}
+[data-print-mode="cv"] #resume{background:#fff!important;border:none!important;border-radius:0!important;padding:0.35in 0.4in!important;}
+[data-print-mode="cv"] .r-name{font-family:Georgia,'Times New Roman',serif!important;font-weight:700!important;color:#111!important;letter-spacing:0!important;}
+[data-print-mode="cv"] .r-title{color:#444!important;}
+[data-print-mode="cv"] .r-contact a{color:#111!important;border-bottom:none!important;}
+[data-print-mode="cv"] .r-sec{color:#111!important;border-bottom-color:#aaa!important;font-family:Georgia,serif!important;letter-spacing:0.08em!important;}
+[data-print-mode="cv"] .r-summary,
+[data-print-mode="cv"] .r-job-bullets li,
+[data-print-mode="cv"] .r-project-desc,
+[data-print-mode="cv"] .r-patent-desc{color:#222!important;font-family:Georgia,serif!important;}
+[data-print-mode="cv"] .r-job-title,
+[data-print-mode="cv"] .r-edu-degree,
+[data-print-mode="cv"] .r-project-name,
+[data-print-mode="cv"] .r-patent-title{color:#111!important;}
+[data-print-mode="cv"] .r-job-company{color:#333!important;font-style:italic!important;}
+[data-print-mode="cv"] .r-job-dates,
+[data-print-mode="cv"] .r-edu-dates,
+[data-print-mode="cv"] .r-job-meta{color:#555!important;}
+[data-print-mode="cv"] .r-job-bullets li::before{color:#111!important;}
+[data-print-mode="cv"] .tag{background:#f1f1f1!important;border:1px solid #ccc!important;color:#222!important;}
+[data-print-mode="cv"] .r-cv-grid{display:grid!important;grid-template-columns:1fr 2fr!important;gap:0.4in!important;align-items:start!important;}
+[data-print-mode="cv"] .r-cv-side .r-sec:first-child,
+[data-print-mode="cv"] .r-cv-main .r-sec:first-child{margin-top:0!important;}
+[data-print-mode="cv"] .r-cv-side .r-skill-row{display:block!important;margin-bottom:6px!important;}
+[data-print-mode="cv"] .r-cv-side .r-skill-label{display:block!important;min-width:0!important;margin-bottom:2px!important;}
 </style>
 </head>
 <body style="">
@@ -626,6 +702,9 @@ select.tb-sel:hover{border-color:var(--accent);}
             <option value="">Choose…</option>
             <option value="exportMD">Markdown</option>
             <option value="exportHTML">HTML</option>
+            <option value="exportPrintPage">Print Page (PDF)</option>
+            <option value="exportPrintDocument">Print Document (PDF)</option>
+            <option value="exportPrintCV">Print CV (PDF)</option>
             <!-- <option value="exportPDF">PDF</option> -->
           </select>
         </div>
@@ -634,6 +713,9 @@ select.tb-sel:hover{border-color:var(--accent);}
         <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:2px 0;">Export</div>
         <button class="tb-btn" onclick="exportMD();toggleMoreMenu();" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">📝 Markdown</button>
         <button class="tb-btn" onclick="exportHTML();toggleMoreMenu();" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">🌐 HTML</button>
+        <button class="tb-btn" onclick="exportPrintPage();toggleMoreMenu();" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">📃 Print Page</button>
+        <button class="tb-btn" onclick="exportPrintDocument();toggleMoreMenu();" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">📄 Print Document</button>
+        <button class="tb-btn" onclick="exportPrintCV();toggleMoreMenu();" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">📋 Print CV</button>
         <!-- <button class="tb-btn" onclick="exportPDF();toggleMoreMenu();" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">📄 PDF</button> -->
         <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:2px 0;">Miscellaneous</div>
         <button class="tb-btn" onclick="openSettings()" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">⚙ Settings</button>
@@ -6178,10 +6260,19 @@ function printResume() {
 // ║  hides the toolbar and overlays, renders at 2× DPI for print quality, then    ║
 // ║  restores everything.  The text layer means the PDF is fully OCR-ready.       ║
 // ╚═══════════════════════════════════════════════════════════════════════════════╝
-function exportPDF() {
+// Shared PDF export pipeline. Opts:
+//   mode     — '' (screenshot of live page), 'page', 'document', or 'cv'.
+//              Non-empty modes activate [data-print-mode="..."] CSS rules
+//              defined in the <style> block above.
+//   filename — output PDF name.
+function runPdfExport(opts) {
+  opts = opts || {};
+  var mode = opts.mode || '';
+  var filename = opts.filename || 'RyanDeBraal_Resume.pdf';
   var em = document.getElementById('export-menu'); if (em) em.style.display='none';
+  var mm = document.getElementById('more-menu'); if (mm) mm.style.display='none';
 
-  // 1. Clone the entire document and strip interactive chrome (same as exportHTML)
+  // 1. Clone the entire document and strip interactive chrome
   var clone = document.documentElement.cloneNode(true);
   var tb = clone.querySelector('#toolbar');       if (tb) tb.remove();
   var fx = clone.querySelector('#fx-canvas');      if (fx) fx.remove();
@@ -6191,41 +6282,89 @@ function exportPDF() {
   });
   clone.querySelectorAll('script').forEach(function(s) { s.remove(); });
   clone.setAttribute('data-theme', 'light');
+  if (mode) clone.setAttribute('data-print-mode', mode);
 
-  // 2. Build a full HTML string from the clean clone
+  // CV mode: split #resume-body sections into a two-column grid before capture
+  if (mode === 'cv') {
+    var rb = clone.querySelector('#resume-body');
+    if (rb) reorganizeForCV(rb);
+  }
+
   var htmlStr = '<!DOCTYPE html>\n' + clone.outerHTML;
 
-  // 3. Render it in a hidden iframe so the live page is never touched
   var iframe = document.createElement('iframe');
   iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:8.5in;height:11in;border:none;';
-  document.body.appendChild(iframe);
 
+  function captureWhenReady() {
+    var doc = iframe.contentDocument;
+    var win = iframe.contentWindow;
+    var fontsReady = (doc && doc.fonts && doc.fonts.ready) || Promise.resolve();
+    fontsReady.then(function() {
+      win.requestAnimationFrame(function() {
+        var target = doc.getElementById('resume');
+        if (!target) { document.body.removeChild(iframe); return; }
+        var opt = {
+          margin:       [0.3, 0.3, 0.3, 0.3],
+          filename:     filename,
+          image:        { type: 'jpeg', quality: 0.98 },
+          html2canvas:  { scale: 2, useCORS: true, letterRendering: true, windowWidth: target.scrollWidth },
+          jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
+          pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
+        };
+        html2pdf().set(opt).from(target).save().then(function() {
+          document.body.removeChild(iframe);
+        }).catch(function(err) {
+          console.error('PDF export failed:', err);
+          document.body.removeChild(iframe);
+        });
+      });
+    });
+  }
+
+  iframe.addEventListener('load', captureWhenReady, { once: true });
+  document.body.appendChild(iframe);
   iframe.contentDocument.open();
   iframe.contentDocument.write(htmlStr);
   iframe.contentDocument.close();
-
-  // 4. Wait for iframe to render, then capture with html2pdf
-  setTimeout(function() {
-    var target = iframe.contentDocument.getElementById('resume');
-    if (!target) { document.body.removeChild(iframe); return; }
-
-    var opt = {
-      margin:       [0.3, 0.3, 0.3, 0.3],
-      filename:     'RyanDeBraal_Resume.pdf',
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2, useCORS: true, letterRendering: true, windowWidth: target.scrollWidth },
-      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' },
-      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
-    };
-
-    html2pdf().set(opt).from(target).save().then(function() {
-      document.body.removeChild(iframe);
-    }).catch(function(err) {
-      console.error('PDF export failed:', err);
-      document.body.removeChild(iframe);
-    });
-  }, 5000);
 }
+
+// reorganizeForCV: walks the cloned #resume-body and regroups its flat
+// (.r-sec heading + content + .r-sec + content + …) structure into a two-column
+// grid. Sidebar gets Education / Patents / Skills; main gets everything else.
+function reorganizeForCV(bodyEl) {
+  var doc = bodyEl.ownerDocument;
+  var sidebarSections = ['Education', 'Patents & Inventions', 'Complete Technology Stack'];
+  var groups = [];
+  var current = null;
+  Array.prototype.slice.call(bodyEl.childNodes).forEach(function(node) {
+    if (node.nodeType === 1 && node.classList && node.classList.contains('r-sec')) {
+      current = { heading: node, items: [], name: (node.textContent || '').trim() };
+      groups.push(current);
+    } else if (current) {
+      current.items.push(node);
+    }
+  });
+  while (bodyEl.firstChild) bodyEl.removeChild(bodyEl.firstChild);
+  var grid = doc.createElement('div');
+  grid.className = 'r-cv-grid';
+  var mainCol = doc.createElement('div');
+  mainCol.className = 'r-cv-main';
+  var sideCol = doc.createElement('div');
+  sideCol.className = 'r-cv-side';
+  groups.forEach(function(g) {
+    var col = sidebarSections.indexOf(g.name) >= 0 ? sideCol : mainCol;
+    col.appendChild(g.heading);
+    g.items.forEach(function(it) { col.appendChild(it); });
+  });
+  grid.appendChild(sideCol);
+  grid.appendChild(mainCol);
+  bodyEl.appendChild(grid);
+}
+
+function exportPDF()           { runPdfExport({ mode: '',         filename: 'RyanDeBraal_Resume.pdf' }); }
+function exportPrintPage()     { runPdfExport({ mode: 'page',     filename: 'RyanDeBraal_Resume_Page.pdf' }); }
+function exportPrintDocument() { runPdfExport({ mode: 'document', filename: 'RyanDeBraal_Resume_Document.pdf' }); }
+function exportPrintCV()       { runPdfExport({ mode: 'cv',       filename: 'RyanDeBraal_CV.pdf' }); }
 
 // ╔═══════════════════════════════════════════════════════════════════════════════╗
 // ║  HTML EXPORT                                                                  ║
@@ -6726,7 +6865,7 @@ document.addEventListener('keydown', function(e) {
 // reaching for a module system, even with no bundler?
 Object.assign(window, {
   setProfile, cycleProfile, setTheme, cycleTheme, updateThemeSwatch, resetDefaults,
-  toggleExportMenu, exportPDF, exportMD, exportHTML, printResume, toggleThemeRotation, filterSkills, crtChannelChange,
+  toggleExportMenu, exportPDF, exportPrintPage, exportPrintDocument, exportPrintCV, exportMD, exportHTML, printResume, toggleThemeRotation, filterSkills, crtChannelChange,
   toggleMoreMenu, toggleNeko, setNekoColor, openAvatarLightbox, closeAvatarLightbox,
   toggleResumeNav, closeResumeNav, buildNavLinks,
   openSettings, closeSettings, resetAllSettings, onSettingSlider, openAttributions, closeAttributions,
