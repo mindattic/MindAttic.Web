@@ -4685,32 +4685,50 @@ window.consoleBg = (function () {
     var texTimer  = null;
     var texResizeBound = false;
     var texCanvas = null;
+    var texRO     = null;
+
+    function syncTexCanvasSize() {
+        if (!texCanvas) return;
+        // Use the live viewport — the host is position:fixed;inset:0 so it always
+        // matches window inner dimensions. Round in case devicePixelRatio gives
+        // fractional pixels.
+        var w = Math.max(1, Math.round(window.innerWidth));
+        var h = Math.max(1, Math.round(window.innerHeight));
+        if (texCanvas.width  !== w) texCanvas.width  = w;
+        if (texCanvas.height !== h) texCanvas.height = h;
+    }
 
     function initTextures() {
         var host = getHost();
         if (!host) return;
 
-        // Reuse or create canvas inside host
+        // Reuse or create canvas inside host. CSS width/height:100% forces the
+        // canvas's CSS box to stretch with the host regardless of the width/height
+        // HTML attributes (which would otherwise also dictate the CSS box size
+        // and leave new viewport area uncovered after a maximize/resize).
         var canvas = host.querySelector('.cbg-tex');
         if (!canvas) {
             canvas = document.createElement('canvas');
             canvas.className = 'cbg-tex';
-            canvas.style.cssText = 'position:absolute;inset:0;pointer-events:none;z-index:0;';
+            canvas.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0;';
             host.insertBefore(canvas, host.firstChild);
+        } else {
+            canvas.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0;';
         }
-        canvas.width  = window.innerWidth;
-        canvas.height = window.innerHeight;
         texCanvas = canvas;
+        syncTexCanvasSize();
         var ctx = canvas.getContext('2d');
 
-        // Keep the canvas in sync with the viewport — without this the parallax
+        // Keep the bitmap in sync with the viewport — without this the parallax
         // texture only paints the original window area after a maximize/resize.
         if (!texResizeBound) {
-            window.addEventListener('resize', function () {
-                if (!texCanvas) return;
-                if (texCanvas.width  !== window.innerWidth)  texCanvas.width  = window.innerWidth;
-                if (texCanvas.height !== window.innerHeight) texCanvas.height = window.innerHeight;
-            });
+            window.addEventListener('resize', syncTexCanvasSize);
+            // Also observe the host directly so zoom changes, devtools panel
+            // toggles, and other container-size shifts repaint correctly.
+            if (typeof ResizeObserver !== 'undefined') {
+                texRO = new ResizeObserver(syncTexCanvasSize);
+                texRO.observe(host);
+            }
             texResizeBound = true;
         }
 
