@@ -1,29 +1,30 @@
 # ====================================================================
 # MindAttic.Content -> mindattic.com
 # --------------------------------------------------------------------
-# Inlines the cbg/ bundle (HTML cookie banner + parallax background
-# CSS + JS) into mindattic.com/index.htm between the marker pair:
+# Inlines each MindAttic.Content group into mindattic.com/index.htm
+# between its own marker pair. Each group owns one html + one css +
+# one or more js files in its own folder.
 #
-#   <!-- BEGIN MINDATTIC.CONTENT:CBG -->
-#   <!-- END   MINDATTIC.CONTENT:CBG -->
+# Groups (in load order):
+#   - cbg/         (BEGIN/END MINDATTIC.CONTENT:CBG)
+#       Cyberpunk console-background effects: scan lines, fake error
+#       popups, floating fragments, network attempts, memos, etc.
+#       Files: cbg/frontpage.html, cbg/frontpage.css,
+#              cbg/loader.js, cbg/tv-static.js, cbg/home-bg.js,
+#              cbg/console-bg.js
+#   - pin-footer/  (BEGIN/END MINDATTIC.CONTENT:PIN-FOOTER)
+#       Pin a `.pin-when-short` element to the viewport bottom when
+#       the page is shorter than the viewport.
+#       Files: pin-footer/pin-footer.html, pin-footer/pin-footer.css,
+#              pin-footer/pin-footer.js
 #
-# Everything between those markers is replaced wholesale every run;
-# nothing outside them is touched.  Source of truth is this folder
-# tree (../cbg/*) — never hand-edit the inlined block in index.htm,
-# it WILL be overwritten on the next sync (and the next /deploy).
+# Everything between a group's markers is replaced wholesale every run;
+# nothing outside any marker pair is touched. Source of truth is this
+# folder tree -- never hand-edit the inlined blocks in index.htm, they
+# WILL be overwritten on the next sync (and the next /deploy).
 #
-# What gets bundled (in this order, because order is load order):
-#   - cbg/frontpage.html
-#   - cbg/frontpage.css                   (wrapped in <style>)
-#   - optional texture override block      (window.__cbgCircuitboardSrcs)
-#   - cbg/loader.js                       (wrapped in <script>)
-#   - cbg/tv-static.js
-#   - cbg/home-bg.js
-#   - cbg/pin-footer.js
-#   - cbg/console-bg.js
-#
-# Idempotent: re-running with no source changes produces a
-# byte-stable index.htm.  Safe to call from deploy pipelines.
+# Idempotent: re-running with no source changes produces a byte-stable
+# index.htm. Safe to call from deploy pipelines.
 #
 # Usage:
 #   powershell -File sync-mindattic-com.ps1
@@ -45,78 +46,144 @@ if (-not $ContentRoot) {
 
 $utf8 = [System.Text.UTF8Encoding]::new($false)
 
-$cbg = Join-Path $ContentRoot 'cbg'
-if (-not (Test-Path $cbg))         { throw "cbg/ not found at $cbg" }
 if (-not (Test-Path $TargetIndex)) { throw "Target not found: $TargetIndex" }
 
-$html = [System.IO.File]::ReadAllText((Join-Path $cbg 'frontpage.html'), $utf8)
-$css  = [System.IO.File]::ReadAllText((Join-Path $cbg 'frontpage.css'),  $utf8)
+# --------------------------------------------------------------------
+# Build the CBG block
+# --------------------------------------------------------------------
+function Build-CbgBlock {
+    param([string]$ContentRoot)
 
-# Inline the parallax circuit-board textures as base64 data URIs. console-bg.js
-# reads window.__cbgCircuitboardSrcs if defined; StreetSamurai's MediaController
-# serves them via /api/media/... instead, so we only emit this override when
-# the PNG assets exist alongside the bundle. PNG (not JPEG) is required because
-# console-bg.js tiles each texture across the canvas — JPEG block compression
-# breaks the edge-pixel match between adjacent tile copies and produces visible
-# seams in the parallax background.
-$texSrcs = @('circuitboard.00.png', 'circuitboard.01.png', 'circuitboard.02.png')
-$texOverride = ''
-$texDir = Join-Path $cbg 'assets'
-if (Test-Path $texDir) {
-    $dataUris = $texSrcs | ForEach-Object {
-        $tp = Join-Path $texDir $_
-        if (Test-Path $tp) {
-            $bytes = [System.IO.File]::ReadAllBytes($tp)
-            $b64   = [Convert]::ToBase64String($bytes)
-            "'data:image/png;base64,$b64'"
-        } else { "null" }
+    $cbg = Join-Path $ContentRoot 'cbg'
+    if (-not (Test-Path $cbg)) { throw "cbg/ not found at $cbg" }
+
+    $html = [System.IO.File]::ReadAllText((Join-Path $cbg 'frontpage.html'), $utf8)
+    $css  = [System.IO.File]::ReadAllText((Join-Path $cbg 'frontpage.css'),  $utf8)
+
+    # Inline the parallax circuit-board textures as base64 data URIs. console-bg.js
+    # reads window.__cbgCircuitboardSrcs if defined; StreetSamurai's MediaController
+    # serves them via /api/media/... instead, so we only emit this override when
+    # the PNG assets exist alongside the bundle. PNG (not JPEG) is required because
+    # console-bg.js tiles each texture across the canvas -- JPEG block compression
+    # breaks the edge-pixel match between adjacent tile copies and produces visible
+    # seams in the parallax background.
+    $texSrcs = @('circuitboard.00.png', 'circuitboard.01.png', 'circuitboard.02.png')
+    $texOverride = ''
+    $texDir = Join-Path $cbg 'assets'
+    if (Test-Path $texDir) {
+        $dataUris = $texSrcs | ForEach-Object {
+            $tp = Join-Path $texDir $_
+            if (Test-Path $tp) {
+                $bytes = [System.IO.File]::ReadAllBytes($tp)
+                $b64   = [Convert]::ToBase64String($bytes)
+                "'data:image/png;base64,$b64'"
+            } else { "null" }
+        }
+        $texOverride = "/* ---- circuitboard textures (base64 inline) ---- */`r`n" +
+                       "window.__cbgCircuitboardSrcs = [`r`n  " + ($dataUris -join ",`r`n  ") + "`r`n];`r`n"
     }
-    $texOverride = "/* ---- circuitboard textures (base64 inline) ---- */`r`n" +
-                   "window.__cbgCircuitboardSrcs = [`r`n  " + ($dataUris -join ",`r`n  ") + "`r`n];`r`n"
+
+    # Concatenate JS in the same order StreetSamurai loads them. loader.js + tv-static.js
+    # expose tiny globals that console-bg.js / page navigation may reach for; home-bg.js
+    # only exposes window.homeBg (idle unless invoked); console-bg.js does the heavy
+    # lifting. The texture override (if any) must come before console-bg.js so its
+    # TEX_SRCS picks it up at module-init time.
+    $jsParts = @('loader.js', 'tv-static.js', 'home-bg.js', 'console-bg.js')
+    $jsConcat = $texOverride + "`r`n" + (($jsParts | ForEach-Object {
+        "/* ---- $_ ---- */`r`n" + [System.IO.File]::ReadAllText((Join-Path $cbg $_), $utf8)
+    }) -join "`r`n`r`n")
+
+    $block = "<!-- Generated by MindAttic.Content/sync/sync-mindattic-com.ps1. Do not edit by hand." + "`r`n" +
+             "     Edit MindAttic.Content/cbg/* and re-run the sync. -->" + "`r`n" +
+             $html + "`r`n" +
+             '<style id="mindattic-content-cbg-css">' + "`r`n" +
+             $css + "`r`n" +
+             '</style>' + "`r`n" +
+             '<script id="mindattic-content-cbg-js">' + "`r`n" +
+             $jsConcat + "`r`n" +
+             '</script>'
+
+    return [pscustomobject]@{
+        Block   = $block
+        HtmlKb  = [math]::Round($html.Length / 1024, 1)
+        CssKb   = [math]::Round($css.Length / 1024, 1)
+        JsKb    = [math]::Round($jsConcat.Length / 1024, 1)
+        JsCount = $jsParts.Count
+    }
 }
 
-# Concatenate JS in the same order StreetSamurai loads them. loader.js + tv-static.js
-# expose tiny globals that console-bg.js / page navigation may reach for; home-bg.js
-# only exposes window.homeBg (idle unless invoked); console-bg.js does the heavy
-# lifting. The texture override (if any) must come before console-bg.js so its
-# TEX_SRCS picks it up at module-init time.
-$jsParts = @('loader.js', 'tv-static.js', 'home-bg.js', 'pin-footer.js', 'console-bg.js')
-$jsConcat = $texOverride + "`r`n" + (($jsParts | ForEach-Object {
-    "/* ---- $_ ---- */`r`n" + [System.IO.File]::ReadAllText((Join-Path $cbg $_), $utf8)
-}) -join "`r`n`r`n")
+# --------------------------------------------------------------------
+# Build the PIN-FOOTER block
+# --------------------------------------------------------------------
+function Build-PinFooterBlock {
+    param([string]$ContentRoot)
 
-$begin = '<!-- BEGIN MINDATTIC.CONTENT:CBG -->'
-$end   = '<!-- END MINDATTIC.CONTENT:CBG -->'
+    $pf = Join-Path $ContentRoot 'pin-footer'
+    if (-not (Test-Path $pf)) { throw "pin-footer/ not found at $pf" }
 
-$block = $begin + "`r`n" +
-         "<!-- Generated by MindAttic.Content/sync/sync-mindattic-com.ps1. Do not edit by hand." + "`r`n" +
-         "     Edit MindAttic.Content/cbg/* and re-run the sync. -->" + "`r`n" +
-         $html + "`r`n" +
-         '<style id="mindattic-content-cbg-css">' + "`r`n" +
-         $css + "`r`n" +
-         '</style>' + "`r`n" +
-         '<script id="mindattic-content-cbg-js">' + "`r`n" +
-         $jsConcat + "`r`n" +
-         '</script>' + "`r`n" +
-         $end
+    $html = [System.IO.File]::ReadAllText((Join-Path $pf 'pin-footer.html'), $utf8)
+    $css  = [System.IO.File]::ReadAllText((Join-Path $pf 'pin-footer.css'),  $utf8)
+    $js   = [System.IO.File]::ReadAllText((Join-Path $pf 'pin-footer.js'),   $utf8)
+
+    $block = "<!-- Generated by MindAttic.Content/sync/sync-mindattic-com.ps1. Do not edit by hand." + "`r`n" +
+             "     Edit MindAttic.Content/pin-footer/* and re-run the sync. -->" + "`r`n" +
+             $html + "`r`n" +
+             '<style id="mindattic-content-pin-footer-css">' + "`r`n" +
+             $css + "`r`n" +
+             '</style>' + "`r`n" +
+             '<script id="mindattic-content-pin-footer-js">' + "`r`n" +
+             $js + "`r`n" +
+             '</script>'
+
+    return [pscustomobject]@{
+        Block  = $block
+        HtmlKb = [math]::Round($html.Length / 1024, 1)
+        CssKb  = [math]::Round($css.Length / 1024, 1)
+        JsKb   = [math]::Round($js.Length / 1024, 1)
+    }
+}
+
+# --------------------------------------------------------------------
+# Splice a generated block between BEGIN/END marker comments
+# --------------------------------------------------------------------
+function Splice-MarkerBlock {
+    param(
+        [string]$IndexText,
+        [string]$BeginMarker,
+        [string]$EndMarker,
+        [string]$Block
+    )
+    if (-not $IndexText.Contains($BeginMarker)) {
+        throw "Marker '$BeginMarker' not found in target. Insert the marker pair manually first, then re-run sync."
+    }
+    $startIdx = $IndexText.IndexOf($BeginMarker)
+    $endIdx   = $IndexText.IndexOf($EndMarker, $startIdx)
+    if ($endIdx -lt 0) { throw "End marker '$EndMarker' not found after begin marker." }
+    $endIdx  += $EndMarker.Length
+
+    $combined = $BeginMarker + "`r`n" + $Block + "`r`n" + $EndMarker
+    return $IndexText.Substring(0, $startIdx) + $combined + $IndexText.Substring($endIdx)
+}
+
+# --------------------------------------------------------------------
+# Splice both groups and write the result
+# --------------------------------------------------------------------
+$cbgInfo = Build-CbgBlock -ContentRoot $ContentRoot
+$pfInfo  = Build-PinFooterBlock -ContentRoot $ContentRoot
 
 $indexText = [System.IO.File]::ReadAllText($TargetIndex, $utf8)
+$indexText = Splice-MarkerBlock -IndexText $indexText `
+    -BeginMarker '<!-- BEGIN MINDATTIC.CONTENT:CBG -->' `
+    -EndMarker   '<!-- END MINDATTIC.CONTENT:CBG -->' `
+    -Block       $cbgInfo.Block
+$indexText = Splice-MarkerBlock -IndexText $indexText `
+    -BeginMarker '<!-- BEGIN MINDATTIC.CONTENT:PIN-FOOTER -->' `
+    -EndMarker   '<!-- END MINDATTIC.CONTENT:PIN-FOOTER -->' `
+    -Block       $pfInfo.Block
 
-if (-not $indexText.Contains($begin)) {
-    throw "Marker '$begin' not found in $TargetIndex. Insert the marker pair manually first, then re-run sync."
-}
+[System.IO.File]::WriteAllText($TargetIndex, $indexText, $utf8)
 
-$startIdx = $indexText.IndexOf($begin)
-$endIdx   = $indexText.IndexOf($end, $startIdx)
-if ($endIdx -lt 0) { throw "End marker '$end' not found after begin marker in $TargetIndex." }
-$endIdx  += $end.Length
-
-$updated = $indexText.Substring(0, $startIdx) + $block + $indexText.Substring($endIdx)
-[System.IO.File]::WriteAllText($TargetIndex, $updated, $utf8)
-
-$sizeKb   = [math]::Round(((Get-Item $TargetIndex).Length / 1024), 1)
-$htmlKb   = [math]::Round($html.Length / 1024, 1)
-$cssKb    = [math]::Round($css.Length / 1024, 1)
-$jsKb     = [math]::Round($jsConcat.Length / 1024, 1)
+$sizeKb = [math]::Round(((Get-Item $TargetIndex).Length / 1024), 1)
 Write-Output "Synced MindAttic.Content -> $TargetIndex ($sizeKb KB total)"
-Write-Output "Inlined: html ($htmlKb KB), css ($cssKb KB), $($jsParts.Count) JS files ($jsKb KB)"
+Write-Output ("  CBG:        html $($cbgInfo.HtmlKb) KB, css $($cbgInfo.CssKb) KB, $($cbgInfo.JsCount) JS files $($cbgInfo.JsKb) KB")
+Write-Output ("  PIN-FOOTER: html $($pfInfo.HtmlKb) KB, css $($pfInfo.CssKb) KB, js $($pfInfo.JsKb) KB")

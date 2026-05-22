@@ -1,7 +1,8 @@
 # ====================================================================
 # MindAttic.Content -> StreetSamurai
-# 1. Overwrites wwwroot/js/{loader,tv-static,home-bg,pin-footer,console-bg}.js
-# 2. Rewrites the marker block in wwwroot/app.css with cbg/frontpage.css contents
+# 1. Overwrites wwwroot/js/{loader,tv-static,home-bg,console-bg}.js from cbg/
+# 2. Overwrites wwwroot/js/pin-footer.js from pin-footer/ (separate group)
+# 3. Rewrites the marker block in wwwroot/app.css with cbg/frontpage.css contents
 #
 # StreetSamurai's App.razor already <script>-loads the JS files. The first run
 # of this script also splices a marker block into app.css; subsequent runs
@@ -35,12 +36,19 @@ foreach ($p in @($cbg, $wwwJs, $appCss)) {
 }
 
 # JS files: straight byte-level overwrite (Copy-Item preserves bytes)
-$jsFiles = @('loader.js', 'tv-static.js', 'home-bg.js', 'pin-footer.js', 'console-bg.js')
+$jsFiles = @('loader.js', 'tv-static.js', 'home-bg.js', 'console-bg.js')
 foreach ($f in $jsFiles) {
     Copy-Item -Path (Join-Path $cbg $f) -Destination (Join-Path $wwwJs $f) -Force
     $kb = [math]::Round(((Get-Item (Join-Path $wwwJs $f)).Length / 1024), 1)
     Write-Output "  [JS]  $f  ($kb KB)"
 }
+
+# pin-footer.js lives in its own group dir (pin-footer/), separate from CBG.
+$pinFooter = Join-Path $ContentRoot 'pin-footer'
+if (-not (Test-Path $pinFooter)) { throw "Path not found: $pinFooter" }
+Copy-Item -Path (Join-Path $pinFooter 'pin-footer.js') -Destination (Join-Path $wwwJs 'pin-footer.js') -Force
+$kb = [math]::Round(((Get-Item (Join-Path $wwwJs 'pin-footer.js')).Length / 1024), 1)
+Write-Output "  [JS]  pin-footer.js  ($kb KB)"
 
 # CSS: rewrite marker block in app.css. Use UTF-8 reads to preserve non-ASCII.
 $css     = [System.IO.File]::ReadAllText((Join-Path $cbg 'frontpage.css'), $utf8)

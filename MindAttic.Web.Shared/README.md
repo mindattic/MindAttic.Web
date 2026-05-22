@@ -13,9 +13,13 @@ cbg/
 ├── console-bg.js       # the animation engine (17 effects)
 ├── home-bg.js          # torn-edge portrait compositor
 ├── tv-static.js        # navigation-transition TV-static overlay
-├── pin-footer.js       # pin-when-short footer helper
 ├── loader.js           # tiny global loader show/hide helper
 └── assets/             # parallax textures (circuitboard.00..02.png)
+
+pin-footer/             # standalone group (own sync marker pair)
+├── pin-footer.html     # usage comment (consumers add `.pin-when-short` class)
+├── pin-footer.css      # `.pin-when-short.pinned` rule
+└── pin-footer.js       # toggles `.pinned` when document is shorter than viewport
 
 sync/
 ├── sync-all.ps1             # umbrella runner: invokes every sync-*.ps1
