@@ -1,20 +1,24 @@
-# MindAttic.Components
+# MindAttic.UIUX
 
-**Drop-in front-end components for MindAttic web properties.** A growing
-catalog of self-contained CSS + JS + (sometimes) HTML bundles that any
-subscriber can pull in via jsDelivr CDN at runtime, or via marker-block sync
-into the subscriber's source tree. Zero build step on the subscriber side.
+**One repo, every front-end. Drop-in CSS, JS, and HTML bundles, delivered three ways.**
 
-Currently powers `mindattic.com`, the `StreetSamurai` Blazor home page, and
-the `Claudia` / `ChiMesh` markdown-to-HTML build pipelines. New subscribers
-declare themselves in [`subscribers.json`](subscribers.json) and pick up
-fresh content on every sync.
+A growing catalog of self-contained components — fonts, effects, helpers — that any subscriber can pull in via jsDelivr CDN at runtime, splice in via marker-block sync at build time, or accept as a cross-repo PR from GitHub Actions. Zero build step on the subscriber side, no `npm install`, no peerdeps.
+
+Currently powers `mindattic.com`, the `StreetSamurai` Blazor home page, and the `Claudia` / `ChiMesh` markdown-to-HTML build pipelines. New subscribers declare themselves in [`subscribers.json`](subscribers.json) and pick up fresh content on every sync.
 
 ```html
 <!-- pinned production -->
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@v1.0.0/Cyberspace/console-bg.js"></script>
-<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@v1.0.0/Cyberspace/frontpage.css">
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@v1.0.0/Components/Cyberspace/console-bg.js"></script>
+<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@v1.0.0/Components/Cyberspace/frontpage.css">
 ```
+
+**Why MindAttic.UIUX:**
+
+- **Three delivery modes, one source of truth.** jsDelivr CDN for runtime, GitHub Actions for cross-repo PRs, PowerShell scripts for local dev — all reading the same [`subscribers.json`](subscribers.json).
+- **Subscribers are declarative.** Add `{ "component": "AtticFont", "applyToSelector": "#claudia" }` to a subscriber's array. The next sync enrolls it. Remove the line, the next sync unenrolls. No hardcoded lists.
+- **Versioned by tag, immutable on CDN.** `@v1.0.0` is edge-cached forever; `@main` always tracks tip-of-tree. Subscribers pick their guarantee.
+- **Self-contained components.** Each folder ships its own source, usage HTML, markdown doc, and JSON config. No cross-component imports — you can vendor a single component without dragging the rest.
+- **Marker-block contract.** Every splice is bounded by `BEGIN/END MINDATTIC.UIUX:<MARKER>` comments. Subscribers hand-author the rest of the file without conflict; only what's between the markers is regenerated.
 
 ---
 
@@ -30,14 +34,14 @@ comment, a `<FolderName>.md` doc, and any companion `.json` config.
 | **[AtticFont](AtticFont/AtticFont.md)** | font + CSS | Attic display face inlined as base64 woff2. Single `@font-face` plus `:root { --font-attic: 'Attic', serif; }`. Per-subscriber `applyToSelector` controls where Attic is auto-applied (`#claudia`, `#chimesh`, `.site-name`, …). | [AtticFont.md](AtticFont/AtticFont.md) |
 | **[PinFooter](PinFooter/PinFooter.md)** | CSS + JS | Pin-when-short footer. Toggles `position: fixed; bottom: 0` on any element with class `pin-when-short` while the document is shorter than the viewport; releases it when content overflows. | [PinFooter.md](PinFooter/PinFooter.md) |
 | **[BackHomeM](BackHomeM/BackHomeM.md)** | CSS only | A capital "M" in AtticFont pinned to the upper-left, linking back to mindattic.com. Used on satellite sites (Claudia, ChiMesh) so a visitor can always get home. | [BackHomeM.md](BackHomeM/BackHomeM.md) |
-| **[WebSnapshot](WebSnapshot/WebSnapshot.md)** | Node CLI + browser viewer | Capture a fresh screenshot of any URL with Playwright, scale + crop it to a preview rectangle (cover-fit + alignment crop), then render it in a `.web-snapshot` container with a handheld-camera Perlin-noise wobble. Math ported from GridGame2026's `ActorThumbnail.cs`. | [WebSnapshot.md](WebSnapshot/WebSnapshot.md) |
+| **[WebSnapshot](WebSnapshot/WebSnapshot.md)** | Node CLI + browser viewer | Capture a fresh screenshot of any URL with Playwright, scale + crop it to a preview rectangle (cover-fit + alignment crop), and inline the result as a base64 data URI inside any `.web-snapshot` container. | [WebSnapshot.md](WebSnapshot/WebSnapshot.md) |
 
 ---
 
 ## Layout
 
 ```
-MindAttic.Components/
+MindAttic.UIUX/
 │
 ├── Cyberspace/                  # Cyberpunk console-background effects
 │   ├── frontpage.html           #   DOM scaffolding (3 fixed-position layer divs)
@@ -73,7 +77,7 @@ MindAttic.Components/
 │   ├── back-home-m.css          #   AtticFont stack + position: fixed top/left
 │   └── BackHomeM.md
 │
-├── WebSnapshot/                 # Snapshot capture + handheld-wobble viewer
+├── WebSnapshot/                 # Snapshot capture + inline base64 viewer
 │   ├── web-snapshot.js          #   Playwright capture engine
 │   ├── snapshot.js              #   CLI wrapper
 │   ├── snapshots.config.js      #   declarative recurring targets
@@ -110,7 +114,7 @@ See [`.github/PIPELINES.md`](.github/PIPELINES.md) for the full setup
 
 | Pipeline | What it does | When it runs |
 |---|---|---|
-| **jsDelivr CDN** | Serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@<ref>/<path>` — versioned, edge-cached, no infra to run | Continuously; cache-immutable for `@v*` tags |
+| **jsDelivr CDN** | Serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@<ref>/<path>` — versioned, edge-cached, no infra to run | Continuously; cache-immutable for `@v*` tags |
 | **GitHub Actions cross-repo sync** | On push to `main`, opens PRs against `mindattic/mindattic.com` and `mindattic/StreetSamurai` with refreshed marker blocks / wwwroot copies | Every push to `main` (workflow: [`.github/workflows/sync-subscribers.yml`](.github/workflows/sync-subscribers.yml)) |
 | **PowerShell `sync/*.ps1`** | Local dev fallback — same logic as the Action, runs against your working copies | Manual (`/sync` slash command or `sync/sync-all.ps1`) |
 
@@ -125,7 +129,7 @@ See [`.github/PIPELINES.md`](.github/PIPELINES.md) for the full setup
 The cross-repo sync workflow needs a fine-grained personal access token so
 it can open PRs against subscriber repos. Stored as the repository secret
 **`SUBSCRIBER_REPO_TOKEN`** at
-[`Settings → Secrets and variables → Actions`](https://github.com/mindattic/MindAttic.Components/settings/secrets/actions).
+[`Settings → Secrets and variables → Actions`](https://github.com/mindattic/MindAttic.UIUX/settings/secrets/actions).
 
 Generate at
 [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new)
@@ -153,12 +157,12 @@ upload step is in [`.github/PIPELINES.md`](.github/PIPELINES.md).
 local tools that need to call the GitHub API on behalf of this repo, the
 same PAT is mirrored into the family-wide token store at
 `%APPDATA%\MindAttic\GitHub\tokens.json` under the key
-`mindattic-components-pat`:
+`mindattic-uiux-pat`:
 
 ```csharp
 using MindAttic.Vault.Credentials;
 
-var pat = TokenStore.ForBucket("GitHub").Get("mindattic-components-pat");
+var pat = TokenStore.ForBucket("GitHub").Get("mindattic-uiux-pat");
 ```
 
 The two stores (GitHub repo secret and Vault `tokens.json`) are *independent*
@@ -212,9 +216,9 @@ the next run; removing the line unenrolls it.
 ## Marker contract
 
 Every sync edit is bounded by a comment pair. HTML subscribers use
-`<!-- BEGIN MINDATTIC.COMPONENTS:<MARKER> --> … <!-- END … -->`; CSS
+`<!-- BEGIN MINDATTIC.UIUX:<MARKER> --> … <!-- END … -->`; CSS
 subscribers (including the `<style>` literal inside `build-html.js`) use
-`/* == BEGIN MINDATTIC.COMPONENTS:<MARKER>.CSS == */ … /* == END … == */`.
+`/* == BEGIN MINDATTIC.UIUX:<MARKER>.CSS == */ … /* == END … == */`.
 Anything outside the markers is left untouched, so subscriber projects can
 hand-author the rest of the file without conflict.
 
@@ -231,7 +235,7 @@ Push to `main` and the GitHub Action delivers to every subscriber, or run
 iteration without round-tripping through GitHub.
 
 ```powershell
-# from MindAttic.Components — push to all subscribers in one shot (local)
+# from MindAttic.UIUX — push to all subscribers in one shot (local)
 powershell -File sync/sync-all.ps1
 
 # or invoke an individual target

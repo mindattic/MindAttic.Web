@@ -64,11 +64,11 @@ $indexHtm = @"
 <title>$ProjectName | MindAttic</title>
 <meta name="description" content="$Tagline">
 
-<!-- BEGIN MINDATTIC.COMPONENTS:OUTFITFONT -->
-<!-- END MINDATTIC.COMPONENTS:OUTFITFONT -->
+<!-- BEGIN MINDATTIC.UIUX:OUTFITFONT -->
+<!-- END MINDATTIC.UIUX:OUTFITFONT -->
 
-<!-- BEGIN MINDATTIC.COMPONENTS:ATTICFONT -->
-<!-- END MINDATTIC.COMPONENTS:ATTICFONT -->
+<!-- BEGIN MINDATTIC.UIUX:ATTICFONT -->
+<!-- END MINDATTIC.UIUX:ATTICFONT -->
 
 <style id="mindattic-landing-css">
 :root {
@@ -145,8 +145,8 @@ html, body {
 </head>
 <body>
 
-<!-- BEGIN MINDATTIC.COMPONENTS:CYBERSPACE -->
-<!-- END MINDATTIC.COMPONENTS:CYBERSPACE -->
+<!-- BEGIN MINDATTIC.UIUX:CYBERSPACE -->
+<!-- END MINDATTIC.UIUX:CYBERSPACE -->
 
 <a class="home-link" href="https://mindattic.com/">&larr; mindattic.com</a>
 
@@ -254,7 +254,7 @@ Write-IfMissing -Path (Join-Path $ProjectRoot 'scripts/cli/deploy.settings.json'
 $skillMd = @"
 ---
 name: deploy
-description: Render README.md, sync MindAttic.Components, and FTP-upload index.htm to mindattic.com/$FtpFolder/. Runs scripts/cli/deploy.bat.
+description: Render README.md, sync MindAttic.UIUX, and FTP-upload index.htm to mindattic.com/$FtpFolder/. Runs scripts/cli/deploy.bat.
 ---
 
 When invoked:
@@ -262,7 +262,7 @@ When invoked:
 1. Run ``scripts\cli\deploy.bat`` from the project root (``$ProjectRoot``).
 2. The script will:
    - ``node scripts/cli/build-html.js`` -- renders ``README.md`` into the ``<!-- BEGIN README-CONTENT -->`` marker block of ``index.htm`` (using marked + highlight.js). Auto-runs ``npm install`` if ``node_modules`` is absent.
-   - ``git pull`` MindAttic.Components (sibling repo) for the latest font / Cyberspace bundle.
+   - ``git pull`` MindAttic.UIUX (sibling repo) for the latest font / Cyberspace bundle.
    - ``sync-landing-page.ps1 -Subscriber $ProjectName`` -- splices OutfitFont / AtticFont / Cyberspace marker blocks into ``index.htm``.
    - Stamp ``<!-- Last Updated: ... -->`` at the top of ``index.htm``.
    - FTPS upload ``index.htm`` to ``/mindattic.com/$FtpFolder/`` (defined in ``scripts/cli/deploy.settings.json``).

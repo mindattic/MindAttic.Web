@@ -1,0 +1,17 @@
+{
+  "$comment": "MindAttic.UIUX Themes/Cyberspace -- declares which Components this theme transitively loads. Paths are relative to the repo root and resolved as /Components/<name>/<file>; the catalog build emits <link> and <script> tags for each.",
+
+  "css": [
+    "Components/OutfitFont/outfit-font.css",
+    "Components/AtticFont/attic-font.css",
+    "Components/BackHomeM/back-home-m.css",
+    "Components/Cyberspace/frontpage.css"
+  ],
+
+  "scripts": [
+    "Components/Cyberspace/loader.js",
+    "Components/Cyberspace/tv-static.js",
+    "Components/Cyberspace/home-bg.js",
+    "Components/Cyberspace/console-bg.js"
+  ]
+}

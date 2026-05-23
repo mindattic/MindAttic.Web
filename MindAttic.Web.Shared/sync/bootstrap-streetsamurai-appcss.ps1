@@ -12,9 +12,9 @@ $before = $lines[0..1077]
 $after  = $lines[1803..($lines.Count - 1)]
 
 $placeholder = @(
-    '/* == BEGIN MINDATTIC.COMPONENTS:CYBERSPACE.CSS == */',
-    '/* MindAttic.Components rewrites this block. Do not hand-edit. */',
-    '/* == END MINDATTIC.COMPONENTS:CYBERSPACE.CSS == */'
+    '/* == BEGIN MINDATTIC.UIUX:CYBERSPACE.CSS == */',
+    '/* MindAttic.UIUX rewrites this block. Do not hand-edit. */',
+    '/* == END MINDATTIC.UIUX:CYBERSPACE.CSS == */'
 )
 $new = ($before + $placeholder + $after) -join "`r`n"
 [System.IO.File]::WriteAllText($src, $new, $utf8)

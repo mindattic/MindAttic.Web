@@ -48,7 +48,7 @@ sync/
 
 | Trigger | What runs | When |
 |---|---|---|
-| **jsDelivr CDN** | Every tag is served at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@<ref>/<path>` — versioned, edge-cached, no infra. | Continuously; cache-immutable for `@v*` tags. |
+| **jsDelivr CDN** | Every tag is served at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@<ref>/<path>` — versioned, edge-cached, no infra. | Continuously; cache-immutable for `@v*` tags. |
 | **GitHub Action** | `.github/workflows/sync-subscribers.yml` opens cross-repo PRs against `mindattic/mindattic.com` and `mindattic/StreetSamurai` with refreshed marker blocks. | Every push to `main`. |
 | **`sync/*.ps1`** | Same logic as the Action, but runs locally against working copies. | Manual (`/sync` slash command or `powershell -File sync-all.ps1`). |
 
@@ -67,16 +67,16 @@ powershell -File sync/sync-all.ps1
 
 ### `sync-mindattic-com.ps1`
 
-Inlines each MindAttic.Components group into `mindattic.com/index.htm` between
+Inlines each MindAttic.UIUX group into `mindattic.com/index.htm` between
 its own marker pair. Groups (in load order):
 
 | Group | Marker pair | Source |
 |---|---|---|
-| OutfitFont  | `BEGIN/END MINDATTIC.COMPONENTS:OUTFITFONT`  | `OutfitFont/`  |
-| AtticFont   | `BEGIN/END MINDATTIC.COMPONENTS:ATTICFONT`   | `AtticFont/`   |
-| Cyberspace  | `BEGIN/END MINDATTIC.COMPONENTS:CYBERSPACE`  | `Cyberspace/`  |
-| PinFooter   | `BEGIN/END MINDATTIC.COMPONENTS:PINFOOTER`   | `PinFooter/`   |
-| WebSnapshot | `BEGIN/END MINDATTIC.COMPONENTS:WEBSNAPSHOT` | `WebSnapshot/` (CSS + viewer JS only; `.b64.txt` payloads are inlined per-tile by the subscriber) |
+| OutfitFont  | `BEGIN/END MINDATTIC.UIUX:OUTFITFONT`  | `OutfitFont/`  |
+| AtticFont   | `BEGIN/END MINDATTIC.UIUX:ATTICFONT`   | `AtticFont/`   |
+| Cyberspace  | `BEGIN/END MINDATTIC.UIUX:CYBERSPACE`  | `Cyberspace/`  |
+| PinFooter   | `BEGIN/END MINDATTIC.UIUX:PINFOOTER`   | `PinFooter/`   |
+| WebSnapshot | `BEGIN/END MINDATTIC.UIUX:WEBSNAPSHOT` | `WebSnapshot/` (CSS + viewer JS only; `.b64.txt` payloads are inlined per-tile by the subscriber) |
 
 ### `sync-streetsamurai.ps1`
 

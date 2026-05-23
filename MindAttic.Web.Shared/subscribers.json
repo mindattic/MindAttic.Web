@@ -1,13 +1,13 @@
 {
-  "$comment": "Canonical map of which MindAttic.Components components flow to each downstream subscriber, with per-subscriber configuration. The sync scripts read this file to drive their splicing -- edit THIS file (not the sync scripts) when adding or removing subscriptions. The 'components' section is the registry of available components; the 'subscribers' section binds them to subscribers. Marker names are base names (without .CSS suffix); each subscriber kind appends the suffix it needs.",
+  "$comment": "Canonical map of which MindAttic.UIUX components flow to each downstream subscriber, with per-subscriber configuration. The sync scripts read this file to drive their splicing -- edit THIS file (not the sync scripts) when adding or removing subscriptions. The 'components' section is the registry of available components; the 'subscribers' section binds them to subscribers. Marker names are base names (without .CSS suffix); each subscriber kind appends the suffix it needs.",
 
   "components": {
-    "OutfitFont":  { "type": "font-css",    "marker": "OUTFITFONT",  "cssFile": "OutfitFont/outfit-font.css",   "jsonFile": "OutfitFont/outfit-font.json", "htmlFile": "OutfitFont/outfit-font.html" },
-    "AtticFont":   { "type": "font-css",    "marker": "ATTICFONT",   "cssFile": "AtticFont/attic-font.css",     "jsonFile": "AtticFont/attic-font.json",   "htmlFile": "AtticFont/attic-font.html"  },
-    "BackHomeM":   { "type": "static-css",  "marker": "BACKHOMEM",   "cssFile": "BackHomeM/back-home-m.css" },
-    "Cyberspace":  { "type": "html-bundle", "marker": "CYBERSPACE",  "htmlFile": "Cyberspace/frontpage.html",   "cssFile": "Cyberspace/frontpage.css",     "jsFiles": ["Cyberspace/loader.js", "Cyberspace/tv-static.js", "Cyberspace/home-bg.js", "Cyberspace/console-bg.js"], "assetsDir": "Cyberspace/assets" },
-    "PinFooter":   { "type": "html-bundle", "marker": "PINFOOTER",   "htmlFile": "PinFooter/pin-footer.html",   "cssFile": "PinFooter/pin-footer.css",     "jsFiles": ["PinFooter/pin-footer.js"] },
-    "WebSnapshot": { "type": "html-bundle", "marker": "WEBSNAPSHOT",                                             "cssFile": "WebSnapshot/web-snapshot.css", "jsFiles": ["WebSnapshot/web-snapshot-viewer.js"] }
+    "OutfitFont":  { "type": "font-css",    "marker": "OUTFITFONT",  "cssFile": "Components/OutfitFont/outfit-font.css",   "jsonFile": "Components/OutfitFont/outfit-font.json", "htmlFile": "Components/OutfitFont/outfit-font.html" },
+    "AtticFont":   { "type": "font-css",    "marker": "ATTICFONT",   "cssFile": "Components/AtticFont/attic-font.css",     "jsonFile": "Components/AtticFont/attic-font.json",   "htmlFile": "Components/AtticFont/attic-font.html"  },
+    "BackHomeM":   { "type": "static-css",  "marker": "BACKHOMEM",   "cssFile": "Components/BackHomeM/back-home-m.css" },
+    "Cyberspace":  { "type": "html-bundle", "marker": "CYBERSPACE",  "htmlFile": "Components/Cyberspace/frontpage.html",   "cssFile": "Components/Cyberspace/frontpage.css",     "jsFiles": ["Components/Cyberspace/loader.js", "Components/Cyberspace/tv-static.js", "Components/Cyberspace/home-bg.js", "Components/Cyberspace/console-bg.js"], "assetsDir": "Components/Cyberspace/assets" },
+    "PinFooter":   { "type": "html-bundle", "marker": "PINFOOTER",   "htmlFile": "Components/PinFooter/pin-footer.html",   "cssFile": "Components/PinFooter/pin-footer.css",     "jsFiles": ["Components/PinFooter/pin-footer.js"] },
+    "WebSnapshot": { "type": "html-bundle", "marker": "WEBSNAPSHOT",                                                       "cssFile": "Components/WebSnapshot/web-snapshot.css", "jsFiles": ["Components/WebSnapshot/web-snapshot-viewer.js"] }
   },
 
   "subscribers": {
@@ -58,7 +58,7 @@
       ]
     },
 
-    "MindAttic.Psst": {
+    "MindAttic.Psst.Legal": {
       "kind":       "html-inline-multi",
       "target":     "D:/Projects/MindAttic/MindAttic.Psst",
       "targets":    ["privacy.htm", "terms.htm"],
@@ -68,7 +68,7 @@
       ]
     },
 
-    "MindAttic.Psst.Index": {
+    "MindAttic.Psst": {
       "kind":       "landing-page",
       "target":     "D:/Projects/MindAttic/MindAttic.Psst/index.htm",
       "syncScript": "sync-landing-page.ps1",

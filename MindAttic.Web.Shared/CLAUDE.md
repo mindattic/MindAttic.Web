@@ -1,4 +1,4 @@
-# MindAttic.Components Project Rules
+# MindAttic.UIUX Project Rules
 
 ## Conversation
 - A bare "do" / "do it" / "yes" from the user means "continue", "keep going", "proceed". Resume the current task without asking for clarification.
@@ -14,13 +14,13 @@
 - `.github/workflows/` — GitHub Actions that automate cross-repo PRs into subscriber repos on push to `main`.
 
 ## Delivery pipelines (subscribers)
-- **jsDelivr CDN** — every tag is served at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@<tag>/cyberspace/<file>`. Production runtime path.
+- **jsDelivr CDN** — every tag is served at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@<tag>/cyberspace/<file>`. Production runtime path.
 - **GitHub Actions cross-repo sync** — on push to `main`, `.github/workflows/sync-subscribers.yml` opens PRs against `mindattic/mindattic.com` and `mindattic/StreetSamurai` with refreshed marker blocks / wwwroot copies.
 - **PowerShell `sync/*.ps1`** — local dev fallback for fast iteration without round-tripping through GitHub.
 
 ## Sync targets (marker blocks consumed by every pipeline)
-- `mindattic.com/index.htm` — inlined between `<!-- BEGIN MINDATTIC.COMPONENTS:CYBERSPACE --> ... <!-- END MINDATTIC.COMPONENTS:CYBERSPACE -->` markers.
-- `StreetSamurai/v3/StreetSamurai.Blazor/wwwroot/` — JS files copied into `js/`, CSS injected between `/* == BEGIN/END MINDATTIC.COMPONENTS:CYBERSPACE.CSS == */` markers in `app.css`.
+- `mindattic.com/index.htm` — inlined between `<!-- BEGIN MINDATTIC.UIUX:CYBERSPACE --> ... <!-- END MINDATTIC.UIUX:CYBERSPACE -->` markers.
+- `StreetSamurai/v3/StreetSamurai.Blazor/wwwroot/` — JS files copied into `js/`, CSS injected between `/* == BEGIN/END MINDATTIC.UIUX:CYBERSPACE.CSS == */` markers in `app.css`.
 
 ## Editing rule
 - Edit only in `cyberspace/`. Push to `main` and let GitHub Actions deliver, or run `sync/sync-all.ps1` (or `/sync`) locally for fast iteration. Downstream copies are derived artifacts.
