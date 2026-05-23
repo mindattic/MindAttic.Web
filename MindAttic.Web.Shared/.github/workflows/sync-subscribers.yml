@@ -156,12 +156,24 @@ jobs:
           path: mindattic-psst
           token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
 
-      - name: Run sync-mindattic-psst.ps1
+      - name: Run sync-mindattic-psst.ps1 (privacy.htm + terms.htm)
         shell: pwsh
         run: |
           ./content/sync/sync-mindattic-psst.ps1 `
             -ContentRoot "$PWD/content" `
             -TargetRoot "$PWD/mindattic-psst"
+
+      # MindAttic.Psst.Index is a separate landing-page subscriber that
+      # targets index.htm in the same repo. Run it here (rather than as a
+      # matrix leg) so both writes against mindattic/MindAttic.Psst land in
+      # the same PR via the shared auto/sync-components branch.
+      - name: Run sync-landing-page.ps1 (index.htm)
+        shell: pwsh
+        run: |
+          ./content/sync/sync-landing-page.ps1 `
+            -Subscriber MindAttic.Psst.Index `
+            -ContentRoot "$PWD/content" `
+            -TargetIndex "$PWD/mindattic-psst/index.htm"
 
       - name: Open or update PR if there are changes
         uses: peter-evans/create-pull-request@v6
@@ -173,7 +185,7 @@ jobs:
           body: |
             Automated sync from [MindAttic.Components@${{ github.sha }}](https://github.com/mindattic/MindAttic.Components/commit/${{ github.sha }}).
 
-            Marker blocks in `privacy.htm` and `terms.htm` regenerated from canonical sources.
+            Marker blocks in `privacy.htm`, `terms.htm`, and `index.htm` regenerated from canonical sources.
           branch: auto/sync-components
           base: main
           delete-branch: true
@@ -214,6 +226,69 @@ jobs:
             Automated sync from [MindAttic.Components@${{ github.sha }}](https://github.com/mindattic/MindAttic.Components/commit/${{ github.sha }}).
 
             CSS marker blocks in `scripts/cli/build-html.js` regenerated. Run `node scripts/cli/build-html.js` to materialize into ChiMesh.htm / index.htm.
+          branch: auto/sync-components
+          base: main
+          delete-branch: true
+          author: "MindAttic Components Bot <noreply@mindattic.com>"
+          committer: "MindAttic Components Bot <noreply@mindattic.com>"
+
+  # ====================================================================
+  # Landing-page subscribers (one matrix leg per project; each leg
+  # checks out one subscriber repo and splices its index.htm). To onboard
+  # a new landing-page:
+  #   1. Add a "kind": "landing-page" entry in subscribers.json.
+  #   2. Add a matrix `include:` line below with its name + GitHub repo.
+  # `fail-fast: false` so one bad subscriber doesn't take down the others.
+  # ====================================================================
+  sync-landing-pages:
+    name: Sync into ${{ matrix.subscriber }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { subscriber: IdiotProof,        repo: mindattic/IdiotProof }
+          - { subscriber: FractionsOfACent,  repo: mindattic/FractionsOfACent }
+          - { subscriber: GridGame2026,      repo: mindattic/GridGame2026 }
+          - { subscriber: MindAttic.Legion,  repo: mindattic/MindAttic.Legion }
+          - { subscriber: MindAttic.Mobile,  repo: mindattic/MindAttic.Mobile }
+          - { subscriber: MediaButler,       repo: mindattic/MediaButler }
+          - { subscriber: MindAttic.Vault,   repo: mindattic/MindAttic.Vault }
+          - { subscriber: TaxRateCollector,  repo: mindattic/TaxRateCollector }
+          - { subscriber: ThinkTank,         repo: mindattic/ThinkTank }
+          - { subscriber: Tutor,             repo: mindattic/Tutor }
+    steps:
+      - name: Checkout MindAttic.Components
+        uses: actions/checkout@v4
+        with:
+          path: content
+
+      - name: Checkout ${{ matrix.subscriber }}
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ matrix.repo }}
+          path: subscriber
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+
+      - name: Run sync-landing-page.ps1
+        shell: pwsh
+        run: |
+          ./content/sync/sync-landing-page.ps1 `
+            -Subscriber ${{ matrix.subscriber }} `
+            -ContentRoot "$PWD/content" `
+            -TargetIndex "$PWD/subscriber/index.htm"
+
+      - name: Open or update PR if there are changes
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: subscriber
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+          commit-message: "chore(components): sync from MindAttic.Components@${{ github.sha }}"
+          title: "Sync from MindAttic.Components"
+          body: |
+            Automated sync from [MindAttic.Components@${{ github.sha }}](https://github.com/mindattic/MindAttic.Components/commit/${{ github.sha }}).
+
+            Marker blocks in `index.htm` regenerated from canonical sources.
           branch: auto/sync-components
           base: main
           delete-branch: true

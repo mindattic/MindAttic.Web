@@ -61,10 +61,142 @@
     "MindAttic.Psst": {
       "kind":       "html-inline-multi",
       "target":     "D:/Projects/MindAttic/MindAttic.Psst",
-      "targets":    ["privacy.htm", "terms.htm", "index.htm"],
+      "targets":    ["privacy.htm", "terms.htm"],
       "syncScript": "sync-mindattic-psst.ps1",
       "subscriptions": [
         { "component": "OutfitFont" }
+      ]
+    },
+
+    "MindAttic.Psst.Index": {
+      "kind":       "landing-page",
+      "target":     "D:/Projects/MindAttic/MindAttic.Psst/index.htm",
+      "syncScript": "sync-landing-page.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont", "applyToSelector": "#mindatticpsst" },
+        { "component": "Cyberspace" },
+        { "component": "BackHomeM" }
+      ]
+    },
+
+    "IdiotProof": {
+      "kind":       "landing-page",
+      "target":     "D:/Projects/MindAttic/IdiotProof/index.htm",
+      "syncScript": "sync-landing-page.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont", "applyToSelector": "#idiotproof" },
+        { "component": "Cyberspace" },
+        { "component": "BackHomeM" }
+      ]
+    },
+
+    "FractionsOfACent": {
+      "kind":       "landing-page",
+      "target":     "D:/Projects/MindAttic/FractionsOfACent/index.htm",
+      "syncScript": "sync-landing-page.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont", "applyToSelector": "#fractionsofacent" },
+        { "component": "Cyberspace" },
+        { "component": "BackHomeM" }
+      ]
+    },
+
+    "GridGame2026": {
+      "kind":       "landing-page",
+      "target":     "D:/Projects/MindAttic/GridGame2026/index.htm",
+      "syncScript": "sync-landing-page.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont", "applyToSelector": "#gridgame2026" },
+        { "component": "Cyberspace" },
+        { "component": "BackHomeM" }
+      ]
+    },
+
+    "MindAttic.Legion": {
+      "kind":       "landing-page",
+      "target":     "D:/Projects/MindAttic/MindAttic.Legion/index.htm",
+      "syncScript": "sync-landing-page.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont", "applyToSelector": "#mindatticlegion" },
+        { "component": "Cyberspace" },
+        { "component": "BackHomeM" }
+      ]
+    },
+
+    "MindAttic.Mobile": {
+      "kind":       "landing-page",
+      "target":     "D:/Projects/MindAttic/MindAttic.Mobile/index.htm",
+      "syncScript": "sync-landing-page.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont", "applyToSelector": "#mindatticmobile" },
+        { "component": "Cyberspace" },
+        { "component": "BackHomeM" }
+      ]
+    },
+
+    "MediaButler": {
+      "kind":       "landing-page",
+      "target":     "D:/Projects/MindAttic/MediaButler/index.htm",
+      "syncScript": "sync-landing-page.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont", "applyToSelector": "#mediabutler" },
+        { "component": "Cyberspace" },
+        { "component": "BackHomeM" }
+      ]
+    },
+
+    "MindAttic.Vault": {
+      "kind":       "landing-page",
+      "target":     "D:/Projects/MindAttic/MindAttic.Vault/index.htm",
+      "syncScript": "sync-landing-page.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont", "applyToSelector": "#mindatticvault" },
+        { "component": "Cyberspace" },
+        { "component": "BackHomeM" }
+      ]
+    },
+
+    "TaxRateCollector": {
+      "kind":       "landing-page",
+      "target":     "D:/Projects/MindAttic/TaxRateCollector/index.htm",
+      "syncScript": "sync-landing-page.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont", "applyToSelector": "#taxratecollector" },
+        { "component": "Cyberspace" },
+        { "component": "BackHomeM" }
+      ]
+    },
+
+    "ThinkTank": {
+      "kind":       "landing-page",
+      "target":     "D:/Projects/MindAttic/ThinkTank/index.htm",
+      "syncScript": "sync-landing-page.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont", "applyToSelector": "#thinktank" },
+        { "component": "Cyberspace" },
+        { "component": "BackHomeM" }
+      ]
+    },
+
+    "Tutor": {
+      "kind":       "landing-page",
+      "target":     "D:/Projects/MindAttic/Tutor/index.htm",
+      "syncScript": "sync-landing-page.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" },
+        { "component": "AtticFont", "applyToSelector": "#tutor" },
+        { "component": "Cyberspace" },
+        { "component": "BackHomeM" }
       ]
     }
   }
