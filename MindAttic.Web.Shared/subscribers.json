@@ -56,6 +56,16 @@
         { "component": "AtticFont", "applyToSelector": "#chimesh" },
         { "component": "BackHomeM" }
       ]
+    },
+
+    "MindAttic.Psst": {
+      "kind":       "html-inline-multi",
+      "target":     "D:/Projects/MindAttic/MindAttic.Psst",
+      "targets":    ["privacy.htm", "terms.htm", "index.htm"],
+      "syncScript": "sync-mindattic-psst.ps1",
+      "subscriptions": [
+        { "component": "OutfitFont" }
+      ]
     }
   }
 }

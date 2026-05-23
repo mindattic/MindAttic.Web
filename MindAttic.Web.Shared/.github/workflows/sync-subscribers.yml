@@ -140,6 +140,46 @@ jobs:
           author: "MindAttic Components Bot <noreply@mindattic.com>"
           committer: "MindAttic Components Bot <noreply@mindattic.com>"
 
+  sync-mindattic-psst:
+    name: Sync into MindAttic.Psst
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MindAttic.Components
+        uses: actions/checkout@v4
+        with:
+          path: content
+
+      - name: Checkout MindAttic.Psst
+        uses: actions/checkout@v4
+        with:
+          repository: mindattic/MindAttic.Psst
+          path: mindattic-psst
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+
+      - name: Run sync-mindattic-psst.ps1
+        shell: pwsh
+        run: |
+          ./content/sync/sync-mindattic-psst.ps1 `
+            -ContentRoot "$PWD/content" `
+            -TargetRoot "$PWD/mindattic-psst"
+
+      - name: Open or update PR if there are changes
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: mindattic-psst
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+          commit-message: "chore(components): sync from MindAttic.Components@${{ github.sha }}"
+          title: "Sync from MindAttic.Components"
+          body: |
+            Automated sync from [MindAttic.Components@${{ github.sha }}](https://github.com/mindattic/MindAttic.Components/commit/${{ github.sha }}).
+
+            Marker blocks in `privacy.htm` and `terms.htm` regenerated from canonical sources.
+          branch: auto/sync-components
+          base: main
+          delete-branch: true
+          author: "MindAttic Components Bot <noreply@mindattic.com>"
+          committer: "MindAttic Components Bot <noreply@mindattic.com>"
+
   sync-chimesh:
     name: Sync into ChiMesh
     runs-on: ubuntu-latest
