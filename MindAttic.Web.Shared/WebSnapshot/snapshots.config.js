@@ -11,4 +11,13 @@ module.exports = [
     viewport: { width: 1280, height: 1600 },
     handheld: true,
   },
+  {
+    name: 'github-mindattic',
+    url: 'https://github.com/mindattic',
+    width: 150,
+    height: 225,
+    align: 'top-left',
+    viewport: { width: 1280, height: 1600 },
+    handheld: true,
+  },
 ];
