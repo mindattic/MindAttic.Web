@@ -68,7 +68,7 @@
       ]
     },
 
-    "MindAttic.Psst": {
+    "MindAttic.Psst.Index": {
       "kind":       "landing-page",
       "target":     "D:/Projects/MindAttic/MindAttic.Psst/index.htm",
       "syncScript": "sync-landing-page.ps1",

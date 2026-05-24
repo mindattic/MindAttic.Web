@@ -29,12 +29,12 @@ comment, a `<FolderName>.md` doc, and any companion `.json` config.
 
 | Component | Type | What it does | Docs |
 |---|---|---|---|
-| **[Cyberspace](Cyberspace/Cyberspace.md)** | HTML + CSS + JS bundle | Cyberpunk console-background effects engine — 17 named effects (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT × 7 variants, FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR), scan-line overlay, parallax circuit-board, keepout zones around content. | [Cyberspace.md](Cyberspace/Cyberspace.md) |
-| **[OutfitFont](OutfitFont/OutfitFont.md)** | font + CSS | Outfit variable font (Google Fonts, weights 100–900) inlined as base64 woff2. Two `@font-face` declarations (Latin + Latin-Extended) plus `:root { --font-outfit: 'Outfit', system-ui, sans-serif; }` for ergonomic reuse. | [OutfitFont.md](OutfitFont/OutfitFont.md) |
-| **[AtticFont](AtticFont/AtticFont.md)** | font + CSS | Attic display face inlined as base64 woff2. Single `@font-face` plus `:root { --font-attic: 'Attic', serif; }`. Per-subscriber `applyToSelector` controls where Attic is auto-applied (`#claudia`, `#chimesh`, `.site-name`, …). | [AtticFont.md](AtticFont/AtticFont.md) |
-| **[PinFooter](PinFooter/PinFooter.md)** | CSS + JS | Pin-when-short footer. Toggles `position: fixed; bottom: 0` on any element with class `pin-when-short` while the document is shorter than the viewport; releases it when content overflows. | [PinFooter.md](PinFooter/PinFooter.md) |
-| **[BackHomeM](BackHomeM/BackHomeM.md)** | CSS only | A capital "M" in AtticFont pinned to the upper-left, linking back to mindattic.com. Used on satellite sites (Claudia, ChiMesh) so a visitor can always get home. | [BackHomeM.md](BackHomeM/BackHomeM.md) |
-| **[WebSnapshot](WebSnapshot/WebSnapshot.md)** | Node CLI + browser viewer | Capture a fresh screenshot of any URL with Playwright, scale + crop it to a preview rectangle (cover-fit + alignment crop), and inline the result as a base64 data URI inside any `.web-snapshot` container. | [WebSnapshot.md](WebSnapshot/WebSnapshot.md) |
+| **[Cyberspace](Components/Cyberspace/Cyberspace.md)** | HTML + CSS + JS bundle | Cyberpunk console-background effects engine — 17 named effects (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT × 7 variants, FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR), scan-line overlay, parallax circuit-board, keepout zones around content. | [Cyberspace.md](Components/Cyberspace/Cyberspace.md) |
+| **[OutfitFont](Components/OutfitFont/OutfitFont.md)** | font + CSS | Outfit variable font (Google Fonts, weights 100–900) inlined as base64 woff2. Two `@font-face` declarations (Latin + Latin-Extended) plus `:root { --font-outfit: 'Outfit', system-ui, sans-serif; }` for ergonomic reuse. | [OutfitFont.md](Components/OutfitFont/OutfitFont.md) |
+| **[AtticFont](Components/AtticFont/AtticFont.md)** | font + CSS | Attic display face inlined as base64 woff2. Single `@font-face` plus `:root { --font-attic: 'Attic', serif; }`. Per-subscriber `applyToSelector` controls where Attic is auto-applied (`#claudia`, `#chimesh`, `.site-name`, …). | [AtticFont.md](Components/AtticFont/AtticFont.md) |
+| **[PinFooter](Components/PinFooter/PinFooter.md)** | CSS + JS | Pin-when-short footer. Toggles `position: fixed; bottom: 0` on any element with class `pin-when-short` while the document is shorter than the viewport; releases it when content overflows. | [PinFooter.md](Components/PinFooter/PinFooter.md) |
+| **[BackHomeM](Components/BackHomeM/BackHomeM.md)** | CSS only | A capital "M" in AtticFont pinned to the upper-left, linking back to mindattic.com. Used on satellite sites (Claudia, ChiMesh) so a visitor can always get home. | [BackHomeM.md](Components/BackHomeM/BackHomeM.md) |
+| **[WebSnapshot](Components/WebSnapshot/WebSnapshot.md)** | Node CLI + browser viewer | Capture a fresh screenshot of any URL with Playwright, scale + crop it to a preview rectangle (cover-fit + alignment crop), and inline the result as a base64 data URI inside any `.web-snapshot` container. | [WebSnapshot.md](Components/WebSnapshot/WebSnapshot.md) |
 
 ---
 
@@ -43,50 +43,51 @@ comment, a `<FolderName>.md` doc, and any companion `.json` config.
 ```
 MindAttic.UiUx/
 │
-├── Cyberspace/                  # Cyberpunk console-background effects
-│   ├── frontpage.html           #   DOM scaffolding (3 fixed-position layer divs)
-│   ├── frontpage.css            #   17 effects + scan-lines + flicker keyframes
-│   ├── console-bg.js            #   animation engine
-│   ├── home-bg.js               #   torn-edge portrait compositor
-│   ├── tv-static.js             #   navigation-transition TV-static overlay
-│   ├── loader.js                #   tiny global loader show/hide helper
-│   ├── index.htm                #   ad-hoc local test harness
-│   ├── assets/                  #   parallax textures (circuitboard.00..02.png)
-│   └── Cyberspace.md
-│
-├── OutfitFont/                  # Outfit variable font, base64 woff2
-│   ├── outfit-font.html
-│   ├── outfit-font.css          #   @font-face + --font-outfit
-│   ├── outfit-font.json         #   { fontFamily, fallback, applyToSelector }
-│   └── OutfitFont.md
-│
-├── AtticFont/                   # Attic display face, base64 woff2
-│   ├── attic-font.html
-│   ├── attic-font.css           #   @font-face + --font-attic
-│   ├── attic-font.json          #   { fontFamily, fallback }
-│   └── AtticFont.md
-│
-├── PinFooter/                   # Pin-when-short footer
-│   ├── pin-footer.html
-│   ├── pin-footer.css           #   .pin-when-short.pinned { position: fixed; bottom: 0 }
-│   ├── pin-footer.js            #   toggles .pinned on resize / mutation / fonts.ready
-│   └── PinFooter.md
-│
-├── BackHomeM/                   # "M" return-home anchor (upper-left)
-│   ├── back-home-m.html
-│   ├── back-home-m.css          #   AtticFont stack + position: fixed top/left
-│   └── BackHomeM.md
-│
-├── WebSnapshot/                 # Snapshot capture + inline base64 viewer
-│   ├── web-snapshot.js          #   Playwright capture engine
-│   ├── snapshot.js              #   CLI wrapper
-│   ├── snapshots.config.js      #   declarative recurring targets
-│   ├── web-snapshot-viewer.js   #   browser-side animation runtime
-│   ├── web-snapshot.css         #   .web-snapshot container behavior
-│   ├── web-snapshot.html        #   paste-in usage template
-│   ├── package.json             #   Playwright dep + npm scripts
-│   ├── previews/                #   generated: <name>.b64.txt (+ .meta.json)
-│   └── WebSnapshot.md
+├── Components/
+│   ├── Cyberspace/              # Cyberpunk console-background effects
+│   │   ├── frontpage.html       #   DOM scaffolding (3 fixed-position layer divs)
+│   │   ├── frontpage.css        #   17 effects + scan-lines + flicker keyframes
+│   │   ├── console-bg.js        #   animation engine
+│   │   ├── home-bg.js           #   torn-edge portrait compositor
+│   │   ├── tv-static.js         #   navigation-transition TV-static overlay
+│   │   ├── loader.js            #   tiny global loader show/hide helper
+│   │   ├── index.htm            #   ad-hoc local test harness
+│   │   ├── assets/              #   parallax textures (circuitboard.*.png)
+│   │   └── Cyberspace.md
+│   │
+│   ├── OutfitFont/              # Outfit variable font, base64 woff2
+│   │   ├── outfit-font.html
+│   │   ├── outfit-font.css      #   @font-face + --font-outfit
+│   │   ├── outfit-font.json     #   { fontFamily, fallback, applyToSelector }
+│   │   └── OutfitFont.md
+│   │
+│   ├── AtticFont/               # Attic display face, base64 woff2
+│   │   ├── attic-font.html
+│   │   ├── attic-font.css       #   @font-face + --font-attic
+│   │   ├── attic-font.json      #   { fontFamily, fallback }
+│   │   └── AtticFont.md
+│   │
+│   ├── PinFooter/               # Pin-when-short footer
+│   │   ├── pin-footer.html
+│   │   ├── pin-footer.css       #   .pin-when-short.pinned { position: fixed; bottom: 0 }
+│   │   ├── pin-footer.js        #   toggles .pinned on resize / mutation / fonts.ready
+│   │   └── PinFooter.md
+│   │
+│   ├── BackHomeM/               # "M" return-home anchor (upper-left)
+│   │   ├── back-home-m.html
+│   │   ├── back-home-m.css      #   AtticFont stack + position: fixed top/left
+│   │   └── BackHomeM.md
+│   │
+│   └── WebSnapshot/             # Snapshot capture + inline base64 viewer
+│       ├── web-snapshot.js      #   Playwright capture engine
+│       ├── snapshot.js          #   CLI wrapper
+│       ├── snapshots.config.js  #   declarative recurring targets
+│       ├── web-snapshot-viewer.js #   browser-side animation runtime
+│       ├── web-snapshot.css     #   .web-snapshot container behavior
+│       ├── web-snapshot.html    #   paste-in usage template
+│       ├── package.json         #   Playwright dep + npm scripts
+│       ├── previews/            #   generated: <name>.b64.txt (+ .meta.json)
+│       └── WebSnapshot.md
 │
 ├── sync/                        # Distribution scripts (PowerShell)
 │   ├── _subscribers.ps1                   # helper dot-sourced by every sync script (reads subscribers.json)
@@ -229,7 +230,7 @@ warning subscribers not to hand-edit, because the next sync will overwrite.
 
 ## Editing a component
 
-Edit files in the component's folder (e.g. `Cyberspace/console-bg.js`).
+Edit files in the component's folder (e.g. `Components/Cyberspace/console-bg.js`).
 Push to `main` and the GitHub Action delivers to every subscriber, or run
 `sync/sync-all.ps1` (or the `/sync` slash command) locally for fast
 iteration without round-tripping through GitHub.

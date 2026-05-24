@@ -4,12 +4,12 @@ on:
   push:
     branches: [main]
     paths:
-      - 'AtticFont/**'
-      - 'BackHomeM/**'
-      - 'Cyberspace/**'
-      - 'OutfitFont/**'
-      - 'PinFooter/**'
-      - 'WebSnapshot/**'
+      - 'Components/AtticFont/**'
+      - 'Components/BackHomeM/**'
+      - 'Components/Cyberspace/**'
+      - 'Components/OutfitFont/**'
+      - 'Components/PinFooter/**'
+      - 'Components/WebSnapshot/**'
       - 'subscribers.json'
       - 'sync/**'
       - '.github/workflows/sync-subscribers.yml'

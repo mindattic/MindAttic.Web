@@ -35,6 +35,12 @@ function looksLikeUrl(s) {
   return /^https?:\/\//i.test(s);
 }
 
+// Flags without a value (presence implies true). Anything else either uses
+// `--flag=value` or `--flag <value>`; we explicitly allow space-separated values
+// only for known value-flags so positional URLs like `https://...` are never
+// swallowed as a flag's value.
+const VALUE_FLAGS = new Set(['align', 'size', 'outputsize', 'input', 'inputsize', 'viewport', 'delay', 'wait']);
+
 function parseArgs(argv) {
   const positional = [];
   const flags = {};
@@ -45,8 +51,10 @@ function parseArgs(argv) {
       const eq = body.indexOf('=');
       if (eq > -1) {
         flags[body.slice(0, eq)] = body.slice(eq + 1);
+      } else if (VALUE_FLAGS.has(body) && argv[i + 1] !== undefined && !argv[i + 1].startsWith('--')) {
+        flags[body] = argv[++i];
       } else {
-        flags[body] = (argv[i + 1] && !argv[i + 1].startsWith('--')) ? argv[++i] : 'true';
+        flags[body] = 'true';
       }
     } else {
       positional.push(a);

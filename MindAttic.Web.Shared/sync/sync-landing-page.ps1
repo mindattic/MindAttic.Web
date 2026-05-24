@@ -38,48 +38,10 @@ $utf8 = [System.Text.UTF8Encoding]::new($false)
 
 # Resolve the set of subscribers we're driving. With -Subscriber we sync
 # exactly one (legacy single-target shape). Without it we discover every
-# landing-page subscriber in subscribers.json and recurse into a fresh
-# invocation per subscriber -- so the per-subscriber output stays grouped
-# and a single bad target doesn't take down the rest.
-if (-not $Subscriber) {
-    if ($TargetIndex) { throw "-TargetIndex requires -Subscriber (target only makes sense for a specific subscriber)." }
-    $cfg = Get-SubscribersConfig -ContentRoot $ContentRoot
-    $landingNames = @(
-        $cfg.subscribers.PSObject.Properties |
-            Where-Object { $_.Value.kind -eq 'landing-page' } |
-            ForEach-Object { $_.Name }
-    )
-    if (-not $landingNames -or $landingNames.Count -eq 0) {
-        Write-Output "No landing-page subscribers registered. Nothing to do."
-        return
-    }
-    $here = if ($PSScriptRoot) { $PSScriptRoot } else { Split-Path -Parent $MyInvocation.MyCommand.Path }
-    $self = Join-Path $here 'sync-landing-page.ps1'
-    $failed = @()
-    foreach ($name in $landingNames) {
-        Write-Output ""
-        Write-Output "--- $name ---"
-        try {
-            & $self -Subscriber $name -ContentRoot $ContentRoot
-        } catch {
-            Write-Output "  FAILED: $($_.Exception.Message)"
-            $failed += $name
-        }
-    }
-    if ($failed.Count -gt 0) {
-        throw "Landing-page sync failed for: $($failed -join ', ')"
-    }
-    return
-}
-
-$sub = Get-Subscriber -Name $Subscriber -ContentRoot $ContentRoot
-
-if ($sub.kind -ne 'landing-page') {
-    throw "Subscriber '$Subscriber' has kind '$($sub.kind)', expected 'landing-page'. Use the matching sync script instead."
-}
-
-if (-not $TargetIndex) { $TargetIndex = $sub.target }
-if (-not (Test-Path $TargetIndex)) { throw "Target not found: $TargetIndex" }
+# landing-page subscriber in subscribers.json and iterate in-process -- so
+# the per-subscriber output stays grouped, a single bad target doesn't take
+# down the rest, and we avoid the cost of spawning a PowerShell child per
+# subscriber.
 
 # --------------------------------------------------------------------
 # Per-component builders.
@@ -120,17 +82,16 @@ function Build-CyberspaceBlock {
     if ($Component.PSObject.Properties.Name -contains 'assetsDir') {
         $texDir = Join-Path $ContentRoot $Component.assetsDir
         if (Test-Path $texDir) {
-            $texSrcs = @('circuitboard.00.png', 'circuitboard.01.png', 'circuitboard.02.png')
-            $dataUris = $texSrcs | ForEach-Object {
-                $tp = Join-Path $texDir $_
-                if (Test-Path $tp) {
-                    $bytes = [System.IO.File]::ReadAllBytes($tp)
-                    $b64   = [Convert]::ToBase64String($bytes)
-                    "'data:image/png;base64,$b64'"
-                } else { "null" }
+            $texFiles = Get-ChildItem -Path $texDir -Filter 'circuitboard.*.png' -File | Sort-Object Name
+            $dataUris = $texFiles | ForEach-Object {
+                $bytes = [System.IO.File]::ReadAllBytes($_.FullName)
+                $b64   = [Convert]::ToBase64String($bytes)
+                "'data:image/png;base64,$b64'"
             }
-            $texOverride = "/* ---- circuitboard textures (base64 inline) ---- */`r`n" +
-                           "window.__cyberspaceCircuitboardSrcs = [`r`n  " + ($dataUris -join ",`r`n  ") + "`r`n];`r`n"
+            if ($dataUris) {
+                $texOverride = "/* ---- circuitboard textures (base64 inline) ---- */`r`n" +
+                               "window.__cyberspaceCircuitboardSrcs = [`r`n  " + ($dataUris -join ",`r`n  ") + "`r`n];`r`n"
+            }
         }
     }
 
@@ -183,31 +144,83 @@ function Splice-MarkerBlock {
 }
 
 # --------------------------------------------------------------------
-# Iterate subscriptions
+# Per-subscriber driver. Iterates subscriptions and writes the result.
 # --------------------------------------------------------------------
-$indexText = [System.IO.File]::ReadAllText($TargetIndex, $utf8)
-$summary   = New-Object System.Collections.Generic.List[string]
+function Invoke-LandingPageSync {
+    param(
+        [Parameter(Mandatory)][string]$Name,
+        [Parameter(Mandatory)][string]$ContentRoot,
+        [string]$TargetIndex
+    )
 
-foreach ($subscription in $sub.subscriptions) {
-    $comp = Get-ComponentDescriptor -Name $subscription.component -ContentRoot $ContentRoot
-
-    $info = switch ($comp.name) {
-        'OutfitFont' { Build-FontBlock      -Component $comp -Subscription $subscription -ContentRoot $ContentRoot -StyleId 'mindattic-components-outfit-font-css' }
-        'AtticFont'  { Build-FontBlock      -Component $comp -Subscription $subscription -ContentRoot $ContentRoot -StyleId 'mindattic-components-attic-font-css'  }
-        'Cyberspace' { Build-CyberspaceBlock -Component $comp -ContentRoot $ContentRoot }
-        'BackHomeM'  { Build-StaticCssBlock  -Component $comp -ContentRoot $ContentRoot -StyleId 'mindattic-components-back-home-m-css' }
-        default      { throw "landing-page sync has no builder for component '$($comp.name)'. Add a dispatch case in sync-landing-page.ps1." }
+    $sub = Get-Subscriber -Name $Name -ContentRoot $ContentRoot
+    if ($sub.kind -ne 'landing-page') {
+        throw "Subscriber '$Name' has kind '$($sub.kind)', expected 'landing-page'. Use the matching sync script instead."
     }
 
-    $beginMarker = "<!-- BEGIN MINDATTIC.UIUX:$($comp.marker) -->"
-    $endMarker   = "<!-- END MINDATTIC.UIUX:$($comp.marker) -->"
-    $indexText = Splice-MarkerBlock -IndexText $indexText -BeginMarker $beginMarker -EndMarker $endMarker -Block $info.Block
+    if (-not $TargetIndex) { $TargetIndex = $sub.target }
+    if (-not (Test-Path $TargetIndex)) { throw "Target not found: $TargetIndex" }
 
-    $summary.Add(("  {0,-12} {1}" -f "$($comp.name):", $info.KbDetail))
+    $indexText = [System.IO.File]::ReadAllText($TargetIndex, $utf8)
+    $summary   = New-Object System.Collections.Generic.List[string]
+
+    foreach ($subscription in $sub.subscriptions) {
+        $comp = Get-ComponentDescriptor -Name $subscription.component -ContentRoot $ContentRoot
+
+        $info = switch ($comp.name) {
+            'OutfitFont' { Build-FontBlock      -Component $comp -Subscription $subscription -ContentRoot $ContentRoot -StyleId 'mindattic-components-outfit-font-css' }
+            'AtticFont'  { Build-FontBlock      -Component $comp -Subscription $subscription -ContentRoot $ContentRoot -StyleId 'mindattic-components-attic-font-css'  }
+            'Cyberspace' { Build-CyberspaceBlock -Component $comp -ContentRoot $ContentRoot }
+            'BackHomeM'  { Build-StaticCssBlock  -Component $comp -ContentRoot $ContentRoot -StyleId 'mindattic-components-back-home-m-css' }
+            default      { throw "landing-page sync has no builder for component '$($comp.name)'. Add a dispatch case in sync-landing-page.ps1." }
+        }
+
+        $beginMarker = "<!-- BEGIN MINDATTIC.UIUX:$($comp.marker) -->"
+        $endMarker   = "<!-- END MINDATTIC.UIUX:$($comp.marker) -->"
+        $indexText = Splice-MarkerBlock -IndexText $indexText -BeginMarker $beginMarker -EndMarker $endMarker -Block $info.Block
+
+        $summary.Add(("  {0,-12} {1}" -f "$($comp.name):", $info.KbDetail))
+    }
+
+    [System.IO.File]::WriteAllText($TargetIndex, $indexText, $utf8)
+
+    $sizeKb = [math]::Round(((Get-Item $TargetIndex).Length / 1024), 1)
+    Write-Output "Synced MindAttic.UiUx -> $TargetIndex ($sizeKb KB total)"
+    $summary | ForEach-Object { Write-Output $_ }
 }
 
-[System.IO.File]::WriteAllText($TargetIndex, $indexText, $utf8)
+# --------------------------------------------------------------------
+# Dispatch
+# --------------------------------------------------------------------
+if ($Subscriber) {
+    Invoke-LandingPageSync -Name $Subscriber -ContentRoot $ContentRoot -TargetIndex $TargetIndex
+    return
+}
 
-$sizeKb = [math]::Round(((Get-Item $TargetIndex).Length / 1024), 1)
-Write-Output "Synced MindAttic.UiUx -> $TargetIndex ($sizeKb KB total)"
-$summary | ForEach-Object { Write-Output $_ }
+if ($TargetIndex) { throw "-TargetIndex requires -Subscriber (target only makes sense for a specific subscriber)." }
+
+$cfg = Get-SubscribersConfig -ContentRoot $ContentRoot
+$landingNames = @(
+    $cfg.subscribers.PSObject.Properties |
+        Where-Object { $_.Value.kind -eq 'landing-page' } |
+        ForEach-Object { $_.Name }
+)
+if (-not $landingNames -or $landingNames.Count -eq 0) {
+    Write-Output "No landing-page subscribers registered. Nothing to do."
+    return
+}
+
+$failed = @()
+foreach ($name in $landingNames) {
+    Write-Output ""
+    Write-Output "--- $name ---"
+    try {
+        Invoke-LandingPageSync -Name $name -ContentRoot $ContentRoot
+    } catch {
+        Write-Output "  FAILED: $($_.Exception.Message)"
+        $failed += $name
+    }
+}
+if ($failed.Count -gt 0) {
+    throw "Landing-page sync failed for: $($failed -join ', ')"
+}

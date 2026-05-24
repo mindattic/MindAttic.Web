@@ -9,25 +9,23 @@
 [CmdletBinding()]
 param(
     [string]$SourceDir = 'D:/Projects/MindAttic/StreetSamurai/engine/data/media',
-    [string]$DestDir   = 'D:/Projects/MindAttic/MindAttic.UiUx/cyberspace/assets'
+    [string]$DestDir   = 'D:/Projects/MindAttic/MindAttic.UiUx/Components/Cyberspace/assets'
 )
 
 $ErrorActionPreference = 'Stop'
-
-$names = @('circuitboard.00', 'circuitboard.01', 'circuitboard.02')
 
 if (-not (Test-Path $DestDir)) {
     New-Item -ItemType Directory -Path $DestDir -Force | Out-Null
 }
 
-foreach ($n in $names) {
-    $src = Join-Path $SourceDir ($n + '.png')
-    $dst = Join-Path $DestDir   ($n + '.png')
-    if (-not (Test-Path $src)) { throw "Source not found: $src" }
+$sources = Get-ChildItem -Path $SourceDir -Filter 'circuitboard.*.png' -File | Sort-Object Name
+if (-not $sources) { throw "No circuitboard.*.png files found in $SourceDir" }
 
-    Copy-Item -Path $src -Destination $dst -Force
+foreach ($src in $sources) {
+    $dst = Join-Path $DestDir $src.Name
+    Copy-Item -Path $src.FullName -Destination $dst -Force
 
     $kb = [math]::Round((Get-Item $dst).Length / 1024, 1)
-    Write-Output "  $n.png  ($kb KB)"
+    Write-Output "  $($src.Name)  ($kb KB)"
 }
 Write-Output "Textures copied to $DestDir"

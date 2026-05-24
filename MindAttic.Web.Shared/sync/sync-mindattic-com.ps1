@@ -97,17 +97,16 @@ function Build-CyberspaceBlock {
     if ($Component.PSObject.Properties.Name -contains 'assetsDir') {
         $texDir = Join-Path $ContentRoot $Component.assetsDir
         if (Test-Path $texDir) {
-            $texSrcs = @('circuitboard.00.png', 'circuitboard.01.png', 'circuitboard.02.png')
-            $dataUris = $texSrcs | ForEach-Object {
-                $tp = Join-Path $texDir $_
-                if (Test-Path $tp) {
-                    $bytes = [System.IO.File]::ReadAllBytes($tp)
-                    $b64   = [Convert]::ToBase64String($bytes)
-                    "'data:image/png;base64,$b64'"
-                } else { "null" }
+            $texFiles = Get-ChildItem -Path $texDir -Filter 'circuitboard.*.png' -File | Sort-Object Name
+            $dataUris = $texFiles | ForEach-Object {
+                $bytes = [System.IO.File]::ReadAllBytes($_.FullName)
+                $b64   = [Convert]::ToBase64String($bytes)
+                "'data:image/png;base64,$b64'"
             }
-            $texOverride = "/* ---- circuitboard textures (base64 inline) ---- */`r`n" +
-                           "window.__cyberspaceCircuitboardSrcs = [`r`n  " + ($dataUris -join ",`r`n  ") + "`r`n];`r`n"
+            if ($dataUris) {
+                $texOverride = "/* ---- circuitboard textures (base64 inline) ---- */`r`n" +
+                               "window.__cyberspaceCircuitboardSrcs = [`r`n  " + ($dataUris -join ",`r`n  ") + "`r`n];`r`n"
+            }
         }
     }
 

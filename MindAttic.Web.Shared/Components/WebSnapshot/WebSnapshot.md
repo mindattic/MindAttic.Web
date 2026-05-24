@@ -38,10 +38,13 @@ One-time, in the `WebSnapshot/` folder:
 
 ```powershell
 npm install
+npm run install:browser
 ```
 
-The `postinstall` hook runs `playwright install chromium` automatically, so
-the headless browser binary lands in the local cache without an extra step.
+`npm install` only pulls the Playwright JS package. Run `npm run install:browser`
+to fetch the headless Chromium binary (~150 MB) into the local cache — required
+only for users of the capture CLI; the browser-side `web-snapshot-viewer.js`
+does not need it.
 
 ---
 

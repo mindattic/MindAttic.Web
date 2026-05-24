@@ -9,7 +9,7 @@
   },
   "scripts": {
     "snapshot": "node snapshot.js",
-    "postinstall": "playwright install chromium"
+    "install:browser": "playwright install chromium"
   },
   "dependencies": {
     "playwright": "^1.49.0"
