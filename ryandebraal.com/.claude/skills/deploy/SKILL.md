@@ -1,13 +1,14 @@
 ---
 name: deploy
-description: Deploy the site via FTPS to the remote server. Uses deploy.ps1 by default; falls back to deploy.py if PowerShell fails. Reads credentials from settings.json.
+description: Deploy ryandebraal.com via MindAttic.Deploy (sibling repo). Stamps index.htm and FTPS-uploads it to the site root. Replaces the retired local deploy.ps1.
 ---
 
-When invoked:
+When invoked, run:
 
-1. Run the PowerShell deploy script:
-   `powershell -ExecutionPolicy Bypass -File deploy.ps1`
-2. If PowerShell is unavailable or fails, fall back to Python:
-   `python deploy.py`
-3. Report the upload summary (files OK, files failed) to the user
-4. If any files failed, highlight them and suggest checking FTP credentials or server connectivity
+```
+powershell -NoProfile -ExecutionPolicy Bypass -Command "cd D:\Projects\MindAttic\MindAttic.Deploy; npm run deploy -- --site ryandebraal.com"
+```
+
+Then report the upload result and flag any failures.
+
+The site's profile lives in `MindAttic.Deploy/projects.json` under `sites[]`. Credentials are centralized in `MindAttic.Deploy/secrets/ftp.json`; the per-site `settings.json` and `deploy.ps1` in this folder are retired.
