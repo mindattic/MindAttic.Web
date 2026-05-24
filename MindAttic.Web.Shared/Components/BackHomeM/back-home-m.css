@@ -7,9 +7,6 @@
  * so the anchor's own text content is intentionally empty (any inner text
  * would render alongside the injected glyph). Requires AtticFont/ (the
  * Attic @font-face) to also be present in the subscriber.
- * Avoid backticks and dollar-brace sequences in this file -- it gets
- * spliced into the JS template literals of build-html-js subscribers
- * (Claudia, ChiMesh) where either would terminate or interpolate the literal.
  * Canonical source. DO NOT EDIT downstream copies - edit here and re-sync.
  * ==================================================================== */
 

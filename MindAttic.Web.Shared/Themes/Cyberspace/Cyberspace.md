@@ -1,8 +1,8 @@
 # Cyberspace theme
 
-Dark cyberpunk landing-page chrome. Composes with the **Cyberspace** Component (effects engine), the **OutfitFont** + **AtticFont** Components, and the **BackHomeM** Component to deliver the look of the 11 software landing pages at `mindattic.com/<slug>.htm`.
+Dark cyberpunk landing-page chrome. Composes with the **Cyberspace** Component (effects engine), the **OutfitFont** + **AtticFont** Components, and the **BackHomeM** Component to deliver the look of the catalog landing pages rendered by `MindAttic.Deploy` at `mindattic.com/<slug>/`.
 
-A consumer declares `theme: "Cyberspace"` in `MindAttic.Catalog/projects.json` and inherits the full composition. No splice markers, no per-project CSS overrides.
+A consumer declares `theme: "Cyberspace"` in `MindAttic.Deploy/projects.json` and inherits the full composition. No splice markers, no per-project CSS overrides.
 
 ## What this theme includes
 
@@ -18,7 +18,7 @@ A consumer declares `theme: "Cyberspace"` in `MindAttic.Catalog/projects.json` a
 
 ```html
 <body>
-  <!-- theme body-prelude is inserted here by MindAttic.Catalog build -->
+  <!-- theme body-prelude is inserted here by MindAttic.Deploy build -->
   <a class="back-home-m" href="https://mindattic.com/"></a>
 
   <div class="page">
@@ -35,7 +35,7 @@ A consumer declares `theme: "Cyberspace"` in `MindAttic.Catalog/projects.json` a
     </article>
   </div>
 
-  <!-- theme script tags inserted here by MindAttic.Catalog build -->
+  <!-- theme script tags inserted here by MindAttic.Deploy build -->
 </body>
 ```
 

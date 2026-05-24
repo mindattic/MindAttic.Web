@@ -4,7 +4,7 @@
 
 A growing catalog of self-contained components — fonts, effects, helpers — that any subscriber can pull in via jsDelivr CDN at runtime, splice in via marker-block sync at build time, or accept as a cross-repo PR from GitHub Actions. Zero build step on the subscriber side, no `npm install`, no peerdeps.
 
-Currently powers `mindattic.com`, the `StreetSamurai` Blazor home page, and the `Claudia` / `ChiMesh` markdown-to-HTML build pipelines. New subscribers declare themselves in [`subscribers.json`](subscribers.json) and pick up fresh content on every sync.
+Currently powers `mindattic.com`, the `StreetSamurai` Blazor home page, and the `MindAttic.Psst` legal pages via splice-in-place sync. Everything else in the MindAttic fleet — the catalog landing pages and the Claudia/ChiMesh long-form guides — is rendered by [`MindAttic.Deploy`](../MindAttic.Deploy/README.md), which pulls components from jsDelivr at runtime.
 
 ```html
 <!-- pinned production -->
@@ -89,13 +89,12 @@ MindAttic.UiUx/
 │       ├── previews/            #   generated: <name>.b64.txt (+ .meta.json)
 │       └── WebSnapshot.md
 │
-├── sync/                        # Distribution scripts (PowerShell)
+├── sync/                        # Distribution scripts (PowerShell) -- only the three remaining splice-in-place subscribers
 │   ├── _subscribers.ps1                   # helper dot-sourced by every sync script (reads subscribers.json)
-│   ├── sync-all.ps1                       # umbrella runner
+│   ├── sync-all.ps1                       # umbrella runner (glob-discovers sync-*.ps1)
 │   ├── sync-mindattic-com.ps1             # inlines bundles into mindattic.com/index.htm
 │   ├── sync-streetsamurai.ps1             # rewrites StreetSamurai.Blazor wwwroot/*
-│   ├── sync-claudia.ps1                   # splices markers into Claudia/build-html.js
-│   ├── sync-chimesh.ps1                   # splices markers into ChiMesh/build-html.js
+│   ├── sync-mindattic-psst.ps1            # splices terms.htm + privacy.htm in MindAttic.Psst
 │   ├── bootstrap-textures.ps1             # one-shot: pull circuitboard PNGs from StreetSamurai
 │   ├── bootstrap-streetsamurai-appcss.ps1 # one-shot: insert CYBERSPACE markers into app.css
 │   └── sync.md
@@ -115,15 +114,16 @@ See [`.github/PIPELINES.md`](.github/PIPELINES.md) for the full setup
 
 | Pipeline | What it does | When it runs |
 |---|---|---|
-| **jsDelivr CDN** | Serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<ref>/<path>` — versioned, edge-cached, no infra to run | Continuously; cache-immutable for `@v*` tags |
-| **GitHub Actions cross-repo sync** | On push to `main`, opens PRs against `mindattic/mindattic.com` and `mindattic/StreetSamurai` with refreshed marker blocks / wwwroot copies | Every push to `main` (workflow: [`.github/workflows/sync-subscribers.yml`](.github/workflows/sync-subscribers.yml)) |
-| **PowerShell `sync/*.ps1`** | Local dev fallback — same logic as the Action, runs against your working copies | Manual (`/sync` slash command or `sync/sync-all.ps1`) |
+| **jsDelivr CDN** | Serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<ref>/<path>` — versioned, edge-cached, no infra to run | Continuously; cache-immutable for `@v*` tags. Consumed by `MindAttic.Deploy` (pins `componentsVersion` in `projects.json`) for every catalog landing page and the Claudia/ChiMesh long-form builds |
+| **GitHub Actions cross-repo sync** | On push to `main`, opens PRs against `mindattic/mindattic.com`, `mindattic/StreetSamurai`, and `mindattic/MindAttic.Psst` with refreshed marker blocks / wwwroot copies | Every push to `main` (workflow: [`.github/workflows/sync-subscribers.yml`](.github/workflows/sync-subscribers.yml)) |
+| **PowerShell `sync/*.ps1`** | Local dev fallback — same logic as the Action, runs against your working copies. Also invoked by `MindAttic.Deploy` as a `preDeploy` hook for `mindattic.com` and `StreetSamurai` so the bundle is fresh before FTPS upload | Manual (`powershell -File sync/sync-all.ps1`) |
 
 | Subscriber | Runtime source | In-repo copy |
 |---|---|---|
 | `mindattic.com` | Inlined HTML+CSS+JS marker blocks in `index.htm` | Refreshed by GitHub Action / `sync-mindattic-com.ps1` |
 | `StreetSamurai` (Blazor) | `wwwroot/js/*.js` + CSS marker blocks in `wwwroot/app.css` | Refreshed by GitHub Action / `sync-streetsamurai.ps1` |
-| `Claudia` / `ChiMesh` | Generated `Claudia.htm` / `ChiMesh.htm` from `scripts/cli/build-html.js` | Marker blocks inside `build-html.js`, refreshed per push |
+| `MindAttic.Psst` (legal pages) | Inlined HTML+CSS marker blocks in `terms.htm` + `privacy.htm` | Refreshed by GitHub Action / `sync-mindattic-psst.ps1`. The repo's `index.htm` is rendered by `MindAttic.Deploy` from its own `README.md` — not touched here |
+| **Everyone else** (IdiotProof, GridGame2026, MindAttic.Legion, MediaButler, MindAttic.Vault, TaxRateCollector, ThinkTank, Tutor, MindAttic.Psst.Index, Claudia, ChiMesh) | jsDelivr CDN at runtime, pinned via `MindAttic.Deploy/projects.json:componentsVersion` | Owned by [`MindAttic.Deploy`](../MindAttic.Deploy/README.md); not in this repo's `subscribers.json` |
 
 ### GitHub Action PAT — `SUBSCRIBER_REPO_TOKEN`
 
@@ -188,14 +188,15 @@ explicitly suppress (e.g. StreetSamurai opts out of AtticFont's auto-apply
 rule).
 
 ```jsonc
-"Claudia": {
-  "kind":       "build-html-js",
-  "target":     "D:/Projects/MindAttic/Claudia/scripts/cli/build-html.js",
-  "syncScript": "sync-claudia.ps1",
+"StreetSamurai": {
+  "kind":       "blazor-wwwroot",
+  "target":     "D:/Projects/MindAttic/StreetSamurai/v3/StreetSamurai.Blazor",
+  "syncScript": "sync-streetsamurai.ps1",
   "subscriptions": [
     { "component": "OutfitFont" },
-    { "component": "AtticFont",  "applyToSelector": "#claudia" },
-    { "component": "BackHomeM"  }
+    { "component": "AtticFont",  "applyToSelector": null },
+    { "component": "Cyberspace" },
+    { "component": "PinFooter",  "jsOnly": true }
   ]
 }
 ```
@@ -208,9 +209,11 @@ the next run; removing the line unenrolls it.
 
 | Subscriber kind        | What "add a subscription" means |
 |---|---|
-| `build-html-js` (Claudia, ChiMesh) | Edit `subscribers.json` only. CSS marker pair must exist in `build-html.js` once (one-time hand-insert). |
-| `html-inline` (mindattic.com)      | Edit `subscribers.json` only **if** the component's type already has a `switch` case in `sync-mindattic-com.ps1`. New types need a builder + dispatch case. HTML marker pair must exist in `index.htm` once. |
-| `blazor-wwwroot` (StreetSamurai)    | Edit `subscribers.json` only **if** the component's type already has a `switch` case in `sync-streetsamurai.ps1`. CSS marker pairs in `app.css` are one-time hand-inserts (`bootstrap-streetsamurai-appcss.ps1` helps). |
+| `html-inline` (mindattic.com)         | Edit `subscribers.json` only **if** the component's type already has a `switch` case in `sync-mindattic-com.ps1`. New types need a builder + dispatch case. HTML marker pair must exist in `index.htm` once. |
+| `blazor-wwwroot` (StreetSamurai)      | Edit `subscribers.json` only **if** the component's type already has a `switch` case in `sync-streetsamurai.ps1`. CSS marker pairs in `app.css` are one-time hand-inserts (`bootstrap-streetsamurai-appcss.ps1` helps). |
+| `html-inline-multi` (MindAttic.Psst legal) | Same contract as `html-inline`, but `target` is a folder and `targets[]` lists the files (currently `terms.htm` + `privacy.htm`). |
+
+Adding a brand-new catalog landing page or long-form HTML build is **not** done here — that work belongs in `MindAttic.Deploy/projects.json`.
 
 ---
 
@@ -231,21 +234,27 @@ warning subscribers not to hand-edit, because the next sync will overwrite.
 ## Editing a component
 
 Edit files in the component's folder (e.g. `Components/Cyberspace/console-bg.js`).
-Push to `main` and the GitHub Action delivers to every subscriber, or run
-`sync/sync-all.ps1` (or the `/sync` slash command) locally for fast
-iteration without round-tripping through GitHub.
+Push to `main` and the GitHub Action delivers to the three splice-in-place
+subscribers, or run `sync/sync-all.ps1` locally for fast iteration without
+round-tripping through GitHub.
 
 ```powershell
-# from MindAttic.UiUx — push to all subscribers in one shot (local)
+# from MindAttic.UiUx — push to all three splice-in-place subscribers in one shot (local)
 powershell -File sync/sync-all.ps1
 
 # or invoke an individual target
 powershell -File sync/sync-mindattic-com.ps1
 powershell -File sync/sync-streetsamurai.ps1
+powershell -File sync/sync-mindattic-psst.ps1
 ```
 
 Downstream copies are derived artifacts — never edit them directly; the
 next sync overwrites whatever's between the marker pairs.
+
+To ship a component change to the CDN-loaded subscribers managed by
+[`MindAttic.Deploy`](../MindAttic.Deploy/README.md), tag a new version of
+this repo and bump `componentsVersion` in `MindAttic.Deploy/projects.json`,
+then run that repo's deploy.
 
 ---
 

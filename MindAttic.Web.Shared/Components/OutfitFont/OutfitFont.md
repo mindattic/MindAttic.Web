@@ -58,14 +58,20 @@ Or via jsDelivr:
 
 ## Sync delivery
 
+Three subscribers receive Outfit via marker-block splice:
+
 - `mindattic.com/index.htm` — inlined between
   `<!-- BEGIN MINDATTIC.UIUX:OUTFITFONT --> … <!-- END … -->` markers by
   `sync/sync-mindattic-com.ps1`.
 - `StreetSamurai/wwwroot/app.css` — rewritten between
   `/* == BEGIN MINDATTIC.UIUX:OUTFITFONT.CSS == */` markers by
   `sync/sync-streetsamurai.ps1`.
-- `ChiMesh` and `Claudia` — `sync-chimesh.ps1` / `sync-claudia.ps1` splice
-  both `@font-face` blocks into each project's `scripts/cli/build-html.js`
-  template literal.
+- `MindAttic.Psst/{terms,privacy}.htm` — inlined by
+  `sync/sync-mindattic-psst.ps1`.
+
+Every other subscriber (catalog landing pages, Claudia, ChiMesh) gets
+Outfit from the jsDelivr CDN at runtime — pulled via `<link>` tags emitted
+by `MindAttic.Deploy/template/index.template.htm` against the
+`componentsVersion` pinned in `MindAttic.Deploy/projects.json`.
 
 Edit here only. Downstream copies are derived artifacts.

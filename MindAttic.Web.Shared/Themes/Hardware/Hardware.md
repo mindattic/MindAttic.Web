@@ -1,6 +1,6 @@
 # Hardware theme
 
-Clean light/dark documentation aesthetic for hardware / maker landing pages. Used by Claudia, ChiMesh, and any future hardware-themed landing page declaring `theme: "Hardware"` in `MindAttic.Catalog/projects.json`.
+Clean light/dark documentation aesthetic for hardware / maker landing pages. Used by Claudia, ChiMesh, and any future hardware-themed landing page declaring `theme: "Hardware"` in `MindAttic.Deploy/projects.json`.
 
 A consumer declares the theme and inherits the composition. The aesthetic mirrors what Claudia + ChiMesh have on their existing detailed `/claudia/` and `/chimesh/` pages, distilled into a reusable theme bundle.
 
@@ -16,11 +16,11 @@ A consumer declares the theme and inherits the composition. The aesthetic mirror
 ## What this theme deliberately does NOT include
 
 - The **Cyberspace** Component (effects engine). Hardware pages are calm; if you want the animated cyberpunk background, declare `theme: "Cyberspace"` instead.
-- A theme-toggle widget. The color scheme follows `prefers-color-scheme`; Catalog-generated landing pages have no toggle UI.
+- A theme-toggle widget. The color scheme follows `prefers-color-scheme`; Deploy-rendered landing pages have no toggle UI.
 
 ## Layout the theme expects
 
-Same as `Themes/Cyberspace/` — both themes are drop-in compatible with the `MindAttic.Catalog` template:
+Same as `Themes/Cyberspace/` — both themes are drop-in compatible with the `MindAttic.Deploy` template:
 
 ```html
 <body>

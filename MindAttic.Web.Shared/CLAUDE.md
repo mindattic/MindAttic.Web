@@ -4,23 +4,28 @@
 - A bare "do" / "do it" / "yes" from the user means "continue", "keep going", "proceed". Resume the current task without asking for clarification.
 
 ## What this is
-- Source-of-truth repo for **optional** front-end content delivered to MindAttic web properties.
-- Currently: the CYBERSPACE (Console Background) cyberpunk effects suite (CSS + JS) used by StreetSamurai and mindattic.com.
-- Decoupled from subscribers. Subscribers receive updates through delivery pipelines (see "Pipelines" below) — not by direct dependency.
+- Source-of-truth repo for the **reusable front-end components** (fonts, effects, helpers) used across MindAttic web properties.
+- Components live in `Components/` — each is fully self-contained (CSS/JS/HTML/JSON/MD).
+- This repo **does not deploy**. Subscribers either pull from the jsDelivr CDN at runtime, or receive splice-in-place updates via three remaining sync scripts (see below).
+
+## Ownership boundary (read before editing `sync/`)
+- **MindAttic.Deploy** (`D:/Projects/MindAttic/MindAttic.Deploy`) owns: catalog landing pages (IdiotProof, GridGame2026, MindAttic.Legion, MindAttic.Mobile, MediaButler, MindAttic.Vault, TaxRateCollector, ThinkTank, Tutor, MindAttic.Psst index) and the Claudia/ChiMesh long-form HTML builds. Those subscribers pull components from jsDelivr at runtime; they are **not** spliced from this repo. Do not add `landing-page` or `build-html-js` kinds back to `subscribers.json`, and do not recreate `sync-landing-page.ps1`, `sync-claudia.ps1`, or `sync-chimesh.ps1`. Those were deleted on purpose.
+- **MindAttic.UiUx still owns splice-in-place delivery** for three subscribers, because they consume content in formats jsDelivr can't satisfy alone:
+  - `mindattic.com/index.htm` — html-inline marker blocks (`sync-mindattic-com.ps1`).
+  - `StreetSamurai/v3/StreetSamurai.Blazor/wwwroot/` — JS copy + CSS marker blocks in `app.css` (`sync-streetsamurai.ps1`).
+  - `MindAttic.Psst/{terms,privacy}.htm` — html-inline marker blocks (`sync-mindattic-psst.ps1`). The `index.htm` in MindAttic.Psst is rendered by MindAttic.Deploy from `README.md`; this repo does not touch it.
 
 ## Layout
-- `cyberspace/` — the CYBERSPACE (Console Background) bundle: `console-bg.js` engine + companion JS/CSS/HTML + `assets/` (parallax textures).
-- `sync/` — PowerShell distribution scripts (legacy / dev-only fallback). `sync-all.ps1` is the umbrella runner; `/sync` slash command wraps it.
-- `.github/workflows/` — GitHub Actions that automate cross-repo PRs into subscriber repos on push to `main`.
+- `Components/` — canonical component source (Cyberspace, OutfitFont, AtticFont, BackHomeM, PinFooter, WebSnapshot).
+- `sync/` — three PowerShell splice scripts plus `sync-all.ps1` umbrella. Only the three live subscribers above; nothing else.
+- `subscribers.json` — declares which components flow to each of the three live subscribers, with per-subscription overrides.
+- `.github/workflows/sync-subscribers.yml` — GitHub Action that opens cross-repo PRs against the three live subscribers on push to `main`.
 
-## Delivery pipelines (subscribers)
-- **jsDelivr CDN** — every tag is served at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/cyberspace/<file>`. Production runtime path.
-- **GitHub Actions cross-repo sync** — on push to `main`, `.github/workflows/sync-subscribers.yml` opens PRs against `mindattic/mindattic.com` and `mindattic/StreetSamurai` with refreshed marker blocks / wwwroot copies.
-- **PowerShell `sync/*.ps1`** — local dev fallback for fast iteration without round-tripping through GitHub.
-
-## Sync targets (marker blocks consumed by every pipeline)
-- `mindattic.com/index.htm` — inlined between `<!-- BEGIN MINDATTIC.UIUX:CYBERSPACE --> ... <!-- END MINDATTIC.UIUX:CYBERSPACE -->` markers.
-- `StreetSamurai/v3/StreetSamurai.Blazor/wwwroot/` — JS files copied into `js/`, CSS injected between `/* == BEGIN/END MINDATTIC.UIUX:CYBERSPACE.CSS == */` markers in `app.css`.
+## Delivery pipelines
+- **jsDelivr CDN** — `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/Components/<file>`. This is how MindAttic.Deploy and any other future runtime-loader subscriber pulls content. Tag the repo to ship; subscribers pin the tag in their own configs (e.g. `MindAttic.Deploy/projects.json:componentsVersion`).
+- **GitHub Actions cross-repo sync** — on push to `main`, opens PRs into the three splice-in-place subscriber repos.
+- **Local PowerShell** — `powershell -File sync/sync-all.ps1` runs the three scripts against your working copies for fast iteration. (Also invoked by `MindAttic.Deploy` as a `preDeploy` hook for `mindattic.com` and `StreetSamurai` so the bundle is fresh before FTPS upload.)
 
 ## Editing rule
-- Edit only in `cyberspace/`. Push to `main` and let GitHub Actions deliver, or run `sync/sync-all.ps1` (or `/sync`) locally for fast iteration. Downstream copies are derived artifacts.
+- Edit only in `Components/`. Push to `main` and let GitHub Actions deliver, or run `sync/sync-all.ps1` locally for fast iteration. Downstream copies are derived artifacts — never hand-edit them.
+- Bumping the CDN tag (`v1.0.x`) is what propagates content to MindAttic.Deploy-rendered subscribers. Bump in `MindAttic.Deploy/projects.json:componentsVersion`, then run that repo's deploy.

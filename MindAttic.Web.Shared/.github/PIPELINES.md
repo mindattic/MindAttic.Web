@@ -1,6 +1,11 @@
 # Delivery pipelines
 
-MindAttic.UiUx is a source-of-truth repo. Subscribers (mindattic.com, StreetSamurai, Claudia, ChiMesh) receive content through two complementary pipelines.
+MindAttic.UiUx is a source-of-truth repo. Content reaches subscribers two ways:
+
+1. **jsDelivr CDN** — every file is served at a versioned URL. `MindAttic.Deploy` consumes the CDN for every catalog landing page (IdiotProof, GridGame2026, MindAttic.Legion, MediaButler, MindAttic.Vault, TaxRateCollector, ThinkTank, Tutor, MindAttic.Psst index) and the Claudia / ChiMesh long-form HTML builds. That's the default path for anything new.
+2. **Marker-block sync** (GitHub Action + local PowerShell) — for the three subscribers that need build-time splice into hand-authored files: `mindattic.com/index.htm`, `StreetSamurai/wwwroot/`, and `MindAttic.Psst/{terms,privacy}.htm`.
+
+If you are wiring up a new subscriber, prefer pipeline 1. Pipeline 2 is reserved for cases where the subscriber genuinely needs content inlined inside files it also hand-authors.
 
 ## Pipeline 1 — jsDelivr CDN (runtime)
 
@@ -20,7 +25,7 @@ Where `<ref>` is any of:
 | Branch | `@main` | Cached ~7 days unless purged |
 | Commit SHA | `@a1b2c3d` | Immutable; cached forever |
 
-Component folder names are case-sensitive on GitHub (`Cyberspace`, `OutfitFont`, `AtticFont`, `PinFooter`, `BackHomeM`, `WebSnapshot`).
+Component folder names are case-sensitive on GitHub (`Cyberspace`, `OutfitFont`, `AtticFont`, `PinFooter`, `BackHomeM`, `WebSnapshot`). Theme folders too (`Themes/Cyberspace`, `Themes/Hardware`).
 
 **Examples:**
 
@@ -41,13 +46,21 @@ git push --tags
 # jsDelivr serves the new tag immediately
 ```
 
+To propagate a release to every `MindAttic.Deploy`-rendered subscriber, bump `componentsVersion` in `MindAttic.Deploy/projects.json` and run that repo's deploy.
+
 **Purging the cache (rare, only needed for branch refs):**
 
 `https://purge.jsdelivr.net/gh/mindattic/MindAttic.UiUx@main/Components/Cyberspace/console-bg.js` — GET to purge.
 
 ## Pipeline 2 — GitHub Actions cross-repo sync (in-repo copies)
 
-`.github/workflows/sync-subscribers.yml` runs on every push to `main` that touches any component folder (`AtticFont/**`, `BackHomeM/**`, `Cyberspace/**`, `OutfitFont/**`, `PinFooter/**`, `WebSnapshot/**`), `subscribers.json`, `sync/**`, or the workflow itself.
+`.github/workflows/sync-subscribers.yml` runs on every push to `main` that touches any component folder, `subscribers.json`, `sync/**`, or the workflow itself.
+
+It targets only the three splice-in-place subscribers:
+
+- **mindattic.com** — marker blocks in `index.htm` are inlined for first-paint perf and to keep the page self-contained for FTPS upload by `MindAttic.Deploy`.
+- **StreetSamurai** — Blazor's `wwwroot/js/*` is part of the build output; carrying the JS locally keeps the offline dev loop fast and gives the .csproj a deterministic input.
+- **MindAttic.Psst (terms.htm + privacy.htm)** — small legal pages that are hand-authored around the OutfitFont marker block; `index.htm` is NOT touched (it's rendered by `MindAttic.Deploy` from `MindAttic.Psst/README.md`).
 
 For each subscriber it:
 
@@ -56,15 +69,9 @@ For each subscriber it:
 3. Runs the matching `sync/sync-*.ps1` script with `-ContentRoot` and subscriber paths supplied
 4. Opens (or updates) a PR titled "Sync from MindAttic.UiUx" on branch `auto/sync-components`
 
-This pipeline exists because every subscriber carries a local copy of its rendered markers:
-
-- **mindattic.com** — marker blocks in `index.htm` are inlined for first-paint perf; CDN is optional fallback.
-- **StreetSamurai** — Blazor's `wwwroot/js/*` is part of the build output; carrying the JS locally keeps the offline dev loop fast.
-- **Claudia / ChiMesh** — marker blocks live inside the `<style>` template literal in `scripts/cli/build-html.js`, so the generated HTML is fully self-contained at build time.
-
 ## One-time setup (PAT for cross-repo PRs)
 
-The Action needs write access to every subscriber repo. Create a **fine-grained personal access token**:
+The Action needs write access to the three subscriber repos. Create a **fine-grained personal access token**:
 
 1. Go to https://github.com/settings/personal-access-tokens/new
 2. Repository access: **All repositories owned by `mindattic`** — covers every current and future subscriber automatically
@@ -86,19 +93,21 @@ The workflow will now succeed.
 
 ## Pipeline 3 — PowerShell `sync/*.ps1` (local dev fallback)
 
-For fast iteration without pushing to GitHub, the `sync/sync-all.ps1` script does the same work locally against your working copies of the subscriber repos. Run it after any edit under a component folder:
+For fast iteration without pushing to GitHub, the `sync/sync-all.ps1` script does the same work locally against your working copies of the three subscriber repos. Run it after any edit under a component folder:
 
 ```powershell
 powershell -File sync/sync-all.ps1
 ```
 
-The `/sync` slash command wraps this.
+`MindAttic.Deploy` also invokes the individual `sync-mindattic-com.ps1` and `sync-streetsamurai.ps1` scripts as `preDeploy` hooks so the bundle is fresh before each FTPS upload.
 
 ## Choosing a pipeline per subscriber
 
-| Subscriber | Recommended runtime source | Why |
+| Subscriber kind | Recommended runtime source | Why |
 |---|---|---|
-| `mindattic.com` | Inlined marker block (kept fresh by Action) — fall back to CDN if first-paint perf matters less | Static HTML site; inlining = zero-RTT first paint |
-| `StreetSamurai` | Local `wwwroot/js/*.js` (kept fresh by Action) — or CDN for cache-sharing across other sites | Blazor server-render; either works, local is offline-dev friendly |
-| `Claudia` / `ChiMesh` | Marker blocks inside `build-html.js` (kept fresh by Action); regenerated HTML inherits at next build | Markdown-to-HTML pipelines; the rendered output is shipped, so fonts must be embedded at build time |
-| New subscriber | jsDelivr CDN | No PR overhead; just pin a tag |
+| `mindattic.com` | Inlined marker block (kept fresh by Action / `sync-mindattic-com.ps1`) | Static HTML site; inlining = zero-RTT first paint, also avoids a CDN dependency in the FTPS-uploaded artifact |
+| `StreetSamurai` (Blazor) | Local `wwwroot/js/*.js` + `app.css` marker blocks (kept fresh by Action / `sync-streetsamurai.ps1`) | Blazor build needs deterministic input; offline-dev friendly |
+| `MindAttic.Psst` legal pages | Inlined marker blocks in `terms.htm` + `privacy.htm` (kept fresh by Action / `sync-mindattic-psst.ps1`) | Same as mindattic.com — these pages get FTPS-uploaded as self-contained HTML |
+| Any catalog landing page | jsDelivr CDN, pinned via `MindAttic.Deploy/projects.json:componentsVersion` | No PR overhead; `MindAttic.Deploy` renders these from each project's `README.md` and pulls fonts/effects from the CDN at runtime |
+| Claudia / ChiMesh | jsDelivr CDN, same path as catalog landing pages | They render long-form READMEs with the Hardware theme; CDN keeps each guide page small |
+| Anything new | jsDelivr CDN | Only fall back to pipeline 2 if the subscriber needs hand-authored content interleaved with the components |

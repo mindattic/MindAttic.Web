@@ -4,8 +4,7 @@ A capital "M" in AtticFont pinned to the upper-left of the viewport, linking
 back to `mindattic.com`. No JS — just a styled `<a href>` so it survives
 script-disabled browsers and screen readers see it as a normal link.
 
-Used on satellite sites (Claudia, ChiMesh) so a visitor can always get back
-to the hub.
+Used on every satellite site rendered by `MindAttic.Deploy` (Claudia, ChiMesh, and every catalog landing page) so a visitor can always get back to the hub.
 
 ---
 
@@ -60,15 +59,12 @@ Or via jsDelivr:
 
 ---
 
-## Sync delivery
+## Delivery
 
-- `sync/sync-claudia.ps1` rewrites the BACKHOMEM marker block in
-  `Claudia/scripts/cli/build-html.js`.
-- `sync/sync-chimesh.ps1` rewrites the BACKHOMEM marker block in
-  `ChiMesh/scripts/cli/build-html.js`.
-
-Both subscribers hand-author the `<a class="back-home-m">` element in their
-build template (one-time edit, just like `<footer class="pin-when-short">`).
-The sync scripts only manage the CSS marker block.
+`MindAttic.Deploy` pulls `back-home-m.css` from the jsDelivr CDN at the
+`componentsVersion` it has pinned in `projects.json`. The rendered landing
+pages include the stylesheet via a `<link>` tag and hand-author the
+`<a class="back-home-m">` element in the body prelude of the theme they
+declare (`Themes/Hardware/body-prelude.html`, `Themes/Cyberspace/body-prelude.html`).
 
 Edit here only. Downstream copies are derived artifacts.

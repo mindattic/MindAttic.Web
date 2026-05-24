@@ -4,7 +4,7 @@
 # Dot-source from any sync-*.ps1:
 #
 #   . (Join-Path $PSScriptRoot '_subscribers.ps1')
-#   $sub = Get-Subscriber -Name 'Claudia' -ContentRoot $ContentRoot
+#   $sub = Get-Subscriber -Name 'mindattic.com' -ContentRoot $ContentRoot
 #   $sub.subscriptions | ForEach-Object { ... }
 #
 # Components and subscribers live in MindAttic.UiUx/subscribers.json.
@@ -98,20 +98,3 @@ function Build-StaticCssBody {
     return [System.IO.File]::ReadAllText($cssPath, $Encoding)
 }
 
-# Escape characters that would terminate or interpolate a JS template
-# literal when this CSS gets spliced into a build-html-js subscriber's <style>
-# block. Only the build-html-js subscribers need this; mindattic.com inlines
-# CSS into a plain <style> element where backticks and dollar-braces are
-# inert.
-#
-# The backslash replacement MUST run first — otherwise the backslashes we
-# emit while escaping `, ${, etc. get themselves double-escaped on the next
-# pass. Backslash escaping is required because CSS routinely uses
-# `content: '\276E'` style Unicode escapes; without doubling, Node parses
-# the spliced template literal and rejects `\276` as an illegal octal escape.
-function ConvertTo-JsTemplateLiteralSafe {
-    param([Parameter(Mandatory, ValueFromPipeline)][string]$Text)
-    process {
-        return $Text.Replace('\', '\\').Replace('`', '\`').Replace('${', '\${')
-    }
-}

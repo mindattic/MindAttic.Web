@@ -1,5 +1,5 @@
 {
-  "$comment": "Canonical map of which MindAttic.UiUx components flow to each downstream subscriber, with per-subscriber configuration. The sync scripts read this file to drive their splicing -- edit THIS file (not the sync scripts) when adding or removing subscriptions. The 'components' section is the registry of available components; the 'subscribers' section binds them to subscribers. Marker names are base names (without .CSS suffix); each subscriber kind appends the suffix it needs.",
+  "$comment": "Canonical map of which MindAttic.UiUx components flow to each downstream subscriber, with per-subscriber configuration. Sync scripts read this file to drive their splicing -- edit THIS file (not the sync scripts) when adding or removing subscriptions. Marker names are base names (without .CSS suffix); each subscriber kind appends the suffix it needs. NOTE: catalog landing pages (IdiotProof, GridGame2026, MindAttic.Legion, MindAttic.Mobile, MediaButler, MindAttic.Vault, TaxRateCollector, ThinkTank, Tutor, MindAttic.Psst index) and the long-form HTML builds (Claudia, ChiMesh) are owned by MindAttic.Deploy now; they pull components from jsDelivr at runtime instead of being spliced here.",
 
   "components": {
     "OutfitFont":  { "type": "font-css",    "marker": "OUTFITFONT",  "cssFile": "Components/OutfitFont/outfit-font.css",   "jsonFile": "Components/OutfitFont/outfit-font.json", "htmlFile": "Components/OutfitFont/outfit-font.html" },
@@ -36,28 +36,6 @@
       ]
     },
 
-    "Claudia": {
-      "kind":       "build-html-js",
-      "target":     "D:/Projects/MindAttic/Claudia/scripts/cli/build-html.js",
-      "syncScript": "sync-claudia.ps1",
-      "subscriptions": [
-        { "component": "OutfitFont" },
-        { "component": "AtticFont",  "applyToSelector": "#claudia" },
-        { "component": "BackHomeM"  }
-      ]
-    },
-
-    "ChiMesh": {
-      "kind":       "build-html-js",
-      "target":     "D:/Projects/MindAttic/ChiMesh/scripts/cli/build-html.js",
-      "syncScript": "sync-chimesh.ps1",
-      "subscriptions": [
-        { "component": "OutfitFont" },
-        { "component": "AtticFont", "applyToSelector": "#chimesh" },
-        { "component": "BackHomeM" }
-      ]
-    },
-
     "MindAttic.Psst.Legal": {
       "kind":       "html-inline-multi",
       "target":     "D:/Projects/MindAttic/MindAttic.Psst",
@@ -65,138 +43,6 @@
       "syncScript": "sync-mindattic-psst.ps1",
       "subscriptions": [
         { "component": "OutfitFont" }
-      ]
-    },
-
-    "MindAttic.Psst.Index": {
-      "kind":       "landing-page",
-      "target":     "D:/Projects/MindAttic/MindAttic.Psst/index.htm",
-      "syncScript": "sync-landing-page.ps1",
-      "subscriptions": [
-        { "component": "OutfitFont" },
-        { "component": "AtticFont", "applyToSelector": "#mindatticpsst" },
-        { "component": "Cyberspace" },
-        { "component": "BackHomeM" }
-      ]
-    },
-
-    "IdiotProof": {
-      "kind":       "landing-page",
-      "target":     "D:/Projects/MindAttic/IdiotProof/index.htm",
-      "syncScript": "sync-landing-page.ps1",
-      "subscriptions": [
-        { "component": "OutfitFont" },
-        { "component": "AtticFont", "applyToSelector": "#idiotproof" },
-        { "component": "Cyberspace" },
-        { "component": "BackHomeM" }
-      ]
-    },
-
-    "FractionsOfACent": {
-      "kind":       "landing-page",
-      "target":     "D:/Projects/MindAttic/FractionsOfACent/index.htm",
-      "syncScript": "sync-landing-page.ps1",
-      "subscriptions": [
-        { "component": "OutfitFont" },
-        { "component": "AtticFont", "applyToSelector": "#fractionsofacent" },
-        { "component": "Cyberspace" },
-        { "component": "BackHomeM" }
-      ]
-    },
-
-    "GridGame2026": {
-      "kind":       "landing-page",
-      "target":     "D:/Projects/MindAttic/GridGame2026/index.htm",
-      "syncScript": "sync-landing-page.ps1",
-      "subscriptions": [
-        { "component": "OutfitFont" },
-        { "component": "AtticFont", "applyToSelector": "#gridgame2026" },
-        { "component": "Cyberspace" },
-        { "component": "BackHomeM" }
-      ]
-    },
-
-    "MindAttic.Legion": {
-      "kind":       "landing-page",
-      "target":     "D:/Projects/MindAttic/MindAttic.Legion/index.htm",
-      "syncScript": "sync-landing-page.ps1",
-      "subscriptions": [
-        { "component": "OutfitFont" },
-        { "component": "AtticFont", "applyToSelector": "#mindatticlegion" },
-        { "component": "Cyberspace" },
-        { "component": "BackHomeM" }
-      ]
-    },
-
-    "MindAttic.Mobile": {
-      "kind":       "landing-page",
-      "target":     "D:/Projects/MindAttic/MindAttic.Mobile/index.htm",
-      "syncScript": "sync-landing-page.ps1",
-      "subscriptions": [
-        { "component": "OutfitFont" },
-        { "component": "AtticFont", "applyToSelector": "#mindatticmobile" },
-        { "component": "Cyberspace" },
-        { "component": "BackHomeM" }
-      ]
-    },
-
-    "MediaButler": {
-      "kind":       "landing-page",
-      "target":     "D:/Projects/MindAttic/MediaButler/index.htm",
-      "syncScript": "sync-landing-page.ps1",
-      "subscriptions": [
-        { "component": "OutfitFont" },
-        { "component": "AtticFont", "applyToSelector": "#mediabutler" },
-        { "component": "Cyberspace" },
-        { "component": "BackHomeM" }
-      ]
-    },
-
-    "MindAttic.Vault": {
-      "kind":       "landing-page",
-      "target":     "D:/Projects/MindAttic/MindAttic.Vault/index.htm",
-      "syncScript": "sync-landing-page.ps1",
-      "subscriptions": [
-        { "component": "OutfitFont" },
-        { "component": "AtticFont", "applyToSelector": "#mindatticvault" },
-        { "component": "Cyberspace" },
-        { "component": "BackHomeM" }
-      ]
-    },
-
-    "TaxRateCollector": {
-      "kind":       "landing-page",
-      "target":     "D:/Projects/MindAttic/TaxRateCollector/index.htm",
-      "syncScript": "sync-landing-page.ps1",
-      "subscriptions": [
-        { "component": "OutfitFont" },
-        { "component": "AtticFont", "applyToSelector": "#taxratecollector" },
-        { "component": "Cyberspace" },
-        { "component": "BackHomeM" }
-      ]
-    },
-
-    "ThinkTank": {
-      "kind":       "landing-page",
-      "target":     "D:/Projects/MindAttic/ThinkTank/index.htm",
-      "syncScript": "sync-landing-page.ps1",
-      "subscriptions": [
-        { "component": "OutfitFont" },
-        { "component": "AtticFont", "applyToSelector": "#thinktank" },
-        { "component": "Cyberspace" },
-        { "component": "BackHomeM" }
-      ]
-    },
-
-    "Tutor": {
-      "kind":       "landing-page",
-      "target":     "D:/Projects/MindAttic/Tutor/index.htm",
-      "syncScript": "sync-landing-page.ps1",
-      "subscriptions": [
-        { "component": "OutfitFont" },
-        { "component": "AtticFont", "applyToSelector": "#tutor" },
-        { "component": "Cyberspace" },
-        { "component": "BackHomeM" }
       ]
     }
   }

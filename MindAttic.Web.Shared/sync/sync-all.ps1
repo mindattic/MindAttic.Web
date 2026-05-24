@@ -1,20 +1,25 @@
 # ====================================================================
-# MindAttic.UiUx -> all subscribers (local dev delivery)
+# MindAttic.UiUx -> all splice-in-place subscribers (local dev delivery)
 # Runs every downstream sync script in sync/ that matches sync-*.ps1
 # (except this file). Discovery is glob-based, so the subscriber set is
 # whatever is wired up in sync/*.ps1 and subscribers.json. Currently:
-#   - sync-chimesh.ps1        → ChiMesh/scripts/cli/build-html.js
-#   - sync-claudia.ps1        → Claudia/scripts/cli/build-html.js
-#   - sync-mindattic-com.ps1  → mindattic.com/index.htm (inline)
-#   - sync-streetsamurai.ps1  → StreetSamurai.Blazor/wwwroot/
+#   - sync-mindattic-com.ps1   → mindattic.com/index.htm (inline)
+#   - sync-mindattic-psst.ps1  → MindAttic.Psst/{terms,privacy}.htm
+#   - sync-streetsamurai.ps1   → StreetSamurai.Blazor/wwwroot/
+#
+# Catalog landing pages and the Claudia/ChiMesh long-form HTML builds are
+# rendered by MindAttic.Deploy (D:/Projects/MindAttic/MindAttic.Deploy);
+# they pull components from the jsDelivr CDN at runtime and have no sync
+# script here.
 #
 # Production delivery happens via .github/workflows/sync-subscribers.yml
 # (push-triggered cross-repo PRs). This script is the local equivalent
-# for fast iteration without round-tripping through GitHub.
+# for fast iteration without round-tripping through GitHub; it is also
+# invoked piecewise by MindAttic.Deploy as a preDeploy hook for the
+# mindattic.com and StreetSamurai builds.
 #
-# Idempotent. Safe to re-run after any edit under a component folder
-# (AtticFont/, BackHomeM/, Cyberspace/, OutfitFont/, PinFooter/,
-# WebSnapshot/) or to subscribers.json.
+# Idempotent. Safe to re-run after any edit under Components/ or
+# Themes/, or to subscribers.json.
 #
 # Usage:
 #   powershell -File sync-all.ps1
