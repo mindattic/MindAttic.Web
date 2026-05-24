@@ -1,4 +1,4 @@
-# MindAttic.UIUX
+# MindAttic.UiUx
 
 **One repo, every front-end. Drop-in CSS, JS, and HTML bundles, delivered three ways.**
 
@@ -8,11 +8,11 @@ Currently powers `mindattic.com`, the `StreetSamurai` Blazor home page, and the 
 
 ```html
 <!-- pinned production -->
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@v1.0.0/Components/Cyberspace/console-bg.js"></script>
-<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@v1.0.0/Components/Cyberspace/frontpage.css">
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@v1.0.0/Components/Cyberspace/console-bg.js"></script>
+<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@v1.0.0/Components/Cyberspace/frontpage.css">
 ```
 
-**Why MindAttic.UIUX:**
+**Why MindAttic.UiUx:**
 
 - **Three delivery modes, one source of truth.** jsDelivr CDN for runtime, GitHub Actions for cross-repo PRs, PowerShell scripts for local dev — all reading the same [`subscribers.json`](subscribers.json).
 - **Subscribers are declarative.** Add `{ "component": "AtticFont", "applyToSelector": "#claudia" }` to a subscriber's array. The next sync enrolls it. Remove the line, the next sync unenrolls. No hardcoded lists.
@@ -41,7 +41,7 @@ comment, a `<FolderName>.md` doc, and any companion `.json` config.
 ## Layout
 
 ```
-MindAttic.UIUX/
+MindAttic.UiUx/
 │
 ├── Cyberspace/                  # Cyberpunk console-background effects
 │   ├── frontpage.html           #   DOM scaffolding (3 fixed-position layer divs)
@@ -114,7 +114,7 @@ See [`.github/PIPELINES.md`](.github/PIPELINES.md) for the full setup
 
 | Pipeline | What it does | When it runs |
 |---|---|---|
-| **jsDelivr CDN** | Serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@<ref>/<path>` — versioned, edge-cached, no infra to run | Continuously; cache-immutable for `@v*` tags |
+| **jsDelivr CDN** | Serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<ref>/<path>` — versioned, edge-cached, no infra to run | Continuously; cache-immutable for `@v*` tags |
 | **GitHub Actions cross-repo sync** | On push to `main`, opens PRs against `mindattic/mindattic.com` and `mindattic/StreetSamurai` with refreshed marker blocks / wwwroot copies | Every push to `main` (workflow: [`.github/workflows/sync-subscribers.yml`](.github/workflows/sync-subscribers.yml)) |
 | **PowerShell `sync/*.ps1`** | Local dev fallback — same logic as the Action, runs against your working copies | Manual (`/sync` slash command or `sync/sync-all.ps1`) |
 
@@ -129,7 +129,7 @@ See [`.github/PIPELINES.md`](.github/PIPELINES.md) for the full setup
 The cross-repo sync workflow needs a fine-grained personal access token so
 it can open PRs against subscriber repos. Stored as the repository secret
 **`SUBSCRIBER_REPO_TOKEN`** at
-[`Settings → Secrets and variables → Actions`](https://github.com/mindattic/MindAttic.UIUX/settings/secrets/actions).
+[`Settings → Secrets and variables → Actions`](https://github.com/mindattic/MindAttic.UiUx/settings/secrets/actions).
 
 Generate at
 [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new)
@@ -235,7 +235,7 @@ Push to `main` and the GitHub Action delivers to every subscriber, or run
 iteration without round-tripping through GitHub.
 
 ```powershell
-# from MindAttic.UIUX — push to all subscribers in one shot (local)
+# from MindAttic.UiUx — push to all subscribers in one shot (local)
 powershell -File sync/sync-all.ps1
 
 # or invoke an individual target

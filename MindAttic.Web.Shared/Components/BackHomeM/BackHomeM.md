@@ -39,7 +39,7 @@ falls back to a serif if the font hasn't loaded yet.
 Or via jsDelivr:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@v1.0.0/Components/BackHomeM/back-home-m.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@v1.0.0/Components/BackHomeM/back-home-m.css">
 ```
 
 ---

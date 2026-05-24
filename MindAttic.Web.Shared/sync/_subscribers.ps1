@@ -7,7 +7,7 @@
 #   $sub = Get-Subscriber -Name 'Claudia' -ContentRoot $ContentRoot
 #   $sub.subscriptions | ForEach-Object { ... }
 #
-# Components and subscribers live in MindAttic.UIUX/subscribers.json.
+# Components and subscribers live in MindAttic.UiUx/subscribers.json.
 # Edit that file (not this helper, not the per-subscriber scripts) to add
 # or remove a subscription. The per-subscriber scripts iterate the
 # subscriptions array, so a new entry there flows through automatically

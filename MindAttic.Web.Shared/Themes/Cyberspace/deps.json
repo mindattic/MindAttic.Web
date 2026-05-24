@@ -1,5 +1,5 @@
 {
-  "$comment": "MindAttic.UIUX Themes/Cyberspace -- declares which Components this theme transitively loads. Paths are relative to the repo root and resolved as /Components/<name>/<file>; the catalog build emits <link> and <script> tags for each.",
+  "$comment": "MindAttic.UiUx Themes/Cyberspace -- declares which Components this theme transitively loads. Paths are relative to the repo root and resolved as /Components/<name>/<file>; the catalog build emits <link> and <script> tags for each.",
 
   "css": [
     "Components/OutfitFont/outfit-font.css",

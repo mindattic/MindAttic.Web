@@ -1,5 +1,5 @@
 {
-  "$comment": "MindAttic.UIUX Themes/Hardware -- declares Component dependencies. No Cyberspace component here (this theme is the calm counterpart). Outfit + Attic fonts and BackHomeM glyph only.",
+  "$comment": "MindAttic.UiUx Themes/Hardware -- declares Component dependencies. No Cyberspace component here (this theme is the calm counterpart). Outfit + Attic fonts and BackHomeM glyph only.",
 
   "css": [
     "Components/OutfitFont/outfit-font.css",

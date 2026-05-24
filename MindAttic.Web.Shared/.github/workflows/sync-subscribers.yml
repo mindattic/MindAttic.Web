@@ -23,7 +23,7 @@ jobs:
     name: Sync into mindattic.com
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout MindAttic.UIUX
+      - name: Checkout MindAttic.UiUx
         uses: actions/checkout@v4
         with:
           path: content
@@ -47,10 +47,10 @@ jobs:
         with:
           path: mindattic-com
           token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
-          commit-message: "chore(components): sync from MindAttic.UIUX@${{ github.sha }}"
-          title: "Sync from MindAttic.UIUX"
+          commit-message: "chore(components): sync from MindAttic.UiUx@${{ github.sha }}"
+          title: "Sync from MindAttic.UiUx"
           body: |
-            Automated sync from [MindAttic.UIUX@${{ github.sha }}](https://github.com/mindattic/MindAttic.UIUX/commit/${{ github.sha }}).
+            Automated sync from [MindAttic.UiUx@${{ github.sha }}](https://github.com/mindattic/MindAttic.UiUx/commit/${{ github.sha }}).
 
             Marker blocks in `index.htm` regenerated from canonical sources.
           branch: auto/sync-components
@@ -63,7 +63,7 @@ jobs:
     name: Sync into StreetSamurai
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout MindAttic.UIUX
+      - name: Checkout MindAttic.UiUx
         uses: actions/checkout@v4
         with:
           path: content
@@ -87,10 +87,10 @@ jobs:
         with:
           path: streetsamurai
           token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
-          commit-message: "chore(components): sync from MindAttic.UIUX@${{ github.sha }}"
-          title: "Sync from MindAttic.UIUX"
+          commit-message: "chore(components): sync from MindAttic.UiUx@${{ github.sha }}"
+          title: "Sync from MindAttic.UiUx"
           body: |
-            Automated sync from [MindAttic.UIUX@${{ github.sha }}](https://github.com/mindattic/MindAttic.UIUX/commit/${{ github.sha }}).
+            Automated sync from [MindAttic.UiUx@${{ github.sha }}](https://github.com/mindattic/MindAttic.UiUx/commit/${{ github.sha }}).
 
             - `wwwroot/js/*.js` overwritten with fresh copies
             - `wwwroot/app.css` marker blocks regenerated
@@ -104,7 +104,7 @@ jobs:
     name: Sync into Claudia
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout MindAttic.UIUX
+      - name: Checkout MindAttic.UiUx
         uses: actions/checkout@v4
         with:
           path: content
@@ -128,10 +128,10 @@ jobs:
         with:
           path: claudia
           token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
-          commit-message: "chore(components): sync from MindAttic.UIUX@${{ github.sha }}"
-          title: "Sync from MindAttic.UIUX"
+          commit-message: "chore(components): sync from MindAttic.UiUx@${{ github.sha }}"
+          title: "Sync from MindAttic.UiUx"
           body: |
-            Automated sync from [MindAttic.UIUX@${{ github.sha }}](https://github.com/mindattic/MindAttic.UIUX/commit/${{ github.sha }}).
+            Automated sync from [MindAttic.UiUx@${{ github.sha }}](https://github.com/mindattic/MindAttic.UiUx/commit/${{ github.sha }}).
 
             CSS marker blocks in `scripts/cli/build-html.js` regenerated. Run `node scripts/cli/build-html.js` to materialize into Claudia.htm / index.htm.
           branch: auto/sync-components
@@ -144,7 +144,7 @@ jobs:
     name: Sync into MindAttic.Psst
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout MindAttic.UIUX
+      - name: Checkout MindAttic.UiUx
         uses: actions/checkout@v4
         with:
           path: content
@@ -180,10 +180,10 @@ jobs:
         with:
           path: mindattic-psst
           token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
-          commit-message: "chore(components): sync from MindAttic.UIUX@${{ github.sha }}"
-          title: "Sync from MindAttic.UIUX"
+          commit-message: "chore(components): sync from MindAttic.UiUx@${{ github.sha }}"
+          title: "Sync from MindAttic.UiUx"
           body: |
-            Automated sync from [MindAttic.UIUX@${{ github.sha }}](https://github.com/mindattic/MindAttic.UIUX/commit/${{ github.sha }}).
+            Automated sync from [MindAttic.UiUx@${{ github.sha }}](https://github.com/mindattic/MindAttic.UiUx/commit/${{ github.sha }}).
 
             Marker blocks in `privacy.htm`, `terms.htm`, and `index.htm` regenerated from canonical sources.
           branch: auto/sync-components
@@ -196,7 +196,7 @@ jobs:
     name: Sync into ChiMesh
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout MindAttic.UIUX
+      - name: Checkout MindAttic.UiUx
         uses: actions/checkout@v4
         with:
           path: content
@@ -220,10 +220,10 @@ jobs:
         with:
           path: chimesh
           token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
-          commit-message: "chore(components): sync from MindAttic.UIUX@${{ github.sha }}"
-          title: "Sync from MindAttic.UIUX"
+          commit-message: "chore(components): sync from MindAttic.UiUx@${{ github.sha }}"
+          title: "Sync from MindAttic.UiUx"
           body: |
-            Automated sync from [MindAttic.UIUX@${{ github.sha }}](https://github.com/mindattic/MindAttic.UIUX/commit/${{ github.sha }}).
+            Automated sync from [MindAttic.UiUx@${{ github.sha }}](https://github.com/mindattic/MindAttic.UiUx/commit/${{ github.sha }}).
 
             CSS marker blocks in `scripts/cli/build-html.js` regenerated. Run `node scripts/cli/build-html.js` to materialize into ChiMesh.htm / index.htm.
           branch: auto/sync-components
@@ -258,7 +258,7 @@ jobs:
           - { subscriber: ThinkTank,         repo: mindattic/ThinkTank }
           - { subscriber: Tutor,             repo: mindattic/Tutor }
     steps:
-      - name: Checkout MindAttic.UIUX
+      - name: Checkout MindAttic.UiUx
         uses: actions/checkout@v4
         with:
           path: content
@@ -283,10 +283,10 @@ jobs:
         with:
           path: subscriber
           token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
-          commit-message: "chore(components): sync from MindAttic.UIUX@${{ github.sha }}"
-          title: "Sync from MindAttic.UIUX"
+          commit-message: "chore(components): sync from MindAttic.UiUx@${{ github.sha }}"
+          title: "Sync from MindAttic.UiUx"
           body: |
-            Automated sync from [MindAttic.UIUX@${{ github.sha }}](https://github.com/mindattic/MindAttic.UIUX/commit/${{ github.sha }}).
+            Automated sync from [MindAttic.UiUx@${{ github.sha }}](https://github.com/mindattic/MindAttic.UiUx/commit/${{ github.sha }}).
 
             Marker blocks in `index.htm` regenerated from canonical sources.
           branch: auto/sync-components

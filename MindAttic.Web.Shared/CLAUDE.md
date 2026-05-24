@@ -1,4 +1,4 @@
-# MindAttic.UIUX Project Rules
+# MindAttic.UiUx Project Rules
 
 ## Conversation
 - A bare "do" / "do it" / "yes" from the user means "continue", "keep going", "proceed". Resume the current task without asking for clarification.
@@ -14,7 +14,7 @@
 - `.github/workflows/` — GitHub Actions that automate cross-repo PRs into subscriber repos on push to `main`.
 
 ## Delivery pipelines (subscribers)
-- **jsDelivr CDN** — every tag is served at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@<tag>/cyberspace/<file>`. Production runtime path.
+- **jsDelivr CDN** — every tag is served at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/cyberspace/<file>`. Production runtime path.
 - **GitHub Actions cross-repo sync** — on push to `main`, `.github/workflows/sync-subscribers.yml` opens PRs against `mindattic/mindattic.com` and `mindattic/StreetSamurai` with refreshed marker blocks / wwwroot copies.
 - **PowerShell `sync/*.ps1`** — local dev fallback for fast iteration without round-tripping through GitHub.
 

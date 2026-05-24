@@ -1,5 +1,5 @@
 {
-  "$comment": "Canonical map of which MindAttic.UIUX components flow to each downstream subscriber, with per-subscriber configuration. The sync scripts read this file to drive their splicing -- edit THIS file (not the sync scripts) when adding or removing subscriptions. The 'components' section is the registry of available components; the 'subscribers' section binds them to subscribers. Marker names are base names (without .CSS suffix); each subscriber kind appends the suffix it needs.",
+  "$comment": "Canonical map of which MindAttic.UiUx components flow to each downstream subscriber, with per-subscriber configuration. The sync scripts read this file to drive their splicing -- edit THIS file (not the sync scripts) when adding or removing subscriptions. The 'components' section is the registry of available components; the 'subscribers' section binds them to subscribers. Marker names are base names (without .CSS suffix); each subscriber kind appends the suffix it needs.",
 
   "components": {
     "OutfitFont":  { "type": "font-css",    "marker": "OUTFITFONT",  "cssFile": "Components/OutfitFont/outfit-font.css",   "jsonFile": "Components/OutfitFont/outfit-font.json", "htmlFile": "Components/OutfitFont/outfit-font.html" },

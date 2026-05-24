@@ -37,8 +37,8 @@ are supported; each toggles independently.
 Or via jsDelivr:
 
 ```html
-<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@v1.0.0/Components/PinFooter/pin-footer.css">
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@v1.0.0/Components/PinFooter/pin-footer.js" defer></script>
+<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@v1.0.0/Components/PinFooter/pin-footer.css">
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@v1.0.0/Components/PinFooter/pin-footer.js" defer></script>
 ```
 
 ---

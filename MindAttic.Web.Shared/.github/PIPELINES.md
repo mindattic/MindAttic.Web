@@ -1,6 +1,6 @@
 # Delivery pipelines
 
-MindAttic.UIUX is a source-of-truth repo. Subscribers (mindattic.com, StreetSamurai, Claudia, ChiMesh) receive content through two complementary pipelines.
+MindAttic.UiUx is a source-of-truth repo. Subscribers (mindattic.com, StreetSamurai, Claudia, ChiMesh) receive content through two complementary pipelines.
 
 ## Pipeline 1 — jsDelivr CDN (runtime)
 
@@ -9,7 +9,7 @@ Every file in this repo is served by [jsDelivr](https://www.jsdelivr.com/) at a 
 **URL shape:**
 
 ```
-https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@<ref>/<ComponentFolder>/<file>
+https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<ref>/<ComponentFolder>/<file>
 ```
 
 Where `<ref>` is any of:
@@ -26,11 +26,11 @@ Component folder names are case-sensitive on GitHub (`Cyberspace`, `OutfitFont`,
 
 ```html
 <!-- pinned, production -->
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@v1.0.0/Components/Cyberspace/console-bg.js"></script>
-<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@v1.0.0/Components/Cyberspace/frontpage.css">
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@v1.0.0/Components/Cyberspace/console-bg.js"></script>
+<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@v1.0.0/Components/Cyberspace/frontpage.css">
 
 <!-- bleeding edge (dev only) -->
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@main/Components/Cyberspace/console-bg.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@main/Components/Cyberspace/console-bg.js"></script>
 ```
 
 **Cutting a release:**
@@ -43,7 +43,7 @@ git push --tags
 
 **Purging the cache (rare, only needed for branch refs):**
 
-`https://purge.jsdelivr.net/gh/mindattic/MindAttic.UIUX@main/Components/Cyberspace/console-bg.js` — GET to purge.
+`https://purge.jsdelivr.net/gh/mindattic/MindAttic.UiUx@main/Components/Cyberspace/console-bg.js` — GET to purge.
 
 ## Pipeline 2 — GitHub Actions cross-repo sync (in-repo copies)
 
@@ -51,10 +51,10 @@ git push --tags
 
 For each subscriber it:
 
-1. Checks out MindAttic.UIUX
+1. Checks out MindAttic.UiUx
 2. Checks out the subscriber repo (using a fine-grained PAT)
 3. Runs the matching `sync/sync-*.ps1` script with `-ContentRoot` and subscriber paths supplied
-4. Opens (or updates) a PR titled "Sync from MindAttic.UIUX" on branch `auto/sync-components`
+4. Opens (or updates) a PR titled "Sync from MindAttic.UiUx" on branch `auto/sync-components`
 
 This pipeline exists because every subscriber carries a local copy of its rendered markers:
 
@@ -75,9 +75,9 @@ The Action needs write access to every subscriber repo. Create a **fine-grained 
 4. Expiration: pick whatever you're comfortable rotating (e.g. 1 year)
 5. Generate token, copy the value
 
-Then in this repo (MindAttic.UIUX):
+Then in this repo (MindAttic.UiUx):
 
-1. Go to https://github.com/mindattic/MindAttic.UIUX/settings/secrets/actions
+1. Go to https://github.com/mindattic/MindAttic.UiUx/settings/secrets/actions
 2. **New repository secret**
 3. Name: `SUBSCRIBER_REPO_TOKEN`
 4. Value: paste the PAT

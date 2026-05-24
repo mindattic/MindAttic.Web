@@ -51,7 +51,7 @@ through `subscribers.json`.
 Or via jsDelivr:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UIUX@v1.0.0/Components/OutfitFont/outfit-font.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@v1.0.0/Components/OutfitFont/outfit-font.css">
 ```
 
 ---

@@ -1,5 +1,5 @@
 # ====================================================================
-# MindAttic.UIUX -> all subscribers (local dev delivery)
+# MindAttic.UiUx -> all subscribers (local dev delivery)
 # Runs every downstream sync script in sync/ that matches sync-*.ps1
 # (except this file). Discovery is glob-based, so the subscriber set is
 # whatever is wired up in sync/*.ps1 and subscribers.json. Currently:
