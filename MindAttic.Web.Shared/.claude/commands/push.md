@@ -1,5 +1,5 @@
 ---
-description: Alias for /sync — push every subscribed component into mindattic.com, StreetSamurai, Claudia, and ChiMesh
+description: Push (fan out) every subscribed component into mindattic.com, StreetSamurai, Claudia, ChiMesh, and any other subscribers. Synonym for /publish, /sync, /propogate — neither is an FTP deploy; this only pushes component sources into sibling repos.
 ---
 
 Run `sync/sync-all.ps1` from the repo root. Use the PowerShell tool. Do not edit the script or substitute your own commands — just execute it and report the output verbatim.
