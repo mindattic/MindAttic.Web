@@ -44,7 +44,12 @@ foreach ($s in $scripts) {
     try {
         & $s.FullName
     } catch {
+        # Surface enough to debug a CI sync failure: message plus the script
+        # stack trace pointing at the line that threw.
         Write-Output "  FAILED: $($_.Exception.Message)"
+        if ($_.ScriptStackTrace) {
+            $_.ScriptStackTrace -split "`n" | ForEach-Object { Write-Output "    at $_" }
+        }
         $failed += $s.Name
     }
 }

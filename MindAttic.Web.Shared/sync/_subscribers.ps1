@@ -86,6 +86,39 @@ function Build-FontCssBody {
     return $css
 }
 
+# --------------------------------------------------------------------
+# Line-ending normalization. Splicing component sources (LF) into a host
+# file (usually CRLF) yields mixed EOLs and a huge EOL-only git diff in
+# the subscriber repo -- which buries the real content change in any
+# cross-repo sync PR. Detect the host file's dominant convention once
+# (from its text as read, before splicing) and normalize the whole
+# written file to it, so the only diff a subscriber sees is the actual
+# content change. Idempotent: a file already uniform in its own
+# convention re-writes byte-stable.
+# --------------------------------------------------------------------
+
+# Returns the dominant line ending of $Text: "`r`n" (CRLF) or "`n" (LF).
+# CRLF wins ties -- the MindAttic subscriber files are Windows-authored.
+function Get-DominantEol {
+    param([Parameter(Mandatory)][AllowEmptyString()][string]$Text)
+    $lf     = ([regex]::Matches($Text, "`n")).Count
+    $crlf   = ([regex]::Matches($Text, "`r`n")).Count
+    $bareLf = $lf - $crlf
+    if ($crlf -ge $bareLf) { return "`r`n" } else { return "`n" }
+}
+
+# Normalize every line ending in $Text to $Eol. Collapses to LF first so
+# the result is uniform regardless of the input's mix.
+function ConvertTo-Eol {
+    param(
+        [Parameter(Mandatory)][AllowEmptyString()][string]$Text,
+        [Parameter(Mandatory)][string]$Eol
+    )
+    $lfText = $Text -replace "`r`n", "`n"
+    if ($Eol -eq "`r`n") { return ($lfText -replace "`n", "`r`n") }
+    return $lfText
+}
+
 # Build the body text for a `static-css` component (just the CSS file).
 function Build-StaticCssBody {
     param(

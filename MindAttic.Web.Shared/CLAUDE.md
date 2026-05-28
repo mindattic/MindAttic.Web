@@ -11,7 +11,7 @@
 ## Ownership boundary (read before editing `sync/`)
 - **MindAttic.Deploy** (`D:/Projects/MindAttic/MindAttic.Deploy`) owns: catalog landing pages (IdiotProof, GridGame2026, MindAttic.Legion, MindAttic.Mobile, MediaButler, MindAttic.Vault, TaxRateCollector, ThinkTank, Tutor, MindAttic.Psst index) and the Claudia/ChiMesh long-form HTML builds. Those subscribers pull components from jsDelivr at runtime; they are **not** spliced from this repo. Do not add `landing-page` or `build-html-js` kinds back to `subscribers.json`, and do not recreate `sync-landing-page.ps1`, `sync-claudia.ps1`, or `sync-chimesh.ps1`. Those were deleted on purpose.
 - **MindAttic.UiUx still owns splice-in-place delivery** for three subscribers, because they consume content in formats jsDelivr can't satisfy alone:
-  - `mindattic.com/index.htm` — html-inline marker blocks (`sync-mindattic-com.ps1`).
+  - `mindattic.com/index.htm` — html-inline marker blocks (`sync-mindattic-com.ps1`). One exception: the Cyberspace `console-bg.js` (~580 KB) is loaded from jsDelivr at a pinned tag (`sync-mindattic-com.ps1 -CyberspaceCdnTag`, default `v1.0.1`) rather than inlined; everything else in the block is still inline. Bump the tag (and re-tag the repo) when `console-bg.js` changes.
   - `StreetSamurai/v3/StreetSamurai.Blazor/wwwroot/` — JS copy + CSS marker blocks in `app.css` (`sync-streetsamurai.ps1`).
   - `MindAttic.Psst/{terms,privacy}.htm` — html-inline marker blocks (`sync-mindattic-psst.ps1`). The `index.htm` in MindAttic.Psst is rendered by MindAttic.Deploy from `README.md`; this repo does not touch it.
 

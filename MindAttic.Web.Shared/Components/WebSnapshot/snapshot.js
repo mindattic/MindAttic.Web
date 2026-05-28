@@ -81,8 +81,17 @@ function flagsToOptions(flags) {
     o.inputHeight = height;
   }
   if (flags.viewport) o.viewport  = parseWH(flags.viewport, 'viewport');
-  if (flags.delay)    o.delayMs   = parseInt(flags.delay, 10);
-  if (flags.wait)     o.waitUntil = String(flags.wait);
+  if (flags.delay) {
+    const ms = parseInt(flags.delay, 10);
+    if (!Number.isFinite(ms) || ms < 0) throw new Error(`Invalid --delay "${flags.delay}", expected a non-negative integer (ms)`);
+    o.delayMs = ms;
+  }
+  if (flags.wait) {
+    const wait = String(flags.wait).toLowerCase();
+    const allowed = ['load', 'domcontentloaded', 'networkidle'];
+    if (!allowed.includes(wait)) throw new Error(`Invalid --wait "${flags.wait}", expected one of: ${allowed.join(', ')}`);
+    o.waitUntil = wait;
+  }
   return o;
 }
 

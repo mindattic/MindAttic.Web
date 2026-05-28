@@ -53,6 +53,7 @@ foreach ($p in @($BlazorRoot, $wwwJs, $appCss)) {
 
 function Splice-CssMarkerBlock {
     param([string]$CssText, [string]$Begin, [string]$End, [string]$Body, [string]$SourcePath)
+    $ordinal = [System.StringComparison]::Ordinal
     if (-not $CssText.Contains($Begin)) {
         throw "Marker '$Begin' not found in $SourcePath. Insert the marker pair manually first, then re-run sync."
     }
@@ -62,8 +63,8 @@ function Splice-CssMarkerBlock {
              $Body + "`r`n" +
              $End
 
-    $startIdx = $CssText.IndexOf($Begin)
-    $endIdx   = $CssText.IndexOf($End, $startIdx)
+    $startIdx = $CssText.IndexOf($Begin, $ordinal)
+    $endIdx   = $CssText.IndexOf($End, $startIdx, $ordinal)
     if ($endIdx -lt 0) { throw "End marker '$End' not found after begin marker in $SourcePath." }
     $endIdx  += $End.Length
     return $CssText.Substring(0, $startIdx) + $block + $CssText.Substring($endIdx)
@@ -87,6 +88,7 @@ function Copy-ComponentJsFiles {
 }
 
 $cssText = [System.IO.File]::ReadAllText($appCss, $utf8)
+$cssEol  = Get-DominantEol -Text $cssText
 $summary = New-Object System.Collections.Generic.List[string]
 
 foreach ($subscription in $sub.subscriptions) {
@@ -95,11 +97,11 @@ foreach ($subscription in $sub.subscriptions) {
     switch ($comp.name) {
         # Fonts: splice the @font-face CSS (+ optional applyToSelector rule) into app.css.
         { $_ -in 'OutfitFont', 'AtticFont' } {
-            $args = @{ Component = $comp; ContentRoot = $ContentRoot; Encoding = $utf8 }
+            $bodyArgs = @{ Component = $comp; ContentRoot = $ContentRoot; Encoding = $utf8 }
             if ($subscription.PSObject.Properties.Name -contains 'applyToSelector') {
-                $args['SelectorOverride'] = $subscription.applyToSelector
+                $bodyArgs['SelectorOverride'] = $subscription.applyToSelector
             }
-            $body = Build-FontCssBody @args
+            $body = Build-FontCssBody @bodyArgs
             $cssText = Splice-CssMarkerBlock -CssText $cssText `
                 -Begin "/* == BEGIN MINDATTIC.UIUX:$($comp.marker).CSS == */" `
                 -End   "/* == END MINDATTIC.UIUX:$($comp.marker).CSS == */" `
@@ -130,7 +132,7 @@ foreach ($subscription in $sub.subscriptions) {
     }
 }
 
-[System.IO.File]::WriteAllText($appCss, $cssText, $utf8)
+[System.IO.File]::WriteAllText($appCss, (ConvertTo-Eol -Text $cssText -Eol $cssEol), $utf8)
 
 $kb = [math]::Round(((Get-Item $appCss).Length / 1024), 1)
 Write-Output "  [CSS] app.css marker blocks updated ($kb KB)"

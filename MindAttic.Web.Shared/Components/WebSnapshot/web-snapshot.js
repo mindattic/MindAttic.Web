@@ -35,11 +35,37 @@ async function detectMode(url) {
   return 'page';
 }
 
-async function captureDirectImage({ url, outputPath }) {
-  const res = await fetch(url, { redirect: 'follow' });
-  if (!res.ok) throw new Error(`Direct-image fetch failed (${res.status}): ${url}`);
-  const ct = (res.headers.get('content-type') || 'application/octet-stream').split(';')[0].trim();
-  const buf = Buffer.from(await res.arrayBuffer());
+// Probe an extensionless URL with a single GET and, when it turns out to be an
+// image, hand the already-downloaded bytes back so captureDirectImage doesn't
+// fetch the same URL a second time. For non-image responses we cancel the body
+// (we'll navigate with Playwright instead), so a page probe stays about as
+// cheap as the old HEAD. Used only by webSnapshot; the exported detectMode
+// keeps its lightweight HEAD-only behaviour for standalone callers.
+async function probeUrl(url) {
+  if (IMAGE_EXT.test(url)) return { mode: 'image' };
+  try {
+    const res = await fetch(url, { redirect: 'follow' });
+    const ct = (res.headers.get('content-type') || '').toLowerCase();
+    if (res.ok && ct.startsWith('image/')) {
+      const buffer = Buffer.from(await res.arrayBuffer());
+      return { mode: 'image', contentType: ct.split(';')[0].trim(), buffer };
+    }
+    if (res.body && typeof res.body.cancel === 'function') { try { await res.body.cancel(); } catch { /* ignore */ } }
+  } catch { /* fall through to page */ }
+  return { mode: 'page' };
+}
+
+async function captureDirectImage({ url, outputPath, prefetched }) {
+  let ct, buf;
+  if (prefetched && prefetched.buffer) {
+    ct  = prefetched.contentType || 'application/octet-stream';
+    buf = prefetched.buffer;
+  } else {
+    const res = await fetch(url, { redirect: 'follow' });
+    if (!res.ok) throw new Error(`Direct-image fetch failed (${res.status}): ${url}`);
+    ct  = (res.headers.get('content-type') || 'application/octet-stream').split(';')[0].trim();
+    buf = Buffer.from(await res.arrayBuffer());
+  }
   const dataUri = `data:${ct};base64,${buf.toString('base64')}`;
   await fs.mkdir(path.dirname(outputPath), { recursive: true });
   await fs.writeFile(outputPath, dataUri, 'utf8');
@@ -137,9 +163,14 @@ async function webSnapshot(options = {}) {
   if (!url) throw new Error('webSnapshot: `url` is required');
   if (!outputPath) throw new Error('webSnapshot: `outputPath` is required');
 
-  const resolvedMode = mode || await detectMode(url);
-  return resolvedMode === 'image'
-    ? captureDirectImage({ url, outputPath })
+  if (mode === 'image') return captureDirectImage({ url, outputPath });
+  if (mode === 'page')  return capturePageScreenshot(options);
+
+  // Auto-detect: a single probe both decides the mode and (for images) reuses
+  // the downloaded bytes, avoiding a second fetch of the same URL.
+  const probe = await probeUrl(url);
+  return probe.mode === 'image'
+    ? captureDirectImage({ url, outputPath, prefetched: probe })
     : capturePageScreenshot(options);
 }
 

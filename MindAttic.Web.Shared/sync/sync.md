@@ -168,3 +168,40 @@ Every script in this folder must be safe to re-run. The canonical pattern:
 
 That way a no-op edit produces no diff, and a real edit produces exactly
 the diff that the source change implies.
+
+### Line-ending normalization
+
+Component sources are stored LF; most subscriber host files are CRLF.
+Splicing LF blocks into a CRLF file would leave mixed endings and a huge
+EOL-only git diff that buries the real content change in every sync PR.
+To prevent that, each marker-splice script detects the host file's
+dominant line ending *before* splicing (`Get-DominantEol` in
+`_subscribers.ps1`, CRLF wins ties) and normalizes the whole written file
+to it (`ConvertTo-Eol`) on the way out. So a subscriber only ever sees the
+content diff, never an EOL flip. (The first sync after this was introduced
+may show a one-time, content-free normalization for any host file that was
+previously committed with mixed endings — `git diff --ignore-cr-at-eol`
+confirms it's pure EOL. The wholesale `wwwroot/js/*` copies in
+`sync-streetsamurai.ps1` are byte-for-byte with source and are not
+normalized.)
+
+### Cyberspace `console-bg.js` is CDN-loaded for mindattic.com
+
+`console-bg.js` is ~580 KB. Inlining it into `index.htm` bloats the page on
+every load and prevents the browser from caching it separately. So
+`sync-mindattic-com.ps1` keeps the small Cyberspace scripts (loader,
+tv-static, home-bg) and the base64 texture override inline, but emits
+`console-bg.js` as an external `<script src="https://cdn.jsdelivr.net/gh/
+mindattic/MindAttic.UiUx@<tag>/Components/Cyberspace/console-bg.js">` tag.
+The tag is the `-CyberspaceCdnTag` parameter (default `v1.0.1`).
+
+Ordering is preserved because non-async `<script>` tags execute in document
+order: the inline block (which defines `window.__cyberspaceCircuitboardSrcs`)
+runs before the external `console-bg.js`, whose `TEX_SRCS` reads that global
+at module-init.
+
+To ship a `console-bg.js` change to mindattic.com: edit the source, tag a new
+release (e.g. `v1.0.2`), bump `-CyberspaceCdnTag` to match, then re-run the
+sync/deploy. A content change that *doesn't* touch `console-bg.js` needs no
+tag bump. (Only mindattic.com uses this split; StreetSamurai still copies all
+Cyberspace JS into `wwwroot/js` byte-for-byte.)

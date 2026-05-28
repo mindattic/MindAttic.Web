@@ -50,7 +50,13 @@
     const url = src + (src.includes('?') ? '&' : '?') + bust;
     const res = await fetch(url, { cache: 'no-store' });
     if (!res.ok) throw new Error(`Fetch ${src} failed: ${res.status}`);
-    state.img.src = (await res.text()).trim();
+    const payload = (await res.text()).trim();
+    // Guard against a 200 that's actually an HTML error page or anything else
+    // non-image — assigning it would just yield a silently broken <img>.
+    if (!/^(data:image\/|https?:\/\/)/i.test(payload)) {
+      throw new Error(`Fetch ${src} returned a non-image payload`);
+    }
+    state.img.src = payload;
   }
 
   function autoInit(root) {
