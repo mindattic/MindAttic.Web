@@ -112,6 +112,6 @@ See the top-level [`../README.md`](../README.md) for the full effect table
 ## Editing
 
 Edit files here. Push to `main` and the GitHub Action delivers to both
-subscribers, or run `sync/sync-all.ps1` (or the `/sync` slash command) locally
+subscribers, or run `sync/sync-all.ps1` locally
 for fast iteration without round-tripping through GitHub. Downstream copies
 are derived artifacts — never edit them directly.

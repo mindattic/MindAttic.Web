@@ -83,9 +83,9 @@ node snapshot.js ryandebraal https://ryandebraal.com/ --align=top-center --size=
 node snapshot.js logo https://www.place.com/picture.jpg
 ```
 
-Direct image URLs (matched by extension or `Content-Type: image/*` on a HEAD
-request) skip Playwright entirely. The bytes are downloaded as-is and written
-as the data URI — no crop.
+Direct image URLs (matched by extension or `Content-Type: image/*` detected by
+a probe request) skip Playwright entirely. The bytes are downloaded as-is and
+written as the data URI — no crop.
 
 Output naming: `previews/<name>.b64.txt` — the full `data:image/png;base64,…` string.
 
@@ -157,7 +157,7 @@ Run `npm run snapshot` to refresh all, or `npm run snapshot <name>` for one.
 
 `sync/sync-mindattic-com.ps1` inlines `web-snapshot.css` and
 `web-snapshot-viewer.js` into `mindattic.com/index.htm` between
-`<!-- BEGIN/END MINDATTIC.COMPONENTS:WEBSNAPSHOT -->` markers. The `.b64.txt`
+`<!-- BEGIN/END MINDATTIC.UIUX:WEBSNAPSHOT -->` markers. The `.b64.txt`
 payloads are *not* synced — each subscriber manages its own per-tile inline
 base64 (mindattic.com keeps them in a `PORTFOLIO_IMAGES` map applied at
 render time).

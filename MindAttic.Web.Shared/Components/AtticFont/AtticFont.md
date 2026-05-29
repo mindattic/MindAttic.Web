@@ -2,7 +2,7 @@
 
 The **Attic** display face, inlined as a base64 woff2. Single `@font-face`,
 weight normal, style normal, `font-display: swap`. No network request — the
-font ships with the document, so first paint is one HTTP request.
+font ships with the document.
 
 Used for headings and the wordmark across MindAttic web properties.
 

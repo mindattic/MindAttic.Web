@@ -1,5 +1,5 @@
 # One-shot: pull the 3 circuitboard PNG textures from StreetSamurai's media dir
-# into MindAttic.UiUx/cyberspace/assets/ as lossless copies. The textures are
+# into MindAttic.UiUx/Components/Cyberspace/assets/ as lossless copies. The textures are
 # tiled across the canvas by console-bg.js, so they must be lossless — JPEG
 # block compression breaks the edge-pixel match between adjacent tile copies
 # and produces visible seams (see the parallax background on mindattic.com

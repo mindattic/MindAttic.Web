@@ -64,7 +64,8 @@ Or via jsDelivr:
 `MindAttic.Deploy` pulls `back-home-m.css` from the jsDelivr CDN at the
 `componentsVersion` it has pinned in `projects.json`. The rendered landing
 pages include the stylesheet via a `<link>` tag and hand-author the
-`<a class="back-home-m">` element in the body prelude of the theme they
-declare (`Themes/Hardware/body-prelude.html`, `Themes/Cyberspace/body-prelude.html`).
+`<a class="back-home-m">` element directly in the page `<body>` (via
+`MindAttic.Deploy`'s `index.template.htm`). The theme `body-prelude.html`
+files carry only background-effect scaffolding, not this anchor.
 
 Edit here only. Downstream copies are derived artifacts.

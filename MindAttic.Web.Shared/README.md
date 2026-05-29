@@ -86,7 +86,7 @@ MindAttic.UiUx/
 │       ├── web-snapshot.css     #   .web-snapshot container behavior
 │       ├── web-snapshot.html    #   paste-in usage template
 │       ├── package.json         #   Playwright dep + npm scripts
-│       ├── previews/            #   generated: <name>.b64.txt (+ .meta.json)
+│       ├── previews/            #   generated: <name>.b64.txt
 │       └── WebSnapshot.md
 │
 ├── sync/                        # Distribution scripts (PowerShell) -- only the three remaining splice-in-place subscribers
