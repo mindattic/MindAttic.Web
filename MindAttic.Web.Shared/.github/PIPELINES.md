@@ -25,7 +25,7 @@ Where `<ref>` is any of:
 | Branch | `@main` | Cached ~7 days unless purged |
 | Commit SHA | `@a1b2c3d` | Immutable; cached forever |
 
-Component folder names are case-sensitive on GitHub (`Cyberspace`, `OutfitFont`, `AtticFont`, `PinFooter`, `BackHomeM`, `WebSnapshot`). Theme folders too (`Themes/Cyberspace`, `Themes/Hardware`).
+Component folder names are case-sensitive on GitHub (`Cyberspace`, `OutfitFont`, `AtticFont`, `PinFooter`, `BackHomeM`, `WebSnapshot`). Theme folders too (`Themes/Cyberspace` — the sole theme since Hardware was retired 2026-05-29).
 
 **Examples:**
 
@@ -109,5 +109,5 @@ powershell -File sync/sync-all.ps1
 | `StreetSamurai` (Blazor) | Local `wwwroot/js/*.js` + `app.css` marker blocks (kept fresh by Action / `sync-streetsamurai.ps1`) | Blazor build needs deterministic input; offline-dev friendly |
 | `MindAttic.Psst` legal pages | Inlined marker blocks in `terms.htm` + `privacy.htm` (kept fresh by Action / `sync-mindattic-psst.ps1`) | Same as mindattic.com — these pages get FTPS-uploaded as self-contained HTML |
 | Any catalog landing page | jsDelivr CDN, pinned via `MindAttic.Deploy/projects.json:componentsVersion` | No PR overhead; `MindAttic.Deploy` renders these from each project's `README.md` and pulls fonts/effects from the CDN at runtime |
-| Claudia / ChiMesh | jsDelivr CDN, same path as catalog landing pages | They render long-form READMEs with the Hardware theme; CDN keeps each guide page small |
+| Claudia / ChiMesh | jsDelivr CDN, same path as catalog landing pages | They render long-form READMEs with the Cyberspace theme + the parts-picker augmentation; CDN keeps each guide page small |
 | Anything new | jsDelivr CDN | Only fall back to pipeline 2 if the subscriber needs hand-authored content interleaved with the components |

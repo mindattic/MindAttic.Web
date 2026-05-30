@@ -45,5 +45,6 @@ StreetSamurai consumes the **Cyberspace Component directly** from its Blazor `ww
 
 ## Related
 
-- Sister theme: [`Themes/Hardware/`](../Hardware/Hardware.md) — clean light/dark documentation aesthetic for hardware/maker projects.
 - Component layer: [`Components/Cyberspace/`](../../Components/Cyberspace/Cyberspace.md) — the raw effects engine.
+
+> The former sister theme `Themes/Hardware/` (light/dark documentation aesthetic) was retired 2026-05-29; ChiMesh and Claudia now render on Cyberspace with the MindAttic.Deploy parts-picker augmentation.
