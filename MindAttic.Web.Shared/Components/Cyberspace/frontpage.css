@@ -304,11 +304,6 @@
 @media (max-width: 480px) {
     .cyberspace-geo-win { width: 120px; }
     .cyberspace-geo-report { display: none; }
-    .ub-panel {
-        width: calc(100vw - 20px);
-        grid-template-columns: repeat(3, 30vw);
-        right: 0;
-    }
 }
 
 /* ── Floating artifacts — blurry glyph clusters that drift and fade ─────── */

@@ -9,8 +9,8 @@
 #
 # Which components flow to MindAttic.Psst -- and per-component config --
 # lives in MindAttic.UiUx/subscribers.json under
-# subscribers."MindAttic.Psst". Edit that file (not this script) to add
-# or remove a subscription.
+# subscribers."MindAttic.Psst.Legal". Edit that file (not this script) to
+# add or remove a subscription.
 #
 # Subscriber kind: `html-inline-multi`. Same splice rules as
 # sync-mindattic-com.ps1's `html-inline`, but the script loops over a

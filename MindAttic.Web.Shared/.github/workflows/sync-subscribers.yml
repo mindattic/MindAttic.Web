@@ -16,8 +16,10 @@ on:
   push:
     branches: [main]
     paths:
+      # Only components actually spliced into a subscriber belong here. BackHomeM
+      # is delivered via jsDelivr/MindAttic.Deploy, not spliced — including it
+      # would fire all three jobs to produce empty no-change PRs.
       - 'Components/AtticFont/**'
-      - 'Components/BackHomeM/**'
       - 'Components/Cyberspace/**'
       - 'Components/OutfitFont/**'
       - 'Components/PinFooter/**'

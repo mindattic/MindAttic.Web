@@ -30,7 +30,9 @@ async function detectMode(url) {
   try {
     const res = await fetch(url, { method: 'HEAD', redirect: 'follow' });
     const ct = (res.headers.get('content-type') || '').toLowerCase();
-    if (ct.startsWith('image/')) return 'image';
+    // Guard on res.ok (matching probeUrl) so an error page that happens to
+    // report an image content-type isn't downloaded as if it were the image.
+    if (res.ok && ct.startsWith('image/')) return 'image';
   } catch { /* fall through to page */ }
   return 'page';
 }

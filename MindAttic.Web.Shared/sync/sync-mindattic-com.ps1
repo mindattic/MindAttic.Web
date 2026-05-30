@@ -128,9 +128,13 @@ function Build-CyberspaceBlock {
     $inlineJsFiles = @($Component.jsFiles | Where-Object { (Split-Path -Leaf $_) -ne 'console-bg.js' })
     $cdnJsFiles    = @($Component.jsFiles | Where-Object { (Split-Path -Leaf $_) -eq 'console-bg.js' })
 
-    $inlineConcat = $texOverride + "`r`n" + (($inlineJsFiles | ForEach-Object {
+    $jsConcat = ($inlineJsFiles | ForEach-Object {
         "/* ---- $(Split-Path -Leaf $_) ---- */`r`n" + [System.IO.File]::ReadAllText((Join-Path $ContentRoot $_), $utf8)
-    }) -join "`r`n`r`n")
+    }) -join "`r`n`r`n"
+    # Prepend the texture override only when present ($texOverride already ends
+    # in `r`n); skip the leading newline entirely when there are no assets so the
+    # inline <script> stays byte-stable instead of opening with a blank line.
+    $inlineConcat = if ($texOverride) { $texOverride + "`r`n" + $jsConcat } else { $jsConcat }
 
     $cdnScripts = ($cdnJsFiles | ForEach-Object {
         $leaf   = Split-Path -Leaf $_

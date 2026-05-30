@@ -22,7 +22,18 @@
   }
 
   function attach(el, opts) {
-    if (!el || el.__webSnapshotState) return el && el.__webSnapshotState;
+    if (!el) return undefined;
+    // Already attached: reconcile a changed data-src (autoInit() is documented
+    // to be re-run after DOM mutations, and a reused node may carry a new src).
+    if (el.__webSnapshotState) {
+      const state = el.__webSnapshotState;
+      const nextSrc = (opts && 'src' in opts) ? opts.src : readOpts(el).src;
+      if (nextSrc && nextSrc !== state.opts.src) {
+        state.opts.src = nextSrc;
+        refresh(el).catch(err => console.warn('[WebSnapshot] refresh failed:', err));
+      }
+      return state;
+    }
 
     const merged = Object.assign({}, readOpts(el), opts || {});
     let img = el.querySelector('img');
