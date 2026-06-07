@@ -25,7 +25,7 @@ fully interactive, themeable, animated resume in any modern browser from one net
   and you see a single document fetch.
 - **The resume is the work sample.** The medium proves the message: a polished, production-quality
   experience built without a framework, bundler, CDN, package manager, or tracking.
-- **It is themeable and expressive.** 15 themes ([§4.2](#RDC-§4)), each with a bespoke from-scratch
+- **It is themeable and expressive.** 16 themes ([§4.2](#RDC-§4)), each with a bespoke from-scratch
   Canvas 2D animation; 3 resume rendering profiles (classic / pitch / complete) over one data model.
 - **It respects the reader.** Preferences (theme, profile, font, skill-familiarity tags) persist in
   `localStorage`. No analytics, no third-party scripts, no tracking pixels, no service worker.
@@ -47,7 +47,7 @@ fully interactive, themeable, animated resume in any modern browser from one net
 ## 4. Architecture canon {#RDC-§4}
 
 ```
-                         index.htm  (one file, ~6.9K lines)
+                         index.htm  (one file, ~6.5K lines)
    ┌──────────────────────────────────────────────────────────────────────┐
    │  <!-- Last Updated: <UTC> -->   (stamped by the deploy pipeline)        │
    │  <head>                                                                │
@@ -62,7 +62,8 @@ fully interactive, themeable, animated resume in any modern browser from one net
    │       § RENDER     secHTML/expHTML/…/render  (pure string builders)    │
    │       § STATE      theme · profile · skill-familiarity · localStorage  │
    │       § FX ENGINE  per-theme Canvas 2D animations + rAF loops          │
-   │       § EXPORT     exportMD · printResume · runPdfExport               │
+   │       § EXPORT     exportMD · exportHTML · exportPDF variants ·         │
+   │                   printResume · runPdfExport                            │
    └──────────────────────────────────────────────────────────────────────┘
         deploy:  MindAttic.Deploy (sibling repo) stamps + FTPS-uploads index.htm
 ```
@@ -83,7 +84,7 @@ All resume content is the in-file object literal **`D`** (`index.htm`). Its cata
 - `education[]`, `patents[]`, `corporate[]` — degrees, US patents, registered entities.
 - `tooltips` — a separate `{ tech-name → description }` map (~200 entries) powering hover context.
 
-**Themes (15):** light, spring, summer, autumn, winter, matrix, neko, ocean, sunset, forest,
+**Themes (16):** light, dark, spring, summer, autumn, winter, matrix, neko, ocean, sunset, forest,
 cyberpunk, noir, sakura, sand, synthwave — selected via `[data-theme]` on `<html>`.
 **Profiles (3):** classic, pitch, complete — selected via `[data-profile]`.
 
@@ -99,8 +100,10 @@ cyberpunk, noir, sakura, sand, synthwave — selected via `[data-theme]` on `<ht
   `startSakura`, `startAutumn`, `startWinter`, `startMatrix`, `startForest`, `startOcean`,
   `startCyberpunk`, `startSynthwave`, `startSand`, `startNekoTheme`, …) driving `<canvas>` layers
   via `requestAnimationFrame`; `resizeCanvas`/`stopFX` manage lifecycle.
-- **Export:** `exportMD()` (Markdown download), `printResume()` / `runPdfExport()` (print/PDF),
-  with `toggleExportMenu`/`toggleMoreMenu` for the toolbar.
+- **Export:** `exportMD()` (Markdown download), `exportHTML()` (self-contained HTML download),
+  `runPdfExport(opts)` (shared print/PDF engine) with named wrappers `exportPDF()`,
+  `exportPrintPage()`, `exportPrintDocument()`, `exportPrintCV()`; `printResume()` for simple
+  print; `toggleExportMenu`/`toggleMoreMenu` for the toolbar.
 
 ## 5. The Laws {#RDC-§5}
 
@@ -144,7 +147,7 @@ test- or build-proven facts); shipped-and-manually-confirmed work is marked `�
 
 Confirmed by direct inspection of `index.htm` (2026-06-07):
 - 🟡 Single-file delivery — only `index.htm` is served; fonts and Neko atlas are inlined base64.
-- 🟡 15 themes present as `[data-theme]` blocks; 3 profiles via `[data-profile]`.
+- 🟡 16 themes present as `[data-theme]` blocks (added `dark` theme, 2026-06-07); 3 profiles via `[data-profile]`.
 - 🟡 Render engine, FX engine, export functions present (function inventory in [§4.3](#RDC-§4)).
 - 🟡 `localStorage` persistence wired for theme/profile/font/skill-familiarity/neko-color.
 - 🟡 Deploy delegated to MindAttic.Deploy (per `.claude/skills/deploy/SKILL.md`).
@@ -164,7 +167,7 @@ A change is done when:
   ([RDC-LAW-1](#RDC-LAW-1), [RDC-LAW-2](#RDC-LAW-2)).
 - Opening `index.htm` in a current Chromium/Firefox/Safari shows the change with no console errors
   and a single network request.
-- All 15 themes still render and switch; all 3 profiles still render from `D`; export still works.
+- All 16 themes still render and switch; all 3 profiles still render from `D`; export still works.
 - Preferences still round-trip through `localStorage` across reload.
 - No third-party/runtime network call was introduced ([RDC-LAW-3](#RDC-LAW-3)).
 - Private fields use `camelCase` without an underscore prefix (project CLAUDE.md).

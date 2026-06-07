@@ -31,7 +31,7 @@ updated: 2026-06-07
 
 ## Epic B — Themes & animation
 
-- **RDC-US-B1 🟡** As a reader, I can switch between 15 themes and the page restyles via CSS
+- **RDC-US-B1 🟡** As a reader, I can switch between 16 themes and the page restyles via CSS
   variables with a bespoke Canvas animation per theme. *Given the toolbar, When I cycle/pick a
   theme, Then `[data-theme]` updates and the matching `start<Theme>` FX runs.* *(shipped; verified
   manually — no automated test; functions in [BIBLE §4.3](BIBLE.md#RDC-§4).)*

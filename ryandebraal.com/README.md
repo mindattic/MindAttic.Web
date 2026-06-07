@@ -50,11 +50,8 @@ That's it. There is no dev server, because there is nothing to compile.
 
 ## Deploy
 
-```
-.\deploy.ps1
-```
-
-Reads FTPS credentials from `settings.json` and uploads `index.htm` to the remote host.
+Deploy via the `/deploy` skill (MindAttic.Deploy, sibling repo). The per-project `deploy.ps1`
+and `settings.json` are retired; credentials and upload logic live in MindAttic.Deploy.
 
 ---
 
