@@ -32,7 +32,7 @@ The flagship initiative is the **Child's Play** track — running an annual fund
 |---|---|
 | MindAttic Cares (intro) | Who we are and why we run these events. |
 | Child's Play | The pass-through giving track. Why this charity, how funds flow, partnership details. |
-| Y2K: End of the World Party | Full 17-section event playbook for the inaugural fundraiser — overview & goals, planning timeline, venue & permits, equipment, floor plan, staffing, the show, run-of-show, budget, sponsorship, marketing, compliance, decor, cultural brief, show assets, post-event wrap. |
+| Y2K: End of the World Party | Full 19-section event playbook for the inaugural fundraiser — overview & goals, how to use this playbook, planning timeline, venue & permits, equipment, floor plan, staffing, the show, run-of-show, budget, sponsorship, marketing, compliance, decor, cultural brief, show assets, post-event wrap, master checklists, appendices. |
 
 Each subsequent event will be drafted on the same page in the same structure so the audience (and any sibling charity looking for a template) gets a consistent read.
 
@@ -42,50 +42,39 @@ Each subsequent event will be drafted on the same page in the same structure so 
 |---|---|
 | **Front-end** | Single self-contained `index.htm` — inlined CSS, inlined JavaScript, base64-inlined PNG favicon and graphics |
 | **Hosting** | Static hosting at [mindatticcares.com](https://mindatticcares.com/) (no server-side code, no database) |
-| **Deploy** | PowerShell + `curl.exe` over FTPS, driven by `deploy.bat` |
+| **Deploy** | Centralized via **MindAttic.Deploy** (sibling repo) — see [Deploying](#deploying) |
 
 No build step. No `npm install`. No CMS. Open the file in any modern browser and you have the whole site.
 
 ## Repository layout
 
 ```
-MindAtticCares/
+mindatticcares.com/
 ├── index.htm           # The entire site — one self-contained HTML file
-├── deploy.ps1          # FTPS deploy script (curl-based)
-├── deploy.bat          # Windows launcher for deploy.ps1
-├── settings.json       # FTP credentials (gitignored in practice — handle with care)
+├── docs/               # Codex canon (BIBLE, AMENDMENTS, USER_STORIES, rfc/)
+├── tools/              # codex.ps1 doctor + digest CLI
+├── .claude/            # Deploy command, project skills, SessionStart hook
 └── README.md           # ← you are here
 ```
 
+> `deploy.ps1` / `deploy.bat` / `settings.json` are **retired**. The FTP pipeline now lives in
+> **MindAttic.Deploy** (see [MAC-A1](docs/AMENDMENTS.md#MAC-A1) and [Deploying](#deploying)).
+
 ## Deploying
 
+> **Per-project deploy scripts are retired.** `deploy.bat`, `deploy.ps1`, and `settings.json` no
+> longer exist in this folder. See [MAC-A1](docs/AMENDMENTS.md#MAC-A1) for the migration history.
+
+Deployment is owned by the central **MindAttic.Deploy** sibling repo. Use the `/deploy` Claude
+command, or run:
+
 ```powershell
-.\deploy.bat
+cd D:\Projects\MindAttic\MindAttic.Deploy
+npm run deploy -- --site mindatticcares.com
 ```
 
-`deploy.ps1`:
-
-1. Reads `settings.json` for FTP host, port, username, password, remote path, and SSL/passive flags.
-2. Stamps `index.htm` with a fresh `<!-- Last Updated: <ISO8601 UTC> -->` header (replaces the existing stamp if present).
-3. Uploads `index.htm` over FTPS via `curl.exe` (built-in on Windows 10/11).
-
-A successful deploy prints `[OK] index.htm  (<bytes>)` and exits 0. Any non-zero exit indicates an upload failure; the FTP response is included in the log line.
-
-### settings.json shape
-
-```json
-{
-  "FtpHost":       "...",
-  "FtpPort":       21,
-  "FtpUsername":   "...",
-  "FtpPassword":   "...",
-  "FtpRemotePath": "/mindatticcares.com/",
-  "FtpUseSsl":     true,
-  "FtpPassive":    true
-}
-```
-
-Treat `settings.json` as a secret. Never commit it with real credentials; rotate the FTP password whenever the file is touched on a shared machine.
+The pipeline stamps `index.htm` with a fresh `<!-- Last Updated: <ISO8601 UTC> -->` comment and
+FTPS-uploads it. FTP credentials live in `MindAttic.Deploy/secrets/` (gitignored there).
 
 ## Editing the site
 
@@ -96,7 +85,7 @@ When adding a new event:
 1. Add a new `<h1>` block at the relevant insertion point.
 2. Copy the section template (`<h2 id="sec-...">` cards) from the existing playbook.
 3. Update the in-page TOC / scroll-spy list.
-4. Run `.\deploy.bat`.
+4. Deploy via MindAttic.Deploy (see [Deploying](#deploying)).
 
 ## Related
 
