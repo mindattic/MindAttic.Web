@@ -20,11 +20,11 @@ It's a resume that **is** the work sample.
 
 ## Features
 
-- **15 themes** — Light, Spring, Summer, Autumn, Winter, Matrix, Neko, Ocean, Sunset, Forest, Cyberpunk, Noir, Sakura, Sand, Synthwave. Theme switching is CSS variables only; no JavaScript style mutations.
+- **16 themes** — Light, Dark, Spring, Summer, Autumn, Winter, Matrix, Neko, Ocean, Sunset, Forest, Cyberpunk, Noir, Sakura, Sand, Synthwave. Theme switching is CSS variables only; no JavaScript style mutations.
 - **3 rendering profiles** — Classic, Pitch, and Complete views of the same underlying resume data, swapped with one click.
 - **Custom canvas animations per theme** — Bees with a flower-claiming state machine, snow that accumulates into SVG drifts, ten roaming Neko cats with the full 1998 sprite state machine (all 32 frames embedded as base64), sandstorm physics, parallax forest silhouettes, perspective synthwave grids, neon-acid-rain cyberpunk skylines, and more. Written from scratch — no animation libraries.
 - **~200 tech tooltips** — Hover any technology in the skills or experience sections for context.
-- **Markdown and HTML export** — Download the resume in either format from the toolbar.
+- **Markdown, HTML, and PDF export** — Download the resume in any format from the toolbar.
 - **The Outfit typeface, embedded** — Weights 100–900, inlined as base64 woff2. No font CDN request is ever made.
 - **Preferences persist** — Theme, profile, and font choice survive page reloads via localStorage.
 - **Mobile-first toolbar** — Adapts cleanly between desktop and portrait orientations.
