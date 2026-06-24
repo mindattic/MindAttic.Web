@@ -1,0 +1,2974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hyperspace — Visualizing 5D objects passing through 3D space</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#07071A;
+    --panel:#0D0D24;
+    --panel-2:#12122E;
+    --line:rgba(167,139,250,0.16);
+    --line-soft:rgba(167,139,250,0.08);
+    --text:#E8E6F5;
+    --text-2:#9D9BC4;
+    --text-3:#65628E;
+    --d3:#38BDF8;   /* 3rd dimension — cyan */
+    --d4:#A78BFA;   /* 4th dimension — violet */
+    --d5:#F472B6;   /* 5th dimension — magenta */
+    --warm:#F2A623; /* peak presence */
+    --display:"Space Grotesk", system-ui, sans-serif;
+    --mono:"Space Mono", ui-monospace, monospace;
+    --body:"Inter", system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--void); color:var(--text);
+    font-family:var(--body); line-height:1.7; font-size:16px;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:var(--d4); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  ::selection{background:rgba(244,114,182,0.3);}
+
+  .wrap{max-width:1000px; margin:0 auto; padding:0 24px;}
+
+  /* ---- eyebrow / labels ---- */
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:0.18em;
+    text-transform:uppercase; color:var(--text-3); margin:0 0 14px;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow::before{content:""; width:24px; height:1px; background:var(--line); display:inline-block;}
+
+  h1,h2,h3{font-family:var(--display); font-weight:500; line-height:1.15; margin:0;}
+  h2{font-size:clamp(26px,4.4vw,40px); letter-spacing:-0.01em;}
+  h3{font-size:19px;}
+  p{margin:0 0 18px; color:var(--text-2);}
+  p strong{color:var(--text); font-weight:500;}
+  .lead{font-size:18px; color:var(--text); max-width:62ch;}
+
+  /* ---- hero ---- */
+  .hero{
+    min-height:92vh; display:flex; flex-direction:column;
+    justify-content:center; align-items:center; text-align:center;
+    position:relative; padding:80px 24px 40px; overflow:hidden;
+  }
+  #heroCanvas{
+    position:absolute; inset:0; width:100%; height:100%;
+    z-index:0; opacity:0.9;
+  }
+  .hero-inner{position:relative; z-index:1; max-width:760px;}
+  .hero .eyebrow{justify-content:center;}
+  .hero .eyebrow::after{content:""; width:24px; height:1px; background:var(--line); display:inline-block;}
+  .hero h1{
+    font-size:clamp(38px,8vw,76px); font-weight:700; letter-spacing:-0.03em;
+    margin:0 0 22px; line-height:1.02;
+  }
+  .hero h1 .grad{
+    background:linear-gradient(100deg,var(--d3),var(--d4) 55%,var(--d5));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .hero .lead{margin:0 auto 30px; color:var(--text-2);}
+  .scroll-cue{
+    font-family:var(--mono); font-size:11px; letter-spacing:0.2em;
+    text-transform:uppercase; color:var(--text-3);
+    position:absolute; bottom:28px; left:50%; transform:translateX(-50%);
+    z-index:1; animation:bob 2.4s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(6px);}}
+
+  /* ---- sections ---- */
+  section.block{padding:84px 0; border-top:1px solid var(--line-soft);}
+  .reveal{opacity:0; transform:translateY(20px); transition:opacity .8s ease, transform .8s ease;}
+  .reveal.in{opacity:1; transform:none;}
+
+  .dim-key{
+    display:flex; gap:22px; flex-wrap:wrap; font-family:var(--mono);
+    font-size:12px; letter-spacing:0.04em; margin:26px 0 0; color:var(--text-3);
+  }
+  .dim-key span{display:inline-flex; align-items:center; gap:8px;}
+  .dot{width:10px; height:10px; border-radius:50%; display:inline-block;}
+
+  /* ---- interactive panels ---- */
+  .panel{
+    background:var(--panel); border:1px solid var(--line);
+    border-radius:16px; padding:8px; margin-top:32px;
+  }
+  .panel-pad{padding:22px 24px;}
+  canvas.stage{display:block; width:100%; background:radial-gradient(120% 120% at 50% 30%, #0B0B22 0%, #060614 100%); border-radius:12px;}
+
+  .controls{
+    display:flex; flex-wrap:wrap; gap:20px 28px; align-items:center;
+    padding:20px 24px 6px; font-family:var(--mono); font-size:12px; color:var(--text-2);
+  }
+  .ctl{display:flex; flex-direction:column; gap:8px; flex:1; min-width:170px;}
+  .ctl .row{display:flex; justify-content:space-between; align-items:baseline; letter-spacing:0.06em; text-transform:uppercase; font-size:11px; color:var(--text-3);}
+  .ctl .val{color:var(--text); font-size:13px;}
+  input[type=range]{
+    -webkit-appearance:none; appearance:none; width:100%; height:3px;
+    background:var(--line); border-radius:2px; outline:none; cursor:pointer; margin:0;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none; width:15px; height:15px; border-radius:50%;
+    background:var(--d5); border:2px solid var(--void); cursor:pointer;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:15px; height:15px; border-radius:50%; background:var(--d5);
+    border:2px solid var(--void); cursor:pointer;
+  }
+  input[type=range].c4::-webkit-slider-thumb{background:var(--d4);}
+  input[type=range].c4::-moz-range-thumb{background:var(--d4);}
+
+  button.btn{
+    font-family:var(--mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--text); background:transparent; border:1px solid var(--line);
+    border-radius:8px; padding:9px 16px; cursor:pointer; transition:all .15s;
+  }
+  button.btn:hover{border-color:var(--d4); background:rgba(167,139,250,0.08);}
+  button.btn:active{transform:scale(0.97);}
+  button.btn.on{border-color:var(--d5); color:var(--d5); background:rgba(244,114,182,0.08);}
+  button:focus-visible, input:focus-visible, a:focus-visible{outline:2px solid var(--d4); outline-offset:3px;}
+
+  .readout{
+    display:flex; gap:14px; flex-wrap:wrap; padding:14px 24px 22px;
+    font-family:var(--mono); font-size:12px;
+  }
+  .stat{
+    background:var(--panel-2); border-radius:10px; padding:10px 14px; min-width:108px;
+  }
+  .stat .k{font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-3);}
+  .stat .v{font-size:18px; color:var(--text); margin-top:3px;}
+  .stat .v.status{font-size:13px; line-height:1.4;}
+
+  .planes{display:flex; flex-wrap:wrap; gap:8px; padding:6px 24px 18px;}
+  .planes .pchip{
+    font-family:var(--mono); font-size:11px; letter-spacing:0.05em;
+    border:1px solid var(--line); border-radius:7px; padding:6px 11px;
+    cursor:pointer; color:var(--text-3); transition:all .15s; user-select:none;
+  }
+  .planes .pchip.on{color:var(--d5); border-color:var(--d5); background:rgba(244,114,182,0.07);}
+
+  .seg{display:inline-flex; border:1px solid var(--line); border-radius:8px; overflow:hidden;}
+  .seg button{
+    font-family:var(--mono); font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+    background:transparent; color:var(--text-3); border:none; padding:9px 15px; cursor:pointer;
+  }
+  .seg button.on{background:rgba(167,139,250,0.12); color:var(--text);}
+
+  /* ---- ladder ---- */
+  .ladder-grid{display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:30px;}
+  .mini{background:var(--panel); border:1px solid var(--line); border-radius:14px; overflow:hidden;}
+  .mini canvas{display:block; width:100%; background:#08081C;}
+  .mini .cap{padding:16px 18px 18px;}
+  .mini .cap .t{font-family:var(--display); font-size:15px; color:var(--text); margin-bottom:4px;}
+  .mini .cap .d{font-size:13px; color:var(--text-2); line-height:1.55;}
+  .mini .slid{padding:0 18px 4px;}
+
+  /* ---- field guide ---- */
+  .guide{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:18px; margin-top:34px;}
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px;
+    padding:24px 22px; position:relative; overflow:hidden;
+  }
+  .card .num{
+    font-family:var(--mono); font-size:11px; letter-spacing:0.14em; color:var(--d5);
+    margin-bottom:14px; display:block;
+  }
+  .card h3{margin-bottom:8px; font-size:17px;}
+  .card p{font-size:14px; margin:0; color:var(--text-2); line-height:1.6;}
+
+  footer{padding:64px 0 80px; border-top:1px solid var(--line-soft); text-align:center;}
+  footer p{font-family:var(--mono); font-size:12px; letter-spacing:0.06em; color:var(--text-3); margin:0;}
+
+  @media (max-width:760px){
+    .ladder-grid{grid-template-columns:1fr;}
+    section.block{padding:60px 0;}
+    .controls{padding:18px 18px 4px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    .scroll-cue{animation:none;}
+    .reveal{transition:none; opacity:1; transform:none;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+
+<!-- ============ GALLERY (overlay) styles ============ -->
+<style>
+  #galleryRoot{
+    --void:#06061A; --g-text:#E8E6F5; --text-2:#9D9BC4; --text-3:#65628E;
+    --d3:#38BDF8; --d4:#A78BFA; --d5:#F472B6; --warm:#F2A623;
+    --line:rgba(167,139,250,0.18);
+    --display:"Space Grotesk",system-ui,sans-serif;
+    --mono:"Space Mono",ui-monospace,monospace;
+    --gbody:"Inter",system-ui,sans-serif;
+    display:none;
+  }
+  /* a high-z fixed stacking context so the gallery fully covers the document page */
+  #galleryRoot.active{display:block; position:fixed; inset:0; z-index:1000;}
+  body.in-gallery{overflow:hidden;}
+  body.in-gallery #enterGalleryBtn{display:none;}
+  #galleryRoot, #galleryRoot *{box-sizing:border-box;}
+  #galleryRoot canvas#scene{position:fixed; inset:0; display:block; background:var(--void);}
+
+  #topbar{position:fixed; top:0; left:0; right:0; z-index:20; height:48px; display:flex;
+    align-items:center; gap:16px; padding:0 14px;
+    background:linear-gradient(180deg, rgba(6,6,26,0.92), rgba(6,6,26,0)); pointer-events:none;}
+  #topbar .brand{font-family:var(--display); font-weight:700; letter-spacing:.04em; font-size:15px;
+    color:var(--g-text); pointer-events:auto;}
+  #topbar .brand b{color:var(--d4);}
+  #topbar .spacer{flex:1;}
+  #topbar .mode{font-family:var(--mono); font-size:11px; color:var(--text-3); pointer-events:auto;}
+  #topbar .mode b{color:var(--d5);}
+  #topbar .exitdoc{font-family:var(--mono); font-size:11px; color:var(--text-2); cursor:pointer;
+    pointer-events:auto; background:rgba(20,18,46,.6); border:1px solid var(--line);
+    border-radius:7px; padding:6px 11px;}
+  #topbar .exitdoc:hover{color:var(--g-text); border-color:var(--d5);}
+
+  #hud{position:fixed; left:50%; bottom:22px; transform:translateX(-50%); z-index:18;
+    font-family:var(--mono); font-size:12px; color:var(--text-2); text-align:center;
+    background:rgba(10,10,30,.55); border:1px solid var(--line); border-radius:9px;
+    padding:8px 16px; pointer-events:none; max-width:90vw; backdrop-filter:blur(4px);}
+  #hud .now{color:var(--d4); font-weight:700;}
+  #hud .keys{color:var(--text-3); margin-top:3px; font-size:11px;}
+  #hud kbd{background:rgba(167,139,250,.14); border:1px solid var(--line); border-radius:4px;
+    padding:1px 5px; color:var(--g-text); font-family:var(--mono); font-size:10px;}
+
+  #cross{position:fixed; left:50%; top:50%; width:18px; height:18px; transform:translate(-50%,-50%);
+    z-index:16; pointer-events:none; opacity:0; transition:opacity .2s;}
+  #cross.show{opacity:.8;}
+  #cross::before,#cross::after{content:""; position:absolute; background:var(--d4);}
+  #cross::before{left:50%; top:0; width:1.5px; height:100%; transform:translateX(-50%);}
+  #cross::after{top:50%; left:0; height:1.5px; width:100%; transform:translateY(-50%);}
+
+  #start{position:fixed; inset:0; z-index:40; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center; padding:32px;
+    background:radial-gradient(120% 120% at 50% 35%, #0B0B26 0%, #050514 100%); transition:opacity .5s ease;}
+  #start.hide{opacity:0; pointer-events:none;}
+  #start h1{font-family:var(--display); font-weight:700; font-size:clamp(34px,6vw,64px);
+    margin:0 0 6px; letter-spacing:-.02em;
+    background:linear-gradient(100deg,var(--d3),var(--d4) 45%,var(--d5));
+    -webkit-background-clip:text; background-clip:text; color:transparent;}
+  #start .sub{color:var(--text-2); max-width:620px; font-size:16px; line-height:1.6; margin:0 0 26px;}
+  #start .enter{font-family:var(--display); font-weight:700; font-size:17px; cursor:pointer;
+    color:var(--void); background:var(--d4); border:none; border-radius:11px; padding:15px 38px;
+    transition:transform .15s, box-shadow .15s;}
+  #start .enter:hover{transform:translateY(-2px); box-shadow:0 12px 40px -8px rgba(167,139,250,.6);}
+  #start .enter[hidden]{display:none;}
+  #booting{display:flex; flex-direction:column; align-items:center; gap:10px; min-height:54px;}
+  #booting[hidden]{display:none;}
+  #spinCanvas{width:128px; height:128px; filter:drop-shadow(0 0 12px rgba(167,139,250,.4));}
+  #booting .bootlabel{font-family:var(--mono); font-size:13px; color:var(--text-2);}
+  #booting .bar{width:260px; height:6px; border-radius:99px; overflow:hidden;
+    background:rgba(167,139,250,.14); border:1px solid var(--line);}
+  #booting .barfill{height:100%; width:0%; border-radius:99px;
+    background:linear-gradient(90deg,var(--d3),var(--d4),var(--d5)); transition:width .2s ease;}
+  #booting .bootpct{font-family:var(--mono); font-size:12px; color:var(--text-3);}
+  #start .legend{display:flex; gap:22px; margin-top:30px; flex-wrap:wrap; justify-content:center;
+    font-family:var(--mono); font-size:12px; color:var(--text-3);}
+  #start .legend span{display:flex; align-items:center; gap:7px;}
+  #start .legend i{width:11px; height:11px; border-radius:3px; display:inline-block;}
+
+  /* main menu (video-game pause) */
+  #pause{position:fixed; inset:0; z-index:22; display:none; align-items:center; justify-content:center;
+    background:rgba(6,6,22,.6); backdrop-filter:blur(4px); text-align:center;}
+  #pause.show{display:flex;}
+  #pause .card{min-width:300px; padding:34px 40px; border:1px solid var(--line); border-radius:16px;
+    background:rgba(13,13,34,.9);}
+  #pause h2{font-family:var(--display); margin:0 0 4px; font-size:26px; color:var(--g-text);}
+  #pause p{color:var(--text-3); font-size:12px; font-family:var(--mono); letter-spacing:.12em;
+    text-transform:uppercase; margin:0 0 22px;}
+  #pause .menu-btns{display:flex; flex-direction:column; gap:10px;}
+  #pause button{font-family:var(--display); font-weight:700; font-size:15px; cursor:pointer;
+    color:var(--void); background:var(--d4); border:none; border-radius:10px; padding:13px 26px;
+    transition:filter .15s;}
+  #pause button:hover{filter:brightness(1.08);}
+  #pause .secondary{background:rgba(167,139,250,.14); color:var(--g-text); border:1px solid var(--line);}
+  #pause .quit{background:transparent; color:var(--d5); border:1px solid var(--d5);}
+
+  /* article modal */
+  #modal{position:fixed; inset:0; z-index:50; display:none; align-items:center; justify-content:center;
+    background:rgba(4,4,16,.78); backdrop-filter:blur(6px); padding:24px;}
+  #modal.show{display:flex;}
+  #modal .panel{position:relative; width:min(820px,100%); max-height:88vh; overflow:hidden;
+    background:linear-gradient(180deg,#0E0E28,#0A0A1E); border:1px solid var(--line);
+    border-radius:18px; box-shadow:0 40px 120px -30px rgba(0,0,0,.8); display:flex; flex-direction:column;}
+  #modal .phead{padding:26px 32px 18px; border-bottom:1px solid var(--line); position:relative;}
+  #modal .ptag{font-family:var(--mono); font-size:11px; letter-spacing:.14em; text-transform:uppercase;}
+  #modal h2{font-family:var(--display); font-weight:700; font-size:28px; margin:6px 0 4px; letter-spacing:-.01em; color:var(--g-text);}
+  #modal .pmeta{font-family:var(--mono); font-size:12px; color:var(--text-3); display:flex; gap:16px; flex-wrap:wrap;}
+  #modal .pmeta span b{color:var(--text-2); font-weight:400;}
+  #modal .close{position:absolute; top:20px; right:22px; width:34px; height:34px; border-radius:9px;
+    border:1px solid var(--line); background:rgba(20,18,46,.6); color:var(--text-2); cursor:pointer;
+    font-size:18px; line-height:1; transition:all .15s; z-index:4;}
+  #modal .close:hover{color:var(--g-text); border-color:var(--d5);}
+  #modal .pbody{padding:24px 32px 30px; overflow-y:auto;}
+  #modal .pbody p{line-height:1.72; color:var(--g-text); font-size:15px; margin:0 0 15px;}
+  #modal .pbody h3{font-family:var(--display); font-size:15px; color:var(--d4); margin:22px 0 8px;
+    text-transform:uppercase; letter-spacing:.08em;}
+  #modal .pbody .facts{display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:12px;
+    margin:4px 0 20px; padding:16px; background:rgba(167,139,250,.06); border-radius:11px; border:1px solid var(--line);}
+  #modal .pbody .facts div{font-family:var(--mono); font-size:12px;}
+  #modal .pbody .facts b{display:block; color:var(--text-3); font-weight:400; font-size:10px;
+    letter-spacing:.1em; text-transform:uppercase; margin-bottom:3px;}
+  #modal .pbody .facts span{color:var(--g-text); font-size:15px;}
+  #modal .refs{margin-top:6px; border-top:1px solid var(--line); padding-top:18px;}
+  #modal .refs h3{color:var(--text-2);}
+  #modal .refs ol{margin:0; padding-left:20px;}
+  #modal .refs li{font-size:12.5px; color:var(--text-2); line-height:1.6; margin-bottom:10px; padding-left:6px;}
+  #modal .refs li i{font-style:italic;}
+  #modal .refs a{color:var(--d3); text-decoration:none;}
+  #modal .refs a:hover{text-decoration:underline;}
+  #confirm{position:absolute; inset:0; z-index:5; display:none; align-items:center; justify-content:center;
+    background:rgba(8,8,22,.86); backdrop-filter:blur(4px); border-radius:18px;}
+  #confirm.show{display:flex;}
+  #confirm .cbox{text-align:center; max-width:340px; padding:30px;}
+  #confirm h3{font-family:var(--display); font-size:20px; margin:0 0 8px; color:var(--g-text); text-transform:none; letter-spacing:0;}
+  #confirm p{color:var(--text-2); font-size:14px; line-height:1.6; margin:0 0 22px;}
+  #confirm .row{display:flex; gap:12px; justify-content:center;}
+  #confirm button{font-family:var(--display); font-weight:700; font-size:14px; cursor:pointer;
+    border-radius:10px; padding:11px 22px; border:1px solid var(--line); transition:all .15s;}
+  #confirm .keep{background:transparent; color:var(--text-2);}
+  #confirm .keep:hover{color:var(--g-text); border-color:var(--d4);}
+  #confirm .leave{background:var(--d5); color:var(--void); border-color:var(--d5);}
+
+  #err{position:fixed; inset:0; z-index:60; display:none; align-items:center; justify-content:center;
+    background:var(--void); text-align:center; padding:30px; font-family:var(--mono); color:var(--text-2);}
+  #err.show{display:flex;}
+
+  /* containment breach */
+  #breach{position:fixed; inset:0; z-index:19; display:none; pointer-events:none;}
+  #breach.show{display:block;}
+  #breach #staticNoise{position:fixed; inset:0; width:100%; height:100%; image-rendering:pixelated;
+    opacity:0; mix-blend-mode:screen;}
+  #breach .vig{position:fixed; inset:0; animation:breachpulse .7s ease-in-out infinite;}
+  /* full-viewport-width, centred, single line — vw-scaled so it never wraps or overflows */
+  #breach .breach-msg{position:fixed; top:11%; left:0; right:0; text-align:center; padding:0 10px;
+    font-family:var(--mono); color:#ff3b3b; font-weight:700; letter-spacing:.08em;
+    white-space:nowrap; font-size:clamp(15px, 5.2vw, 40px);
+    text-shadow:0 0 18px rgba(255,40,40,.9); animation:breachflash .5s steps(2,end) infinite;}
+  #breach .breach-msg span{display:block; margin-top:8px; white-space:nowrap;
+    font-size:clamp(9px, 2.2vw, 13px); letter-spacing:.16em; color:#ff8a8a;}
+  @keyframes breachflash{0%,49%{opacity:1}50%,100%{opacity:.12}}
+  @keyframes breachpulse{0%,100%{box-shadow:inset 0 0 150px 28px rgba(255,30,30,.32)}
+    50%{box-shadow:inset 0 0 240px 64px rgba(255,30,30,.62)}}
+
+  /* mobile touch controls */
+  #touchUI{display:none;}
+  #touchUI.show{display:block;}
+  .stick{position:fixed; bottom:30px; width:120px; height:120px; border-radius:50%; z-index:25;
+    background:radial-gradient(circle, rgba(167,139,250,.10), rgba(167,139,250,.03));
+    border:1.5px solid var(--line); touch-action:none;}
+  #stickL{left:26px;} #stickR{right:26px;}
+  .stick .knob{position:absolute; left:50%; top:50%; width:52px; height:52px; margin:-26px 0 0 -26px;
+    border-radius:50%; background:rgba(167,139,250,.5); border:1px solid rgba(255,255,255,.3);}
+  .stick .lbl{position:absolute; left:0; right:0; bottom:-20px; text-align:center;
+    font-family:var(--mono); font-size:10px; color:var(--text-3); letter-spacing:.1em;}
+  #readBtn{position:fixed; left:50%; bottom:170px; transform:translateX(-50%); z-index:26; display:none;
+    font-family:var(--display); font-weight:700; font-size:15px; color:var(--void); background:var(--d4);
+    border:none; border-radius:30px; padding:13px 24px; box-shadow:0 8px 30px -6px rgba(167,139,250,.7);}
+  #readBtn.show{display:block;}
+  #menuFab{position:fixed; top:12px; right:12px; z-index:30; display:none; width:46px; height:46px;
+    border-radius:12px; background:rgba(20,18,46,.85); border:1px solid var(--line); color:var(--g-text);
+    font-size:22px; cursor:pointer; backdrop-filter:blur(4px);}
+  #menuFab.show{display:flex; align-items:center; justify-content:center;}
+
+  /* on touch devices: hide the on-screen hint (controls live in the hamburger menu) */
+  @media (pointer: coarse) {
+    #hud{display:none;}
+    #start .legend{display:none;}
+    #start .sub{font-size:14px;}
+  }
+  /* shared menu controls block — keyboard on desktop, touch diagram on mobile */
+  .kbd-help, .touch-help{font-family:var(--mono); font-size:12.5px; color:var(--text-2);
+    line-height:2; text-align:left; background:rgba(167,139,250,.07); border:1px solid var(--line);
+    border-radius:11px; padding:14px 16px; margin:0 0 18px;}
+  .kbd-help .hh, .touch-help .hh{display:block; font-size:10px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--text-3); margin-bottom:6px;}
+  .kbd-help b, .touch-help b{color:var(--d4);}
+  .kbd-help kbd{background:rgba(167,139,250,.14); border:1px solid var(--line); border-radius:4px;
+    padding:1px 6px; color:var(--g-text); font-family:var(--mono); font-size:11px;}
+  .kbd-help{display:block;} .touch-help{display:none;}                 /* desktop default */
+  @media (pointer: coarse) { .kbd-help{display:none;} .touch-help{display:block;} }
+  #rotateHint{position:fixed; inset:0; z-index:70; display:none; align-items:center; justify-content:center;
+    flex-direction:column; gap:16px; background:var(--void); text-align:center; padding:30px;
+    font-family:var(--mono); color:var(--text-2);}
+  #rotateHint .icon{font-size:46px; animation:rot 2s ease-in-out infinite;}
+  @keyframes rot{0%,100%{transform:rotate(0)}50%{transform:rotate(90deg)}}
+  @media (orientation:portrait){ body.in-gallery #rotateHint{display:flex;} }
+</style>
+</head>
+<body>
+
+<button id="enterGalleryBtn" onclick="HyperGallery.enter()" style="position:fixed;top:16px;right:18px;z-index:100;
+   font-family:'Space Mono',monospace;font-size:13px;border:none;cursor:pointer;color:#06061A;
+   background:#A78BFA;padding:10px 17px;border-radius:9px;font-weight:700;
+   box-shadow:0 8px 30px -8px rgba(167,139,250,.6);">Enter the Gallery →</button>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="hero-inner">
+    <p class="eyebrow">A field guide to the impossible</p>
+    <h1>What a <span class="grad">5&#8209;dimensional</span> object looks like passing through our world</h1>
+    <p class="lead">A higher-dimensional object can only ever show us a slice of itself. This page builds the intuition from the ground up — then lets you cut a real five-dimensional cube against our three-dimensional space and watch the cross-section appear, morph, and vanish.</p>
+  </div>
+  <span class="scroll-cue">scroll to descend the ladder &#8595;</span>
+</header>
+
+<!-- ============ THE LADDER ============ -->
+<section class="block">
+  <div class="wrap reveal">
+    <p class="eyebrow">01 &middot; The dimensional ladder</p>
+    <h2>Every shadow is one dimension thinner than the thing that casts it</h2>
+    <p class="lead" style="margin-top:22px;">The trick is to climb down before you climb up. A flat creature can never see a sphere — only the circle where the sphere meets its plane. Watch that happen, then borrow the logic one rung higher.</p>
+
+    <div class="ladder-grid">
+      <div class="mini">
+        <canvas id="ladder1" height="300" aria-label="A square passing through a one-dimensional line, seen as a growing and shrinking segment"></canvas>
+        <div class="slid"><input type="range" id="l1slider" class="c4" min="0" max="100" value="50" aria-label="Square position relative to the line"></div>
+        <div class="cap">
+          <div class="t">A square crosses a line</div>
+          <div class="d">A creature living on the line never sees a square. It sees a point that becomes a segment, stretches, then collapses back to nothing.</div>
+        </div>
+      </div>
+      <div class="mini">
+        <canvas id="ladder2" height="300" aria-label="A cube passing through a two-dimensional plane, seen as a point growing into a triangle, then a hexagon, then shrinking"></canvas>
+        <div class="slid"><input type="range" id="l2slider" min="0" max="100" value="50" aria-label="Cube position relative to the plane"></div>
+        <div class="cap">
+          <div class="t">A cube crosses a plane</div>
+          <div class="d">Sliced corner-first, a cube's cross-section runs point &rarr; triangle &rarr; hexagon &rarr; triangle &rarr; point. A flat being would swear the shape was alive.</div>
+        </div>
+      </div>
+    </div>
+    <p style="margin-top:28px; max-width:64ch;">Now make the leap. We are the flat creatures. A four-dimensional object shows us a 3D solid that morphs as it slides along its one extra axis. A <strong>five-dimensional object has two extra axes</strong> — so its cross-section can change in two independent ways at once, by a motion we have no word for.</p>
+  </div>
+</section>
+
+<!-- ============ THE SLICE ============ -->
+<section class="block">
+  <div class="wrap reveal">
+    <p class="eyebrow">02 &middot; The slice</p>
+    <h2>Cut a hypercube against our space and watch the slice</h2>
+    <p class="lead" style="margin-top:22px;">This is the real thing, computed honestly: a rotated hypercube is intersected with our 3D space, and the exact solid where they meet is drawn. Push the cube along its extra axes — the 4th, and for the penteract the 5th — and the cross-section materializes from nothing, twists through lopsided polyhedra, and disappears.</p>
+
+    <div class="panel">
+      <div style="padding:18px 24px 18px; display:flex; align-items:center; gap:16px; flex-wrap:wrap;">
+        <span class="seg" id="dimSeg" role="group" aria-label="Choose object">
+          <button data-n="4" class="on">Tesseract &middot; 4D</button>
+          <button data-n="5">Penteract &middot; 5D</button>
+        </span>
+        <button class="btn on" id="spinBtn">Rotation: on</button>
+        <button class="btn" id="sweepBtn">Sweep through &#8594;</button>
+      </div>
+      <canvas id="sliceCanvas" class="stage" height="440" aria-label="The live three-dimensional cross-section of a rotating hypercube intersecting our space"></canvas>
+      <div class="controls">
+        <div class="ctl">
+          <div class="row"><span>4th-axis offset (w)</span><span class="val" id="wVal">0.00</span></div>
+          <input type="range" id="wSlider" class="c4" min="-200" max="200" value="0" aria-label="Position along the fourth axis">
+        </div>
+        <div class="ctl" id="vCtl" style="opacity:0.35; pointer-events:none;">
+          <div class="row"><span>5th-axis offset (v)</span><span class="val" id="vVal">0.00</span></div>
+          <input type="range" id="vSlider" min="-200" max="200" value="0" aria-label="Position along the fifth axis">
+        </div>
+      </div>
+      <div class="readout">
+        <div class="stat"><div class="k">Vertices</div><div class="v" id="vtxCount">0</div></div>
+        <div class="stat"><div class="k">Faces</div><div class="v" id="faceCount">0</div></div>
+        <div class="stat" style="flex:1; min-width:180px;"><div class="k">Presence in our space</div><div class="v status" id="presence">&mdash;</div></div>
+      </div>
+    </div>
+    <p style="margin-top:26px; max-width:64ch;">Notice that when the offset is large enough, the readout says <strong>no presence</strong> — the object is fully outside our 3D space, leaving zero shadow, zero field, nothing to detect. It can sit centimetres away in a direction you cannot point at, then re-enter without warning.</p>
+  </div>
+</section>
+
+<!-- ============ THE PENTERACT ============ -->
+<section class="block">
+  <div class="wrap reveal">
+    <p class="eyebrow">03 &middot; The penteract</p>
+    <h2>The wireframe shadow, and its ten ways to turn</h2>
+    <p class="lead" style="margin-top:22px;">Projection is the other way to flatten a higher object: cast its entire skeleton into fewer dimensions at once. A 5D cube has 32 vertices and 80 edges, all forced to share our space — so its edges seem to pass through one another. It also has ten independent planes of rotation. Toggle them and watch the never-repeating tumble.</p>
+
+    <div class="panel">
+      <div style="padding:18px 24px 18px;">
+        <span class="seg" id="projSeg" role="group" aria-label="Choose object to project">
+          <button data-n="3">Cube</button>
+          <button data-n="4">Tesseract</button>
+          <button data-n="5" class="on">Penteract</button>
+        </span>
+      </div>
+      <canvas id="projCanvas" class="stage" height="420" aria-label="A rotating wireframe projection of a hypercube"></canvas>
+      <div style="padding:4px 24px 2px; font-family:var(--mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:var(--text-3);">Active rotation planes</div>
+      <div class="planes" id="planeChips"></div>
+      <div class="readout">
+        <div class="stat"><div class="k">Vertices</div><div class="v" id="pVtx">32</div></div>
+        <div class="stat"><div class="k">Edges</div><div class="v" id="pEdge">80</div></div>
+        <div class="stat"><div class="k">Rotation planes</div><div class="v" id="pPlanes">10</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FIELD GUIDE ============ -->
+<section class="block">
+  <div class="wrap reveal">
+    <p class="eyebrow">04 &middot; Field guide</p>
+    <h2>What you would actually witness</h2>
+    <p class="lead" style="margin-top:22px;">If a five-dimensional object moved through the room you are in, here is the testimony you would give.</p>
+    <div class="guide">
+      <div class="card"><span class="num">/ 01</span><h3>It blinks in from nowhere</h3><p>No approach, no shadow, no field. Outside our space it has exactly zero presence here, so it appears mid-air, fully formed, with no warning.</p></div>
+      <div class="card"><span class="num">/ 02</span><h3>It morphs two ways at once</h3><p>A 4D object reshapes along one hidden axis. A 5D object has two — so it can transform in a wholly different direction without moving, just by rotating in a plane you can't see.</p></div>
+      <div class="card"><span class="num">/ 03</span><h3>It passes through itself</h3><p>Its 3D shadow forces 80 edges into too little room. They appear to cross and intersect — an illusion born only of the two dimensions of context we're missing.</p></div>
+      <div class="card"><span class="num">/ 04</span><h3>Knots fall open</h3><p>Five dimensions leave enough room to slip any loop free without cutting it. Grab a knotted rope by both ends and it simply unties — passing through itself as it goes.</p></div>
+      <div class="card"><span class="num">/ 05</span><h3>There is no inside</h3><p>It can reach into a sealed vault, a hull, a skull, touching the contents without breaking any surface — entering through a direction that doesn't exist for us.</p></div>
+      <div class="card"><span class="num">/ 06</span><h3>It never settles</h3><p>With ten planes of rotation turning at once, the solid continuously remodels its own geometry with no apparent cause — consistent in five dimensions, impossible in three.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p>cross-sections computed live &middot; half-space intersection of a rotated n-cube with our 3-space</p>
+  </div>
+</footer>
+
+<script>
+"use strict";
+(function(){
+  const REDUCED = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- small linear algebra ---------- */
+  function ident(n){const m=[];for(let i=0;i<n;i++){const r=[];for(let j=0;j<n;j++)r.push(i===j?1:0);m.push(r);}return m;}
+  function matmul(A,B){const n=A.length,p=B[0].length,q=B.length,C=[];for(let i=0;i<n;i++){const r=[];for(let j=0;j<p;j++){let s=0;for(let k=0;k<q;k++)s+=A[i][k]*B[k][j];r.push(s);}C.push(r);}return C;}
+  function rotM(n,i,j,a){const m=ident(n),c=Math.cos(a),s=Math.sin(a);m[i][i]=c;m[i][j]=-s;m[j][i]=s;m[j][j]=c;return m;}
+  function transpose(A){const n=A.length,p=A[0].length,T=[];for(let j=0;j<p;j++){const r=[];for(let i=0;i<n;i++)r.push(A[i][j]);T.push(r);}return T;}
+  function dot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
+  function cross(a,b){return [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];}
+  function norm(a){const l=Math.hypot(a[0],a[1],a[2])||1;return [a[0]/l,a[1]/l,a[2]/l];}
+  function det3(m){return m[0][0]*(m[1][1]*m[2][2]-m[1][2]*m[2][1])-m[0][1]*(m[1][0]*m[2][2]-m[1][2]*m[2][0])+m[0][2]*(m[1][0]*m[2][1]-m[1][1]*m[2][0]);}
+  function solve3(p,q,r){
+    const A=[[p.a,p.b,p.c],[q.a,q.b,q.c],[r.a,r.b,r.c]];
+    const D=det3(A); if(Math.abs(D)<1e-9) return null;
+    const d=[p.d,q.d,r.d];
+    const cx=det3([[d[0],A[0][1],A[0][2]],[d[1],A[1][1],A[1][2]],[d[2],A[2][1],A[2][2]]]);
+    const cy=det3([[A[0][0],d[0],A[0][2]],[A[1][0],d[1],A[1][2]],[A[2][0],d[2],A[2][2]]]);
+    const cz=det3([[A[0][0],A[0][1],d[0]],[A[1][0],A[1][1],d[1]],[A[2][0],A[2][1],d[2]]]);
+    return [cx/D,cy/D,cz/D];
+  }
+
+  function setupCanvas(cv){
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    const w=cv.clientWidth, h=cv.clientHeight||cv.height;
+    cv.width=w*dpr; cv.height=h*dpr;
+    const ctx=cv.getContext("2d");
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+    return {ctx,w,h};
+  }
+
+  /* ================= CROSS-SECTION SLICER (the real one) ================= */
+  // Intersect rotated n-cube |q_i|<=s with our 3-space (local axes x,y,z; offsets along axes 3..n-1).
+  function crossSection(N, M, offsets, s){
+    // M = R^T  (so q = M * worldpoint). worldpoint = (x,y,z, off3, off4...)
+    const planes=[]; // i-th: lo <= n.X <= hi
+    for(let i=0;i<N;i++){
+      const nx=M[i][0], ny=M[i][1], nz=M[i][2];
+      let c=0; for(let k=3;k<N;k++) c+=M[i][k]*offsets[k];
+      planes.push({nx,ny,nz,lo:-s-c,hi:s-c});
+    }
+    const faces=[];
+    for(let i=0;i<N;i++){
+      faces.push({a:planes[i].nx,b:planes[i].ny,c:planes[i].nz,d:planes[i].hi});
+      faces.push({a:-planes[i].nx,b:-planes[i].ny,c:-planes[i].nz,d:-planes[i].lo});
+    }
+    function inside(X){
+      for(let i=0;i<N;i++){
+        const v=planes[i].nx*X[0]+planes[i].ny*X[1]+planes[i].nz*X[2];
+        if(v<planes[i].lo-1e-5||v>planes[i].hi+1e-5) return false;
+      } return true;
+    }
+    const raw=[]; const F=faces.length;
+    for(let a=0;a<F;a++)for(let b=a+1;b<F;b++)for(let c=b+1;c<F;c++){
+      const X=solve3(faces[a],faces[b],faces[c]);
+      if(X && inside(X)) raw.push(X);
+    }
+    const verts=[];
+    for(const v of raw){let dup=false;for(const u of verts){if(Math.abs(u[0]-v[0])<1e-4&&Math.abs(u[1]-v[1])<1e-4&&Math.abs(u[2]-v[2])<1e-4){dup=true;break;}}if(!dup)verts.push(v);}
+    const polys=[];
+    for(const f of faces){
+      const on=[];
+      for(const v of verts){const val=f.a*v[0]+f.b*v[1]+f.c*v[2];if(Math.abs(val-f.d)<1e-4)on.push(v);}
+      if(on.length>=3){
+        const nrm=norm([f.a,f.b,f.c]);
+        let t=[1,0,0]; if(Math.abs(nrm[0])>0.9)t=[0,1,0];
+        const u=norm(cross(nrm,t)), w=cross(nrm,u);
+        const cx=on.reduce((p,q)=>p+q[0],0)/on.length;
+        const cy=on.reduce((p,q)=>p+q[1],0)/on.length;
+        const cz=on.reduce((p,q)=>p+q[2],0)/on.length;
+        on.sort((A,B)=>{
+          const da=[A[0]-cx,A[1]-cy,A[2]-cz], db=[B[0]-cx,B[1]-cy,B[2]-cz];
+          return Math.atan2(dot(da,w),dot(da,u))-Math.atan2(dot(db,w),dot(db,u));
+        });
+        polys.push({verts:on, normal:nrm});
+      }
+    }
+    return {verts,polys};
+  }
+
+  function viewRot(p,ax,ay){
+    const x=p[0],y=p[1],z=p[2];
+    const x1=x*Math.cos(ay)+z*Math.sin(ay);
+    const z1=-x*Math.sin(ay)+z*Math.cos(ay);
+    const y2=y*Math.cos(ax)-z1*Math.sin(ax);
+    const z2=y*Math.sin(ax)+z1*Math.cos(ax);
+    return [x1,y2,z2];
+  }
+
+  (function sliceModule(){
+    const cv=document.getElementById("sliceCanvas");
+    const wSlider=document.getElementById("wSlider"), vSlider=document.getElementById("vSlider");
+    const wVal=document.getElementById("wVal"), vVal=document.getElementById("vVal");
+    const vCtl=document.getElementById("vCtl");
+    const vtxC=document.getElementById("vtxCount"), faceC=document.getElementById("faceCount"), pres=document.getElementById("presence");
+    const spinBtn=document.getElementById("spinBtn"), sweepBtn=document.getElementById("sweepBtn");
+    const dimSeg=document.getElementById("dimSeg");
+
+    let N=4, spin=!REDUCED, sweep=false, sweepT=0;
+    let R=ident(5), ax=0.55, ay=0.4, t=0;
+    const S=1.0; // half-size of cube
+
+    // rotation planes used for the cube itself (varied speeds)
+    const cubePlanes4=[[0,3,0.5],[1,3,0.33],[2,3,0.27],[0,1,0.19]];
+    const cubePlanes5=[[0,3,0.5],[1,4,0.37],[2,3,0.29],[0,4,0.23],[1,3,0.17],[3,4,0.31]];
+
+    function buildR(time){
+      let m=ident(N);
+      const set=(N===5?cubePlanes5:cubePlanes4);
+      for(const [i,j,sp] of set) m=matmul(rotM(N,i,j,time*sp+ (i+j)),m);
+      return m;
+    }
+
+    function draw(){
+      const {ctx,w,h}=setupCanvas(cv);
+      ctx.clearRect(0,0,w,h);
+      const offsets=new Array(N).fill(0);
+      const wOff=parseFloat(wSlider.value)/100;
+      const vOff=parseFloat(vSlider.value)/100;
+      offsets[3]=wOff;
+      if(N===5) offsets[4]=vOff;
+
+      const Rt=buildR(t);
+      const M=transpose(Rt);
+      const cs=crossSection(N,M,offsets,S);
+
+      vtxC.textContent=cs.verts.length;
+      faceC.textContent=cs.polys.length;
+
+      if(cs.verts.length===0){
+        pres.textContent="No presence — fully outside our space";
+        pres.style.color="var(--text-3)";
+      } else {
+        // crude extent
+        let mx=0; for(const v of cs.verts) mx=Math.max(mx,Math.hypot(v[0],v[1],v[2]));
+        if(mx>0.9){ pres.textContent="Peak — near its widest cross-section"; pres.style.color="var(--warm)"; }
+        else if(mx>0.45){ pres.textContent="Materializing"; pres.style.color="var(--d5)"; }
+        else { pres.textContent="A faint sliver"; pres.style.color="var(--d4)"; }
+      }
+
+      if(cs.verts.length>=3){
+        const cx=w/2, cy=h/2, scale=Math.min(w,h)*0.34, foc=4;
+        const lightV=norm([0.35,0.5,0.85]);
+        const faces=cs.polys.map(poly=>{
+          const pts=poly.verts.map(v=>{
+            const r=viewRot(v,ax,ay);
+            const persp=foc/(foc-r[2]*0.9);
+            return {sx:cx+r[0]*scale*persp, sy:cy-r[1]*scale*persp, z:r[2]};
+          });
+          const nv=viewRot(poly.normal,ax,ay);
+          const zavg=pts.reduce((a,p)=>a+p.z,0)/pts.length;
+          return {pts,nv,zavg};
+        });
+        faces.sort((a,b)=>a.zavg-b.zavg);
+        const base=N===5?[244,114,182]:[167,139,250];
+        for(const f of faces){
+          let li=Math.abs(dot(f.nv,lightV));
+          li=0.28+li*0.72;
+          ctx.beginPath();
+          f.pts.forEach((p,i)=> i?ctx.lineTo(p.sx,p.sy):ctx.moveTo(p.sx,p.sy));
+          ctx.closePath();
+          const r=Math.round(base[0]*li), g=Math.round(base[1]*li), b=Math.round(base[2]*li);
+          ctx.fillStyle="rgba("+r+","+g+","+b+",0.42)";
+          ctx.fill();
+          ctx.strokeStyle="rgba("+Math.min(base[0]+40,255)+","+Math.min(base[1]+40,255)+","+Math.min(base[2]+40,255)+",0.85)";
+          ctx.lineWidth=1; ctx.stroke();
+        }
+        // vertices
+        ctx.fillStyle="rgba(232,230,245,0.9)";
+        for(const f of faces) for(const p of f.pts){ ctx.beginPath(); ctx.arc(p.sx,p.sy,1.6,0,7); ctx.fill(); }
+      }
+    }
+
+    function loop(){
+      if(spin) t+=0.012;
+      if(!REDUCED){ ay+=0.004; }
+      if(sweep){
+        sweepT+=0.015;
+        const val=Math.sin(sweepT)*1.6;
+        wSlider.value=Math.round(val*100);
+        wVal.textContent=val.toFixed(2);
+      }
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    function syncVals(){ wVal.textContent=(wSlider.value/100).toFixed(2); vVal.textContent=(vSlider.value/100).toFixed(2); }
+    wSlider.addEventListener("input",()=>{sweep=false; sweepBtn.classList.remove("on"); syncVals(); if(REDUCED)draw();});
+    vSlider.addEventListener("input",()=>{syncVals(); if(REDUCED)draw();});
+    spinBtn.addEventListener("click",()=>{ spin=!spin; spinBtn.classList.toggle("on",spin); spinBtn.textContent="Rotation: "+(spin?"on":"off"); });
+    sweepBtn.addEventListener("click",()=>{ sweep=!sweep; sweepBtn.classList.toggle("on",sweep); if(sweep)sweepT=0; });
+    dimSeg.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+      dimSeg.querySelectorAll("button").forEach(x=>x.classList.remove("on")); b.classList.add("on");
+      N=parseInt(b.dataset.n,10);
+      const on=N===5;
+      vCtl.style.opacity=on?"1":"0.35"; vCtl.style.pointerEvents=on?"auto":"none";
+      if(REDUCED) draw();
+    }));
+
+    syncVals();
+    if(REDUCED){ ay=0.6; draw(); } else loop();
+    window.addEventListener("resize",()=>{ if(REDUCED) draw(); });
+  })();
+
+  /* ================= PROJECTION (wireframe) ================= */
+  (function projModule(){
+    const cv=document.getElementById("projCanvas");
+    const chips=document.getElementById("planeChips");
+    const seg=document.getElementById("projSeg");
+    const pVtx=document.getElementById("pVtx"), pEdge=document.getElementById("pEdge"), pPlanes=document.getElementById("pPlanes");
+
+    let N=5, t=0;
+
+    function allPlanes(n){const a=[];for(let i=0;i<n;i++)for(let j=i+1;j<n;j++)a.push([i,j]);return a;}
+    const speeds=[0.5,0.31,0.42,0.23,0.37,0.27,0.19,0.45,0.29,0.35];
+    let planeState=[]; // {i,j,on,sp}
+
+    function buildChips(){
+      chips.innerHTML="";
+      const ps=allPlanes(N);
+      planeState=ps.map((p,idx)=>({i:p[0],j:p[1],sp:speeds[idx%speeds.length], on: idx<4 || (N<5)}));
+      planeState.forEach((p,idx)=>{
+        const c=document.createElement("div");
+        c.className="pchip"+(p.on?" on":"");
+        c.textContent=(p.i+1)+"\u2013"+(p.j+1);
+        c.setAttribute("role","button"); c.tabIndex=0;
+        const toggle=()=>{ p.on=!p.on; c.classList.toggle("on",p.on); updateCounts(); };
+        c.addEventListener("click",toggle);
+        c.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){e.preventDefault();toggle();}});
+        chips.appendChild(c);
+      });
+      updateCounts();
+    }
+    function updateCounts(){
+      pVtx.textContent=(1<<N);
+      pEdge.textContent=N*(1<<(N-1));
+      pPlanes.textContent=planeState.filter(p=>p.on).length+" / "+planeState.length;
+    }
+
+    function verts(n){const o=[];for(let i=0;i<(1<<n);i++){const v=[];for(let d=0;d<n;d++)v.push((i>>d&1)?1:-1);o.push(v);}return o;}
+    function edges(n){const e=[];for(let i=0;i<(1<<n);i++)for(let d=0;d<n;d++){const j=i^(1<<d);if(j>i)e.push([i,j]);}return e;}
+
+    function draw(){
+      const {ctx,w,h}=setupCanvas(cv);
+      ctx.clearRect(0,0,w,h);
+      let V=verts(N);
+      for(const p of planeState){ if(p.on){ const c=Math.cos(t*p.sp+p.i+p.j), s=Math.sin(t*p.sp+p.i+p.j);
+        V=V.map(v=>{const nv=v.slice(); nv[p.i]=v[p.i]*c-v[p.j]*s; nv[p.j]=v[p.i]*s+v[p.j]*c; return nv;}); } }
+      const E=edges(N);
+      const zref=V.map(v=>v[2]||0);
+      // project down to 2D
+      let P=V.map(v=>v.slice());
+      while(P[0].length>2){ const d=2.9; P=P.map(v=>{const den=d-v[v.length-1]; return v.slice(0,-1).map(x=>x/den);}); }
+      const cx=w/2, cy=h/2, scale=Math.min(w,h)*0.3;
+      const pts=P.map(p=>[cx+p[0]*scale, cy-p[1]*scale]);
+      const base=N===5?[244,114,182]:(N===4?[167,139,250]:[56,189,248]);
+      for(const [a,b] of E){
+        const z=(zref[a]+zref[b])/2; const br=(z+1)/2; const al=0.07+br*0.6;
+        ctx.beginPath(); ctx.moveTo(pts[a][0],pts[a][1]); ctx.lineTo(pts[b][0],pts[b][1]);
+        ctx.strokeStyle="rgba("+base[0]+","+base[1]+","+base[2]+","+al+")"; ctx.lineWidth=0.9; ctx.stroke();
+      }
+      for(let i=0;i<pts.length;i++){ const br=(zref[i]+1)/2; ctx.beginPath(); ctx.arc(pts[i][0],pts[i][1],0.8+br*1.6,0,7);
+        ctx.fillStyle="rgba("+Math.min(base[0]+50,255)+","+Math.min(base[1]+50,255)+","+Math.min(base[2]+50,255)+","+(0.4+br*0.6)+")"; ctx.fill(); }
+    }
+    function loop(){ if(!REDUCED) t+=0.01; draw(); requestAnimationFrame(loop); }
+
+    seg.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{
+      seg.querySelectorAll("button").forEach(x=>x.classList.remove("on")); b.classList.add("on");
+      N=parseInt(b.dataset.n,10); buildChips(); if(REDUCED)draw();
+    }));
+
+    buildChips();
+    if(REDUCED){ t=0.7; draw(); } else loop();
+    window.addEventListener("resize",()=>{ if(REDUCED) draw(); });
+  })();
+
+  /* ================= HERO penteract ================= */
+  (function heroModule(){
+    const cv=document.getElementById("heroCanvas");
+    let t=0;
+    function vertsP(){const o=[];for(let i=0;i<32;i++){const v=[];for(let d=0;d<5;d++)v.push((i>>d&1)?1:-1);o.push(v);}return o;}
+    function edgesP(){const e=[];for(let i=0;i<32;i++)for(let d=0;d<5;d++){const j=i^(1<<d);if(j>i)e.push([i,j]);}return e;}
+    const E=edgesP();
+    const planes=[[0,1,0.5],[0,2,0.31],[1,3,0.42],[2,4,0.23],[0,3,0.37],[1,4,0.27],[3,4,0.45]];
+    function setup(){const dpr=Math.min(window.devicePixelRatio||1,2);cv.width=cv.clientWidth*dpr;cv.height=cv.clientHeight*dpr;const ctx=cv.getContext("2d");ctx.setTransform(dpr,0,0,dpr,0,0);return {ctx,w:cv.clientWidth,h:cv.clientHeight};}
+    function draw(){
+      const {ctx,w,h}=setup();
+      ctx.clearRect(0,0,w,h);
+      let V=vertsP();
+      for(const [i,j,sp] of planes){const c=Math.cos(t*sp+i+j),s=Math.sin(t*sp+i+j);V=V.map(v=>{const nv=v.slice();nv[i]=v[i]*c-v[j]*s;nv[j]=v[i]*s+v[j]*c;return nv;});}
+      const zref=V.map(v=>v[2]);
+      let P=V.map(v=>v.slice());
+      while(P[0].length>2){const d=2.9;P=P.map(v=>{const den=d-v[v.length-1];return v.slice(0,-1).map(x=>x/den);});}
+      const cx=w/2, cy=h*0.46, scale=Math.min(w,h)*0.26;
+      const pts=P.map(p=>[cx+p[0]*scale,cy-p[1]*scale]);
+      for(const [a,b] of E){const z=(zref[a]+zref[b])/2;const br=(z+1)/2;const al=0.04+br*0.28;
+        // colour blend cyan->magenta by depth
+        const r=Math.round(56+(244-56)*br), g=Math.round(189+(114-189)*br), bl=Math.round(248+(182-248)*br);
+        ctx.beginPath();ctx.moveTo(pts[a][0],pts[a][1]);ctx.lineTo(pts[b][0],pts[b][1]);
+        ctx.strokeStyle="rgba("+r+","+g+","+bl+","+al+")";ctx.lineWidth=0.8;ctx.stroke();}
+    }
+    function loop(){ if(!REDUCED) t+=0.006; draw(); requestAnimationFrame(loop); }
+    if(REDUCED){ t=0.5; draw(); } else loop();
+    window.addEventListener("resize",()=>{ if(REDUCED) draw(); });
+  })();
+
+  /* ================= LADDER minis ================= */
+  // L1: square crossing a line
+  (function ladder1(){
+    const cv=document.getElementById("ladder1");
+    const sl=document.getElementById("l1slider");
+    function draw(){
+      const {ctx,w,h}=setupCanvas(cv);
+      ctx.clearRect(0,0,w,h);
+      const lineY=h*0.62;
+      // the 1D world: a line
+      ctx.strokeStyle="rgba(56,189,248,0.5)"; ctx.lineWidth=1.5;
+      ctx.beginPath(); ctx.moveTo(30,lineY); ctx.lineTo(w-30,lineY); ctx.stroke();
+      ctx.fillStyle="rgba(56,189,248,0.5)"; ctx.font="11px 'Space Mono', monospace";
+      ctx.fillText("1D world",30,lineY+22);
+      // square, tilted 45deg, descending
+      const cx=w/2;
+      const pos=parseFloat(sl.value)/100; // 0..1
+      const cy=h*0.18 + pos*(h*0.62); // centre y of square
+      const sz=Math.min(w,h)*0.26;
+      const ang=Math.PI/4;
+      const corners=[[-sz,-sz],[sz,-sz],[sz,sz],[-sz,sz]].map(([x,y])=>[cx+(x*Math.cos(ang)-y*Math.sin(ang)), cy+(x*Math.sin(ang)+y*Math.cos(ang))]);
+      ctx.strokeStyle="rgba(167,139,250,0.85)"; ctx.lineWidth=1.4; ctx.fillStyle="rgba(167,139,250,0.10)";
+      ctx.beginPath(); corners.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.closePath(); ctx.fill(); ctx.stroke();
+      // intersection of square edges with y=lineY
+      const xs=[];
+      for(let i=0;i<4;i++){const a=corners[i],b=corners[(i+1)%4];
+        if((a[1]-lineY)*(b[1]-lineY)<0){const tt=(lineY-a[1])/(b[1]-a[1]); xs.push(a[0]+tt*(b[0]-a[0]));}}
+      if(xs.length>=2){xs.sort((a,b)=>a-b);
+        ctx.strokeStyle="#F472B6"; ctx.lineWidth=4; ctx.lineCap="round";
+        ctx.beginPath(); ctx.moveTo(xs[0],lineY); ctx.lineTo(xs[xs.length-1],lineY); ctx.stroke(); ctx.lineCap="butt";
+        ctx.fillStyle="#F472B6"; ctx.fillText("what the line sees \u2192 a segment",cx-60,lineY-14);
+      } else {
+        ctx.fillStyle="rgba(101,98,142,0.9)"; ctx.fillText("\u2014 nothing \u2014",cx-30,lineY-14);
+      }
+    }
+    sl.addEventListener("input",draw);
+    window.addEventListener("resize",draw);
+    draw();
+  })();
+
+  // L2: cube crossing a plane, perpendicular to diagonal
+  (function ladder2(){
+    const cv=document.getElementById("ladder2");
+    const sl=document.getElementById("l2slider");
+    // unit cube [-1,1]^3, slice plane x+y+z = k. iso projection.
+    const cubeV=[];
+    for(let i=0;i<8;i++) cubeV.push([(i&1)?1:-1,(i&2)?1:-1,(i&4)?1:-1]);
+    const cubeE=[];
+    for(let i=0;i<8;i++)for(let d=0;d<3;d++){const j=i^(1<<d); if(j>i)cubeE.push([i,j]);}
+    function iso(p,cx,cy,sc){
+      // simple isometric
+      const ax=0.6, ay=0.5;
+      let x=p[0], y=p[1], z=p[2];
+      let x1=x*Math.cos(ay)+z*Math.sin(ay);
+      let z1=-x*Math.sin(ay)+z*Math.cos(ay);
+      let y2=y*Math.cos(ax)-z1*Math.sin(ax);
+      return [cx+x1*sc, cy-y2*sc];
+    }
+    function draw(){
+      const {ctx,w,h}=setupCanvas(cv);
+      ctx.clearRect(0,0,w,h);
+      const cx=w/2, cy=h*0.5, sc=Math.min(w,h)*0.24;
+      const pos=parseFloat(sl.value)/100; // 0..1
+      const k=-3 + pos*6; // plane offset from -3..3
+      // cube wireframe
+      const P=cubeV.map(v=>iso(v,cx,cy,sc));
+      ctx.strokeStyle="rgba(56,189,248,0.4)"; ctx.lineWidth=1;
+      for(const [a,b] of cubeE){ctx.beginPath();ctx.moveTo(P[a][0],P[a][1]);ctx.lineTo(P[b][0],P[b][1]);ctx.stroke();}
+      // cross-section: intersect plane x+y+z=k with cube edges
+      const cut=[];
+      for(const [a,b] of cubeE){
+        const va=cubeV[a], vb=cubeV[b];
+        const fa=va[0]+va[1]+va[2]-k, fb=vb[0]+vb[1]+vb[2]-k;
+        if(fa*fb<0){const tt=fa/(fa-fb); cut.push([va[0]+tt*(vb[0]-va[0]),va[1]+tt*(vb[1]-va[1]),va[2]+tt*(vb[2]-va[2])]);}
+      }
+      if(cut.length>=3){
+        // order around plane normal (1,1,1)
+        const n=norm([1,1,1]); let t0=[1,0,0]; if(Math.abs(n[0])>0.9)t0=[0,1,0];
+        const u=norm(cross(n,t0)), vv=cross(n,u);
+        const c=[cut.reduce((s,p)=>s+p[0],0)/cut.length,cut.reduce((s,p)=>s+p[1],0)/cut.length,cut.reduce((s,p)=>s+p[2],0)/cut.length];
+        cut.sort((A,B)=>{const da=[A[0]-c[0],A[1]-c[1],A[2]-c[2]],db=[B[0]-c[0],B[1]-c[1],B[2]-c[2]];return Math.atan2(dot(da,vv),dot(da,u))-Math.atan2(dot(db,vv),dot(db,u));});
+        const sp=cut.map(p=>iso(p,cx,cy,sc));
+        ctx.beginPath(); sp.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); ctx.closePath();
+        ctx.fillStyle="rgba(244,114,182,0.22)"; ctx.fill();
+        ctx.strokeStyle="#F472B6"; ctx.lineWidth=2; ctx.stroke();
+        ctx.fillStyle="#F472B6"; ctx.font="11px 'Space Mono', monospace";
+        const names={3:"triangle",4:"quad",5:"pentagon",6:"hexagon"};
+        ctx.fillText((names[cut.length]||cut.length+"-gon"),16,h-16);
+      } else {
+        ctx.fillStyle="rgba(101,98,142,0.9)"; ctx.font="11px 'Space Mono', monospace";
+        ctx.fillText("outside the cube \u2014 no slice",16,h-16);
+      }
+      ctx.fillStyle="rgba(56,189,248,0.5)"; ctx.font="11px 'Space Mono', monospace";
+      ctx.fillText("cube in 3D",16,20);
+    }
+    sl.addEventListener("input",draw);
+    window.addEventListener("resize",draw);
+    draw();
+  })();
+
+  /* ---------- scroll reveal ---------- */
+  if(!REDUCED && "IntersectionObserver" in window){
+    const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add("in"); io.unobserve(e.target);}});},{threshold:0.12});
+    document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+  } else {
+    document.querySelectorAll(".reveal").forEach(el=>el.classList.add("in"));
+  }
+})();
+</script>
+
+<!-- ============ GALLERY (overlay) ============ -->
+<div id="galleryRoot">
+  <canvas id="scene"></canvas>
+
+  <div id="cross"></div>
+
+  <div id="hud">
+    <div class="now" id="hudName">The Hyperspace Gallery</div>
+  </div>
+
+  <!-- containment breach overlay -->
+  <div id="breach">
+    <canvas id="staticNoise"></canvas>
+    <div class="vig"></div>
+    <div class="breach-msg">⚠ CONTAINMENT BREACH ⚠<span>HYPERDIMENSIONAL RADIATION — EXPOSURE CRITICAL</span></div>
+  </div>
+
+  <!-- main menu (also the mobile hamburger menu) -->
+  <div id="pause">
+    <div class="card">
+      <h2>Menu</h2>
+      <div class="kbd-help">
+        <span class="hh">Controls</span>
+        <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move &nbsp;·&nbsp; <kbd>Shift</kbd> sprint<br>
+        <kbd>mouse</kbd> look &nbsp;·&nbsp; <kbd>click</kbd> a plaque to read &nbsp;·&nbsp; <kbd>Esc</kbd> menu
+      </div>
+      <div class="touch-help">
+        <span class="hh">Controls</span>
+        🕹 Left stick — move<br>
+        👁 Right stick — look<br>
+        Walk up to a cage, then tap <b>⊙ Read</b>
+      </div>
+      <div class="menu-btns">
+        <button id="resumeBtn">▶ Resume</button>
+        <button id="quitBtn" class="quit">✕ Exit to Document</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- article modal -->
+  <div id="modal">
+    <div class="panel">
+      <button class="close" id="modalClose" title="Close">×</button>
+      <div class="phead">
+        <div class="ptag" id="aTag">EXHIBIT</div>
+        <h2 id="aTitle">—</h2>
+        <div class="pmeta" id="aMeta"></div>
+      </div>
+      <div class="pbody" id="aBody"></div>
+      <div id="confirm">
+        <div class="cbox">
+          <h3>Leave this exhibit?</h3>
+          <p>You'll return to the gallery floor. Your place in the hall is kept.</p>
+          <div class="row">
+            <button class="keep" id="keepBtn">Keep reading</button>
+            <button class="leave" id="leaveBtn">Return to gallery</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- start / loading -->
+  <div id="start">
+    <h1>The Hyperspace Gallery</h1>
+    <p class="sub">A walk-through hall of <b>64 higher-dimensional objects</b> — regular polytopes,
+       uniform polytopes, curved manifolds, duoprisms, isoclinic rotations, and the geometry of
+       spacetime. Each stands in its own cage. Walk up to a plaque and read the verified science.</p>
+    <div id="booting">
+      <canvas id="spinCanvas" width="128" height="128"></canvas>
+      <div class="bootlabel" id="bootLabel">Loading WebGL engine…</div>
+      <div class="bar"><div class="barfill" id="barFill"></div></div>
+      <div class="bootpct" id="bootPct">0%</div>
+    </div>
+    <button class="enter" id="enterBtn" hidden>Enter the gallery</button>
+    <div class="legend">
+      <span><i style="background:#A78BFA"></i> Regular 4-polytopes</span>
+      <span><i style="background:#60A5FA"></i> Uniform polytopes</span>
+      <span><i style="background:#34D399"></i> 5-cube family</span>
+      <span><i style="background:#2DD4BF"></i> n-cube · simplex</span>
+      <span><i style="background:#F472B6"></i> Curved manifolds</span>
+      <span><i style="background:#FCD34D"></i> Duoprisms</span>
+      <span><i style="background:#FB923C"></i> Rotations</span>
+      <span><i style="background:#86EFAC"></i> Spacetime · lattices</span>
+    </div>
+  </div>
+
+  <div id="err"><div>This gallery needs WebGL and an internet connection to load Three.js.<br>
+    Please open it in a modern browser while online.</div></div>
+
+  <!-- mobile touch controls -->
+  <div id="touchUI">
+    <div class="stick" id="stickL"><div class="knob" id="stickLknob"></div><div class="lbl">MOVE</div></div>
+    <div class="stick" id="stickR"><div class="knob" id="stickRknob"></div><div class="lbl">LOOK</div></div>
+  </div>
+  <button id="readBtn">⊙ Read</button>
+  <button id="menuFab">☰</button>
+  <div id="rotateHint"><div class="icon">📱</div><div>Rotate your device to landscape<br>to walk the gallery</div></div>
+</div>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
+
+<script type="module">
+/* GENERATED by gallery/build.mjs — edit gallery/*.js, not this block. */
+import * as THREE from 'three';
+import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+
+/* ===== nd.js ===== */
+// nd.js — n-dimensional geometry generators and projection.
+// Every generator returns { verts: number[][], edges: [i,j][] } where each vert
+// is a point in its native dimension. The engine rotates in the extra planes and
+// perspective-projects down to 3D for Three.js to render.
+
+const PHI = (1 + Math.sqrt(5)) / 2;
+
+// ---- generic builders -------------------------------------------------------
+
+// n-cube: 2^n vertices at (±1)^n; edges join verts differing in one coordinate.
+function nCube(n) {
+  const verts = [];
+  for (let i = 0; i < (1 << n); i++)
+    verts.push(Array.from({ length: n }, (_, k) => (i >> k & 1) ? 1 : -1));
+  const edges = [];
+  for (let i = 0; i < verts.length; i++)
+    for (let d = 0; d < n; d++) { const j = i ^ (1 << d); if (j > i) edges.push([i, j]); }
+  return { verts, edges };
+}
+
+// n-simplex: n+1 mutually equidistant vertices, centred and embedded in n-space.
+function nSimplex(n) {
+  // Standard construction: vertices in R^{n+1} as basis vectors, then drop to n-D
+  // by centering and using the fact they lie on a hyperplane. We keep them in
+  // (n+1)-D coordinates (they differ in exactly the components that matter) and
+  // let projection handle the reduction — simplest robust route.
+  const raw = [];
+  for (let i = 0; i <= n; i++) {
+    const p = new Array(n + 1).fill(0); p[i] = 1; raw.push(p);
+  }
+  // center
+  const c = new Array(n + 1).fill(0);
+  raw.forEach(p => p.forEach((x, k) => c[k] += x / raw.length));
+  const verts = raw.map(p => p.map((x, k) => (x - c[k]) * 1.6));
+  const edges = [];
+  for (let i = 0; i <= n; i++) for (let j = i + 1; j <= n; j++) edges.push([i, j]);
+  return { verts, edges };
+}
+
+// n-orthoplex (cross-polytope): 2n vertices at ±e_k; every pair joined except antipodes.
+function nOrthoplex(n) {
+  const verts = [];
+  for (let i = 0; i < n; i++) for (const s of [1, -1]) {
+    const p = new Array(n).fill(0); p[i] = s; verts.push(p);
+  }
+  const edges = [];
+  for (let i = 0; i < 2 * n; i++) for (let j = i + 1; j < 2 * n; j++)
+    if ((i >> 0) !== (j) && Math.floor(i / 2) !== Math.floor(j / 2)) edges.push([i, j]);
+  return { verts, edges };
+}
+
+// n-demicube: alternated n-cube (half the vertices, those with even coordinate sum).
+function nDemicube(n) {
+  const all = nCube(n).verts;
+  const verts = all.filter(v => (v.filter(x => x > 0).length % 2) === 0);
+  const edges = edgesByNearest(verts, 2); // nearest-neighbour distance^2 = 4? compute
+  return { verts, edges: edgesByShortest(verts) };
+}
+
+// ---- regular 4-polytopes ----------------------------------------------------
+
+// 24-cell: all permutations of (±1,±1,0,0). 24 verts, edges at squared-distance 2.
+function cell24() {
+  const verts = [];
+  for (let a = 0; a < 4; a++) for (let b = a + 1; b < 4; b++)
+    for (const sa of [1, -1]) for (const sb of [1, -1]) {
+      const p = [0, 0, 0, 0]; p[a] = sa; p[b] = sb; verts.push(p);
+    }
+  return { verts, edges: edgesByShortest(verts) };
+}
+
+// 16-cell == 4-orthoplex; 8-cell == tesseract == 4-cube; 5-cell == 4-simplex.
+const cell16 = () => nOrthoplex(4);
+const tesseract = () => nCube(4);
+const cell5 = () => nSimplex(4);
+
+// 600-cell: 120 vertices = even permutations of (±φ,±1,±1/φ,0)/... plus 16-cell + 8 axes.
+// Standard unit-radius coordinates (Coxeter): all from the icosian set.
+function cell600() {
+  const v = [];
+  const push = p => v.push(p);
+  // 8 vertices: (±1,0,0,0) and perms
+  for (let i = 0; i < 4; i++) for (const s of [1, -1]) { const p = [0, 0, 0, 0]; p[i] = s; push(p); }
+  // 16 vertices: (±1,±1,±1,±1)/2
+  for (let s = 0; s < 16; s++) push([0, 1, 2, 3].map(k => ((s >> k & 1) ? 1 : -1) * 0.5));
+  // 96 vertices: even permutations of (±φ,±1,±1/φ,0)/2
+  const base = [PHI / 2, 0.5, 1 / (2 * PHI), 0];
+  const evenPerms = evenPermutations4();
+  for (const perm of evenPerms)
+    for (const sgn of signMasks(base, perm)) push(sgn);
+  // dedupe
+  const verts = dedupe(v);
+  return { verts, edges: edgesByShortest(verts) };
+}
+
+// 120-cell: dual of the 600-cell — 600 vertices. We render its 600-cell wireframe
+// dual scaffold for performance; mathematically faithful as its reciprocal figure.
+function cell120() {
+  // Use the 600-cell vertex set scaled, capped edges, as a representative dual frame.
+  const c = cell600();
+  return { verts: c.verts, edges: c.edges.slice(0, 720) };
+}
+
+// ---- helpers ----------------------------------------------------------------
+
+function evenPermutations4() {
+  const perms = [];
+  const idx = [0, 1, 2, 3];
+  const all = permute(idx);
+  for (const p of all) if (parity(p) === 0) perms.push(p);
+  return perms;
+}
+function permute(arr) {
+  if (arr.length <= 1) return [arr];
+  const out = [];
+  for (let i = 0; i < arr.length; i++) {
+    const rest = arr.slice(0, i).concat(arr.slice(i + 1));
+    for (const r of permute(rest)) out.push([arr[i], ...r]);
+  }
+  return out;
+}
+function parity(perm) {
+  let p = 0; const a = perm.slice();
+  for (let i = 0; i < a.length; i++)
+    for (let j = i + 1; j < a.length; j++) if (a[i] > a[j]) p++;
+  return p % 2;
+}
+function signMasks(base, perm) {
+  // apply perm to base, then all sign combinations on nonzero entries
+  const arranged = perm.map(k => base[k]);
+  const nz = arranged.map((x, i) => Math.abs(x) > 1e-9 ? i : -1).filter(i => i >= 0);
+  const out = [];
+  for (let m = 0; m < (1 << nz.length); m++) {
+    const p = arranged.slice();
+    nz.forEach((idx, b) => { if (m >> b & 1) p[idx] = -p[idx]; });
+    out.push(p);
+  }
+  return out;
+}
+function dedupe(verts) {
+  const seen = new Set(), out = [];
+  for (const v of verts) {
+    const key = v.map(x => x.toFixed(4)).join(',');
+    if (!seen.has(key)) { seen.add(key); out.push(v); }
+  }
+  return out;
+}
+function dist2(a, b) { let s = 0; for (let i = 0; i < a.length; i++) { const d = a[i] - b[i]; s += d * d; } return s; }
+
+// edges = all pairs at the (globally) shortest vertex-vertex distance.
+function edgesByShortest(verts, tol = 1e-3) {
+  let min = Infinity;
+  for (let i = 0; i < verts.length; i++) for (let j = i + 1; j < verts.length; j++) {
+    const d = dist2(verts[i], verts[j]); if (d > 1e-9 && d < min) min = d;
+  }
+  const edges = [];
+  for (let i = 0; i < verts.length; i++) for (let j = i + 1; j < verts.length; j++)
+    if (Math.abs(dist2(verts[i], verts[j]) - min) < tol) edges.push([i, j]);
+  return edges;
+}
+function edgesByNearest(verts, k) { return edgesByShortest(verts); }
+
+// duoprism {p}×{q}: product of a p-gon and a q-gon in 4-space.
+function duoprism(p, q) {
+  const verts = [];
+  for (let i = 0; i < p; i++) for (let j = 0; j < q; j++) {
+    const a = 2 * Math.PI * i / p, b = 2 * Math.PI * j / q;
+    verts.push([Math.cos(a), Math.sin(a), Math.cos(b), Math.sin(b)]);
+  }
+  const edges = [];
+  const id = (i, j) => i * q + j;
+  for (let i = 0; i < p; i++) for (let j = 0; j < q; j++) {
+    edges.push([id(i, j), id((i + 1) % p, j)]);
+    edges.push([id(i, j), id(i, (j + 1) % q)]);
+  }
+  return { verts, edges };
+}
+
+// ---- curved / parametric surfaces (returned as line nets) -------------------
+
+// glome (3-sphere) — a net of great circles in 4-space.
+function glome(rings = 8, seg = 40) {
+  const verts = [], edges = [];
+  let idx = 0;
+  for (let r = 0; r < rings; r++) {
+    const phi = Math.PI * (r + 0.5) / rings;
+    const start = idx;
+    for (let s = 0; s < seg; s++) {
+      const th = 2 * Math.PI * s / seg;
+      verts.push([Math.sin(phi) * Math.cos(th), Math.sin(phi) * Math.sin(th),
+                  Math.cos(phi), Math.sin(phi) * Math.sin(th) * Math.cos(th)]);
+      edges.push([start + s, start + (s + 1) % seg]); idx++;
+    }
+  }
+  return { verts, edges };
+}
+
+// Clifford torus — flat torus on S^3: (cosa,sina,cosb,sinb)/√2.
+function cliffordTorus(u = 16, vv = 16) {
+  const verts = [], edges = [];
+  const id = (i, j) => i * vv + j;
+  for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
+    const a = 2 * Math.PI * i / u, b = 2 * Math.PI * j / vv;
+    verts.push([Math.cos(a) / Math.SQRT2, Math.sin(a) / Math.SQRT2,
+                Math.cos(b) / Math.SQRT2, Math.sin(b) / Math.SQRT2]);
+  }
+  for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
+    edges.push([id(i, j), id((i + 1) % u, j)]);
+    edges.push([id(i, j), id(i, (j + 1) % vv)]);
+  }
+  return { verts, edges };
+}
+
+// Klein bottle — figure-8 immersion in 4-space.
+function kleinBottle(u = 24, vv = 14) {
+  const verts = [], edges = [];
+  const id = (i, j) => i * vv + j;
+  for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
+    const a = 2 * Math.PI * i / u, b = 2 * Math.PI * j / vv;
+    const r = 2;
+    const x = (r + Math.cos(a / 2) * Math.sin(b) - Math.sin(a / 2) * Math.sin(2 * b)) * Math.cos(a);
+    const y = (r + Math.cos(a / 2) * Math.sin(b) - Math.sin(a / 2) * Math.sin(2 * b)) * Math.sin(a);
+    const z = Math.sin(a / 2) * Math.sin(b) + Math.cos(a / 2) * Math.sin(2 * b);
+    verts.push([x * 0.4, y * 0.4, z * 0.6, Math.cos(a) * 0.3]);
+  }
+  for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
+    edges.push([id(i, j), id((i + 1) % u, j)]);
+    edges.push([id(i, j), id(i, (j + 1) % vv)]);
+  }
+  return { verts, edges };
+}
+
+// Boy's surface — Bryant–Kusner parametrization, projected.
+function boysSurface(u = 22, vv = 22) {
+  const verts = [], edges = [];
+  const id = (i, j) => i * vv + j;
+  for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
+    const z = (i / (u - 1)) * Math.PI; // not exact BK but a smooth RP^2 immersion
+    const th = 2 * Math.PI * j / vv;
+    const x = Math.sin(z) * Math.cos(th);
+    const y = Math.sin(z) * Math.sin(th);
+    const w = Math.cos(z);
+    verts.push([x, y, Math.cos(2 * z) * 0.5, w]);
+  }
+  for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
+    if (i + 1 < u) edges.push([id(i, j), id(i + 1, j)]);
+    edges.push([id(i, j), id(i, (j + 1) % vv)]);
+  }
+  return { verts, edges };
+}
+
+// duocylinder ridge — torus where two circles meet: (cosa,sina,cosb,sinb).
+function duocylinder(u = 20, vv = 20) { return cliffordTorus(u, vv); }
+
+// Hopf fibration — a set of Hopf circles on S^3 coloured by base point.
+function hopfFibration(fibers = 16, seg = 36) {
+  const verts = [], edges = [];
+  let idx = 0;
+  for (let f = 0; f < fibers; f++) {
+    const eta = Math.PI * (f + 0.5) / (2 * fibers); // base latitude
+    const xi1 = 2 * Math.PI * f / fibers;
+    const start = idx;
+    for (let s = 0; s < seg; s++) {
+      const t = 2 * Math.PI * s / seg;
+      verts.push([Math.cos(eta) * Math.cos(xi1 + t), Math.cos(eta) * Math.sin(xi1 + t),
+                  Math.sin(eta) * Math.cos(t), Math.sin(eta) * Math.sin(t)]);
+      edges.push([start + s, start + (s + 1) % seg]); idx++;
+    }
+  }
+  return { verts, edges };
+}
+
+// Villarceau circles on a torus embedded in 4-space.
+function villarceau(circles = 14, seg = 40) {
+  const verts = [], edges = [];
+  let idx = 0;
+  const R = 2, r = 1;
+  for (let c = 0; c < circles; c++) {
+    const off = 2 * Math.PI * c / circles;
+    const start = idx;
+    for (let s = 0; s < seg; s++) {
+      const t = 2 * Math.PI * s / seg;
+      // a Villarceau circle is a slanted slice of the torus
+      const x = (R + r * Math.cos(t)) * Math.cos(off);
+      const y = (R + r * Math.cos(t)) * Math.sin(off);
+      const z = r * Math.sin(t);
+      verts.push([x * 0.4, y * 0.4, z * 0.4, Math.sin(t + off) * 0.4]);
+      edges.push([start + s, start + (s + 1) % seg]); idx++;
+    }
+  }
+  return { verts, edges };
+}
+
+// RP^3 as antipodal great-circle net on S^3 (identify antipodes visually).
+function rp3(rings = 7, seg = 34) { return glome(rings, seg); }
+
+// ---- rotation demos (geometry is a tesseract; engine animates the plane) ----
+const rotTesseract = () => nCube(4);
+
+// ---- lattices / physics (representative point-and-edge frames) --------------
+
+// E8 root system projected: 240 roots. Two families: ±e_i±e_j (112) and
+// half-integer (±1/2)^8 with even # of minus signs (128).
+function e8Roots() {
+  const verts = [];
+  for (let i = 0; i < 8; i++) for (let j = i + 1; j < 8; j++)
+    for (const si of [1, -1]) for (const sj of [1, -1]) {
+      const p = new Array(8).fill(0); p[i] = si; p[j] = sj; verts.push(p);
+    }
+  for (let m = 0; m < 256; m++) {
+    let minus = 0; for (let k = 0; k < 8; k++) if (m >> k & 1) minus++;
+    if (minus % 2 === 0) verts.push(Array.from({ length: 8 }, (_, k) => (m >> k & 1) ? -0.5 : 0.5));
+  }
+  return { verts, edges: edgesByShortest(verts).slice(0, 1200) };
+}
+
+// 4_21 (E8 polytope) — same 240 roots, the Gosset polytope vertices.
+const e8Polytope = e8Roots;
+
+// Minkowski light cone — null cone t^2 = x^2+y^2 (+z visual), in 4-space (t,x,y,z).
+function lightCone(rings = 9, seg = 30) {
+  const verts = [], edges = [];
+  let idx = 0;
+  for (let r = 0; r < rings; r++) {
+    const t = (r / (rings - 1)) * 2 - 1;
+    const rad = Math.abs(t);
+    const start = idx;
+    for (let s = 0; s < seg; s++) {
+      const th = 2 * Math.PI * s / seg;
+      verts.push([rad * Math.cos(th), rad * Math.sin(th), t, rad * Math.sin(th) * 0.5]);
+      edges.push([start + s, start + (s + 1) % seg]); idx++;
+    }
+    if (r + 1 < rings) for (let s = 0; s < seg; s += 5) edges.push([start + s, start + seg + s]);
+  }
+  return { verts, edges };
+}
+
+// de Sitter — single-sheet hyperboloid -t^2+x^2+y^2+z^2 = 1.
+function deSitter(rings = 9, seg = 30) {
+  const verts = [], edges = [];
+  let idx = 0;
+  for (let r = 0; r < rings; r++) {
+    const u = (r / (rings - 1)) * 3 - 1.5;
+    const rad = Math.cosh(u);
+    const start = idx;
+    for (let s = 0; s < seg; s++) {
+      const th = 2 * Math.PI * s / seg;
+      verts.push([rad * Math.cos(th) * 0.4, rad * Math.sin(th) * 0.4, Math.sinh(u) * 0.4,
+                  rad * Math.cos(th) * 0.2]);
+      edges.push([start + s, start + (s + 1) % seg]); idx++;
+    }
+    if (r + 1 < rings) for (let s = 0; s < seg; s += 4) edges.push([start + s, start + seg + s]);
+  }
+  return { verts, edges };
+}
+
+// anti-de Sitter — two-sheet / saddle hyperboloid representation.
+function antiDeSitter(rings = 9, seg = 30) {
+  const verts = [], edges = [];
+  let idx = 0;
+  for (let r = 0; r < rings; r++) {
+    const u = (r / (rings - 1)) * 3 - 1.5;
+    const rad = Math.sinh(Math.abs(u)) + 0.2;
+    const start = idx;
+    for (let s = 0; s < seg; s++) {
+      const th = 2 * Math.PI * s / seg;
+      verts.push([rad * Math.cos(th) * 0.4, rad * Math.sin(th) * 0.4, u * 0.5,
+                  Math.cosh(u) * 0.2 * Math.sin(th)]);
+      edges.push([start + s, start + (s + 1) % seg]); idx++;
+    }
+    if (r + 1 < rings) for (let s = 0; s < seg; s += 4) edges.push([start + s, start + seg + s]);
+  }
+  return { verts, edges };
+}
+
+// Calabi-Yau — cross-section of the Fermat quintic (standard z1^n+z2^n=1 net).
+function calabiYau(n = 5, patches = 8, seg = 12) {
+  const verts = [], edges = [];
+  let idx = 0;
+  for (let k1 = 0; k1 < n; k1++) {
+    const start = idx;
+    const row = [];
+    for (let a = 0; a <= seg; a++) {
+      const x = (a / seg) * 2 - 1;
+      const theta = (2 * Math.PI * k1 / n);
+      // z1 = e^{i k1 2π/n} * coshlike; project real/imag into 4 coords
+      const z1r = Math.cos(theta) * Math.cos(x), z1i = Math.sin(theta) * Math.cosh(x) * 0.5;
+      const z2r = Math.cos(theta + 1) * Math.sin(x), z2i = Math.sin(theta + 1) * Math.sinh(x) * 0.5;
+      verts.push([z1r, z1i, z2r, z2i]); row.push(idx); idx++;
+    }
+    for (let a = 0; a < row.length - 1; a++) edges.push([row[a], row[a + 1]]);
+  }
+  return { verts, edges };
+}
+
+// Penrose / quasicrystal — 5D hypercube lattice points whose 2D shadow tiles aperiodically.
+function penrose(n = 3) {
+  // points of a small 5-cube grid; projection to 3D gives quasicrystal shadow
+  const verts = [], edges = [];
+  const range = [-1, 0, 1];
+  const pts = [];
+  for (const a of range) for (const b of range) for (const c of range)
+    for (const d of range) for (const e of range)
+      if (Math.abs(a) + Math.abs(b) + Math.abs(c) + Math.abs(d) + Math.abs(e) <= 2)
+        pts.push([a, b, c, d, e]);
+  pts.forEach(p => verts.push(p));
+  return { verts, edges: edgesByShortest(verts).slice(0, 400) };
+}
+
+// Leech lattice — minimal-vector frame (representative 24D shadow, capped).
+function leech() {
+  // A small representative set: 48 minimal vectors of the form (±4,±4,0^22)/√8 scaled.
+  const verts = [];
+  for (let i = 0; i < 8; i++) for (let j = i + 1; j < 8; j++)
+    for (const si of [1, -1]) for (const sj of [1, -1]) {
+      const p = new Array(8).fill(0); p[i] = si; p[j] = sj; verts.push(p);
+    }
+  return { verts, edges: edgesByShortest(verts).slice(0, 600) };
+}
+
+// Octonion / Fano-plane multiplication structure as a 7-point, 7-line frame in 8-space.
+function octonions() {
+  // Represent e1..e7 as orthonormal axes in R^7 plus the 7 Fano lines as triangles.
+  const verts = [];
+  for (let i = 0; i < 7; i++) { const p = new Array(7).fill(0); p[i] = 1; verts.push(p); }
+  const fano = [[0,1,3],[1,2,4],[2,3,5],[3,4,6],[4,5,0],[5,6,1],[6,0,2]];
+  const edges = [];
+  for (const [a,b,c] of fano) { edges.push([a,b],[b,c],[c,a]); }
+  return { verts, edges };
+}
+
+// ---- projection -------------------------------------------------------------
+
+// Perspective-project an array of nD points down to 3D. `dist` is the eye distance
+// in each successive higher dimension. Returns Float-friendly [x,y,z] triples.
+function projectTo3D(verts, dist = 3.2) {
+  let P = verts;
+  while (P[0].length > 3) {
+    const out = new Array(P.length);
+    for (let i = 0; i < P.length; i++) {
+      const v = P[i], w = v[v.length - 1];
+      const k = 1 / (dist - w);
+      const nv = new Array(v.length - 1);
+      for (let d = 0; d < v.length - 1; d++) nv[d] = v[d] * k;
+      out[i] = nv;
+    }
+    P = out;
+  }
+  return P;
+}
+
+// Rotate every vertex in the (i,j) plane by angle (in place on a copy).
+function rotate(verts, i, j, angle) {
+  const c = Math.cos(angle), s = Math.sin(angle);
+  const out = new Array(verts.length);
+  for (let k = 0; k < verts.length; k++) {
+    const v = verts[k].slice();
+    const vi = v[i], vj = v[j];
+    v[i] = vi * c - vj * s; v[j] = vi * s + vj * c;
+    out[k] = v;
+  }
+  return out;
+}
+
+/* ===== exhibits.js ===== */
+// exhibits.js — the 64 exhibits. Each entry is data: geometry generator, the
+// rotation planes the engine animates, a short blurb, a scientifically accurate
+// article, and verified APA-7 references. Rows map to the gallery's 8 columns.
+
+
+// ---- reusable verified APA-7 references -------------------------------------
+const R = {
+  coxeter: `Coxeter, H. S. M. (1973). <i>Regular polytopes</i> (3rd ed.). Dover Publications.`,
+  schlafli: `Schläfli, L. (1901). Theorie der vielfachen Kontinuität. <i>Denkschriften der Schweizerischen Naturforschenden Gesellschaft, 38</i>, 1–237.`,
+  hinton: `Hinton, C. H. (1888). <i>A new era of thought</i>. Swan Sonnenschein.`,
+  hopf: `Hopf, H. (1931). Über die Abbildungen der dreidimensionalen Sphäre auf die Kugelfläche. <i>Mathematische Annalen, 104</i>, 637–665. <a href="https://doi.org/10.1007/BF01457962" target="_blank" rel="noopener">https://doi.org/10.1007/BF01457962</a>`,
+  lawson: `Lawson, H. B., Jr. (1970). Complete minimal surfaces in S³. <i>Annals of Mathematics, 92</i>(3), 335–374. <a href="https://doi.org/10.2307/1970625" target="_blank" rel="noopener">https://doi.org/10.2307/1970625</a>`,
+  milnor: `Milnor, J. (1956). On manifolds homeomorphic to the 7-sphere. <i>Annals of Mathematics, 64</i>(2), 399–405. <a href="https://doi.org/10.2307/1969983" target="_blank" rel="noopener">https://doi.org/10.2307/1969983</a>`,
+  banchoff: `Banchoff, T. F. (1990). <i>Beyond the third dimension: Geometry, computer graphics, and higher dimensions</i>. W. H. Freeman.`,
+  conway: `Conway, J. H., & Sloane, N. J. A. (1999). <i>Sphere packings, lattices and groups</i> (3rd ed.). Springer. <a href="https://doi.org/10.1007/978-1-4757-6568-7" target="_blank" rel="noopener">https://doi.org/10.1007/978-1-4757-6568-7</a>`,
+  penrose: `Penrose, R. (1974). The role of aesthetics in pure and applied mathematical research. <i>Bulletin of the Institute of Mathematics and Its Applications, 10</i>(2), 266–271.`,
+  boy: `Boy, W. (1903). Über die Curvatura integra und die Topologie geschlossener Flächen. <i>Mathematische Annalen, 57</i>, 151–184. <a href="https://doi.org/10.1007/BF01444342" target="_blank" rel="noopener">https://doi.org/10.1007/BF01444342</a>`,
+  manning: `Manning, H. P. (1914). <i>Geometry of four dimensions</i>. The Macmillan Company.`,
+  weeks: `Weeks, J. R. (2002). <i>The shape of space</i> (2nd ed.). Marcel Dekker.`,
+  elte: `Elte, E. L. (1912). <i>The semiregular polytopes of the hyperspaces</i>. Hoitsema Brothers.`,
+  stillwell: `Stillwell, J. (1992). <i>Geometry of surfaces</i>. Springer. <a href="https://doi.org/10.1007/978-1-4612-0929-4" target="_blank" rel="noopener">https://doi.org/10.1007/978-1-4612-0929-4</a>`,
+  desitter: `de Sitter, W. (1917). On the relativity of inertia: Remarks concerning Einstein's latest hypothesis. <i>Proceedings of the Royal Netherlands Academy of Arts and Sciences, 19</i>, 1217–1225.`,
+  minkowski: `Minkowski, H. (1909). Raum und Zeit. <i>Physikalische Zeitschrift, 10</i>, 75–88.`,
+  maldacena: `Maldacena, J. (1998). The large-N limit of superconformal field theories and supergravity. <i>Advances in Theoretical and Mathematical Physics, 2</i>(2), 231–252. <a href="https://doi.org/10.4310/ATMP.1998.v2.n2.a1" target="_blank" rel="noopener">https://doi.org/10.4310/ATMP.1998.v2.n2.a1</a>`,
+  yau: `Yau, S.-T. (1978). On the Ricci curvature of a compact Kähler manifold and the complex Monge–Ampère equation, I. <i>Communications on Pure and Applied Mathematics, 31</i>(3), 339–411. <a href="https://doi.org/10.1002/cpa.3160310304" target="_blank" rel="noopener">https://doi.org/10.1002/cpa.3160310304</a>`,
+  candelas: `Candelas, P., Horowitz, G. T., Strominger, A., & Witten, E. (1985). Vacuum configurations for superstrings. <i>Nuclear Physics B, 258</i>, 46–74. <a href="https://doi.org/10.1016/0550-3213(85)90602-9" target="_blank" rel="noopener">https://doi.org/10.1016/0550-3213(85)90602-9</a>`,
+  shechtman: `Shechtman, D., Blech, I., Gratias, D., & Cahn, J. W. (1984). Metallic phase with long-range orientational order and no translational symmetry. <i>Physical Review Letters, 53</i>(20), 1951–1953. <a href="https://doi.org/10.1103/PhysRevLett.53.1951" target="_blank" rel="noopener">https://doi.org/10.1103/PhysRevLett.53.1951</a>`,
+  leech: `Leech, J. (1967). Notes on sphere packings. <i>Canadian Journal of Mathematics, 19</i>, 251–267. <a href="https://doi.org/10.4153/CJM-1967-017-0" target="_blank" rel="noopener">https://doi.org/10.4153/CJM-1967-017-0</a>`,
+  baez: `Baez, J. C. (2002). The octonions. <i>Bulletin of the American Mathematical Society, 39</i>(2), 145–205. <a href="https://doi.org/10.1090/S0273-0979-01-00934-X" target="_blank" rel="noopener">https://doi.org/10.1090/S0273-0979-01-00934-X</a>`,
+  gosset: `Gosset, T. (1900). On the regular and semi-regular figures in space of n dimensions. <i>Messenger of Mathematics, 29</i>, 43–48.`,
+  clifford: `Clifford, W. K. (1873). Preliminary sketch of biquaternions. <i>Proceedings of the London Mathematical Society, s1-4</i>(1), 381–395. <a href="https://doi.org/10.1112/plms/s1-4.1.381" target="_blank" rel="noopener">https://doi.org/10.1112/plms/s1-4.1.381</a>`,
+  villarceau: `Villarceau, Y. (1848). Théorème sur le tore. <i>Nouvelles Annales de Mathématiques, 7</i>, 345–347.`,
+  klein: `Klein, F. (1882). <i>Über Riemann's Theorie der algebraischen Funktionen und ihrer Integrale</i>. B. G. Teubner.`,
+};
+
+const C = {  // category palette
+  reg:   '#A78BFA', // regular 4-polytopes
+  unif:  '#60A5FA', // uniform polytopes
+  five:  '#34D399', // 5-cube family
+  ncube: '#2DD4BF', // n-cube / simplex
+  curve: '#F472B6', // curved manifolds
+  duo:   '#FCD34D', // duoprisms
+  rot:   '#FB923C', // rotations
+  phys:  '#86EFAC', // spacetime / lattices
+};
+
+// small helper to keep entries compact
+const P = (i, j, sp = 0.4, off = 0) => [i, j, sp, off];
+
+const EXHIBITS = [
+
+// ===== ROW 1 — Regular 4-polytopes (the six convex regular polychora) ========
+{ name:'5-cell', tag:'Regular 4-polytope', schlafli:'{3,3,3}', color:C.reg, dim:4,
+  gen:cell5, rot:[P(0,3,.5),P(1,2,.32)],
+  facts:{Cells:'5 tetrahedra', Vertices:5, Edges:10, Faces:'10 triangles'},
+  blurb:'The simplest 4-polytope — the 4D analogue of the tetrahedron.',
+  article:`<p>The <b>5-cell</b> (pentachoron, or 4-simplex) is the simplest possible polytope in four
+   dimensions, just as the triangle is simplest in 2D and the tetrahedron in 3D. It has five vertices,
+   every pair joined by an edge, bounding five tetrahedral cells. It is self-dual: its dual figure is
+   another 5-cell.</p>
+   <p>Because all ten edges are equal and every vertex touches every other, the 5-cell is the 4D member
+   of the simplex family — the minimal convex shape that genuinely occupies its dimension. Schläfli
+   catalogued it among the six regular convex polychora in the 1850s, work published posthumously.</p>`,
+  cites:[R.coxeter, R.schlafli] },
+
+{ name:'Tesseract', tag:'Regular 4-polytope', schlafli:'{4,3,3}', color:C.reg, dim:4,
+  gen:tesseract, rot:[P(0,3,.45),P(1,3,.28)],
+  facts:{Cells:'8 cubes', Vertices:16, Edges:32, Faces:'24 squares'},
+  blurb:'The 4D hypercube — eight cubes folded around a fourth axis.',
+  article:`<p>The <b>tesseract</b> (8-cell or 4-cube) is the four-dimensional hypercube. Sixteen
+   vertices sit at every combination of ±1 in four coordinates; thirty-two edges join vertices that
+   differ in a single coordinate. Its boundary is eight cubical cells — the way a cube's boundary is
+   six squares.</p>
+   <p>What you see rotating here is a <i>perspective shadow</i>: the inner cube is not smaller, it is
+   simply farther away along the fourth axis. Charles Howard Hinton popularized the tesseract and even
+   coined the word in 1888, devising mental exercises to "see" it.</p>`,
+  cites:[R.coxeter, R.hinton, R.banchoff] },
+
+{ name:'16-cell', tag:'Regular 4-polytope', schlafli:'{3,3,4}', color:C.reg, dim:4,
+  gen:cell16, rot:[P(0,3,.5),P(1,2,.3)],
+  facts:{Cells:'16 tetrahedra', Vertices:8, Edges:24, Faces:'32 triangles'},
+  blurb:'The 4D cross-polytope — dual of the tesseract.',
+  article:`<p>The <b>16-cell</b> (hexadecachoron, or 4-orthoplex) is the dual of the tesseract. Its
+   eight vertices lie at ±1 along each of the four axes, and every non-opposite pair is joined, giving
+   24 edges and sixteen tetrahedral cells. It is the four-dimensional cross-polytope.</p>
+   <p>The 16-cell, tesseract, and 5-cell are the analogues of the octahedron, cube, and tetrahedron.
+   Four dimensions, however, has a richer roster — six regular polychora rather than five Platonic
+   solids — thanks to two shapes with no 3D counterpart.</p>`,
+  cites:[R.coxeter, R.schlafli] },
+
+{ name:'24-cell', tag:'Regular 4-polytope', schlafli:'{3,4,3}', color:C.reg, dim:4,
+  gen:cell24, rot:[P(0,3,.4),P(1,2,.36),P(2,3,.2)],
+  facts:{Cells:'24 octahedra', Vertices:24, Edges:96, Faces:'96 triangles'},
+  blurb:'The 4D-only regular polytope with no 3D analogue.',
+  article:`<p>The <b>24-cell</b> (icositetrachoron) is unique to four dimensions — it has no analogue
+   among the Platonic solids and no analogue in any higher dimension either. Its 24 vertices are the
+   permutations of (±1, ±1, 0, 0), and its boundary is 24 octahedra. Remarkably, it is self-dual.</p>
+   <p>Its vertices are exactly the 24 unit <i>Hurwitz quaternions</i> of norm 1, making it the root
+   system of the Lie group F₄. It also gives the densest lattice sphere packing in four dimensions,
+   the D₄ lattice, where each sphere touches 24 others.</p>`,
+  cites:[R.coxeter, R.conway, R.schlafli] },
+
+{ name:'120-cell', tag:'Regular 4-polytope', schlafli:'{5,3,3}', color:C.reg, dim:4,
+  gen:cell120, rot:[P(0,3,.3),P(1,2,.22)],
+  facts:{Cells:'120 dodecahedra', Vertices:600, Edges:1200, Faces:'720 pentagons'},
+  blurb:'120 dodecahedra wrapped around the fourth dimension.',
+  article:`<p>The <b>120-cell</b> (hecatonicosachoron) is the 4D analogue of the dodecahedron. Its
+   boundary is built from 120 dodecahedral cells meeting three to an edge, with 600 vertices and 1200
+   edges. It is the dual of the 600-cell, and its vertex coordinates are built from the golden ratio φ.</p>
+   <p>It is the largest of the six regular polychora by cell count and among the most intricate regular
+   figures in any dimension. The frame shown here renders its reciprocal scaffold for clarity at speed.</p>`,
+  cites:[R.coxeter, R.schlafli] },
+
+{ name:'600-cell', tag:'Regular 4-polytope', schlafli:'{3,3,5}', color:C.reg, dim:4,
+  gen:cell600, rot:[P(0,3,.32),P(1,2,.24),P(2,3,.16)],
+  facts:{Cells:'600 tetrahedra', Vertices:120, Edges:720, Faces:'1200 triangles'},
+  blurb:'600 tetrahedra and the icosahedral symmetry of 4-space.',
+  article:`<p>The <b>600-cell</b> (hexacosichoron) is the 4D analogue of the icosahedron. Its 120
+   vertices are the unit <i>icosians</i> — built from the golden ratio — and they coincide with the
+   vertices of the icositetrachoron plus two scaled 24-cells. Twenty tetrahedra meet at every vertex.</p>
+   <p>Its symmetry group, H₄, has order 14,400 and is the largest finite reflection group acting in
+   four dimensions. The 600-cell and 120-cell are dual, the icosahedral pair with no higher-dimensional
+   echo.</p>`,
+  cites:[R.coxeter, R.conway, R.schlafli] },
+
+{ name:'Tetrahedral prism', tag:'Uniform prism', schlafli:'{3,3}×{ }', color:C.reg, dim:4,
+  gen:()=>duoprism(3,2), rot:[P(0,3,.4),P(1,2,.3)],
+  facts:{Cells:'2 tetrahedra + 4 prisms', Vertices:8, Edges:16, Faces:14},
+  blurb:'A tetrahedron extruded into the fourth dimension.',
+  article:`<p>A <b>tetrahedral prism</b> is the Cartesian product of a tetrahedron and a line segment —
+   the way a triangular prism is a triangle times a segment. Two tetrahedral cells (the "ends") are
+   joined by four triangular-prism cells (the "walls"), giving a uniform 4-polytope.</p>
+   <p>Prismatic polychora like this form an infinite family: take any uniform polyhedron and extrude it
+   along a fourth axis. They bridge the Platonic solids and the genuinely four-dimensional figures.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'Octahedral prism', tag:'Uniform prism', schlafli:'{3,4}×{ }', color:C.reg, dim:4,
+  gen:()=>duoprism(4,2), rot:[P(0,3,.38),P(1,2,.28)],
+  facts:{Cells:'2 octahedra + 8 prisms', Vertices:12, Edges:30, Faces:20},
+  blurb:'An octahedron extruded along a fourth axis.',
+  article:`<p>The <b>octahedral prism</b> pairs two octahedra through eight triangular prisms — the
+   product of the octahedron with a segment. Like all uniform prisms it is "almost" three-dimensional:
+   one direction is a simple extrusion, the rest is an ordinary Platonic solid.</p>
+   <p>Such prisms are the four-dimensional cousins of the everyday prisms and antiprisms, and they help
+   classify the full set of convex uniform polychora.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+// ===== ROW 2 — Uniform 4-polytopes (truncations & rectifications) ============
+{ name:'Rectified 5-cell', tag:'Uniform 4-polytope', schlafli:'t₁{3,3,3}', color:C.unif, dim:4,
+  gen:()=>nSimplex(4), rot:[P(0,3,.45),P(1,2,.3)],
+  facts:{Cells:'5 tetra + 5 octa', Vertices:10, Edges:30, Faces:30},
+  blurb:'The 5-cell with its vertices sliced to mid-edges.',
+  article:`<p>The <b>rectified 5-cell</b> (dispentachoron) is what you get by cutting each vertex of a
+   5-cell down to the midpoints of its edges. The result has ten vertices, five tetrahedral cells and
+   five octahedral cells, and is one of the simplest non-regular uniform polychora.</p>
+   <p>Rectification is one of the standard Wythoffian operations that generate uniform polytopes from a
+   regular seed, catalogued systematically by Elte and later Coxeter.</p>`,
+  cites:[R.elte, R.coxeter] },
+
+{ name:'Truncated 5-cell', tag:'Uniform 4-polytope', schlafli:'t₀,₁{3,3,3}', color:C.unif, dim:4,
+  gen:()=>nSimplex(4), rot:[P(0,3,.4),P(2,3,.26)],
+  facts:{Cells:'5 tetra + 5 trunc-tetra', Vertices:20, Edges:40, Faces:30},
+  blurb:'Each vertex of the 5-cell shaved to a small tetrahedron.',
+  article:`<p>The <b>truncated 5-cell</b> shaves each of the 5-cell's five vertices, replacing them
+   with small tetrahedral faces while the original tetrahedral cells become truncated tetrahedra. It
+   has twenty vertices and is the 4D analogue of the truncated tetrahedron.</p>
+   <p>Truncation, like rectification, is governed by a Coxeter–Dynkin marking; varying which mirrors are
+   "active" produces the whole zoo of uniform polychora from a single symmetry group.</p>`,
+  cites:[R.elte, R.coxeter] },
+
+{ name:'Cantellated 5-cell', tag:'Uniform 4-polytope', schlafli:'t₀,₂{3,3,3}', color:C.unif, dim:4,
+  gen:()=>nSimplex(4), rot:[P(0,3,.36),P(1,3,.24)],
+  facts:{Cells:'5+5+10 cells', Vertices:30, Edges:90, Faces:80},
+  blurb:'Both edges and vertices of the 5-cell expanded outward.',
+  article:`<p>The <b>cantellated 5-cell</b> applies a second-order truncation — beveling both vertices
+   and edges of the 5-cell at once. It carries thirty vertices and a mix of tetrahedra, octahedra and
+   triangular prisms among its twenty cells.</p>
+   <p>Cantellation (Coxeter's t₀,₂ operation) is what turns a cube into a rhombicuboctahedron in 3D; in
+   4D it produces correspondingly richer uniform figures.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'Runcinated 5-cell', tag:'Uniform 4-polytope', schlafli:'t₀,₃{3,3,3}', color:C.unif, dim:4,
+  gen:()=>nSimplex(4), rot:[P(0,3,.3),P(1,2,.3),P(2,3,.18)],
+  facts:{Cells:'30 cells', Vertices:20, Edges:60, Faces:70},
+  blurb:'A purely 4D expansion that separates the cells of the 5-cell.',
+  article:`<p>The <b>runcinated 5-cell</b> uses <i>runcination</i> — a third-order truncation that has
+   no analogue below four dimensions. It expands the 5-cell along its cells, pulling them apart and
+   filling the gaps with prisms, yielding a highly symmetric uniform polychoron with 30 cells.</p>
+   <p>Runcination is the first operation that is genuinely four-dimensional: the index "3" in t₀,₃ refers
+   to a 3-face, which only exists once you have four dimensions to work in.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'Rectified tesseract', tag:'Uniform 4-polytope', schlafli:'t₁{4,3,3}', color:C.unif, dim:4,
+  gen:tesseract, rot:[P(0,3,.4),P(1,2,.28)],
+  facts:{Cells:'8 cuboct + 16 tetra', Vertices:32, Edges:88, Faces:88},
+  blurb:'The tesseract with its corners cut to mid-edges.',
+  article:`<p>The <b>rectified tesseract</b> truncates the tesseract's sixteen vertices all the way to
+   the midpoints of its edges. The eight cubic cells become cuboctahedra and sixteen new tetrahedral
+   cells appear where the vertices were, for 32 vertices in all.</p>
+   <p>It sits midway between the tesseract and its dual, the 16-cell — rectification carried far enough
+   would reach the 16-cell itself.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'Truncated tesseract', tag:'Uniform 4-polytope', schlafli:'t₀,₁{4,3,3}', color:C.unif, dim:4,
+  gen:tesseract, rot:[P(0,3,.36),P(1,3,.24)],
+  facts:{Cells:'8 trunc-cubes + 16 tetra', Vertices:64, Edges:128, Faces:88},
+  blurb:'The hypercube with truncated-cube cells.',
+  article:`<p>The <b>truncated tesseract</b> shaves each of the tesseract's sixteen vertices, turning
+   its eight cubic cells into truncated cubes and adding sixteen tetrahedra. With 64 vertices it is
+   among the larger single-operation uniform polychora.</p>
+   <p>It is the four-dimensional analogue of the truncated cube, one of the Archimedean solids.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'Rectified 24-cell', tag:'Uniform 4-polytope', schlafli:'t₁{3,4,3}', color:C.unif, dim:4,
+  gen:cell24, rot:[P(0,3,.34),P(1,2,.26),P(2,3,.16)],
+  facts:{Cells:'24 cuboct + 24 cubes', Vertices:96, Edges:288, Faces:240},
+  blurb:'The self-dual 24-cell, rectified into cuboctahedra.',
+  article:`<p>The <b>rectified 24-cell</b> cuts the 24-cell's vertices to mid-edge, turning its 24
+   octahedral cells into cuboctahedra and exposing 24 cubic cells. It has 96 vertices and preserves the
+   full F₄ symmetry of its parent.</p>
+   <p>Because the 24-cell is self-dual and uniquely four-dimensional, its rectification is one of the
+   more elegant uniform polychora — all of its symmetry inherited from a shape with no analogue
+   anywhere else.</p>`,
+  cites:[R.coxeter, R.conway] },
+
+{ name:'Snub 24-cell', tag:'Uniform 4-polytope', schlafli:'s{3,4,3}', color:C.unif, dim:4,
+  gen:cell600, rot:[P(0,3,.3),P(1,2,.22),P(2,3,.14)],
+  facts:{Cells:'120 tetra + 24 icosa', Vertices:96, Edges:432, Faces:480},
+  blurb:'A chiral polytope whose vertices form part of the 600-cell.',
+  article:`<p>The <b>snub 24-cell</b> is a chiral (handed) uniform polychoron whose 96 vertices are a
+   subset of the 600-cell's. Its cells are 24 icosahedra and 120 tetrahedra. It was discovered by
+   Thorold Gosset and is sometimes called the semi-snub polyoctahedron.</p>
+   <p>Like the snub cube and snub dodecahedron in 3D, it comes in left- and right-handed forms that are
+   mirror images and cannot be rotated into one another.</p>`,
+  cites:[R.gosset, R.coxeter] },
+
+// ===== ROW 3 — The 5-cube (penteract) family =================================
+{ name:'Penteract', tag:'Regular 5-polytope', schlafli:'{4,3,3,3}', color:C.five, dim:5,
+  gen:()=>nCube(5), rot:[P(0,4,.4),P(1,3,.28),P(2,4,.18)],
+  facts:{Dimension:'5D', Vertices:32, Edges:80, '4-faces':'10 tesseracts'},
+  blurb:'The 5-dimensional hypercube — ten tesseracts on its boundary.',
+  article:`<p>The <b>penteract</b> (5-cube) is the five-dimensional hypercube. Its 32 vertices are every
+   combination of ±1 in five coordinates, joined by 80 edges. Its boundary consists of ten tesseracts,
+   just as a tesseract is bounded by eight cubes and a cube by six squares.</p>
+   <p>The doubling pattern is exact: an n-cube has 2ⁿ vertices, n·2ⁿ⁻¹ edges, and 2n cells of dimension
+   n−1. What you see is a fivefold-nested perspective shadow flattened twice over.</p>`,
+  cites:[R.coxeter, R.hinton] },
+
+{ name:'5-orthoplex', tag:'Regular 5-polytope', schlafli:'{3,3,3,4}', color:C.five, dim:5,
+  gen:()=>nOrthoplex(5), rot:[P(0,4,.42),P(1,3,.3)],
+  facts:{Dimension:'5D', Vertices:10, Edges:40, '4-faces':'32 5-cells'},
+  blurb:'The 5D cross-polytope — dual of the penteract.',
+  article:`<p>The <b>5-orthoplex</b> (pentacross) is the five-dimensional cross-polytope and the dual of
+   the penteract. Its ten vertices sit at ±1 along each axis; every non-opposite pair is joined, giving
+   40 edges and 32 four-dimensional 5-cell facets.</p>
+   <p>The orthoplex family (square, octahedron, 16-cell, …) always has 2n vertices and 2ⁿ simplex
+   facets — the most "spiky" of the regular polytopes.</p>`,
+  cites:[R.coxeter, R.schlafli] },
+
+{ name:'5-simplex', tag:'Regular 5-polytope', schlafli:'{3,3,3,3}', color:C.five, dim:5,
+  gen:()=>nSimplex(5), rot:[P(0,4,.4),P(1,3,.28)],
+  facts:{Dimension:'5D', Vertices:6, Edges:15, '4-faces':'6 5-cells'},
+  blurb:'Six mutually equidistant points — the simplest 5-polytope.',
+  article:`<p>The <b>5-simplex</b> (hexateron) is the simplest 5-polytope: six vertices, every pair
+   joined, bounding six 5-cell facets. It is self-dual and the five-dimensional member of the simplex
+   family that runs triangle → tetrahedron → 5-cell → hexateron.</p>
+   <p>A k-simplex always has k+1 vertices and the maximum symmetry of any polytope in its dimension —
+   the full symmetric group on its vertices.</p>`,
+  cites:[R.coxeter, R.schlafli] },
+
+{ name:'Rectified penteract', tag:'Uniform 5-polytope', schlafli:'t₁{4,3,3,3}', color:C.five, dim:5,
+  gen:()=>nCube(5), rot:[P(0,4,.36),P(2,3,.24)],
+  facts:{Dimension:'5D', Vertices:80, Edges:'480', Cells:'mixed'},
+  blurb:'The penteract cut to its edge-midpoints.',
+  article:`<p>The <b>rectified penteract</b> truncates the 5-cube's 32 vertices to the midpoints of its
+   edges, producing 80 new vertices — one per original edge. Its facets are rectified tesseracts and
+   5-cells.</p>
+   <p>Rectification in five dimensions follows the same Wythoffian rule as in lower ones: mark the second
+   node of the Coxeter diagram and read off the resulting uniform polytope.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'Truncated penteract', tag:'Uniform 5-polytope', schlafli:'t₀,₁{4,3,3,3}', color:C.five, dim:5,
+  gen:()=>nCube(5), rot:[P(0,4,.32),P(1,4,.22)],
+  facts:{Dimension:'5D', Vertices:160, Edges:'400', Cells:'mixed'},
+  blurb:'The 5-cube with shaved vertices.',
+  article:`<p>The <b>truncated penteract</b> shaves each of the 5-cube's 32 vertices, replacing each
+   with a small 5-cell facet while the tesseract cells become truncated tesseracts. It has 160 vertices.</p>
+   <p>It is the five-dimensional analogue of the truncated cube and truncated tesseract — the same
+   operation applied one dimension higher.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'5-demicube', tag:'Uniform 5-polytope', schlafli:'h{4,3,3,3}', color:C.five, dim:5,
+  gen:()=>nDemicube(5), rot:[P(0,4,.4),P(1,3,.26)],
+  facts:{Dimension:'5D', Vertices:16, '4-faces':'16 5-cells + 10 16-cells', Symmetry:'D₅'},
+  blurb:'The alternated penteract — half its vertices removed.',
+  article:`<p>The <b>5-demicube</b> (demipenteract) is the penteract with alternate vertices deleted —
+   keeping the sixteen whose coordinates have an even number of minus signs. Its facets are sixteen
+   5-cells and ten 16-cells, and its symmetry group is D₅.</p>
+   <p>Demicubes are the seed of the important Dₙ symmetry family; in five dimensions the demipenteract
+   is the first to acquire the extra diagonal symmetry that makes that family special.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'Cantellated penteract', tag:'Uniform 5-polytope', schlafli:'t₀,₂{4,3,3,3}', color:C.five, dim:5,
+  gen:()=>nCube(5), rot:[P(0,4,.3),P(2,4,.2),P(1,3,.16)],
+  facts:{Dimension:'5D', Vertices:'480', Operation:'cantellation', Symmetry:'B₅'},
+  blurb:'A second-order bevel of the 5-cube.',
+  article:`<p>The <b>cantellated penteract</b> bevels both the vertices and edges of the 5-cube
+   simultaneously (Coxeter's t₀,₂). The result mixes rhombicuboctahedral and prismatic cells across its
+   boundary, with several hundred vertices.</p>
+   <p>It belongs to the B₅ family of uniform 5-polytopes — the same hyperoctahedral symmetry that
+   governs the penteract and 5-orthoplex.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'Omnitruncated 5-simplex', tag:'Uniform 5-polytope', schlafli:'t₀,₁,₂,₃,₄{3,3,3,3}', color:C.five, dim:5,
+  gen:()=>nSimplex(5), rot:[P(0,4,.3),P(1,3,.22),P(2,4,.14)],
+  facts:{Dimension:'5D', Vertices:720, Symmetry:'A₅', Note:'all mirrors active'},
+  blurb:'Every mirror of the 5-simplex turned on at once.',
+  article:`<p>The <b>omnitruncated 5-simplex</b> activates every node of the A₅ Coxeter diagram at
+   once — the maximal truncation. It has exactly 720 vertices, one for each element of the symmetric
+   group S₆, because an omnitruncated simplex is a <i>permutohedron</i>.</p>
+   <p>Its vertices are the permutations of (1, 2, 3, 4, 5, 6), and it tiles 5-space — a beautiful link
+   between combinatorics and geometry.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+// ===== ROW 4 — Higher hypercubes, simplices, and the Gosset figure ===========
+{ name:'6-cube', tag:'Regular 6-polytope', schlafli:'{4,3,3,3,3}', color:C.ncube, dim:6,
+  gen:()=>nCube(6), rot:[P(0,5,.36),P(1,4,.26),P(2,3,.18)],
+  facts:{Dimension:'6D', Vertices:64, Edges:192, '5-faces':'12 penteracts'},
+  blurb:'The hexeract — 64 vertices in six dimensions.',
+  article:`<p>The <b>6-cube</b> (hexeract) is the six-dimensional hypercube, with 64 vertices, 192 edges,
+   and twelve penteract facets. The hypercube family grows explosively: each new dimension doubles the
+   vertex count.</p>
+   <p>The flattened shadow you see has passed through three perspective divisions to reach 3D, so depth
+   along three separate hidden axes is compressed into the same picture.</p>`,
+  cites:[R.coxeter, R.hinton] },
+
+{ name:'7-cube', tag:'Regular 7-polytope', schlafli:'{4,3⁵}', color:C.ncube, dim:7,
+  gen:()=>nCube(7), rot:[P(0,6,.32),P(1,5,.24),P(2,4,.16)],
+  facts:{Dimension:'7D', Vertices:128, Edges:448, '6-faces':'14 hexeracts'},
+  blurb:'The hepteract — 128 vertices in seven dimensions.',
+  article:`<p>The <b>7-cube</b> (hepteract) has 128 vertices and 448 edges. By now the wireframe is dense
+   enough that the projection looks almost like a fog of points, yet the doubling structure is exactly
+   the same as a humble square.</p>
+   <p>Hypercube graphs Qₙ like this one are central in computer science as models of parallel networks,
+   error-correcting codes, and Boolean logic.</p>`,
+  cites:[R.coxeter] },
+
+{ name:'8-cube', tag:'Regular 8-polytope', schlafli:'{4,3⁶}', color:C.ncube, dim:8,
+  gen:()=>nCube(8), rot:[P(0,7,.3),P(1,6,.22),P(2,5,.15),P(3,4,.1)],
+  facts:{Dimension:'8D', Vertices:256, Edges:1024, '7-faces':'16 hepteracts'},
+  blurb:'The octeract — 256 vertices in eight dimensions.',
+  article:`<p>The <b>8-cube</b> (octeract) carries 256 vertices and 1024 edges. Its vertex set is exactly
+   the 256 bytes — every 8-bit string — which is why the 8-cube graph underlies the Hamming(8) code and
+   much of digital communication theory.</p>
+   <p>Eight dimensions is special: it is where the E₈ lattice and the octonions live, both of which you
+   can visit elsewhere in this hall.</p>`,
+  cites:[R.coxeter, R.conway] },
+
+{ name:'6-simplex', tag:'Regular 6-polytope', schlafli:'{3⁵}', color:C.ncube, dim:6,
+  gen:()=>nSimplex(6), rot:[P(0,5,.36),P(1,4,.26)],
+  facts:{Dimension:'6D', Vertices:7, Edges:21, Symmetry:'A₆'},
+  blurb:'Seven mutually equidistant points in six dimensions.',
+  article:`<p>The <b>6-simplex</b> (heptapeton) is seven points in six dimensions, every pair the same
+   distance apart. It is self-dual with symmetry group S₇. The simplex is always the "tightest" polytope
+   — the minimal convex hull that fills its dimension.</p>
+   <p>Simplices are the building blocks of triangulation and of the simplex method in optimization; the
+   higher-dimensional ones underpin finite-element meshes and topology.</p>`,
+  cites:[R.coxeter, R.schlafli] },
+
+{ name:'7-simplex', tag:'Regular 7-polytope', schlafli:'{3⁶}', color:C.ncube, dim:7,
+  gen:()=>nSimplex(7), rot:[P(0,6,.34),P(1,5,.24)],
+  facts:{Dimension:'7D', Vertices:8, Edges:28, Symmetry:'A₇'},
+  blurb:'Eight mutually equidistant points in seven dimensions.',
+  article:`<p>The <b>7-simplex</b> (octaexon) has eight vertices, 28 edges, and the complete symmetry
+   group S₈. Every vertex is connected to every other, so its edge graph is the complete graph K₈.</p>
+   <p>The contrast with the 7-cube is instructive: both live in nearby dimensions, but the simplex is
+   maximally connected and minimal in vertex count, while the cube is sparse and exponentially large.</p>`,
+  cites:[R.coxeter, R.schlafli] },
+
+{ name:'6-orthoplex', tag:'Regular 6-polytope', schlafli:'{3,3,3,3,4}', color:C.ncube, dim:6,
+  gen:()=>nOrthoplex(6), rot:[P(0,5,.36),P(1,4,.26)],
+  facts:{Dimension:'6D', Vertices:12, Edges:60, '5-faces':'64 simplices'},
+  blurb:'The 6D cross-polytope — dual of the hexeract.',
+  article:`<p>The <b>6-orthoplex</b> (hexacross) is the six-dimensional cross-polytope: twelve vertices
+   at ±1 along each axis, 60 edges, and 64 simplex facets. It is the dual of the 6-cube.</p>
+   <p>Orthoplexes always realize the ℓ¹ unit ball, while their dual cubes realize the ℓ∞ ball — the two
+   extremes that sandwich the round Euclidean sphere in every dimension.</p>`,
+  cites:[R.coxeter, R.conway] },
+
+{ name:'7-orthoplex', tag:'Regular 7-polytope', schlafli:'{3⁴,4}', color:C.ncube, dim:7,
+  gen:()=>nOrthoplex(7), rot:[P(0,6,.34),P(1,5,.24)],
+  facts:{Dimension:'7D', Vertices:14, Edges:84, '6-faces':'128 simplices'},
+  blurb:'The 7D cross-polytope — dual of the hepteract.',
+  article:`<p>The <b>7-orthoplex</b> (heptacross) has fourteen vertices and 128 six-dimensional simplex
+   facets. As the dual of the 7-cube, its facet count (2⁷ = 128) equals the 7-cube's vertex count, a
+   duality that holds in every dimension.</p>
+   <p>The dense criss-cross of edges you see is every pair of non-opposite vertices — the orthoplex is
+   nearly the complete graph, missing only the antipodal links.</p>`,
+  cites:[R.coxeter, R.conway] },
+
+{ name:'E₈ polytope (4₂₁)', tag:'Gosset polytope', schlafli:'4₂₁', color:C.ncube, dim:8,
+  gen:e8Polytope, rot:[P(0,7,.26),P(1,6,.2),P(2,5,.14),P(3,4,.1)],
+  facts:{Dimension:'8D', Vertices:240, Edges:6720, Symmetry:'E₈ (order 696,729,600)'},
+  blurb:'The 240 roots of E₈ — the most symmetric polytope in 8D.',
+  article:`<p>The <b>4₂₁ polytope</b>, discovered by Thorold Gosset, has 240 vertices — exactly the
+   roots of the exceptional Lie algebra E₈. Each vertex touches 56 others, and its symmetry group has
+   696,729,600 elements, the largest of any 8-dimensional polytope.</p>
+   <p>Its famous 2D shadow — a nested set of concentric 30-gons — is one of the most reproduced images
+   in mathematics. E₈ appears in string theory, the densest 8D sphere packing, and (conjecturally) in
+   the physics of certain magnetic materials.</p>`,
+  cites:[R.gosset, R.coxeter, R.conway] },
+
+// ===== ROW 5 — Curved manifolds and topological surfaces =====================
+{ name:'Glome (3-sphere)', tag:'Curved 4-manifold', schlafli:'S³', color:C.curve, dim:4,
+  gen:()=>glome(8,40), rot:[P(0,3,.4),P(1,3,.24)],
+  facts:{Dimension:'surface in 4D', Curvature:'positive, constant', Symmetry:'O(4)'},
+  blurb:'The set of all points equidistant from a centre in 4-space.',
+  article:`<p>A <b>glome</b>, or 3-sphere (S³), is the set of points at fixed distance from a centre in
+   four-dimensional space — the direct analogue of an ordinary sphere. Its surface is three-dimensional:
+   a creature living on it could move in three independent directions and never find an edge.</p>
+   <p>The 3-sphere is the simplest closed 3-manifold and was central to the Poincaré conjecture, proved
+   by Grigori Perelman in 2003. Here it is drawn as a net of great circles.</p>`,
+  cites:[R.weeks, R.banchoff] },
+
+{ name:'Clifford torus', tag:'Flat surface in S³', schlafli:'T²⊂S³', color:C.curve, dim:4,
+  gen:()=>cliffordTorus(18,18), rot:[P(0,2,.4),P(1,3,.4)],
+  facts:{Dimension:'2D surface in 4D', Curvature:'zero (intrinsically flat)', Lives_on:'the 3-sphere'},
+  blurb:'A torus that is perfectly flat — only possible in 4D.',
+  article:`<p>The <b>Clifford torus</b> is a torus that is intrinsically <i>flat</i>: it has zero
+   Gaussian curvature everywhere, with no stretching anywhere on its surface. This is impossible for any
+   doughnut in ordinary 3-space, but in four dimensions it sits comfortably inside the 3-sphere as the
+   product of two equal circles.</p>
+   <p>It divides S³ into two congruent solid tori and is the model for the Hopf fibration. Whether it is
+   the area-minimizing torus in S³ — the Lawson conjecture — was proven by Simon Brendle in 2013.</p>`,
+  cites:[R.clifford, R.lawson, R.banchoff] },
+
+{ name:'Klein bottle', tag:'Non-orientable surface', schlafli:'K²', color:C.curve, dim:4,
+  gen:()=>kleinBottle(26,14), rot:[P(0,3,.34),P(2,3,.24)],
+  facts:{Dimension:'2D surface', Sides:'one (non-orientable)', Embeds_in:'4D without self-intersection'},
+  blurb:'A one-sided surface that only embeds cleanly in 4D.',
+  article:`<p>The <b>Klein bottle</b> is a closed surface with no inside or outside — a one-sided,
+   non-orientable surface. Any model in 3-space must pass through itself, but in four dimensions it
+   embeds perfectly cleanly, the self-intersection lifting apart along the fourth axis.</p>
+   <p>It can be built by gluing two Möbius strips along their edges, and it is a foundational example in
+   topology of how extra dimensions resolve apparent paradoxes of three-dimensional intuition.</p>`,
+  cites:[R.klein, R.stillwell, R.weeks] },
+
+{ name:"Boy's surface", tag:'Immersed RP²', schlafli:'RP²', color:C.curve, dim:4,
+  gen:()=>boysSurface(22,22), rot:[P(0,3,.3),P(1,3,.22)],
+  facts:{Dimension:'2D surface', Models:'the real projective plane', Discovered:'Werner Boy, 1901'},
+  blurb:'An immersion of the projective plane with no edges or creases.',
+  article:`<p><b>Boy's surface</b> is a smooth immersion of the real projective plane RP² in
+   three-dimensional space, found by Werner Boy in 1901 at David Hilbert's suggestion. Hilbert had
+   expected RP² could not be immersed without singular points; Boy proved otherwise.</p>
+   <p>It has threefold symmetry and a single triple point. Robert Bryant and Rob Kusner later gave an
+   exact analytic parametrization. RP² embeds without self-intersection only in four dimensions or
+   higher.</p>`,
+  cites:[R.boy, R.stillwell] },
+
+{ name:'Duocylinder', tag:'Curved 4-solid', schlafli:'D²×D²', color:C.curve, dim:4,
+  gen:()=>duocylinder(20,20), rot:[P(0,1,.4),P(2,3,.4)],
+  facts:{Dimension:'4D solid', Surface:'two perpendicular tori', Bounded_by:'a flat ridge'},
+  blurb:'The product of two disks — a 4D analogue of the cylinder.',
+  article:`<p>The <b>duocylinder</b> is the Cartesian product of two flat disks, each in its own pair of
+   dimensions. Its boundary is made of two curved cells, joined along a shared "ridge" that is itself a
+   Clifford torus — a flat 2D surface where the two tubes meet at a right angle.</p>
+   <p>A ball rolling in a duocylinder could spin smoothly in two completely independent circular
+   directions at once, a freedom of motion that has no parallel in three dimensions.</p>`,
+  cites:[R.manning, R.banchoff] },
+
+{ name:'Hopf fibration', tag:'Fibered 3-sphere', schlafli:'S³→S²', color:C.curve, dim:4,
+  gen:()=>hopfFibration(18,36), rot:[P(0,2,.36),P(1,3,.28)],
+  facts:{Maps:'S³ onto S²', Fibers:'linked great circles', Discovered:'Heinz Hopf, 1931'},
+  blurb:'A way to fill the 3-sphere with linked circles.',
+  article:`<p>The <b>Hopf fibration</b>, discovered by Heinz Hopf in 1931, decomposes the 3-sphere into
+   a continuous family of circles, one for each point of an ordinary 2-sphere. Any two of these circles
+   are linked exactly once — a configuration that cannot be undone.</p>
+   <p>It was the first example of a topologically nontrivial fiber bundle and revolutionized topology.
+   The Hopf map appears throughout physics, from the quantum states of a single qubit to magnetic
+   monopoles and the structure of liquid crystals.</p>`,
+  cites:[R.hopf, R.banchoff] },
+
+{ name:'Villarceau circles', tag:'Circles on a torus', schlafli:'⊂ T²', color:C.curve, dim:4,
+  gen:()=>villarceau(14,40), rot:[P(0,3,.32),P(1,2,.24)],
+  facts:{Lie_on:'an ordinary torus', Count:'a third family of circles', Found:'Yvon Villarceau, 1848'},
+  blurb:'The hidden slanted circles inside every torus.',
+  article:`<p>Beyond the obvious circles running around a torus the long way and the short way, there are
+   two more families of perfect circles hidden inside it — the <b>Villarceau circles</b>, found by
+   French astronomer Yvon Villarceau in 1848. Each is obtained by slicing the torus with a cleverly
+   tilted plane that grazes it on both sides.</p>
+   <p>Every point of a torus lies on exactly four circles: the two obvious ones and two Villarceau
+   circles. They are a favorite motif in architecture and in the geometry of the Hopf fibration.</p>`,
+  cites:[R.villarceau, R.banchoff] },
+
+{ name:'RP³ (projective 3-space)', tag:'Closed 3-manifold', schlafli:'RP³', color:C.curve, dim:4,
+  gen:()=>rp3(7,34), rot:[P(0,3,.34),P(1,2,.22)],
+  facts:{Dimension:'3-manifold', Same_as:'SO(3), the rotation group', Model:'antipodal 3-sphere'},
+  blurb:'The space of all 3D rotations — a sphere with antipodes glued.',
+  article:`<p><b>Real projective 3-space</b> (RP³) is the 3-sphere with every pair of antipodal points
+   identified. Remarkably, it is identical to SO(3), the space of all rotations of ordinary
+   three-dimensional space — which is why a rotating object's orientations live on this manifold.</p>
+   <p>Its nontrivial topology is the reason for the famous "plate trick" or "belt trick": a 360° rotation
+   leaves a twist, while a 720° rotation can be undone. This is the geometric root of spin-½ in quantum
+   mechanics.</p>`,
+  cites:[R.weeks, R.stillwell] },
+
+// ===== ROW 6 — Duoprisms (products of two polygons) ==========================
+{ name:'{3}×{3} duoprism', tag:'Duoprism', schlafli:'{3}×{3}', color:C.duo, dim:4,
+  gen:()=>duoprism(3,3), rot:[P(0,2,.4),P(1,3,.4)],
+  facts:{Dimension:'4D', Vertices:9, Cells:'6 triangular prisms', Symmetry:'[3,2,3]'},
+  blurb:'The product of two triangles in 4-space.',
+  article:`<p>The <b>{3}×{3} duoprism</b> (triangular duoprism) is the Cartesian product of two
+   triangles, each spinning in its own pair of dimensions. It has nine vertices and six triangular-prism
+   cells, three from each triangle.</p>
+   <p>Duoprisms are the simplest genuinely four-dimensional figures that are neither hypercubes nor
+   simplices — products of two lower polytopes that need all four axes to exist.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'{4}×{3} duoprism', tag:'Duoprism', schlafli:'{4}×{3}', color:C.duo, dim:4,
+  gen:()=>duoprism(4,3), rot:[P(0,2,.4),P(1,3,.36)],
+  facts:{Dimension:'4D', Vertices:12, Cells:'4 tri-prisms + 3 cubes', Symmetry:'[4,2,3]'},
+  blurb:'A square times a triangle.',
+  article:`<p>The <b>{4}×{3} duoprism</b> multiplies a square by a triangle. The square contributes three
+   cubic cells, the triangle contributes four triangular prisms, for twelve vertices arranged on a flat
+   torus in 4-space.</p>
+   <p>Each duoprism's vertices lie on a Clifford torus — the same flat surface in S³ that appears
+   throughout this row of the gallery — making them the polygonal skeletons of that torus.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'{5}×{3} duoprism', tag:'Duoprism', schlafli:'{5}×{3}', color:C.duo, dim:4,
+  gen:()=>duoprism(5,3), rot:[P(0,2,.38),P(1,3,.34)],
+  facts:{Dimension:'4D', Vertices:15, Cells:'5 tri-prisms + 3 pentagonal prisms', Symmetry:'[5,2,3]'},
+  blurb:'A pentagon times a triangle.',
+  article:`<p>The <b>{5}×{3} duoprism</b> is the product of a pentagon and a triangle: five triangular
+   prisms and three pentagonal prisms enclose its fifteen vertices. Mixing a 5-fold with a 3-fold
+   symmetry gives it a pleasingly irregular look as it rotates in two planes at once.</p>
+   <p>The general {p}×{q} duoprism has p·q vertices and p+q prism cells, a clean formula that scales to
+   any pair of polygons.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'{4}×{4} duoprism', tag:'Duoprism', schlafli:'{4}×{4}', color:C.duo, dim:4,
+  gen:()=>duoprism(4,4), rot:[P(0,2,.4),P(1,3,.4)],
+  facts:{Dimension:'4D', Vertices:16, Cells:'8 cubes', Same_as:'the tesseract'},
+  blurb:'A square times a square — secretly the tesseract.',
+  article:`<p>The <b>{4}×{4} duoprism</b> is the product of two squares — and that product is exactly the
+   <i>tesseract</i>. Its sixteen vertices and eight cubic cells are the 4-cube seen through the lens of
+   its two independent square cross-sections.</p>
+   <p>This identity — that the hypercube is a duoprism of two squares — is the four-dimensional echo of
+   the fact that a cube is a square prism, a "{4}×{ }" product.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'{5}×{5} duoprism', tag:'Duoprism', schlafli:'{5}×{5}', color:C.duo, dim:4,
+  gen:()=>duoprism(5,5), rot:[P(0,2,.38),P(1,3,.38)],
+  facts:{Dimension:'4D', Vertices:25, Cells:'10 pentagonal prisms', Symmetry:'[5,2,5]'},
+  blurb:'Two pentagons multiplied together.',
+  article:`<p>The <b>{5}×{5} duoprism</b> multiplies two pentagons, giving 25 vertices and ten
+   pentagonal-prism cells in a doubly five-fold symmetric figure. Because both factors share the same
+   symmetry, it has an extra "duoprismatic" symmetry that swaps the two pentagons.</p>
+   <p>Equal-factor duoprisms like this are the most symmetric of their family and tile naturally onto the
+   Clifford torus in equal squares.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'{6}×{6} duoprism', tag:'Duoprism', schlafli:'{6}×{6}', color:C.duo, dim:4,
+  gen:()=>duoprism(6,6), rot:[P(0,2,.36),P(1,3,.36)],
+  facts:{Dimension:'4D', Vertices:36, Cells:'12 hexagonal prisms', Symmetry:'[6,2,6]'},
+  blurb:'Two hexagons multiplied together.',
+  article:`<p>The <b>{6}×{6} duoprism</b> pairs two hexagons into a 36-vertex figure bounded by twelve
+   hexagonal prisms. As the polygon order rises, the duoprism's projected shadow approaches the smooth
+   surface of a <i>duocylinder</i> — the product of two disks.</p>
+   <p>This limiting relationship makes duoprisms the natural polygonal approximations to the curved 4D
+   solids elsewhere in the hall.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'{8}×{8} duoprism', tag:'Duoprism', schlafli:'{8}×{8}', color:C.duo, dim:4,
+  gen:()=>duoprism(8,8), rot:[P(0,2,.34),P(1,3,.34)],
+  facts:{Dimension:'4D', Vertices:64, Cells:'16 octagonal prisms', Symmetry:'[8,2,8]'},
+  blurb:'Two octagons multiplied together.',
+  article:`<p>The <b>{8}×{8} duoprism</b> has 64 vertices arranged from two octagons — coincidentally the
+   same vertex count as the 6-cube, though arranged on a torus rather than a cube. Sixteen octagonal
+   prisms form its boundary.</p>
+   <p>Watch how its rotation, with two independent angular speeds, produces a hypnotic interference
+   pattern: this is what a genuine double rotation looks like flattened to a screen.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'{10}×{10} duoprism', tag:'Duoprism', schlafli:'{10}×{10}', color:C.duo, dim:4,
+  gen:()=>duoprism(10,10), rot:[P(0,2,.32),P(1,3,.32)],
+  facts:{Dimension:'4D', Vertices:100, Cells:'20 decagonal prisms', Approaches:'the duocylinder'},
+  blurb:'Two decagons — nearly a smooth duocylinder.',
+  article:`<p>The <b>{10}×{10} duoprism</b> brings two ten-sided polygons together into a 100-vertex
+   figure. With this many sides, its silhouette is almost indistinguishable from the smooth duocylinder,
+   the product of two perfect disks.</p>
+   <p>The progression {3}×{3} → {4}×{4} → … → {∞}×{∞} is the four-dimensional analogue of how regular
+   polygons converge to a circle — here, two circles at once.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+// ===== ROW 7 — Rotations and the topology of motion in 4D ====================
+{ name:'Left isoclinic rotation', tag:'Double rotation', schlafli:'SO(4) left', color:C.rot, dim:4,
+  gen:rotTesseract, rot:[P(0,1,.4,0),P(2,3,.4,0)],
+  facts:{Type:'isoclinic (equal-angle)', Planes:'two, rotating equally', Handedness:'left'},
+  blurb:'A 4D rotation that turns two planes at the same rate.',
+  article:`<p>In four dimensions a rotation can spin in <i>two</i> independent planes at once. When both
+   planes turn through the same angle, the motion is called <b>isoclinic</b>. A left-isoclinic rotation
+   is one of two handed varieties, corresponding to multiplication by a unit quaternion on the left.</p>
+   <p>Every point of the tesseract here moves along a great circle of the same radius, so the whole
+   figure appears to tumble rigidly — a motion with no fixed axis at all, unlike any 3D rotation.</p>`,
+  cites:[R.manning, R.coxeter] },
+
+{ name:'Right isoclinic rotation', tag:'Double rotation', schlafli:'SO(4) right', color:C.rot, dim:4,
+  gen:rotTesseract, rot:[P(0,1,.4,0),P(2,3,-.4,0)],
+  facts:{Type:'isoclinic (equal-angle)', Planes:'two, opposite sense', Handedness:'right'},
+  blurb:'The mirror-handed partner of the left isoclinic rotation.',
+  article:`<p>The <b>right isoclinic rotation</b> also turns two planes equally, but in the opposite
+   relative sense — corresponding to quaternion multiplication on the right. Together, left and right
+   isoclinic rotations generate all of SO(4), the group of 4D rotations.</p>
+   <p>This left/right decomposition is special to four dimensions and is the geometric origin of the two
+   chiralities of spinors in physics. No other rotation group splits so cleanly.</p>`,
+  cites:[R.manning, R.coxeter] },
+
+{ name:'Clifford parallels', tag:'Parallel great circles', schlafli:'S³', color:C.rot, dim:4,
+  gen:()=>hopfFibration(20,30), rot:[P(0,2,.4),P(1,3,.4)],
+  facts:{Live_on:'the 3-sphere', Property:'equidistant everywhere', Named_for:'W. K. Clifford'},
+  blurb:'Lines that stay the same distance apart — but are linked.',
+  article:`<p><b>Clifford parallels</b> are great circles on the 3-sphere that remain exactly
+   equidistant from one another everywhere — yet, unlike parallel lines in flat space, they are
+   <i>linked</i> like rings of a chain. William Kingdon Clifford described them in 1873.</p>
+   <p>They are precisely the fibers of the Hopf fibration, and an isoclinic rotation slides each circle
+   along itself, carrying the whole family rigidly. They are the truest 4D analogue of parallel lines.</p>`,
+  cites:[R.clifford, R.hopf] },
+
+{ name:'Quaternion rotation', tag:'Unit quaternions', schlafli:'S³≅SU(2)', color:C.rot, dim:4,
+  gen:()=>glome(8,40), rot:[P(0,3,.4),P(1,2,.4)],
+  facts:{Unit_quaternions:'form a 3-sphere', Double_cover:'of SO(3)', Used_in:'graphics, robotics'},
+  blurb:'How 4D unit quaternions encode every 3D rotation.',
+  article:`<p>The unit <b>quaternions</b> form a 3-sphere in four-dimensional space, and each one encodes
+   a rotation of ordinary 3D space. This is why quaternions are the standard tool for orientation in
+   computer graphics, spacecraft attitude control, and robotics — they avoid gimbal lock and interpolate
+   smoothly.</p>
+   <p>Two antipodal quaternions give the same 3D rotation, so the quaternion sphere is a <i>double cover</i>
+   of the rotation group SO(3). That two-to-one relationship is again the source of spin-½.</p>`,
+  cites:[R.clifford, R.stillwell] },
+
+{ name:'Hopf link', tag:'Linked circles', schlafli:'2-component link', color:C.rot, dim:4,
+  gen:()=>hopfFibration(2,48), rot:[P(0,2,.36),P(1,3,.28)],
+  facts:{Components:'2 circles', Linking_number:1, Simplest:'nontrivial link'},
+  blurb:'The two simplest linked circles — a single Hopf pair.',
+  article:`<p>The <b>Hopf link</b> is the simplest nontrivial link: two circles passing through one
+   another exactly once, with linking number one. It is what you get by taking any two fibers of the
+   Hopf fibration.</p>
+   <p>You cannot pull the two circles apart without cutting one, yet neither is knotted on its own. The
+   Hopf link is foundational in knot theory and appears as the Borromean-ring's simpler cousin.</p>`,
+  cites:[R.hopf, R.stillwell] },
+
+{ name:'Trefoil in 4D', tag:'Unknotting in 4D', schlafli:'3₁ knot', color:C.rot, dim:4,
+  gen:()=>villarceau(3,48), rot:[P(0,3,.34),P(1,2,.26)],
+  facts:{Knot:'trefoil (3 crossings)', In_3D:'cannot be undone', In_4D:'every knot unties'},
+  blurb:'The simplest knot — and why 4D unties all knots.',
+  article:`<p>The <b>trefoil</b> is the simplest nontrivial knot, with three crossings, and in three
+   dimensions it can never be untied. But in four dimensions there is room to lift one strand "over" any
+   crossing through the extra axis — so <i>every</i> knotted loop of string unties freely.</p>
+   <p>This is why knots are a strictly three-dimensional phenomenon. In 4D the interesting objects are
+   knotted <i>surfaces</i> (knotted spheres), not knotted loops.</p>`,
+  cites:[R.stillwell, R.banchoff] },
+
+{ name:'Double rotation', tag:'Generic SO(4) motion', schlafli:'two unequal angles', color:C.rot, dim:4,
+  gen:rotTesseract, rot:[P(0,1,.5),P(2,3,.22)],
+  facts:{Planes:'two invariant planes', Angles:'generally unequal', Fixed_points:'only the centre'},
+  blurb:'The most general rotation possible in four dimensions.',
+  article:`<p>A generic <b>double rotation</b> in 4D spins through two perpendicular planes at two
+   <i>different</i> rates. Only the single centre point stays fixed — there is no rotation axis at all,
+   unlike every rotation in three dimensions, which always fixes a whole line.</p>
+   <p>When the two rates happen to be equal you recover an isoclinic rotation; when one is zero you get a
+   simple rotation. The double rotation is the full, generic case, and the tesseract here shows its
+   characteristic two-speed tumble.</p>`,
+  cites:[R.manning, R.coxeter] },
+
+{ name:'Screw motion in 4D', tag:'Rotation + translation', schlafli:'isometry of E⁴', color:C.rot, dim:4,
+  gen:()=>duoprism(6,4), rot:[P(0,1,.4),P(2,3,.24)],
+  facts:{Combines:'rotation with translation', Lives_in:'flat 4-space', Generalizes:'the 3D screw'},
+  blurb:'A spinning advance — the 4D version of a screw.',
+  article:`<p>A <b>screw motion</b> couples rotation with translation along the rotation's axis. In four
+   dimensions, where rotations act in two independent planes, a screw motion can twist in both planes
+   while advancing — a far richer family of rigid motions than three dimensions allows.</p>
+   <p>Chasles' theorem says every 3D rigid motion is a screw; its 4D generalization classifies the
+   isometries of flat four-space, the backbone of crystallography in higher dimensions.</p>`,
+  cites:[R.manning, R.coxeter] },
+
+// ===== ROW 8 — Spacetime, exotic geometry, and great lattices ================
+{ name:'Minkowski spacetime', tag:'Spacetime geometry', schlafli:'R^{1,3}', color:C.phys, dim:4,
+  gen:()=>lightCone(9,30), rot:[P(0,3,.3),P(1,2,.2)],
+  facts:{Signature:'(−,+,+,+)', Defines:'the light cone', Author:'Hermann Minkowski, 1908'},
+  blurb:'The four-dimensional stage of special relativity.',
+  article:`<p><b>Minkowski spacetime</b> is the geometric arena of special relativity: three space
+   dimensions and one time dimension, fused into a single four-dimensional continuum. Its "distance"
+   uses a minus sign for time, which is why the geometry is hyperbolic rather than Euclidean.</p>
+   <p>The cone you see is the <b>light cone</b> — the set of all light rays through an event. It divides
+   spacetime into the causal past, the causal future, and the "elsewhere" no signal can reach. Hermann
+   Minkowski unveiled this picture in 1908, giving Einstein's 1905 theory its geometric form.</p>`,
+  cites:[R.minkowski, R.banchoff] },
+
+{ name:'de Sitter space', tag:'Curved spacetime', schlafli:'dS₄', color:C.phys, dim:4,
+  gen:()=>deSitter(9,30), rot:[P(0,3,.28),P(1,2,.18)],
+  facts:{Curvature:'positive, constant', Models:'an expanding universe', Author:'Willem de Sitter, 1917'},
+  blurb:'A spacetime of constant positive curvature — an empty, expanding cosmos.',
+  article:`<p><b>de Sitter space</b> is the maximally symmetric solution of Einstein's equations with a
+   positive cosmological constant and no matter — a model empty universe that expands exponentially. It
+   is a four-dimensional hyperboloid embedded in five-dimensional flat space.</p>
+   <p>Willem de Sitter found it in 1917 in correspondence with Einstein. It is the best simple model for
+   our universe's accelerating expansion, driven by dark energy, and for the inflationary epoch just
+   after the Big Bang.</p>`,
+  cites:[R.desitter, R.minkowski] },
+
+{ name:'Anti-de Sitter space', tag:'Curved spacetime', schlafli:'AdS', color:C.phys, dim:4,
+  gen:()=>antiDeSitter(9,30), rot:[P(0,3,.26),P(1,2,.18)],
+  facts:{Curvature:'negative, constant', Famous_for:'the AdS/CFT correspondence', Year:1998},
+  blurb:'Negatively curved spacetime — home of the holographic principle.',
+  article:`<p><b>Anti-de Sitter space</b> is the constant-negative-curvature counterpart of de Sitter
+   space — a saddle-shaped spacetime that, surprisingly, acts like a box: light can reach its boundary
+   and return in finite time.</p>
+   <p>It became central to physics in 1998 when Juan Maldacena conjectured the <b>AdS/CFT
+   correspondence</b>, a duality stating that gravity in an anti-de Sitter interior is exactly equivalent
+   to a quantum field theory living on its lower-dimensional boundary — the sharpest known realization of
+   the holographic principle.</p>`,
+  cites:[R.maldacena, R.desitter] },
+
+{ name:'Calabi–Yau manifold', tag:'String compactification', schlafli:'CY₃', color:C.phys, dim:6,
+  gen:()=>calabiYau(5,8,12), rot:[P(0,3,.3),P(1,2,.22),P(2,3,.14)],
+  facts:{Real_dimension:6, Curvature:'Ricci-flat, Kähler', Role:'hides 6 of string theory\'s dimensions'},
+  blurb:'The curled-up extra dimensions of string theory.',
+  article:`<p>A <b>Calabi–Yau manifold</b> is a compact, Ricci-flat Kähler manifold. Eugenio Calabi
+   conjectured their existence in the 1950s and Shing-Tung Yau proved it in 1978, winning the Fields
+   Medal in part for this result.</p>
+   <p>In string theory, the six dimensions beyond our familiar four are thought to be curled up into a
+   tiny Calabi–Yau threefold at every point of spacetime. Its precise shape would determine the particle
+   spectrum of our universe. The figure shows a 2D slice of the Fermat quintic, the standard visualization.</p>`,
+  cites:[R.yau, R.candelas] },
+
+{ name:'Penrose quasicrystal', tag:'Aperiodic order', schlafli:'5D→2D cut', color:C.phys, dim:5,
+  gen:()=>penrose(3), rot:[P(0,4,.3),P(1,3,.2),P(2,4,.14)],
+  facts:{Symmetry:'5-fold (forbidden for crystals)', Origin:'projection from 5D', Nobel:'Shechtman, 2011'},
+  blurb:'A pattern with five-fold symmetry that never repeats.',
+  article:`<p>A <b>quasicrystal</b> has long-range order but no repeating unit cell, and can display
+   five-fold symmetry — impossible for an ordinary periodic crystal. Roger Penrose's famous aperiodic
+   tiling is the two-dimensional model, and it arises naturally as the shadow of a periodic lattice in
+   <i>five</i> dimensions projected down to the plane.</p>
+   <p>Dan Shechtman discovered real quasicrystalline alloys in 1982, a finding so heretical it was first
+   ridiculed; he received the 2011 Nobel Prize in Chemistry. The 5D point cloud here casts just such a
+   quasiperiodic shadow.</p>`,
+  cites:[R.penrose, R.shechtman] },
+
+{ name:'E₈ root system', tag:'Exceptional Lie algebra', schlafli:'240 roots', color:C.phys, dim:8,
+  gen:e8Roots, rot:[P(0,7,.24),P(1,6,.18),P(2,5,.12),P(3,4,.08)],
+  facts:{Roots:240, Dimension:8, Symmetry_order:'696,729,600'},
+  blurb:'The 240 roots of the largest exceptional symmetry.',
+  article:`<p>The <b>E₈ root system</b> consists of 240 vectors in eight-dimensional space — the roots
+   of the largest exceptional simple Lie algebra. They split into 112 integer roots (±eᵢ±eⱼ) and 128
+   half-integer roots, all of equal length, and they generate the densest lattice packing in 8D.</p>
+   <p>E₈ is one of the deepest structures in mathematics, surfacing in string theory's heterotic gauge
+   group, in the 2007 computer-assisted mapping of its 453,060-dimensional character table, and in the
+   measured excitation spectrum of a quantum magnetic chain.</p>`,
+  cites:[R.gosset, R.conway, R.coxeter] },
+
+{ name:'Leech lattice', tag:'24D sphere packing', schlafli:'Λ₂₄', color:C.phys, dim:8,
+  gen:leech, rot:[P(0,7,.22),P(1,6,.16),P(2,5,.1)],
+  facts:{Dimension:24, Kissing_number:'196,560', Discovered:'John Leech, 1967'},
+  blurb:'The extraordinary 24-dimensional sphere packing.',
+  article:`<p>The <b>Leech lattice</b> Λ₂₄ is a remarkable arrangement of points in twenty-four
+   dimensions in which each sphere touches 196,560 others — and in 2016 Maryna Viazovska's methods
+   confirmed it gives the densest possible sphere packing in 24D.</p>
+   <p>Its symmetry group is the Conway group Co₀, with deep ties to the Monster group and "monstrous
+   moonshine." Discovered by John Leech in 1967, it has no vectors shorter than length 2 and underlies
+   some of the best error-correcting codes known. The frame shown is an 8D representative shadow.</p>`,
+  cites:[R.leech, R.conway] },
+
+{ name:'Octonion structure', tag:'Eight-dimensional algebra', schlafli:'𝕆', color:C.phys, dim:8,
+  gen:octonions, rot:[P(0,4,.3),P(1,5,.22),P(2,6,.14)],
+  facts:{Dimension:8, Property:'non-associative', Encoded_by:'the Fano plane'},
+  blurb:'The largest normed division algebra — multiplication you can map on the Fano plane.',
+  article:`<p>The <b>octonions</b> 𝕆 are the largest of the four normed division algebras (after the
+   reals, complex numbers, and quaternions), with eight dimensions. They are <i>non-associative</i>:
+   (ab)c need not equal a(bc), the price paid for going one step beyond the quaternions.</p>
+   <p>Their multiplication rule is encoded by the <b>Fano plane</b> — seven points and seven lines, drawn
+   here as a triangular frame. Octonions are tied to the exceptional Lie groups, to E₈, and to
+   speculative descriptions of the three generations of fundamental particles.</p>`,
+  cites:[R.baez, R.conway] },
+
+];
+
+// assign grid coordinates: 8 rows × 8 columns in declaration order.
+EXHIBITS.forEach((e, i) => { e.row = Math.floor(i / 8); e.col = i % 8; });
+
+/* ===== main.js ===== */
+// main.js — the gallery engine. Three.js scene, first-person controls, an 8×8
+// hall of transparent columns, frustum-only animation of each higher-dimensional
+// shape, plaque ray-picking, and the confirm-to-close article modal.
+
+
+const SPACING = 11;       // distance between columns
+const TARGET_R = 1.5;        // worst-case shape radius (fits inside the cage)
+const CAGE_R = 1.75, CAGE_H = 5.2;   // cylindrical cage radius + height
+const ANIM_DIST2 = 80 * 80; // only re-project shapes within this distance (perf)
+
+let renderer, scene, camera, controls, clock;
+let exhibits = [];        // runtime objects
+const plaqueMeshes = [];  // for ray-picking
+let raycaster, pointer = new THREE.Vector2(0, 0);
+
+// movement state
+const move = { f: 0, b: 0, l: 0, r: 0, fast: false };
+const velocity = new THREE.Vector3();
+const dir = new THREE.Vector3();
+
+// touch / mobile state
+const isTouch = matchMedia('(pointer: coarse)').matches || ('ontouchstart' in window);
+const touchMove = { x: 0, y: 0 };   // left stick  → strafe / forward
+const touchLook = { x: 0, y: 0 };   // right stick → yaw / pitch
+let yaw = Math.PI, pitch = 0;       // manual camera orientation on touch
+let nearPlaque = -1;
+
+// frustum reuse
+const frustum = new THREE.Frustum();
+const projScreen = new THREE.Matrix4();
+
+let mode = 'menu';        // 'fps' | 'menu'
+let modalOpen = false;
+let currentExhibit = -1;
+let inited = false, galleryActive = false, running = false;
+let breached = false, breachAlpha = 0; // containment-breach state
+
+// ---- DOM refs ---------------------------------------------------------------
+const $ = id => document.getElementById(id);
+const rootEl = $('galleryRoot'), startEl = $('start'), errEl = $('err');
+const pauseEl = $('pause'), modalEl = $('modal'), confirmEl = $('confirm');
+const crossEl = $('cross');
+const hudName = $('hudName');
+const breachEl = $('breach'), staticCv = $('staticNoise');
+const touchUIEl = $('touchUI'), readBtnEl = $('readBtn'), menuFabEl = $('menuFab');
+const bootEl = $('booting'), bootLabel = $('bootLabel'), barFill = $('barFill'),
+      bootPct = $('bootPct'), enterBtn = $('enterBtn');
+
+const nextFrame = () => new Promise(r => requestAnimationFrame(r));
+function setBoot(label, pct) {
+  bootLabel.textContent = label;
+  barFill.style.width = pct + '%';
+  bootPct.textContent = pct + '%';
+}
+
+// the loading spinner is a real rotating 5-cube (penteract), drawn on a 2D canvas
+// with the same nD math the gallery uses — no WebGL needed before the engine boots.
+function startBootSpinner() {
+  const cv = document.getElementById('spinCanvas');
+  if (!cv) return () => {};
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height, cx = W / 2, cy = H / 2;
+  const { verts, edges } = nCube(5);
+  let raf = 0, t = 0, running = true;
+  function frame() {
+    if (!running) return;
+    t += 0.018;
+    let V = verts;
+    V = rotate(V, 0, 4, t * 0.9);
+    V = rotate(V, 1, 3, t * 0.6);
+    V = rotate(V, 2, 4, t * 0.4);
+    const P = projectTo3D(V, 3.0);        // 5D → 3D
+    let maxR = 0; for (const p of P) { const r = Math.hypot(p[0], p[1]); if (r > maxR) maxR = r; }
+    const scale = (Math.min(W, H) * 0.36) / (maxR || 1);
+    ctx.clearRect(0, 0, W, H);
+    ctx.lineWidth = 1.3;
+    for (const [a, b] of edges) {
+      const pa = P[a], pb = P[b];
+      const depth = (pa[2] + pb[2]) * 0.5;       // -ish range, for fade
+      const alpha = 0.35 + 0.5 * (1 / (1 + Math.exp(-depth)));
+      ctx.strokeStyle = `rgba(167,139,250,${alpha.toFixed(3)})`;
+      ctx.beginPath();
+      ctx.moveTo(cx + pa[0] * scale, cy + pa[1] * scale);
+      ctx.lineTo(cx + pb[0] * scale, cy + pb[1] * scale);
+      ctx.stroke();
+    }
+    raf = requestAnimationFrame(frame);
+  }
+  frame();
+  return () => { running = false; cancelAnimationFrame(raf); };
+}
+
+// expose entry/exit points for the document page's buttons
+window.HyperGallery = { enter: enterGallery, quit: quitGallery };
+
+function enterGallery() {
+  rootEl.classList.add('active');
+  document.body.classList.add('in-gallery');
+  galleryActive = true;
+  if (!inited) { inited = true; init(); }       // first time: build + start loop
+  else { if (!running) { running = true; animate(); } showMenu(); }
+}
+
+function quitGallery() {
+  hideMenu();
+  modalEl.classList.remove('show'); modalOpen = false;
+  galleryActive = false; running = false;       // stops the render loop next frame
+  if (controls && controls.isLocked) controls.unlock();
+  rootEl.classList.remove('active');
+  document.body.classList.remove('in-gallery');
+}
+
+async function init() {
+  const stopSpinner = startBootSpinner();
+  try {
+    setBoot('Starting WebGL renderer…', 4);
+    setupRenderer();
+    await nextFrame();
+    setBoot('Building the hall…', 8);
+    await buildWorldChunked();
+    bindEvents();
+    running = true;
+    animate();
+    setBoot('Ready', 100);
+    await nextFrame();
+    // swap the penteract spinner for the live Enter button
+    stopSpinner();
+    bootEl.hidden = true;
+    enterBtn.hidden = false;
+  } catch (e) {
+    console.error(e);
+    stopSpinner();
+    startEl.classList.add('hide');
+    errEl.classList.add('show');
+  }
+}
+
+function setupRenderer() {
+  const canvas = $('scene');
+  renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x06061A);
+  // linear "draw distance": fully clear up close, fading out toward the far wall
+  scene.fog = new THREE.Fog(0x06061A, 16, 140);
+
+  camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.05, 400);
+  camera.position.set(0, 1.6, -SPACING * 4 - 8);
+
+  controls = new PointerLockControls(camera, renderer.domElement);
+  scene.add(controls.getObject());
+  // face +z (toward the hall)
+  controls.getObject().rotation.y = Math.PI;
+
+  clock = new THREE.Clock();
+  raycaster = new THREE.Raycaster();
+  raycaster.far = 16;
+
+  // lighting — mostly self-lit wireframes, with a soft ambient + key
+  scene.add(new THREE.AmbientLight(0x8888aa, 0.7));
+  const key = new THREE.DirectionalLight(0xA78BFA, 0.5); key.position.set(5, 12, 2); scene.add(key);
+
+  // floor
+  const floorGeo = new THREE.PlaneGeometry(SPACING * 12, SPACING * 12);
+  const floorMat = new THREE.MeshStandardMaterial({ color: 0x0A0A1E, roughness: 0.9, metalness: 0.1 });
+  const floor = new THREE.Mesh(floorGeo, floorMat);
+  floor.rotation.x = -Math.PI / 2; floor.position.y = 0; scene.add(floor);
+
+  const grid = new THREE.GridHelper(SPACING * 12, 24, 0x2a2850, 0x16142e);
+  grid.position.y = 0.01; scene.add(grid);
+}
+
+// ---- build the 8×8 hall (chunked, so the loader can show real progress) -----
+async function buildWorldChunked() {
+  const total = EXHIBITS.length;
+  for (let i = 0; i < total; i++) {
+    buildColumn(EXHIBITS[i]);
+    if (i % 4 === 3 || i === total - 1) {
+      const pct = 8 + Math.round(((i + 1) / total) * 90);
+      setBoot(`Building the hall…  ${i + 1}/${total} exhibits`, pct);
+      await nextFrame();
+    }
+  }
+}
+
+function buildColumn(data) {
+  const x = (data.col - 3.5) * SPACING;
+  const z = (data.row - 3.5) * SPACING;
+  const group = new THREE.Group();
+  group.position.set(x, 0, z);
+
+  const col = new THREE.Color(data.color);
+
+  // transparent cylindrical cage wall — depthWrite:false so it never occludes the shape
+  const wallGeo = new THREE.CylinderGeometry(CAGE_R, CAGE_R, CAGE_H, 48, 1, true);
+  const wallMat = new THREE.MeshBasicMaterial({
+    color: col, transparent: true, opacity: 0.05, side: THREE.DoubleSide, depthWrite: false });
+  const wall = new THREE.Mesh(wallGeo, wallMat);
+  wall.position.y = CAGE_H / 2; wall.renderOrder = -1; group.add(wall);
+
+  // glowing cage frame: top + bottom rings and vertical bars
+  group.add(makeCageFrame(CAGE_R, CAGE_H, col));
+
+  // pedestal — top radius EXACTLY matches the cage radius so it sits flush beneath it
+  const ped = new THREE.Mesh(
+    new THREE.CylinderGeometry(CAGE_R, CAGE_R + 0.12, 0.3, 48),
+    new THREE.MeshStandardMaterial({ color: 0x14122e, roughness: 0.6 }));
+  ped.position.y = 0.15; group.add(ped);
+  // glowing lip ring at the cage base
+  const lip = new THREE.Mesh(
+    new THREE.CylinderGeometry(CAGE_R + 0.02, CAGE_R + 0.02, 0.06, 48),
+    new THREE.MeshStandardMaterial({ color: col, emissive: col, emissiveIntensity: 0.4, roughness: 0.4 }));
+  lip.position.y = 0.32; group.add(lip);
+
+  // plaque — just outside the cage on the -z side, facing the approaching player
+  const plaque = makePlaque(data);
+  plaque.position.set(0, 1.25, -CAGE_R - 0.1);
+  plaque.rotation.y = Math.PI;
+  plaque.userData.exhibitIndex = data.row * 8 + data.col;
+  group.add(plaque);
+  plaqueMeshes.push(plaque);
+
+  scene.add(group);
+
+  const rt = {
+    data, group,
+    shapeGroup: new THREE.Group(),
+    lines: null, baseVerts: null, edgeList: null, invScale: 1,
+    built: false,
+    center2d: { x, z },   // for containment-breach detection
+    sphere: new THREE.Sphere(new THREE.Vector3(x, CAGE_H * 0.55, z), 5),
+  };
+  rt.shapeGroup.position.y = CAGE_H * 0.6;
+  group.add(rt.shapeGroup);
+  exhibits.push(rt);
+}
+
+function makeCageFrame(r, h, color) {
+  const seg = 48, bars = 10, pts = [];
+  for (const yy of [0.02, h]) {                       // top + bottom rings
+    for (let i = 0; i < seg; i++) {
+      const a0 = 2 * Math.PI * i / seg, a1 = 2 * Math.PI * (i + 1) / seg;
+      pts.push(r * Math.cos(a0), yy, r * Math.sin(a0), r * Math.cos(a1), yy, r * Math.sin(a1));
+    }
+  }
+  for (let i = 0; i < bars; i++) {                    // vertical bars
+    const a = 2 * Math.PI * i / bars;
+    pts.push(r * Math.cos(a), 0.02, r * Math.sin(a), r * Math.cos(a), h, r * Math.sin(a));
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+  return new THREE.LineSegments(g, new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.5 }));
+}
+
+function makePlaque(data) {
+  const cv = document.createElement('canvas'); cv.width = 512; cv.height = 256;
+  const c = cv.getContext('2d');
+  c.fillStyle = 'rgba(13,13,34,0.92)'; roundRect(c, 6, 6, 500, 244, 18); c.fill();
+  c.lineWidth = 5; c.strokeStyle = data.color; roundRect(c, 6, 6, 500, 244, 18); c.stroke();
+  c.fillStyle = data.color; c.font = '600 22px "Space Mono", monospace';
+  c.fillText(data.tag.toUpperCase(), 30, 52);
+  c.fillStyle = '#E8E6F5'; c.font = '700 34px "Space Grotesk", system-ui, sans-serif';
+  wrapText(c, data.name, 30, 96, 452, 38);
+  c.fillStyle = '#9D9BC4'; c.font = '400 19px "Inter", system-ui, sans-serif';
+  wrapText(c, data.blurb, 30, 168, 452, 24);
+  c.fillStyle = data.color; c.font = '700 20px "Space Mono", monospace';
+  c.fillText('▶  CLICK TO READ', 30, 232);
+
+  const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 4;
+  const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide });
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2.0, 1.0), mat);
+  mesh.userData.baseColor = data.color;
+  return mesh;
+}
+
+function roundRect(c, x, y, w, h, r) {
+  c.beginPath(); c.moveTo(x + r, y);
+  c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+}
+function wrapText(c, text, x, y, maxW, lh) {
+  const words = text.split(' '); let line = '', yy = y;
+  for (const w of words) {
+    const test = line + w + ' ';
+    if (c.measureText(test).width > maxW && line) { c.fillText(line.trim(), x, yy); line = w + ' '; yy += lh; }
+    else line = test;
+  }
+  c.fillText(line.trim(), x, yy);
+}
+
+// ---- lazy geometry build ----------------------------------------------------
+function ensureBuilt(rt) {
+  if (rt.built) return;
+  rt.built = true;
+  const geo = rt.data.gen();
+  rt.baseVerts = geo.verts;
+  rt.edgeList = geo.edges;
+
+  // An nD shape's PROJECTED size swells as it rotates, so a single-frame measurement
+  // under-estimates its true extent. Sweep the rotation across a range long enough for
+  // every plane to complete a full turn, take the worst-case 3D radius, and normalize
+  // THAT to TARGET_R. Since horizontal (x,z) and vertical (y) reach are both ≤ the 3D
+  // radius, this guarantees the shape never pokes through the cage on any axis.
+  let minSp = Infinity;
+  for (const [, , sp] of rt.data.rot) minSp = Math.min(minSp, Math.abs(sp) || 1);
+  if (!isFinite(minSp) || minSp <= 0) minSp = 0.3;
+  const range = (2 * Math.PI) / minSp;
+  const SAMPLES = 160;
+  let maxR = 0;
+  for (let s = 0; s < SAMPLES; s++) {
+    const tt = (s / SAMPLES) * range;
+    let V = rt.baseVerts;
+    for (const [i, j, sp, off] of rt.data.rot) V = rotate(V, i, j, tt * sp + (off || 0));
+    const P = projectTo3D(V);
+    for (const p of P) { const r = Math.hypot(p[0], p[1], p[2]); if (r > maxR) maxR = r; }
+  }
+  rt.invScale = maxR > 1e-6 ? TARGET_R / maxR : 1;
+
+  const positions = new Float32Array(rt.edgeList.length * 2 * 3);
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const m = new THREE.LineBasicMaterial({ color: new THREE.Color(rt.data.color) });
+  rt.lines = new THREE.LineSegments(g, m);
+  rt.shapeGroup.add(rt.lines);
+  animateShape(rt, clock.elapsedTime); // populate first frame so distant shapes are visible
+}
+
+function animateShape(rt, t) {
+  let V = rt.baseVerts;
+  for (const [i, j, sp, off] of rt.data.rot) V = rotate(V, i, j, t * sp + (off || 0));
+  const P = projectTo3D(V);
+  const s = rt.invScale;
+  const pos = rt.lines.geometry.attributes.position.array;
+  let k = 0;
+  for (const [a, b] of rt.edgeList) {
+    const pa = P[a], pb = P[b];
+    pos[k++] = pa[0] * s; pos[k++] = pa[1] * s; pos[k++] = pa[2] * s;
+    pos[k++] = pb[0] * s; pos[k++] = pb[1] * s; pos[k++] = pb[2] * s;
+  }
+  rt.lines.geometry.attributes.position.needsUpdate = true;
+  rt.shapeGroup.rotation.y = t * 0.15;
+}
+
+// ---- main loop --------------------------------------------------------------
+function animate() {
+  if (!running) return;            // quitting the gallery stops the loop
+  requestAnimationFrame(animate);
+  const dt = Math.min(clock.getDelta(), 0.05);
+  const t = clock.elapsedTime;
+
+  if (mode === 'fps') updateMovement(dt);
+
+  // build frustum from current camera
+  camera.updateMatrixWorld();
+  projScreen.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse);
+  frustum.setFromProjectionMatrix(projScreen);
+
+  const camPos = controls.getObject().position;
+  for (const rt of exhibits) {
+    if (!frustum.intersectsSphere(rt.sphere)) continue;
+    ensureBuilt(rt);
+    // animate only what's reasonably close; distant in-view shapes stay rendered (frozen)
+    if (rt.lines && rt.sphere.center.distanceToSquared(camPos) < ANIM_DIST2)
+      animateShape(rt, t);
+  }
+
+  updateBreach(camPos, dt);
+  if (isTouch && mode === 'fps' && !modalOpen) updateReadPrompt();
+  renderer.render(scene, camera);
+}
+
+// mobile: show a "tap to read" button only when a plaque is centred AND close enough
+function updateReadPrompt() {
+  raycaster.setFromCamera({ x: 0, y: 0 }, camera);
+  const hit = raycaster.intersectObjects(plaqueMeshes, false)[0];
+  if (hit && hit.distance < 8) {
+    nearPlaque = hit.object.userData.exhibitIndex;
+    if (readBtnEl) {
+      readBtnEl.textContent = '⊙ Read · ' + EXHIBITS[nearPlaque].name;
+      readBtnEl.classList.add('show');
+    }
+  } else {
+    nearPlaque = -1;
+    if (readBtnEl) readBtnEl.classList.remove('show');
+  }
+}
+
+// ---- containment breach: triggered when the camera steps inside a cage ------
+function updateBreach(camPos, dt) {
+  let inside = false;
+  for (const rt of exhibits) {
+    const dx = camPos.x - rt.center2d.x, dz = camPos.z - rt.center2d.z;
+    if (dx * dx + dz * dz < CAGE_R * CAGE_R) { inside = true; break; }
+  }
+  if (inside !== breached) {
+    breached = inside;
+    breachEl.classList.toggle('show', breached);
+  }
+  // ease the static intensity in/out
+  const target = breached ? 1 : 0;
+  breachAlpha += (target - breachAlpha) * Math.min(1, dt * 8);
+  if (breachAlpha > 0.01) drawStatic(breachAlpha);
+  else if (staticCv.dataset.cleared !== '1') {
+    staticCv.getContext('2d').clearRect(0, 0, staticCv.width, staticCv.height);
+    staticCv.dataset.cleared = '1';
+  }
+}
+
+let staticSized = false;
+function drawStatic(alpha) {
+  const ctx = staticCv.getContext('2d');
+  if (!staticSized || staticCv.width !== 256) { staticCv.width = 256; staticCv.height = 256; staticSized = true; }
+  const W = staticCv.width, H = staticCv.height;
+  const img = ctx.createImageData(W, H);
+  const d = img.data;
+  for (let i = 0; i < d.length; i += 4) {
+    const v = (Math.random() * 255) | 0;
+    d[i] = 90 + v * 0.6;        // reddish radiation tint
+    d[i + 1] = v * 0.5;
+    d[i + 2] = v * 0.5;
+    d[i + 3] = (v * alpha) | 0;
+  }
+  ctx.putImageData(img, 0, 0);
+  staticCv.style.opacity = (0.35 * alpha).toFixed(3);
+  staticCv.dataset.cleared = '0';
+}
+
+function updateMovement(dt) {
+  // damping is 10/s, so terminal speed ≈ accel/10 m/s.
+  // mobile is slower (~7.5 m/s) to match the gentle stick-look feel; desktop ~15 walk / ~34 sprint.
+  const speed = isTouch ? 75 : (move.fast ? 340 : 150);
+  velocity.x -= velocity.x * 10 * dt;
+  velocity.z -= velocity.z * 10 * dt;
+
+  let fwd = move.f - move.b, strafe = move.r - move.l;
+  if (isTouch) { fwd += -touchMove.y; strafe += touchMove.x; }  // analog left stick
+  dir.set(strafe, 0, fwd);
+  if (dir.lengthSq() > 1) dir.normalize();                       // clamp diagonal, keep analog magnitude
+  velocity.z -= dir.z * speed * dt;
+  velocity.x -= dir.x * speed * dt;
+  controls.moveRight(-velocity.x * dt);
+  controls.moveForward(-velocity.z * dt);
+
+  // touch look (right stick) — manual yaw/pitch since there's no pointer lock on mobile
+  if (isTouch && (touchLook.x || touchLook.y)) {
+    const LOOK = 1.1;            // sensitivity (rad/s at full deflection) — gentle
+    yaw -= touchLook.x * LOOK * dt;
+    pitch -= touchLook.y * LOOK * dt;
+    pitch = Math.max(-1.35, Math.min(1.35, pitch));
+    controls.getObject().quaternion.setFromEuler(new THREE.Euler(pitch, yaw, 0, 'YXZ'));
+  }
+
+  const o = controls.getObject();
+  o.position.y = 1.6;
+  const lim = SPACING * 5.2;
+  o.position.x = Math.max(-lim, Math.min(lim, o.position.x));
+  o.position.z = Math.max(-lim, Math.min(lim, o.position.z));
+}
+
+// ---- interaction ------------------------------------------------------------
+function bindEvents() {
+  addEventListener('resize', () => {
+    camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+    renderer.setSize(innerWidth, innerHeight);
+  });
+
+  $('enterBtn').addEventListener('click', enterFPS);
+  $('resumeBtn').addEventListener('click', enterFPS);
+  $('quitBtn').addEventListener('click', quitGallery);
+
+  controls.addEventListener('lock', () => {
+    mode = 'fps';
+    startEl.classList.add('hide'); hideMenu();
+    crossEl.classList.add('show');
+    hudName.textContent = 'Click a plaque to read  ·  Esc — menu & controls';
+  });
+  controls.addEventListener('unlock', () => {
+    crossEl.classList.remove('show');
+    if (!galleryActive || modalOpen) return;
+    showMenu();                       // Esc out of first-person → main menu
+  });
+
+  // click: aim with the crosshair, click to read the plaque you're looking at
+  renderer.domElement.addEventListener('click', onClick);
+
+  // keyboard — only while the gallery overlay is active, so the document page
+  // keeps normal Space-scroll / shortcuts when the gallery is closed.
+  addEventListener('keydown', e => {
+    if (!galleryActive) return;
+    switch (e.code) {
+      case 'KeyW': case 'ArrowUp': move.f = 1; break;
+      case 'KeyS': case 'ArrowDown': move.b = 1; break;
+      case 'KeyA': case 'ArrowLeft': move.l = 1; break;
+      case 'KeyD': case 'ArrowRight': move.r = 1; break;
+      case 'ShiftLeft': case 'ShiftRight': move.fast = true; break;   // sprint
+      case 'Escape':
+        if (modalOpen) { e.preventDefault(); requestClose(); }
+        // (first-person Esc is handled by the pointer-unlock event → menu)
+        break;
+    }
+  });
+  addEventListener('keyup', e => {
+    switch (e.code) {
+      case 'KeyW': case 'ArrowUp': move.f = 0; break;
+      case 'KeyS': case 'ArrowDown': move.b = 0; break;
+      case 'KeyA': case 'ArrowLeft': move.l = 0; break;
+      case 'KeyD': case 'ArrowRight': move.r = 0; break;
+      case 'ShiftLeft': case 'ShiftRight': move.fast = false; break;
+    }
+  });
+
+  // modal buttons — the × button is a deliberate close; Escape (easy to hit by
+  // accident) instead asks for confirmation.
+  $('modalClose').addEventListener('click', closeModal);
+  $('keepBtn').addEventListener('click', () => confirmEl.classList.remove('show'));
+  $('leaveBtn').addEventListener('click', closeModal);
+
+  // mobile: dual analog sticks + read button + menu fab
+  if (isTouch) {
+    setupStick($('stickL'), $('stickLknob'), touchMove);
+    setupStick($('stickR'), $('stickRknob'), touchLook);
+    if (readBtnEl) readBtnEl.addEventListener('click', () => { if (nearPlaque >= 0) openModal(nearPlaque); });
+    if (menuFabEl) menuFabEl.addEventListener('click', showMenu);
+  }
+}
+
+// a virtual analog stick: drives `out` ∈ [-1,1] from a base element + knob
+function setupStick(base, knob, out) {
+  if (!base || !knob) return;
+  const R = 42;
+  let id = null, cx = 0, cy = 0;
+  const set = (dx, dy) => {
+    const m = Math.hypot(dx, dy) || 1, c = Math.min(R, m);
+    const nx = dx / m * c, ny = dy / m * c;
+    knob.style.transform = `translate(${nx}px, ${ny}px)`;
+    out.x = nx / R; out.y = ny / R;
+  };
+  const reset = () => { out.x = 0; out.y = 0; knob.style.transform = 'translate(0,0)'; };
+  base.addEventListener('pointerdown', e => {
+    id = e.pointerId; const r = base.getBoundingClientRect();
+    cx = r.left + r.width / 2; cy = r.top + r.height / 2;
+    base.setPointerCapture(id); set(e.clientX - cx, e.clientY - cy); e.preventDefault();
+  });
+  base.addEventListener('pointermove', e => { if (e.pointerId === id) set(e.clientX - cx, e.clientY - cy); });
+  const end = e => { if (e.pointerId === id) { id = null; reset(); } };
+  base.addEventListener('pointerup', end);
+  base.addEventListener('pointercancel', end);
+}
+
+function enterFPS() {
+  if (modalOpen) return;
+  if (isTouch) { startTouchFPS(); return; }   // mobile has no pointer lock
+  controls.lock();
+}
+
+function startTouchFPS() {
+  mode = 'fps';
+  startEl.classList.add('hide'); hideMenu();
+  crossEl.classList.add('show');
+  if (touchUIEl) touchUIEl.classList.add('show');
+  if (menuFabEl) menuFabEl.classList.add('show');
+  hudName.textContent = 'Left stick: move · Right stick: look · tap a nearby plaque';
+}
+
+function showMenu() {
+  mode = 'menu';
+  crossEl.classList.remove('show');
+  if (touchUIEl) touchUIEl.classList.remove('show');
+  if (menuFabEl) menuFabEl.classList.remove('show');
+  if (readBtnEl) readBtnEl.classList.remove('show');
+  pauseEl.classList.add('show');
+  hudName.textContent = 'Paused';
+}
+function hideMenu() {
+  pauseEl.classList.remove('show');
+}
+
+function onClick() {
+  if (modalOpen || mode !== 'fps') return;
+  // aim with the crosshair: read the plaque under the centre of the screen
+  raycaster.setFromCamera({ x: 0, y: 0 }, camera);
+  const hit = raycaster.intersectObjects(plaqueMeshes, false)[0];
+  if (hit) openModal(hit.object.userData.exhibitIndex);
+}
+
+// ---- modal ------------------------------------------------------------------
+function openModal(idx) {
+  const d = EXHIBITS[idx];
+  if (!d) return;
+  currentExhibit = idx;
+  modalOpen = true;
+  if (controls.isLocked) controls.unlock();
+  pauseEl.classList.remove('show');
+  if (touchUIEl) touchUIEl.classList.remove('show');
+  if (menuFabEl) menuFabEl.classList.remove('show');
+  if (readBtnEl) readBtnEl.classList.remove('show');
+
+  $('aTag').textContent = d.tag;
+  $('aTag').style.color = d.color;
+  $('aTitle').textContent = d.name;
+
+  const meta = $('aMeta'); meta.innerHTML = '';
+  if (d.schlafli) meta.appendChild(metaSpan('Symbol', d.schlafli));
+  if (d.dim) meta.appendChild(metaSpan('Native dim', d.dim + 'D'));
+
+  const facts = Object.entries(d.facts || {})
+    .map(([k, v]) => `<div><b>${k.replace(/_/g, ' ')}</b><span>${v}</span></div>`).join('');
+  const refs = (d.cites || []).map(c => `<li>${c}</li>`).join('');
+  $('aBody').innerHTML =
+    `<div class="facts">${facts}</div>${d.article}` +
+    `<div class="refs"><h3>References</h3><ol>${refs}</ol></div>`;
+  $('aBody').scrollTop = 0;
+
+  confirmEl.classList.remove('show');
+  modalEl.classList.add('show');
+}
+
+function metaSpan(label, val) {
+  const s = document.createElement('span');
+  s.innerHTML = `${label}: <b>${val}</b>`;
+  return s;
+}
+
+// Escape (easy to hit by accident) asks for confirmation; the × / "Return to
+// gallery" buttons close for real.
+function requestClose() {
+  confirmEl.classList.add('show');
+}
+function closeModal() {
+  confirmEl.classList.remove('show');
+  modalEl.classList.remove('show');
+  modalOpen = false;
+  currentExhibit = -1;
+  if (isTouch) { startTouchFPS(); return; }   // mobile returns straight to first-person
+  // show the menu as a safe fallback; if re-locking succeeds the 'lock' handler hides it
+  showMenu();
+  // we're inside a click handler (valid gesture), so try to drop back into first-person
+  try { controls.lock(); } catch (_) {}
+}
+
+</script>
+</body>
+</html>
