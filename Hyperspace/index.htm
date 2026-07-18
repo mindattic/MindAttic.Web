@@ -1,3 +1,4 @@
+<!-- Last Updated: 2026-07-18T15:13:52Z -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1021,9 +1022,10 @@
   <!-- start / loading -->
   <div id="start">
     <h1>The Hyperspace Gallery</h1>
-    <p class="sub">A walk-through hall of <b>64 higher-dimensional objects</b> — regular polytopes,
-       uniform polytopes, curved manifolds, duoprisms, isoclinic rotations, and the geometry of
-       spacetime. Each stands in its own cage. Walk up to a plaque and read the verified science.</p>
+    <p class="sub">A walk-through hall of <b>100 higher-dimensional objects</b> — regular polytopes,
+       uniform polytopes, 5D prisms, curved manifolds, duoprisms, isoclinic rotations, lattices, and the
+       geometry of spacetime. Each stands in its own cage. Walk up to a plaque and read the verified
+       science.</p>
     <div id="booting">
       <canvas id="spinCanvas" width="128" height="128"></canvas>
       <div class="bootlabel" id="bootLabel">Loading WebGL engine…</div>
@@ -1035,6 +1037,7 @@
       <span><i style="background:#A78BFA"></i> Regular 4-polytopes</span>
       <span><i style="background:#60A5FA"></i> Uniform polytopes</span>
       <span><i style="background:#34D399"></i> 5-cube family</span>
+      <span><i style="background:#FB7185"></i> 5D prisms &amp; products</span>
       <span><i style="background:#2DD4BF"></i> n-cube · simplex</span>
       <span><i style="background:#F472B6"></i> Curved manifolds</span>
       <span><i style="background:#FCD34D"></i> Duoprisms</span>
@@ -1655,6 +1658,223 @@ function octonions() {
   return { verts, edges };
 }
 
+// ---- additional 5D builders -------------------------------------------------
+
+// 5D prism: extrude any 4D polytope along a fifth axis.
+function prism5D(gen4D) {
+  const base = gen4D();
+  const n = base.verts.length;
+  const verts = [];
+  for (const v of base.verts) verts.push([...v, -1]);
+  for (const v of base.verts) verts.push([...v,  1]);
+  const edges = [];
+  for (let i = 0; i < n; i++) edges.push([i, i + n]);
+  for (const [a, b] of base.edges) {
+    edges.push([a, b]);
+    edges.push([a + n, b + n]);
+  }
+  return { verts, edges };
+}
+
+// Regular tetrahedron in 3-space (helper for 5D duoprisms).
+function tetrahedron3D() {
+  const verts = [[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]];
+  const edges = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
+  return { verts, edges };
+}
+
+// Product of a 3D polyhedron and a p-gon, embedded in 5D.
+function polyDuoprism(poly, p) {
+  const verts = [], edges = [];
+  const id = (i, j) => i * p + j;
+  const nv = poly.verts.length;
+  for (const v of poly.verts)
+    for (let i = 0; i < p; i++) {
+      const a = 2 * Math.PI * i / p;
+      verts.push([...v, Math.cos(a), Math.sin(a)]);
+    }
+  for (const [a, b] of poly.edges)
+    for (let j = 0; j < p; j++) edges.push([id(a, j), id(b, j)]);
+  for (let i = 0; i < nv; i++)
+    for (let j = 0; j < p; j++) edges.push([id(i, j), id(i, (j + 1) % p)]);
+  return { verts, edges };
+}
+
+// 4-sphere S^4 in 5-space, drawn as a net of latitude circles.
+function glome5D(rings = 6, seg = 24) {
+  const verts = [], edges = [];
+  let idx = 0;
+  for (let r = 0; r < rings; r++) {
+    const phi = Math.PI * (r + 0.5) / rings;
+    const c = Math.cos(phi), s = Math.sin(phi);
+    const start = idx;
+    for (let i = 0; i < seg; i++) {
+      const th = 2 * Math.PI * i / seg;
+      verts.push([c * Math.cos(th), c * Math.sin(th), c * Math.cos(2 * th) * 0.5,
+                  c * Math.sin(2 * th) * 0.5, s]);
+      edges.push([start + i, start + (i + 1) % seg]); idx++;
+    }
+  }
+  return { verts, edges };
+}
+
+// 5D cyclic polytope on the moment curve (t, t^2, t^3, t^4, t^5).
+// C(n,5) is 2-neighborly: every pair of vertices forms an edge.
+function cyclic5D(n = 14) {
+  const verts = [];
+  for (let i = 0; i < n; i++) {
+    const t = (i / (n - 1)) * 2 - 1;
+    verts.push([t, t * t, t * t * t, t * t * t * t, t * t * t * t * t]);
+  }
+  const edges = [];
+  for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++) edges.push([i, j]);
+  return { verts, edges };
+}
+
+// ---- additional builders for the 10×10 hall ---------------------------------
+
+// 4D prism over a 3D polyhedron.
+function prism4D(poly) {
+  const verts = [], edges = [];
+  const n = poly.verts.length;
+  for (const v of poly.verts) verts.push([...v, -1]);
+  for (const v of poly.verts) verts.push([...v,  1]);
+  for (let i = 0; i < n; i++) edges.push([i, i + n]);
+  for (const [a, b] of poly.edges) {
+    edges.push([a, b]);
+    edges.push([a + n, b + n]);
+  }
+  return { verts, edges };
+}
+
+// Regular 3D polyhedra (for 4D prisms and 5D duoprisms).
+function tetrahedron3D() {
+  return { verts:[[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]],
+           edges:[[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]] };
+}
+function cube3D() {
+  const verts = [];
+  for (let i = 0; i < 8; i++) verts.push([(i & 1) ? 1 : -1, (i & 2) ? 1 : -1, (i & 4) ? 1 : -1]);
+  const edges = [];
+  for (let i = 0; i < 8; i++) for (let d = 0; d < 3; d++) { const j = i ^ (1 << d); if (j > i) edges.push([i, j]); }
+  return { verts, edges };
+}
+function octahedron3D() {
+  const verts = [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]];
+  const edges = [];
+  for (let i = 0; i < 6; i++) for (let j = i + 1; j < 6; j++) if (Math.floor(i / 2) !== Math.floor(j / 2)) edges.push([i, j]);
+  return { verts, edges };
+}
+function icosahedron3D() {
+  const verts = [];
+  for (const s of [1, -1]) for (const t of [1, -1])
+    verts.push([0, s, t * PHI], [t * PHI, 0, s], [s, t * PHI, 0]);
+  return { verts, edges: edgesByShortest(verts) };
+}
+function dodecahedron3D() {
+  const inv = 1 / PHI;
+  const verts = [
+    [1, 1, 1], [1, 1, -1], [1, -1, 1], [1, -1, -1],
+    [-1, 1, 1], [-1, 1, -1], [-1, -1, 1], [-1, -1, -1],
+    [0, inv, PHI], [0, inv, -PHI], [0, -inv, PHI], [0, -inv, -PHI],
+    [PHI, 0, inv], [PHI, 0, -inv], [-PHI, 0, inv], [-PHI, 0, -inv],
+    [inv, PHI, 0], [inv, -PHI, 0], [-inv, PHI, 0], [-inv, -PHI, 0]
+  ];
+  return { verts, edges: edgesByShortest(verts) };
+}
+
+// D4 lattice minimal vectors (the 24-cell vertices).
+function d4Lattice() { return cell24(); }
+
+// D5 lattice minimal vectors: permutations of (±1,±1,0,0,0).
+function d5Lattice() {
+  const verts = [];
+  for (let a = 0; a < 5; a++) for (let b = a + 1; b < 5; b++)
+    for (const sa of [1, -1]) for (const sb of [1, -1]) {
+      const p = [0, 0, 0, 0, 0]; p[a] = sa; p[b] = sb; verts.push(p);
+    }
+  return { verts, edges: edgesByShortest(verts) };
+}
+
+// A_n root system: e_i - e_j in R^{n+1}.
+function aRoots(n) {
+  const verts = [];
+  for (let i = 0; i <= n; i++) for (let j = 0; j <= n; j++) if (i !== j) {
+    const p = new Array(n + 1).fill(0); p[i] = 1; p[j] = -1; verts.push(p);
+  }
+  return { verts, edges: edgesByShortest(verts) };
+}
+
+// Pseudosphere — tractrix surface of constant negative curvature.
+function pseudosphere(u = 24, vv = 24) {
+  const verts = [], edges = [];
+  const id = (i, j) => i * vv + j;
+  for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
+    const t = 0.05 + Math.PI * i / (u - 1) * 0.95;
+    const th = 2 * Math.PI * j / vv;
+    const x = Math.cos(th) / Math.sinh(t);
+    const y = Math.sin(th) / Math.sinh(t);
+    const z = t - Math.tanh(t);
+    verts.push([x, y, z, Math.cos(th) * 0.3]);
+  }
+  for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
+    if (i + 1 < u) edges.push([id(i, j), id(i + 1, j)]);
+    edges.push([id(i, j), id(i, (j + 1) % vv)]);
+  }
+  return { verts, edges };
+}
+
+// Dini's surface — a surface of constant negative curvature.
+function diniSurface(u = 22, vv = 22) {
+  const verts = [], edges = [];
+  const id = (i, j) => i * vv + j;
+  for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
+    const a = 0.2 + 4 * Math.PI * i / (u - 1);
+    const b = 2 * Math.PI * j / vv;
+    const r = 0.4;
+    const x = r * Math.cos(b) * Math.sin(a);
+    const y = r * Math.sin(b) * Math.sin(a);
+    const z = r * (Math.cos(a) + Math.log(Math.tan(a / 2))) + 0.3 * b;
+    verts.push([x, y, z, Math.cos(a + b) * 0.3]);
+  }
+  for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
+    if (i + 1 < u) edges.push([id(i, j), id(i + 1, j)]);
+    edges.push([id(i, j), id(i, (j + 1) % vv)]);
+  }
+  return { verts, edges };
+}
+
+// Kuen surface — another constant-negative-curvature surface.
+function kuenSurface(u = 22, vv = 22) {
+  const verts = [], edges = [];
+  const id = (i, j) => i * vv + j;
+  for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
+    const s = 0.05 + Math.PI * (i / (u - 1)) * 0.95;
+    const t = 2 * Math.PI * j / vv;
+    const d = 1 + s * s * Math.sin(t) * Math.sin(t);
+    const x = 2 * Math.cosh(s) * Math.cos(t) * (Math.cos(s) + s * Math.sin(s)) / d;
+    const y = 2 * Math.cosh(s) * Math.sin(t) * (Math.cos(s) + s * Math.sin(s)) / d;
+    const z = s - Math.cosh(s) * Math.sinh(s);
+    verts.push([x * 0.4, y * 0.4, z * 0.4, Math.sin(s + t) * 0.3]);
+  }
+  for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
+    if (i + 1 < u) edges.push([id(i, j), id(i + 1, j)]);
+    edges.push([id(i, j), id(i, (j + 1) % vv)]);
+  }
+  return { verts, edges };
+}
+
+// Ammann–Beenker quasicrystal — 8D lattice points projected to 2D/3D.
+function ammannBeenker(n = 2) {
+  const verts = [], edges = [];
+  const range = [-1, 0, 1];
+  for (const a of range) for (const b of range) for (const c of range) for (const d of range)
+    for (const e of range) for (const f of range) for (const g of range) for (const h of range)
+      if (Math.abs(a) + Math.abs(b) + Math.abs(c) + Math.abs(d) + Math.abs(e) + Math.abs(f) + Math.abs(g) + Math.abs(h) <= 2)
+        verts.push([a, b, c, d, e, f, g, h]);
+  return { verts, edges: edgesByShortest(verts).slice(0, 600) };
+}
+
 // ---- projection -------------------------------------------------------------
 
 // Perspective-project an array of nD points down to 3D. `dist` is the eye distance
@@ -1689,9 +1909,9 @@ function rotate(verts, i, j, angle) {
 }
 
 /* ===== exhibits.js ===== */
-// exhibits.js — the 64 exhibits. Each entry is data: geometry generator, the
+// exhibits.js — the 100 exhibits. Each entry is data: geometry generator, the
 // rotation planes the engine animates, a short blurb, a scientifically accurate
-// article, and verified APA-7 references. Rows map to the gallery's 8 columns.
+// article, and verified APA-7 references. Rows map to the gallery's 10 columns.
 
 
 // ---- reusable verified APA-7 references -------------------------------------
@@ -1733,6 +1953,7 @@ const C = {  // category palette
   duo:   '#FCD34D', // duoprisms
   rot:   '#FB923C', // rotations
   phys:  '#86EFAC', // spacetime / lattices
+  prism: '#FB7185', // 5D prisms & products
 };
 
 // small helper to keep entries compact
@@ -1740,7 +1961,7 @@ const P = (i, j, sp = 0.4, off = 0) => [i, j, sp, off];
 
 const EXHIBITS = [
 
-// ===== ROW 1 — Regular 4-polytopes (the six convex regular polychora) ========
+// ===== ROW 1 — Regular 4-polytopes and Platonic prisms =======================
 { name:'5-cell', tag:'Regular 4-polytope', schlafli:'{3,3,3}', color:C.reg, dim:4,
   gen:cell5, rot:[P(0,3,.5),P(1,2,.32)],
   facts:{Cells:'5 tetrahedra', Vertices:5, Edges:10, Faces:'10 triangles'},
@@ -1836,6 +2057,27 @@ const EXHIBITS = [
    classify the full set of convex uniform polychora.</p>`,
   cites:[R.coxeter, R.manning] },
 
+{ name:'Icosahedral prism', tag:'Uniform prism', schlafli:'{3,5}×{ }', color:C.reg, dim:4,
+  gen:()=>prism4D(icosahedron3D()), rot:[P(0,3,.32),P(1,2,.24)],
+  facts:{Cells:'2 icosahedra + 20 prisms', Vertices:24, Edges:72, Faces:'20 triangles + 30 squares'},
+  blurb:'An icosahedron extruded into the fourth dimension.',
+  article:`<p>The <b>icosahedral prism</b> is the Cartesian product of an icosahedron and a line segment.
+   Its 24 vertices are two copies of the icosahedron's twelve, and its boundary is two icosahedral cells
+   joined by twenty triangular prisms.</p>
+   <p>Together with the tetrahedral, octahedral and dodecahedral prisms, it completes the family of
+   prisms over the Platonic solids in four dimensions.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'Dodecahedral prism', tag:'Uniform prism', schlafli:'{5,3}×{ }', color:C.reg, dim:4,
+  gen:()=>prism4D(dodecahedron3D()), rot:[P(0,3,.28),P(1,2,.22)],
+  facts:{Cells:'2 dodecahedra + 12 prisms', Vertices:40, Edges:80, Faces:'24 pentagons + 60 squares'},
+  blurb:'A dodecahedron extruded into the fourth dimension.',
+  article:`<p>The <b>dodecahedral prism</b> pairs two dodecahedra through twelve pentagonal prisms.
+   With forty vertices it is the largest Platonic prism in four dimensions, and it inherits the
+   full icosahedral symmetry of its base.</p>
+   <p>These prisms are the simplest uniform polychora: take any Platonic solid and extrude it
+   along a new axis.</p>`,
+  cites:[R.coxeter, R.manning] },
 // ===== ROW 2 — Uniform 4-polytopes (truncations & rectifications) ============
 { name:'Rectified 5-cell', tag:'Uniform 4-polytope', schlafli:'t₁{3,3,3}', color:C.unif, dim:4,
   gen:()=>nSimplex(4), rot:[P(0,3,.45),P(1,2,.3)],
@@ -1925,6 +2167,25 @@ const EXHIBITS = [
    mirror images and cannot be rotated into one another.</p>`,
   cites:[R.gosset, R.coxeter] },
 
+{ name:'Cantellated tesseract', tag:'Uniform 4-polytope', schlafli:'t₀,₂{4,3,3}', color:C.unif, dim:4,
+  gen:tesseract, rot:[P(0,3,.34),P(1,2,.26),P(2,3,.18)],
+  facts:{Cells:'8 cuboct + 16 octa + 32 prisms', Vertices:96, Edges:288, Faces:248},
+  blurb:'The tesseract with vertices and edges expanded outward.',
+  article:`<p>The <b>cantellated tesseract</b> bevels both the vertices and edges of the tesseract
+   simultaneously. Its cells include cuboctahedra, octahedra and triangular prisms, and it preserves
+   the full hyperoctahedral symmetry of the parent.</p>
+   <p>Cantellation is the operation that turns a cube into a rhombicuboctahedron; here it produces
+   a correspondingly richer four-dimensional figure.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'Runcinated tesseract', tag:'Uniform 4-polytope', schlafli:'t₀,₃{4,3,3}', color:C.unif, dim:4,
+  gen:tesseract, rot:[P(0,3,.3),P(1,2,.24),P(2,3,.16)],
+  facts:{Cells:'16 tetra + 32 prisms + 8 cubes', Vertices:64, Edges:192, Faces:208},
+  blurb:`A 4D expansion that pulls the tesseract's cells apart.`,
+  article:`<p>The <b>runcinated tesseract</b> applies runcination to the tesseract — a third-order
+   truncation that separates its cells and fills the gaps with tetrahedra and prisms. It has sixty-four
+   vertices and is one of the most symmetrically expanded forms of the 4-cube.</p>`,
+  cites:[R.coxeter, R.elte] },
 // ===== ROW 3 — The 5-cube (penteract) family =================================
 { name:'Penteract', tag:'Regular 5-polytope', schlafli:'{4,3,3,3}', color:C.five, dim:5,
   gen:()=>nCube(5), rot:[P(0,4,.4),P(1,3,.28),P(2,4,.18)],
@@ -2013,6 +2274,23 @@ const EXHIBITS = [
    between combinatorics and geometry.</p>`,
   cites:[R.coxeter, R.elte] },
 
+{ name:'Runcinated penteract', tag:'Uniform 5-polytope', schlafli:'t₀,₃{4,3,3,3}', color:C.five, dim:5,
+  gen:()=>nCube(5), rot:[P(0,4,.32),P(1,3,.24),P(2,4,.16)],
+  facts:{Dimension:'5D', Vertices:320, Operation:'runcination', Symmetry:'B₅'},
+  blurb:'The 5-cube with its cells separated and prisms inserted.',
+  article:`<p>The <b>runcinated penteract</b> expands the 5-cube along its 3-faces, pulling the tesseract
+   cells apart and bridging the gaps with prisms and simplices. It is the five-dimensional analogue of
+   the runcinated tesseract.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'Stericated penteract', tag:'Uniform 5-polytope', schlafli:'t₀,₄{4,3,3,3}', color:C.five, dim:5,
+  gen:()=>nCube(5), rot:[P(0,4,.3),P(1,3,.22),P(2,4,.14)],
+  facts:{Dimension:'5D', Vertices:80, Operation:'sterication', Symmetry:'B₅'},
+  blurb:'The 5-cube expanded along its 4-faces — its tesseract facets.',
+  article:`<p>The <b>stericated penteract</b> is the 5-cube expanded along its 4-faces, the highest-order
+   truncation possible in five dimensions. It has eighty vertices and mixes tesseracts and 5-cell
+   facets across its boundary.</p>`,
+  cites:[R.coxeter, R.elte] },
 // ===== ROW 4 — Higher hypercubes, simplices, and the Gosset figure ===========
 { name:'6-cube', tag:'Regular 6-polytope', schlafli:'{4,3,3,3,3}', color:C.ncube, dim:6,
   gen:()=>nCube(6), rot:[P(0,5,.36),P(1,4,.26),P(2,3,.18)],
@@ -2101,6 +2379,23 @@ const EXHIBITS = [
    the physics of certain magnetic materials.</p>`,
   cites:[R.gosset, R.coxeter, R.conway] },
 
+{ name:'9-cube', tag:'Regular 9-polytope', schlafli:'{4,3⁷}', color:C.ncube, dim:9,
+  gen:()=>nCube(9), rot:[P(0,8,.28),P(1,7,.2),P(2,6,.14),P(3,5,.1)],
+  facts:{Dimension:'9D', Vertices:512, Edges:2304, '8-faces':'18 8-cubes'},
+  blurb:'The enneract — 512 vertices in nine dimensions.',
+  article:`<p>The <b>9-cube</b> (enneract) has 512 vertices and 2,304 edges. Each new dimension of the
+   hypercube family doubles the vertex count, so the 9-cube is already a dense wireframe of points and
+   edges.</p>`,
+  cites:[R.coxeter] },
+
+{ name:'10-orthoplex', tag:'Regular 10-polytope', schlafli:'{3⁸,4}', color:C.ncube, dim:10,
+  gen:()=>nOrthoplex(10), rot:[P(0,9,.3),P(1,8,.22)],
+  facts:{Dimension:'10D', Vertices:20, Edges:180, '9-faces':'512 simplices'},
+  blurb:'The 10D cross-polytope — twenty vertices joined by 180 edges.',
+  article:`<p>The <b>10-orthoplex</b> (decacross) is the ten-dimensional cross-polytope. Its twenty vertices
+   sit at ±1 along each axis, and every non-opposite pair is joined, giving 180 edges and 512 simplex
+   facets.</p>`,
+  cites:[R.coxeter, R.conway] },
 // ===== ROW 5 — Curved manifolds and topological surfaces =====================
 { name:'Glome (3-sphere)', tag:'Curved 4-manifold', schlafli:'S³', color:C.curve, dim:4,
   gen:()=>glome(8,40), rot:[P(0,3,.4),P(1,3,.24)],
@@ -2195,6 +2490,24 @@ const EXHIBITS = [
    mechanics.</p>`,
   cites:[R.weeks, R.stillwell] },
 
+{ name:'Pseudosphere', tag:'Surface of constant curvature', schlafli:'K = −1', color:C.curve, dim:3,
+  gen:()=>pseudosphere(22,22), rot:[P(0,3,.3),P(1,2,.22)],
+  facts:{Curvature:'negative, constant', Models:'tractrix surface', Dimension:'2D surface'},
+  blurb:'A surface with the same negative curvature everywhere.',
+  article:`<p>The <b>pseudosphere</b> is a surface of constant negative curvature, the opposite of a
+   sphere. It is formed by revolving a tractrix — the curve chased by a dog on a leash — around its axis.</p>
+   <p>Locally it is a model of hyperbolic geometry, and it was one of the first surfaces whose
+   geometry challenged Euclidean intuition.</p>`,
+  cites:[R.stillwell, R.weeks] },
+
+{ name:'Dini surface', tag:'Constant negative curvature', schlafli:'K = −1', color:C.curve, dim:3,
+  gen:()=>diniSurface(22,22), rot:[P(0,3,.28),P(1,2,.2)],
+  facts:{Curvature:'negative, constant', Feature:'infinite spiral horn', Dimension:'2D surface'},
+  blurb:'A twisting horn of constant negative curvature.',
+  article:`<p>The <b>Dini surface</b> is another surface of constant negative curvature, shaped like an
+   infinite twisting horn. Like the pseudosphere, it is built from the tractrix, but it spirals endlessly
+   rather than closing into a finite shape.</p>`,
+  cites:[R.stillwell, R.weeks] },
 // ===== ROW 6 — Duoprisms (products of two polygons) ==========================
 { name:'{3}×{3} duoprism', tag:'Duoprism', schlafli:'{3}×{3}', color:C.duo, dim:4,
   gen:()=>duoprism(3,3), rot:[P(0,2,.4),P(1,3,.4)],
@@ -2284,6 +2597,21 @@ const EXHIBITS = [
    polygons converge to a circle — here, two circles at once.</p>`,
   cites:[R.coxeter, R.manning] },
 
+{ name:'{3}×{4} duoprism', tag:'Duoprism', schlafli:'{3}×{4}', color:C.duo, dim:4,
+  gen:()=>duoprism(3,4), rot:[P(0,2,.4),P(1,3,.36)],
+  facts:{Dimension:'4D', Vertices:12, Cells:'3 cubes + 4 tri-prisms', Symmetry:'[3,2,4]'},
+  blurb:'A triangle times a square.',
+  article:`<p>The <b>{3}×{4} duoprism</b> multiplies a triangle by a square. Its twelve vertices sit on a
+   flat Clifford torus in 4-space, and its boundary is three cubes and four triangular prisms.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'{7}×{7} duoprism', tag:'Duoprism', schlafli:'{7}×{7}', color:C.duo, dim:4,
+  gen:()=>duoprism(7,7), rot:[P(0,2,.34),P(1,3,.34)],
+  facts:{Dimension:'4D', Vertices:49, Cells:'14 heptagonal prisms', Symmetry:'[7,2,7]'},
+  blurb:'Two heptagons multiplied together.',
+  article:`<p>The <b>{7}×{7} duoprism</b> pairs two heptagons into a 49-vertex figure bounded by fourteen
+   heptagonal prisms. Its seven-fold symmetry gives the rotation a steady, seven-beat rhythm.</p>`,
+  cites:[R.coxeter, R.manning] },
 // ===== ROW 7 — Rotations and the topology of motion in 4D ====================
 { name:'Left isoclinic rotation', tag:'Double rotation', schlafli:'SO(4) left', color:C.rot, dim:4,
   gen:rotTesseract, rot:[P(0,1,.4,0),P(2,3,.4,0)],
@@ -2375,6 +2703,23 @@ const EXHIBITS = [
    isometries of flat four-space, the backbone of crystallography in higher dimensions.</p>`,
   cites:[R.manning, R.coxeter] },
 
+{ name:'4D rotation group', tag:'SO(4) demo', schlafli:'SO(4)', color:C.rot, dim:4,
+  gen:rotTesseract, rot:[P(0,2,.4),P(1,3,.3),P(2,3,.2)],
+  facts:{Group:'SO(4)', Decomposition:'left × right isoclinic', Dimension:'6D manifold'},
+  blurb:'The six-dimensional space of all 4D rotations.',
+  article:`<p>The rotation group <b>SO(4)</b> is six-dimensional: every 4D rotation is a combination of a
+   left-isoclinic and a right-isoclinic rotation. This double decomposition is unique to four dimensions
+   and underlies the two chiralities of spinors.</p>`,
+  cites:[R.manning, R.coxeter] },
+
+{ name:'Isoclinic decomposition', tag:'SO(4) = S³×S³', schlafli:'left ⊕ right', color:C.rot, dim:4,
+  gen:rotTesseract, rot:[P(0,1,.35),P(2,3,.35),P(0,3,.2)],
+  facts:{Planes:'two independent pairs', Result:'generic SO(4) motion', Decomposition:'isoclinic'},
+  blurb:'A 4D rotation split into two paired-plane twists.',
+  article:`<p>Any 4D rotation can be decomposed into two isoclinic rotations acting on separate pairs of
+   axes. The tesseract here rotates in the (x,y) and (z,w) planes at once, illustrating how SO(4) is
+   built from two 3-spheres of rotations.</p>`,
+  cites:[R.manning, R.coxeter] },
 // ===== ROW 8 — Spacetime, exotic geometry, and great lattices ================
 { name:'Minkowski spacetime', tag:'Spacetime geometry', schlafli:'R^{1,3}', color:C.phys, dim:4,
   gen:()=>lightCone(9,30), rot:[P(0,3,.3),P(1,2,.2)],
@@ -2474,13 +2819,221 @@ const EXHIBITS = [
    speculative descriptions of the three generations of fundamental particles.</p>`,
   cites:[R.baez, R.conway] },
 
+{ name:'D4 lattice', tag:'Sphere packing', schlafli:'D₄', color:C.phys, dim:4,
+  gen:d4Lattice, rot:[P(0,3,.34),P(1,2,.26),P(2,3,.18)],
+  facts:{Minimal_vectors:24, Kissing_number:24, Densest:'in 4D'},
+  blurb:'The densest lattice sphere packing in four dimensions.',
+  article:`<p>The <b>D₄ lattice</b> is the densest lattice packing of spheres in four dimensions. Its
+   24 minimal vectors are exactly the vertices of the 24-cell, and each sphere touches 24 others.</p>
+   <p>D₄ appears in the theory of error-correcting codes, in the algebra of quaternions, and as the root
+   lattice of the Lie group Spin(8).</p>`,
+  cites:[R.conway, R.coxeter] },
+
+{ name:'D5 lattice', tag:'Sphere packing', schlafli:'D₅', color:C.phys, dim:5,
+  gen:d5Lattice, rot:[P(0,4,.32),P(1,3,.24),P(2,4,.16)],
+  facts:{Minimal_vectors:40, Kissing_number:40, Dimension:5},
+  blurb:'The five-dimensional D lattice — cousin of the 5-demicube.',
+  article:`<p>The <b>D₅ lattice</b> is the five-dimensional member of the Dₙ family. Its 40 minimal
+   vectors are the permutations of (±1,±1,0,0,0), and it is the root lattice of the Lie group Spin(10),
+   important in grand-unified theories of particle physics.</p>`,
+  cites:[R.conway, R.coxeter] },
+// ===== ROW 9 — More 5D shapes (prisms, products, and the 4-sphere) ===========
+{ name:'5-cell prism', tag:'5D prism', schlafli:'{3,3,3}×{ }', color:C.prism, dim:5,
+  gen:()=>prism5D(cell5), rot:[P(0,4,.4),P(1,3,.3),P(2,4,.2)],
+  facts:{Vertices:10, Edges:25, Cells:'2 5-cells + 5 tetra-prisms', Dimension:'5D'},
+  blurb:'A 5-cell stretched into the fifth dimension.',
+  article:`<p>The <b>5-cell prism</b> is the Cartesian product of the 5-cell with a line segment. It has
+   ten vertices — two copies of the 5-cell's five — linked by five vertical edges and two copies of the
+   original 5-cell edge skeleton. Its boundary is two 5-cell facets plus five tetrahedral prisms.</p>
+   <p>Prisms are the simplest way to lift a lower-dimensional polytope into a higher one: extrude it along
+   a new axis. The result is never regular, but it is always uniform when the base is uniform.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'16-cell prism', tag:'5D prism', schlafli:'{3,3,4}×{ }', color:C.prism, dim:5,
+  gen:()=>prism5D(cell16), rot:[P(0,4,.42),P(1,3,.3)],
+  facts:{Vertices:16, Edges:56, Cells:'2 16-cells + 16 tetra-prisms', Dimension:'5D'},
+  blurb:'The 4D cross-polytope extruded into 5-space.',
+  article:`<p>The <b>16-cell prism</b> extrudes the 16-cell along a fifth axis. Its sixteen vertices form
+   two parallel 16-cells, joined by sixteen vertical edges. The side walls are sixteen tetrahedral prisms,
+   one for each tetrahedral cell of the base.</p>
+   <p>Although it has the same vertex count as the tesseract, its structure is different: it is the prism
+   over the cross-polytope rather than the 4-cube.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'24-cell prism', tag:'5D prism', schlafli:'{3,4,3}×{ }', color:C.prism, dim:5,
+  gen:()=>prism5D(cell24), rot:[P(0,4,.38),P(1,3,.28),P(2,4,.18)],
+  facts:{Vertices:48, Edges:216, Cells:'2 24-cells + 24 octa-prisms', Dimension:'5D'},
+  blurb:'The unique self-dual 24-cell, lifted into five dimensions.',
+  article:`<p>The <b>24-cell prism</b> takes the only self-dual regular polychoron and extrudes it into
+   5-space. Its 48 vertices are two copies of the 24-cell's 24, and its boundary includes two 24-cell
+   facets plus 24 octahedral prisms.</p>
+   <p>Because the 24-cell itself has no 3D or higher-dimensional analogue, its prism is one of the few
+   five-dimensional figures that inherits genuinely four-dimensional symmetry.</p>`,
+  cites:[R.coxeter, R.conway] },
+
+{ name:'Tesseract prism', tag:'5D prism', schlafli:'{4,3,3}×{ }', color:C.prism, dim:5,
+  gen:()=>prism5D(tesseract), rot:[P(0,4,.4),P(1,3,.28),P(2,4,.18)],
+  facts:{Vertices:32, Edges:80, Cells:'2 tesseracts + 8 cubic prisms', Dimension:'5D'},
+  blurb:'A tesseract stretched along a fifth axis — not the same as a penteract.',
+  article:`<p>The <b>tesseract prism</b> is the product of a tesseract and a line segment. It has 32
+   vertices and 80 edges, the same counts as the penteract, but a different cell layout: two tesseract
+   facets (the ends) and eight cubic prisms (the walls).</p>
+   <p>The penteract, by contrast, has ten tesseract facets and no cubic prisms. The two shapes are an
+   instructive pair: same small-scale counts, different five-dimensional structure.</p>`,
+  cites:[R.coxeter, R.hinton] },
+
+{ name:'600-cell prism', tag:'5D prism', schlafli:'{3,3,5}×{ }', color:C.prism, dim:5,
+  gen:()=>prism5D(cell600), rot:[P(0,4,.3),P(1,3,.22),P(2,4,.14)],
+  facts:{Vertices:240, Edges:1560, Cells:'2 600-cells + 600 tetra-prisms', Dimension:'5D'},
+  blurb:'The icosahedral 600-cell, extruded into a fifth dimension.',
+  article:`<p>The <b>600-cell prism</b> is the five-dimensional prism over the 600-cell. Its 240 vertices
+   are two copies of the 600-cell's 120, and its 1,560 edges include two copies of the original 600-cell
+   skeleton plus 120 vertical edges.</p>
+   <p>The 600-cell already has the largest finite reflection symmetry in four dimensions (H₄); its prism
+   inherits that symmetry and extends it with a mirror across the new fifth axis.</p>`,
+  cites:[R.coxeter, R.conway] },
+
+{ name:'Tetrahedron–triangle duoprism', tag:'5D duoprism', schlafli:'{3,3}×{3}', color:C.prism, dim:5,
+  gen:()=>polyDuoprism(tetrahedron3D(), 3), rot:[P(0,3,.4),P(1,4,.36),P(2,3,.22)],
+  facts:{Vertices:12, Edges:30, Cells:'4 tri-duoprisms + 3 tetra-prisms', Dimension:'5D'},
+  blurb:'A tetrahedron and a triangle multiplied together in 5-space.',
+  article:`<p>The <b>tetrahedron–triangle duoprism</b> is the Cartesian product of a tetrahedron and a
+   triangle, a genuinely five-dimensional figure. Its twelve vertices are all pairs (tetrahedron vertex,
+   triangle vertex), and its thirty edges come from tetrahedron edges × triangle vertices plus triangle
+   edges × tetrahedron vertices.</p>
+   <p>It is a simple example of a polyhedral-polygonal duoprism: a 3D polyhedron and a 2D polygon whose
+   product needs all five dimensions to exist without distortion.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'4-sphere (S⁴)', tag:'Curved 5-manifold', schlafli:'S⁴', color:C.prism, dim:5,
+  gen:()=>glome5D(6,24), rot:[P(0,4,.3),P(1,3,.24),P(2,4,.16)],
+  facts:{Dimension:'surface in 5D', Curvature:'positive, constant', Symmetry:'O(5)'},
+  blurb:'The set of all points equidistant from a centre in 5-space.',
+  article:`<p>The <b>4-sphere</b> (S⁴, or the 5D glome) is the set of points at fixed distance from a
+   centre in five-dimensional space. Its surface is four-dimensional: a creature on it could move in four
+   independent directions and never reach an edge.</p>
+   <p>It is the next sphere after the ordinary 2-sphere and the 3-sphere, and it appears in the
+   classification of simply connected 4-manifolds and in compactifications of higher-dimensional physics.</p>`,
+  cites:[R.weeks, R.banchoff] },
+
+{ name:'5D cyclic polytope', tag:'Cyclic 5-polytope', schlafli:'C(14,5)', color:C.prism, dim:5,
+  gen:()=>cyclic5D(14), rot:[P(0,4,.34),P(1,3,.24),P(2,4,.16)],
+  facts:{Vertices:14, Construction:'moment curve', Property:'neighborly'},
+  blurb:'Vertices on the moment curve — a combinatorially extreme 5-polytope.',
+  article:`<p>A <b>cyclic polytope</b> is built by placing vertices on the moment curve
+   (t, t², t³, t⁴, t⁵) in five-dimensional space. It is <i>neighborly</i>: every pair of vertices forms an
+   edge, making it as edge-dense as any convex 5-polytope can be.</p>
+   <p>Cyclic polytopes are universal extremal objects: McMullen's upper bound theorem says no convex
+   polytope with the same number of vertices can have more faces.</p>`,
+  cites:[R.coxeter, R.banchoff] },
+
+{ name:'5-demicube prism', tag:'5D prism', schlafli:'h{4,3,3,3}×{ }', color:C.prism, dim:5,
+  gen:()=>prism5D(()=>nDemicube(5)), rot:[P(0,4,.36),P(1,3,.26),P(2,4,.16)],
+  facts:{Vertices:32, Edges:'~200', Cells:'2 5-demicubes + prisms', Dimension:'5D'},
+  blurb:'The alternated 5-cube, extruded into a sixth coordinate.',
+  article:`<p>The <b>5-demicube prism</b> is the prism over the 5-demicube. It takes the sixteen vertices
+   of the demipenteract, makes two copies, and joins corresponding vertices with vertical edges. The
+   result is a 32-vertex uniform 5-polytope with D₅ symmetry extended by a mirror.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'5-orthoplex prism', tag:'5D prism', schlafli:'{3,3,3,4}×{ }', color:C.prism, dim:5,
+  gen:()=>prism5D(()=>nOrthoplex(5)), rot:[P(0,4,.4),P(1,3,.28)],
+  facts:{Vertices:20, Edges:100, Cells:'2 5-orthoplexes + 32 prisms', Dimension:'5D'},
+  blurb:'The 5D cross-polytope stretched along a sixth axis.',
+  article:`<p>The <b>5-orthoplex prism</b> extrudes the 5-orthoplex along a new axis. Its twenty vertices
+   are two copies of the pentacross's ten, and its boundary includes two 5-orthoplex facets plus thirty-two
+   simplex prisms.</p>`,
+  cites:[R.coxeter, R.manning] },
+// ===== ROW 10 — Higher forms, demicubes, and quasicrystals ===================
+{ name:'8-simplex', tag:'Regular 8-polytope', schlafli:'{3⁷}', color:C.ncube, dim:8,
+  gen:()=>nSimplex(8), rot:[P(0,7,.3),P(1,6,.22)],
+  facts:{Dimension:'8D', Vertices:9, Edges:36, Symmetry:'A₈'},
+  blurb:'Nine mutually equidistant points in eight dimensions.',
+  article:`<p>The <b>8-simplex</b> (enneazetton) is nine points in eight dimensions, every pair the same
+   distance apart. It is self-dual and the eight-dimensional member of the simplex family.</p>`,
+  cites:[R.coxeter, R.schlafli] },
+
+{ name:'9-simplex', tag:'Regular 9-polytope', schlafli:'{3⁸}', color:C.ncube, dim:9,
+  gen:()=>nSimplex(9), rot:[P(0,8,.28),P(1,7,.2)],
+  facts:{Dimension:'9D', Vertices:10, Edges:45, Symmetry:'A₉'},
+  blurb:'Ten mutually equidistant points in nine dimensions.',
+  article:`<p>The <b>9-simplex</b> (decazetton) has ten vertices, 45 edges, and complete symmetry S₁₀.
+   Every vertex is connected to every other: its edge graph is the complete graph K₁₀.</p>`,
+  cites:[R.coxeter, R.schlafli] },
+
+{ name:'6-demicube', tag:'Uniform 6-polytope', schlafli:'h{4,3,3,3,3}', color:C.ncube, dim:6,
+  gen:()=>nDemicube(6), rot:[P(0,5,.34),P(1,4,.24)],
+  facts:{Dimension:'6D', Vertices:32, Symmetry:'D₆', Facets:'mixed'},
+  blurb:'The alternated 6-cube — half the vertices of the hexeract.',
+  article:`<p>The <b>6-demicube</b> (demihexeract) is the 6-cube with alternate vertices removed, keeping
+   the 32 vertices with even coordinate parity. It belongs to the D₆ family of uniform 6-polytopes.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'7-demicube', tag:'Uniform 7-polytope', schlafli:'h{4,3⁵}', color:C.ncube, dim:7,
+  gen:()=>nDemicube(7), rot:[P(0,6,.32),P(1,5,.22)],
+  facts:{Dimension:'7D', Vertices:64, Symmetry:'D₇', Facets:'mixed'},
+  blurb:'The alternated 7-cube — half the vertices of the hepteract.',
+  article:`<p>The <b>7-demicube</b> (demihepteract) keeps the 64 even-parity vertices of the 7-cube. It is
+   a D₇ uniform polytope and a close relative of the E₇ root system.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'8-demicube', tag:'Uniform 8-polytope', schlafli:'h{4,3⁶}', color:C.ncube, dim:8,
+  gen:()=>nDemicube(8), rot:[P(0,7,.3),P(1,6,.2),P(2,5,.14)],
+  facts:{Dimension:'8D', Vertices:128, Symmetry:'D₈', Note:'E₈ lives here'},
+  blurb:'The alternated 8-cube — the D₈ root lattice.',
+  article:`<p>The <b>8-demicube</b> (demiocteract) has 128 vertices and is the root polytope of the D₈
+   lattice. It sits inside the E₈ lattice and helps generate the exceptional symmetry group E₈.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'9-demicube', tag:'Uniform 9-polytope', schlafli:'h{4,3⁷}', color:C.ncube, dim:9,
+  gen:()=>nDemicube(9), rot:[P(0,8,.28),P(1,7,.2),P(2,6,.12)],
+  facts:{Dimension:'9D', Vertices:256, Symmetry:'D₉', Facets:'mixed'},
+  blurb:'The alternated 9-cube.',
+  article:`<p>The <b>9-demicube</b> (demienneract) keeps the 256 even-parity vertices of the 9-cube. It
+   continues the Dₙ family into nine dimensions.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'10-demicube', tag:'Uniform 10-polytope', schlafli:'h{4,3⁸}', color:C.ncube, dim:10,
+  gen:()=>nDemicube(10), rot:[P(0,9,.26),P(1,8,.18),P(2,7,.1)],
+  facts:{Dimension:'10D', Vertices:512, Symmetry:'D₁₀', Facets:'mixed'},
+  blurb:'The alternated 10-cube.',
+  article:`<p>The <b>10-demicube</b> (demidekeract) has 512 vertices — half of the 10-cube. It is the
+   ten-dimensional member of the infinite demicube family.</p>`,
+  cites:[R.coxeter, R.elte] },
+
+{ name:'Cube–triangle duoprism', tag:'5D duoprism', schlafli:'{4,3}×{3}', color:C.prism, dim:5,
+  gen:()=>polyDuoprism(cube3D(), 3), rot:[P(0,3,.38),P(1,4,.34),P(2,3,.2)],
+  facts:{Vertices:24, Edges:60, Cells:'3 cubes + 6 tri-prisms + 4 cube-prisms', Dimension:'5D'},
+  blurb:'A cube and a triangle multiplied together in 5-space.',
+  article:`<p>The <b>cube–triangle duoprism</b> is the Cartesian product of a cube and a triangle. Its
+   24 vertices are all pairs of a cube vertex and a triangle vertex, and its 60 edges come from cube
+   edges × triangle vertices plus triangle edges × cube vertices.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'Octahedron–triangle duoprism', tag:'5D duoprism', schlafli:'{3,4}×{3}', color:C.prism, dim:5,
+  gen:()=>polyDuoprism(octahedron3D(), 3), rot:[P(0,3,.4),P(1,4,.36),P(2,3,.22)],
+  facts:{Vertices:18, Edges:45, Cells:'3 octahedra + 8 tri-prisms', Dimension:'5D'},
+  blurb:'An octahedron and a triangle multiplied together in 5-space.',
+  article:`<p>The <b>octahedron–triangle duoprism</b> multiplies an octahedron by a triangle. Its 18 vertices
+   and 45 edges form a five-dimensional figure with octahedral and triangular symmetries combined.</p>`,
+  cites:[R.coxeter, R.manning] },
+
+{ name:'Ammann–Beenker quasicrystal', tag:'Aperiodic order', schlafli:'8D→2D cut', color:C.phys, dim:8,
+  gen:()=>ammannBeenker(2), rot:[P(0,7,.26),P(1,6,.18),P(2,5,.12),P(3,4,.08)],
+  facts:{Symmetry:'8-fold (forbidden for crystals)', Origin:'projection from 8D', Relation:'octagonal Penrose'},
+  blurb:'An eight-fold aperiodic pattern projected from 8D.',
+  article:`<p>The <b>Ammann–Beenker tiling</b> is an aperiodic pattern with eight-fold rotational symmetry,
+   impossible for ordinary crystals. Like the Penrose tiling, it arises as the shadow of a periodic
+   lattice in a higher-dimensional space — here, an 8-cube lattice projected down to the plane.</p>`,
+  cites:[R.penrose, R.shechtman] },
+
 ];
 
-// assign grid coordinates: 8 rows × 8 columns in declaration order.
-EXHIBITS.forEach((e, i) => { e.row = Math.floor(i / 8); e.col = i % 8; });
+// assign grid coordinates: 10 rows × 10 columns in declaration order.
+EXHIBITS.forEach((e, i) => { e.row = Math.floor(i / 10); e.col = i % 10; });
 
 /* ===== main.js ===== */
-// main.js — the gallery engine. Three.js scene, first-person controls, an 8×8
+// main.js — the gallery engine. Three.js scene, first-person controls, a 10×10
 // hall of transparent columns, frustum-only animation of each higher-dimensional
 // shape, plaque ray-picking, and the confirm-to-close article modal.
 
@@ -2629,7 +3182,7 @@ function setupRenderer() {
   scene.fog = new THREE.Fog(0x06061A, 16, 140);
 
   camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.05, 400);
-  camera.position.set(0, 1.6, -SPACING * 4 - 8);
+  camera.position.set(0, 1.6, -SPACING * 5 - 8);
 
   controls = new PointerLockControls(camera, renderer.domElement);
   scene.add(controls.getObject());
@@ -2654,7 +3207,7 @@ function setupRenderer() {
   grid.position.y = 0.01; scene.add(grid);
 }
 
-// ---- build the 8×8 hall (chunked, so the loader can show real progress) -----
+// ---- build the 10×10 hall (chunked, so the loader can show real progress) -----
 async function buildWorldChunked() {
   const total = EXHIBITS.length;
   for (let i = 0; i < total; i++) {
@@ -2936,7 +3489,7 @@ function updateMovement(dt) {
 
   const o = controls.getObject();
   o.position.y = 1.6;
-  const lim = SPACING * 5.2;
+  const lim = SPACING * 7.2;
   o.position.x = Math.max(-lim, Math.min(lim, o.position.x));
   o.position.z = Math.max(-lim, Math.min(lim, o.position.z));
 }
