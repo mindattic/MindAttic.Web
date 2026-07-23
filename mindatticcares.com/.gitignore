@@ -3,3 +3,4 @@
 
 # FTP deploy credentials — never commit
 /settings.json
+.claude/checkpoint.md
