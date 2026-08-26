@@ -1,6 +1,6 @@
-.vs/
+﻿.vs/
 *.user
 
-# FTP deploy credentials — never commit
+# FTP deploy credentials â€” never commit
 /settings.json
-.claude/checkpoint.md
+.claude/quicksave.md
