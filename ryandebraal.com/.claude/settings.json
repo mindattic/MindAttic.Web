@@ -1,29 +1,41 @@
-{
-  "statusLine": { "type": "command", "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\statusline.ps1\"" },
-  "hooks": {
-    "SessionStart": [
-      { "matcher": "clear", "hooks": [ { "type": "command", "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\hooks\\restore-handoff.ps1\"" } ] },
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"D:/Projects/MindAttic/ryandebraal.com/.claude/hooks/inject-digest.ps1\"",
-            "timeout": 10000
-          }
-        ]
-      }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "powershell -ExecutionPolicy Bypass -File \"D:/Projects/MindAttic/ryandebraal.com/update-timestamp.ps1\"",
-            "timeout": 10000
-          }
-        ]
-      }
-    ]
-  }
+﻿{
+    "statusLine":  {
+                       "type":  "command",
+                       "command":  "powershell -NoProfile -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\statusline.ps1\""
+                   },
+    "hooks":  {
+                  "SessionStart":  [
+                                       {
+                                           "hooks":  [
+                                                         {
+                                                             "type":  "command",
+                                                             "command":  "powershell -NoProfile -ExecutionPolicy Bypass -File \"D:/Projects/MindAttic/ryandebraal.com/.claude/hooks/inject-digest.ps1\"",
+                                                             "timeout":  10000
+                                                         }
+                                                     ]
+                                       }
+                                   ],
+                  "PostToolUse":  [
+                                      {
+                                          "matcher":  "Edit|Write",
+                                          "hooks":  [
+                                                        {
+                                                            "type":  "command",
+                                                            "command":  "powershell -ExecutionPolicy Bypass -File \"D:/Projects/MindAttic/ryandebraal.com/update-timestamp.ps1\"",
+                                                            "timeout":  10000
+                                                        }
+                                                    ]
+                                      }
+                                  ],
+                  "UserPromptSubmit":  [
+                                           {
+                                               "hooks":  [
+                                                             {
+                                                                 "type":  "command",
+                                                                 "command":  "powershell -NoProfile -ExecutionPolicy Bypass -File \"%CLAUDE_PROJECT_DIR%\\.claude\\hooks\\quickload-on-do.ps1\""
+                                                             }
+                                                         ]
+                                           }
+                                       ]
+              }
 }
