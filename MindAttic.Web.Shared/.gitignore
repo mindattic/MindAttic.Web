@@ -1,6 +1,6 @@
-*.tmp
+﻿*.tmp
 *.bak
 .DS_Store
 Thumbs.db
 node_modules/
-.claude/checkpoint.md
+.claude/quicksave.md
