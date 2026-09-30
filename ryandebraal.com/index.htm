@@ -281,6 +281,9 @@ body{font-family:var(--font-resume);background:var(--bg2);color:var(--text);min-
 .tb-label{font-size:11px;color:var(--text3);white-space:nowrap;}
 select.tb-sel{font-family:var(--font-resume);font-size:12px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--text);cursor:pointer;outline:none;transition:all 0.15s;}
 select.tb-sel:hover{border-color:var(--accent);}
+#rotate-track{position:fixed;left:0;right:0;bottom:0;height:12px;z-index:999998;cursor:pointer;}
+#rotate-bar{position:absolute;left:0;bottom:0;height:4px;width:0;background:var(--accent);pointer-events:none;}
+@media print{#rotate-track{display:none;}}
 .tb-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--text2);font-family:var(--font-resume);font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
 .tb-btn:hover{background:var(--bg3);color:var(--text);border-color:var(--accent);}
 .tb-btn.primary{background:var(--accent);color:var(--bg);border-color:var(--accent);}
@@ -1834,7 +1837,6 @@ let currentTheme = 'dark';
 let fxAnim = null;
 
 // Theme auto-rotation
-let themeRotationInterval = null;
 let themeRotationTimer = null;
 let themeRotationDuration = AppSettings.theme_timeout * 1000;
 let themeRotationStart = 0;
@@ -1854,48 +1856,49 @@ function toggleThemeRotation() {
 
 function startThemeRotation() {
   themeRotationPaused = false;
-  try { localStorage.setItem('resume-theme-rotation-paused', '0'); } catch(e) {}
   var ri = document.getElementById('rotate-icon');
   ri.innerHTML = '&#10074;&#10074;';
   ri.style.transform = 'translate(-55%,-48%)';
-  themeRotationStart = performance.now();
-  themeRotationTimer = setTimeout(function rotateNext() {
-    const idx = THEME_ORDER.indexOf(currentTheme);
-    const next = THEME_ORDER[(idx + 1) % THEME_ORDER.length];
-    setTheme(next);
-    document.getElementById('theme-picker').value = next;
-    const tm = document.getElementById('theme-picker-mobile');
-    if (tm) tm.value = next;
-    themeRotationStart = performance.now();
-    themeRotationTimer = setTimeout(rotateNext, themeRotationDuration);
-  }, themeRotationDuration);
+  scheduleNextRotation();
   updateRotateProgress();
+}
+
+// setTheme() reschedules on every theme change, so this must not schedule again itself.
+function scheduleNextRotation() {
+  if (themeRotationTimer) clearTimeout(themeRotationTimer);
+  themeRotationStart = performance.now();
+  themeRotationTimer = setTimeout(rotateToNextTheme, themeRotationDuration);
+}
+
+function rotateToNextTheme() {
+  const next = THEME_ORDER[(THEME_ORDER.indexOf(currentTheme) + 1) % THEME_ORDER.length];
+  setTheme(next);
+  document.getElementById('theme-picker').value = next;
+  const tm = document.getElementById('theme-picker-mobile');
+  if (tm) tm.value = next;
 }
 
 function stopThemeRotation() {
   themeRotationPaused = true;
-  try { localStorage.setItem('resume-theme-rotation-paused', '1'); } catch(e) {}
   var ri = document.getElementById('rotate-icon');
   ri.innerHTML = '&#9654;';
   ri.style.transform = 'translate(calc(-50% + 5%),-48%)';
   if (themeRotationTimer) { clearTimeout(themeRotationTimer); themeRotationTimer = null; }
   if (themeRotationRAF) { cancelAnimationFrame(themeRotationRAF); themeRotationRAF = null; }
-  getRotateBar().style.width = "0";
+  getRotateBar().style.width = '0';
   var btn = document.getElementById('theme-rotate-btn');
   if (btn) { btn.style.backgroundImage = 'none'; btn.style.background = 'var(--bg2)'; btn.style.border = '2px solid var(--border)'; }
 }
 
 function getRotateBar() {
-  var bar = document.getElementById("rotate-bar");
+  var bar = document.getElementById('rotate-bar');
   if (!bar) {
-    var track = document.createElement("div");
-    track.id = "rotate-track";
-    track.title = "Click to pause/resume theme rotation";
-    track.style.cssText = "position:fixed;left:0;right:0;bottom:0;height:12px;z-index:999998;cursor:pointer;";
+    var track = document.createElement('div');
+    track.id = 'rotate-track';
+    track.title = 'Click to pause/resume theme rotation';
     track.onclick = toggleThemeRotation;
-    bar = document.createElement("div");
-    bar.id = "rotate-bar";
-    bar.style.cssText = "position:absolute;left:0;bottom:0;height:4px;width:0;background:var(--accent);pointer-events:none;";
+    bar = document.createElement('div');
+    bar.id = 'rotate-bar';
     track.appendChild(bar);
     document.body.appendChild(track);
   }
@@ -1906,7 +1909,7 @@ function updateRotateProgress() {
   if (themeRotationPaused) return;
   var elapsed = performance.now() - themeRotationStart;
   var pct = Math.min(elapsed / themeRotationDuration, 1);
-  getRotateBar().style.width = (pct * 100) + "%";
+  getRotateBar().style.width = (pct * 100) + '%';
   var btn = document.getElementById('theme-rotate-btn');
   if (btn) {
     var deg = Math.round(pct * 360);
@@ -2148,7 +2151,7 @@ function setTheme(t) {
   currentTheme = t;
   if (!isInit) crtChannelChange();
   document.documentElement.setAttribute('data-theme', t);
-  if (!themeRotationPaused) { themeRotationStart = performance.now(); if (themeRotationTimer) { clearTimeout(themeRotationTimer); themeRotationTimer = setTimeout(function rotateNext() { var idx = THEME_ORDER.indexOf(currentTheme); var next = THEME_ORDER[(idx + 1) % THEME_ORDER.length]; setTheme(next); themeRotationStart = performance.now(); themeRotationTimer = setTimeout(rotateNext, themeRotationDuration); }, themeRotationDuration); } }
+  if (!themeRotationPaused) scheduleNextRotation();
   stopFX();
   if (t==='spring')  startSpring();
   else if(t==='summer') startSummer();
@@ -6416,7 +6419,7 @@ function exportHTML() {
   const sp = clone.querySelector('#snow-pile-svg');
   if(sp) sp.remove();
   // Remove hamburger nav
-  ['#resume-nav-btn','#resume-nav-menu'].forEach(sel => { const el = clone.querySelector(sel); if(el) el.remove(); });
+  ['#resume-nav-btn','#resume-nav-menu','#rotate-track'].forEach(sel => { const el = clone.querySelector(sel); if(el) el.remove(); });
   // Remove all script tags
   clone.querySelectorAll('script').forEach(s => s.remove());
   // Force light theme
