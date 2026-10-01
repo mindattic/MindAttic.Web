@@ -1,4 +1,4 @@
-<!-- Last Updated: 2026-10-01T00:23:37Z -->
+<!-- Last Updated: 2026-10-01T00:32:10Z -->
 <!DOCTYPE html>
 <html lang="en" data-theme="light" data-profile="classic">
 <head>
@@ -457,6 +457,8 @@ select.tb-sel:hover{border-color:var(--accent);}
 .r-project{margin-bottom:9px;}
 .r-project-name{font-weight:500;font-size:13px;color:var(--text);}
 .r-project-desc{font-size:13px;color:var(--text2);line-height:1.65;}
+.r-project-link{font-size:13px;color:var(--accent);text-decoration:none;}
+.r-project-link:hover{text-decoration:underline;}
 
 /* ── EDUCATION ── */
 .r-edu-row{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:4px;margin-bottom:4px;}
@@ -1632,16 +1634,8 @@ const D = {
   ],
 
   projects: [
-    {name:'Tutor', desc:'AI-powered adaptive learning platform (C#/.NET). Full RAG pipeline with LSH/SimHash concept matching, force-layout knowledge graphs, and an evolving textbook that retroactively layers new knowledge into earlier chapters. Adaptive quizzes, live news injection, user progress tracking. Cross-platform.'},
-    {name:'IdiotProof', desc:'Autonomous AI trading system (C#/.NET 10) with custom DSL (IdiotScript), genetic algorithm optimizer, and neural network weight learning. Dual ML methods self-calibrate per-ticker indicator weights. Live IBKR order execution with comprehensive backtesting. Built on Ahab — a full-featured multi-strategy trading platform with core engine, backtesting, and broker integration — and Gappy, a live gap-trading system with real-time indicator pipeline, modular strategy framework, and GUI dashboard.'},
-    {name:'ThinkTank', desc:'Cross-platform .NET 10 Blazor desktop app that pits multiple AI models against each other in structured, multi-participant conversations. ChatGPT, Claude, Gemini, and DeepSeek debate user-chosen topics with customizable personalities, parallel conversation tabs, real-time user message injection, AI-generated personality templates, and per-participant auth overrides. Targets Windows, macOS, iOS, and Android.'},
-    {name:'MindAttic.Legion', desc:'C#/.NET 10 library for orchestrating groups of LLMs as a "legion" — voting, polls, scoring, proofreading, and persona-driven multi-voter workflows across OpenAI, Anthropic, Google, and DeepSeek. Bundles a 1000-persona library and unified credentials at %APPDATA%/MindAttic/LLM. Sits on top of MindAttic.Core, the shared cross-platform foundation (Blazor) used across the MindAttic stack.'},
-    {name:'TaxRateCollector', desc:'Blazor Server application (C#/.NET 10, EF Core 10, SQL Server, NUnit 4) for evidence-backed surveillance of US sales & use tax rates across 14,000+ jurisdictions (Country → State → County → City). Daily scraping pipeline, SHA-256 content hashing for provenance, change-detection diffing, and a real-time tax calculation engine. Stores the raw source document — API response, PDF, or HTML capture — alongside every rate so veracity can be proven offline.'},
-    {name:'FractionsOfAPenny', desc:'Leaked-credential prevalence scanner for public GitHub repositories — research artifact for an M.S. Information Security thesis. Targets Anthropic, OpenAI, and Google LLM API keys, recording metadata only: SHA-256 hashes and non-sensitive scheme prefixes are persisted while raw keys are never written to disk, logged, serialized, or returned from any function. Python and C# implementations with a responsible-disclosure pipeline that forwards findings to provider secret-scanning intakes for revocation.'},
-    {name:'GridGame2026', desc:'Original grid-based strategy game in Unity with custom ShaderLab shaders and self-authored world lore. Active development since 2025.'},
-    {name:'StreetSamurai', desc:'Cyberpunk literary fiction engine (C#/.NET 10 Blazor Server) authoring novel-length prose set in Meridian 88 — a 500km Great Lakes corporate sprawl in the year 2200 where corponations have replaced governments and freelancers survive in the gaps. The work is character-driven literary fiction: death, sacrifice, romance, moral ambiguity, and the human experience under late-stage corporate sovereignty, told through the bodies and voices of people who break. 1,056+ canonical entities across 13 typed JSON repositories (characters, places, factions, corponations, weaponry, cyberware, technology, ammunition, motifs, long-form lore documents) feed a QuikGraph in-memory relationship graph with TF-IDF semantic search, transitive shared-hub/shared-property inference, and auto-discovery of edges from prose mentions on every entity save. A six-facet psychology engine — Wound, Ideal, Id, Shadow, Mask, Ghost — selects competing inner voices per beat with rotation enforcement so no facet leads three beats in a row; each facet carries its own LLM model, temperature, system prompt, prohibited phrasings, and tonal palette. The story layer tracks live character state, structured event logs (action, dialogue, revelation, decision, death, discovery + emotional weight), 3-act outlines with seed/payoff threading, an Agenda Engine that mines scene premises from character goal collisions, and a Knowledge Map enforcing information asymmetry, dramatic irony, and POV-leak prevention — the narrator cannot reveal what the POV character does not know. A fully autonomous Story Director picks cast, generates premise from goal conflicts, outlines with a mandatory combat beat, and writes each beat sequentially while extracting state, logging events, and syncing knowledge after every paragraph. Freelancer subsystems generate structured contracts (16 job types, 15 complication archetypes), permanent NPCs (no throwaways — every guard, fixer, or bartender is a full character saved to repo), 25 random-encounter archetypes, persistent per-faction reputation (-100 to +100), and a Consequence Engine that bleeds outcomes across stories. Dynamic place generation grows the world as characters move through it. Multi-LLM router across 12 providers (Claude, OpenAI, Gemini, DeepSeek, Mistral, Grok, Groq, Together, OpenRouter, Fireworks, Cohere, ElevenLabs) with runtime switching; ElevenLabs + Windows SAPI TTS with audio-tag enhancement; 200 unit tests across 17 test classes. Death is permanent. Lost limbs stay lost. The world remembers.'},
-    {name:'Ciao-ChatGpt-Bonjour-Claude', desc:'JavaScript migration tool exporting full ChatGPT conversation history into Claude Projects via the Anthropic API.'},
-    {name:'mindattic.com', desc:'Hand-authored single-file web application — pure HTML/CSS/JS, zero dependencies, zero build step, zero toolchain. A deliberate engineering exercise in framework-free, view-source-readable code that matches modern stacks at this scale without inheriting their dependency rot.'},
+    {name:'GitHub', url:'https://github.com/mindattic', label:'github.com/mindattic'},
+    {name:'Amazon', url:'https://www.amazon.com/s?rh=p_27%3AMindAttic', label:'Books by MindAttic'},
   ],
 
   education:[
@@ -1786,7 +1780,7 @@ function projHTML(projects){
   return projects.map(p=>`<div class="r-project">
     <span class="r-project-name">${p.name}</span>
     <span style="color:var(--text3)"> — </span>
-    <span class="r-project-desc">${p.desc}</span>
+    <a class="r-project-link" href="${p.url}" target="_blank" rel="noopener">${p.label}</a>
   </div>`).join('');
 }
 
@@ -6258,7 +6252,7 @@ function exportMD() {
   h.patents.forEach(p => { md += `**${p.title}** (${p.num}) — ${p.desc}\n\n`; });
 
   md += `## Personal Projects\n\n`;
-  h.projects.forEach(p => { md += `**${p.name}** — ${p.desc}\n\n`; });
+  h.projects.forEach(p => { md += `**${p.name}** — [${p.label}](${p.url})\n\n`; });
 
   md += `## Complete Technology Stack\n\n`;
   skills.forEach(s => { md += `**${s.label}:** ${s.items.join(', ')}\n\n`; });
