@@ -27,7 +27,16 @@ for (const [name, site] of Object.entries(SITES)) {
   test(`${name}: every UiUx file referenced by the live page is served intact`, async ({ request }) => {
     expect(manifest, 'BLOCKED: assets-manifest.json missing — run tools/build-asset-manifest.ps1').not.toBeNull();
     const html = await (await request.get(site.liveUrl)).text();
-    const refs = [...new Map(uiuxUrlsIn(html).map((u) => [u.url, u])).values()];
+    const found = [...new Map(uiuxUrlsIn(html).map((u) => [u.url, u])).values()];
+    // A URL ending in '/' is a base prefix the page appends file names to at runtime (ryandebraal.com builds its theme
+    // image URLs that way), not a file: replace it by every manifest file under that prefix so those are checked too.
+    const refs = [];
+    for (const u of found) {
+      if (!u.path.endsWith('/')) { refs.push(u); continue; }
+      for (const f of manifest.files) {
+        if (f.path.startsWith(u.path)) refs.push({ ...u, path: f.path, url: u.url.slice(0, u.url.length - u.path.length) + f.path });
+      }
+    }
     expect(refs.length, `${name}: the live page does not reference MindAttic.UiUx (not deployed yet?)`).toBeGreaterThan(0);
 
     const problems = [];

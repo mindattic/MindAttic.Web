@@ -49,7 +49,8 @@ export const SITES = {
   },
   'mindatticcares.com': {
     dir: 'mindatticcares.com',
-    liveUrl: 'https://mindatticcares.com/',
+    // mindatticcares.com is a registrar 'masked forward' (a frameset) to this URL, so the real page lives here:
+    liveUrl: 'https://ryandebraal.com/mindatticcares.com/',
     allowedHosts: [CDN_HOST],
     htmlBudgetBytes: 120 * 1024,
     fonts: { outfit: true, attic: false },
