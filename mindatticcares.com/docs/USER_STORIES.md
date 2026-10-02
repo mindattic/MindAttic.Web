@@ -4,7 +4,7 @@ project: MindAttic Cares
 code: MAC
 layer: stories
 status: living
-updated: 2026-06-07
+updated: 2026-10-02
 ---
 
 # MindAttic Cares — User Stories
@@ -12,7 +12,7 @@ updated: 2026-06-07
 > ✅ done (shipped & tested) · 🟡 partial · ⬜ planned · 🗑️ cut. Every ✅ cites the test.
 >
 > **Note on verification:** this repo has no automated test or build suite by design
-> ([MAC-LAW-1](BIBLE.md#MAC-LAW-1) — one file, no build step). Per [HOUSE-LAW-8], stories that
+> ([MAC-LAW-1](BIBLE.md#MAC-LAW-1) — no build step). Per [HOUSE-LAW-8], stories that
 > cannot cite an automated test are held at 🟡 even when the behavior is present and manually
 > observed. The only automated check in-repo is `tools/codex.ps1 doctor` (docs, not the site).
 
@@ -34,14 +34,22 @@ updated: 2026-06-07
 - **MAC-US-A4 🟡** As a visitor opening a shared `#sec-budget`-style link, I land on the Y2K page at
   that section. *Given a `#sec-*` hash, When the page loads, Then `fromHash()` selects the `y2k`
   page.* *(routing logic present in `fromHash`; no automated test, held 🟡.)*
+- **MAC-US-A5 🟡** As a visitor, I get the page text immediately while fonts and images stream in, so
+  the site feels fast. *Given the page, When it loads, Then fonts/logos/photos are fetched from the
+  pinned jsDelivr package ([MAC-A2](AMENDMENTS.md#MAC-A2)), below-the-fold images load lazily, and
+  `index.htm` itself is ~60 KB.* *(2026-10-02 headless-Chrome check against a local stand-in for the
+  CDN: all requests succeeded, no console errors, layout unchanged; live `@V7` URLs not re-verified;
+  no automated test, held 🟡.)*
 
 ## Epic B — Charity forking a playbook
 
 - **MAC-US-B1 🟡** As a sibling charity, I can fork `index.htm` and edit a copy in any text editor
-  with no toolchain, so I can reuse the playbook. *Given the single file, When I open it in a
-  browser, Then the whole site renders with no build/CDN/database.*
-  *(MAC-LAW-1 holds: zero external runtime deps beyond fonts inlined as base64; no automated test,
-  held 🟡.)*
+  with no toolchain, so I can reuse the playbook. *Given the single page, When I open it in a
+  browser, Then the whole site renders with no build step or database (fonts and images load from the
+  pinned jsDelivr package).*
+  *(MAC-LAW-1 + [MAC-A2](AMENDMENTS.md#MAC-A2) hold: no build step; the only external runtime dependency
+  is the tag-pinned MindAttic.UiUx jsDelivr package, plus the click-to-load YouTube embed; no
+  automated test, held 🟡.)*
 - **MAC-US-B2 🟡** As a sibling charity, I can lift the 12-week timeline, budget worksheet,
   sponsorship pitch, and staffing model as templates. *Given the Y2K playbook, When I copy the
   relevant `sec-*` sections, Then I have a reusable event plan.*

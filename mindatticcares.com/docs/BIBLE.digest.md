@@ -4,7 +4,7 @@ project: MindAttic Cares
 code: MAC
 layer: digest
 status: living
-updated: 2026-06-07
+updated: 2026-10-02
 generatedFrom: MAC-bible
 ---
 
@@ -15,7 +15,7 @@ AUTHORITATIVE - full detail in docs/BIBLE.md
 
 ## 1. The one sentence {#MAC-§1}
 
-MindAttic Cares is a **single self-contained `index.htm`** that publishes MindAttic's charity
+MindAttic Cares is a **single hand-authored `index.htm`** (inline CSS/JS, no framework, no build step, assets pinned on a CDN) that publishes MindAttic's charity
 event playbooks — flagship being the Y2K: End of the World Party fundraiser for Child's Play —
 in full public detail so any sibling charity can fork and reuse them.
 
@@ -24,8 +24,9 @@ in full public detail so any sibling charity can fork and reuse them.
 
 - **NOT a web application.** No accounts, no server-side code, no database, no API. It is a static
   document with a thin client-side navigation/lightbox script.
-- **NOT a multi-file build.** No `npm install`, no bundler, no SSG. There is no build step; the
-  deliverable file IS the source.
+- **NOT a build pipeline.** No `npm install`, no bundler, no SSG. There is no build step; the
+  deliverable file IS the source. (Its assets are separate static files in MindAttic.UiUx — they
+  are served, not built.)
 - **NOT a donation processor.** It links out to the partner charity; it does not collect money.
 - **NOT self-deploying.** Deployment is owned by the central **MindAttic.Deploy** pipeline (sibling
   repo), not by per-project scripts in this folder. (See [§4](#MAC-§4), [MAC-A1](AMENDMENTS.md#MAC-A1).)
@@ -49,6 +50,11 @@ Project-specific laws:
 ### MAC-LAW-1 — One file, no build step {#MAC-LAW-1}
 The entire site ships as a single `index.htm` with inlined CSS, JS, fonts, and images. No CDN,
 no database, no bundler, no SSG, no `npm install`. The file you edit is the file you deploy.
+
+> **Refined by [MAC-A2](AMENDMENTS.md#MAC-A2)** (amendment wins): the *no build step / no bundler /
+> no framework / file-you-edit-is-the-file-you-deploy* parts still stand in full. The "inlined
+> fonts and images / no CDN" parts no longer apply — fonts and images are tag-pinned static files
+> served from the MindAttic.UiUx package on jsDelivr.
 
 ### MAC-LAW-2 — 100% pass-through giving {#MAC-LAW-2}
 Funds raised at an event go to the named partner charity directly. Operational cost is covered
@@ -81,11 +87,15 @@ Deployment is owned by **MindAttic.Deploy**, not by per-project scripts. The per
   receiving Y2K proceeds.
 - **MindAttic.Deploy** — the central sibling repo that owns the FTPS deploy pipeline (MAC-LAW-5).
 - **Pass-through giving** — donations route entirely to the partner charity (MAC-LAW-2).
+- **MindAttic.UiUx package** — the shared repo that holds MindAttic's runtime assets (fonts, logos,
+  photos, effects) organised by domain and served by jsDelivr; sites load from it at runtime (MAC-A2).
+- **Asset URL** — `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/mindatticcares.com/<category>/<file>`;
+  `<tag>` is a whole-number release tag (e.g. `V7`), lowercase kebab-case file names.
 
 
 ## Status index (USER_STORIES)
-- done: 0   partial: 8   planned: 2   cut: 0
+- done: 0   partial: 9   planned: 2   cut: 0
 
 ## Latest amendment
-- MAC-A1 — Deployment centralized into MindAttic.Deploy (supersedes README "Deploying") {#MAC-A1}
+- MAC-A2 — Static assets come from the MindAttic.UiUx jsDelivr package (refines MAC-LAW-1) {#MAC-A2}
 

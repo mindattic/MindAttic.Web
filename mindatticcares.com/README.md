@@ -2,7 +2,7 @@
 
 **Charity work, in public, with the receipts attached.**
 
-MindAttic Cares is the philanthropic arm of MindAttic LLC — the place where we organize, document, and execute the events and giving campaigns we run for causes we believe in. The site at **[mindatticcares.com](https://mindatticcares.com/)** is one self-contained HTML file: every initiative on it is fully drafted in public, complete with timelines, budgets, vendor lists, and post-event wrap-ups, so anyone can copy what worked and skip what didn't.
+MindAttic Cares is the philanthropic arm of MindAttic LLC — the place where we organize, document, and execute the events and giving campaigns we run for causes we believe in. The site at **[mindatticcares.com](https://mindatticcares.com/)** is a single hand-authored HTML page: every initiative on it is fully drafted in public, complete with timelines, budgets, vendor lists, and post-event wrap-ups, so anyone can copy what worked and skip what didn't.
 
 The flagship initiative is the **Child's Play** track — running an annual fundraising event that goes 100% to [childsplaycharity.org](https://childsplaycharity.org/), the gaming community's children's-hospital charity. The first event in that track is **Y2K: End of the World Party**, a 12-week-planned, 1999-themed dance event for the millennial demographic, with the full event playbook (timeline → venue → equipment → run-of-show → budget → sponsorship → post-event) published on the site.
 
@@ -10,7 +10,7 @@ The flagship initiative is the **Child's Play** track — running an annual fund
 
 - **Public-by-default planning.** Every event has its full playbook on the public site — venue selection, permits, equipment sourcing, floor plan, staffing, run-of-show, budget, sponsorship pitch deck, marketing, compliance, decor plan. No proprietary checklists kept behind a paywall.
 - **100% pass-through giving.** Funds raised at every event go to a named partner charity directly. Operational costs are covered separately by MindAttic LLC; donors are not paying for our overhead.
-- **One file, no CMS.** The entire site is `index.htm` — inlined CSS, inlined JS, base64-inlined fonts and images. No CDN, no database, no static-site generator. Anyone can fork it, edit a copy in a text editor, and host their own version of an event playbook.
+- **One page, no CMS.** The whole site is a single `index.htm` — inline CSS and JS, no framework, no build step. Its fonts and images are plain static files served from the shared **MindAttic.UiUx** package on the jsDelivr CDN, pinned to a release tag (see [MAC-A2](docs/AMENDMENTS.md#MAC-A2)). No database, no static-site generator, no analytics. Anyone can fork it, edit a copy in a text editor, and host their own version of an event playbook.
 - **Reusable templates.** The 12-week planning timeline, the budget worksheet, the sponsorship pitch structure, the volunteer staffing model — all designed as templates a sibling charity can drop into their own event.
 
 ---
@@ -24,6 +24,7 @@ The flagship initiative is the **Child's Play** track — running an annual fund
 - [How index.htm works](#how-indexhtm-works)
 - [Tooling](#tooling)
 - [Deploying](#deploying)
+- [Assets](#assets)
 - [Editing the site](#editing-the-site)
 - [Claude Code project setup](#claude-code-project-setup)
 - [Related](#related)
@@ -39,14 +40,14 @@ the "how to work here" layer; it links to canon rather than duplicating it.
 | Layer | File | What it holds |
 |---|---|---|
 | L0 — Bible | [docs/BIBLE.md](docs/BIBLE.md) | What MindAttic Cares IS / is NOT, architecture, the Laws (`MAC-LAW-*`), verified state, glossary. Section IDs `{#MAC-§N}`. |
-| L1 — Amendments | [docs/AMENDMENTS.md](docs/AMENDMENTS.md) | Append-only change log (`MAC-A<n>`); an amendment **wins** over the bible. Currently one entry: [MAC-A1](docs/AMENDMENTS.md#MAC-A1), retiring the per-project deploy pipeline in favor of MindAttic.Deploy. |
+| L1 — Amendments | [docs/AMENDMENTS.md](docs/AMENDMENTS.md) | Append-only change log (`MAC-A<n>`); an amendment **wins** over the bible. Currently two entries: [MAC-A1](docs/AMENDMENTS.md#MAC-A1), retiring the per-project deploy pipeline in favor of MindAttic.Deploy, and [MAC-A2](docs/AMENDMENTS.md#MAC-A2), allowing tag-pinned static assets from the MindAttic.UiUx jsDelivr package. |
 | L2 — User stories | [docs/USER_STORIES.md](docs/USER_STORIES.md) | Stories `MAC-US-<Epic><n>` across three epics (Visitor reading the site / Charity forking a playbook / Maintainer publishing). All currently 🟡 — see below. |
 | rfc | [docs/rfc/](docs/rfc/) | Design notes; graduate into the bible + stories once decided. Currently [RFC 0001](docs/rfc/0001-multi-event-playbooks.md) — how to scale past one event on one page. |
 | GENERATED | [docs/BIBLE.digest.md](docs/BIBLE.digest.md) | Produced by `tools/codex.ps1 digest`; injected at Claude Code session start via `.claude/hooks/inject-digest.ps1`. Never hand-edit. |
 | Org laws | [`MindAttic.HouseRules.md`](../MindAttic.HouseRules.md) | Inherited by reference from BIBLE §5 (whole-number versioning, credential handling, verified-done, `psst` policy). |
 
 **Why every story is held at 🟡 instead of ✅:** this repo has **no automated test or build suite by
-design** ([MAC-LAW-1](docs/BIBLE.md#MAC-LAW-1) — one file, no build step). Per the inherited
+design** ([MAC-LAW-1](docs/BIBLE.md#MAC-LAW-1) — no build step). Per the inherited
 HOUSE-LAW-8 ("verified done, not asserted"), a story can only be marked ✅ once it cites an
 automated test — and the only automated check in this repo is `tools/codex.ps1 doctor`, which
 validates the *documentation*, not the site itself. So behavior that is present and manually
@@ -66,25 +67,27 @@ queued but not built).
 Each subsequent event will be drafted on the same page in the same structure so the audience (and
 any sibling charity looking for a template) gets a consistent read. See
 [RFC 0001](docs/rfc/0001-multi-event-playbooks.md) for the plan on how a second event will be added
-without breaking the current single-file, single-page-per-event model.
+without breaking the current single-page-per-event model.
 
 ## Stack
 
 | Layer | Technology |
 |---|---|
-| **Front-end** | Single self-contained `index.htm` (~681 KB) — inlined `<style>` CSS, inlined `<script>` JavaScript, base64-inlined `@font-face` webfonts. No external images referenced at time of writing; the video section uses a click-to-load ("lite") YouTube embed rather than an inline asset. |
+| **Front-end** | Single hand-authored `index.htm` (~60 KB) — inline `<style>` CSS and one inline `<script>`. No framework, no build step. |
+| **Assets** | Fonts (Outfit), logos, icons, and photos are static files in the **MindAttic.UiUx** repo, served by jsDelivr and pinned to a release tag (`@V7`) — see [Assets](#assets). The page uses `<link rel="preconnect">` + `<link rel="preload">` for the CDN and the body font, `loading="lazy"` for below-the-fold images, and `srcset` for the large Y2K photo. The video section uses a click-to-load ("lite") YouTube embed. |
 | **Hosting** | Static hosting at [mindatticcares.com](https://mindatticcares.com/) (no server-side code, no database) |
 | **Deploy** | Centralized via **MindAttic.Deploy** (sibling repo) — see [Deploying](#deploying) |
 | **Docs tooling** | `tools/codex.ps1` (PowerShell 5.1, no external deps) — validates and regenerates the Codex docs only; does not touch `index.htm` |
 
 No build step. No `npm install`. No CMS. Open the file in any modern browser and you have the
-whole site.
+whole site — it needs a network connection to fetch its fonts and images from the CDN (the text
+and navigation work without them).
 
 ## Repository layout
 
 ```
 mindatticcares.com/
-├── index.htm              # The entire site — one self-contained HTML file (~681 KB)
+├── index.htm              # The entire site — one hand-authored HTML page (~60 KB); assets load from the CDN
 ├── README.md               # ← you are here
 ├── README.htm              # Generated from README.md via tools/build-readme.ps1 (shared engine)
 ├── docs/
@@ -113,6 +116,9 @@ mindatticcares.com/
         └── run/             # Project skill: run/preview the site
 ```
 
+> Fonts, logos, icons, and photos are **not** in this repo: they live in `MindAttic.UiUx` (see
+> [Assets](#assets)).
+>
 > `deploy.ps1` / `deploy.bat` / a per-folder `settings.json` are **retired**. The FTP pipeline now
 > lives in **MindAttic.Deploy** (see [MAC-A1](docs/AMENDMENTS.md#MAC-A1) and
 > [Deploying](#deploying)).
@@ -121,7 +127,7 @@ mindatticcares.com/
 
 The full architectural writeup lives in [BIBLE §4](docs/BIBLE.md#MAC-§4); the short version:
 
-- **Three pages, one file.** `<main>` holds three `<section class="page" id="...">` blocks —
+- **Three pages, one document.** `<main>` holds three `<section class="page" id="...">` blocks —
   `home`, `childs-play`, `y2k` — and exactly one carries the `.active` class at a time.
 - **Hash router.** A single trailing `<script>` block implements `show(name)` (toggles `.active` on
   the matching page and nav link, scrolls to top) and `fromHash()` (routes from
@@ -186,6 +192,33 @@ This site is registered as a verbatim root-site FTP upload in `MindAttic.Deploy/
 `<!-- Last Updated: <ISO8601 UTC> -->` comment and FTPS-uploads it. FTP credentials are centralized
 in `MindAttic.Deploy/secrets/` (gitignored there, not read from this repo).
 
+## Assets
+
+Binary assets are **not** embedded in `index.htm`. They are plain static files in the shared
+**MindAttic.UiUx** repo (`D:\Projects\MindAttic\MindAttic.UiUx`), organised by domain, and served at
+runtime by jsDelivr so they are cached by the browser and shared across MindAttic sites:
+
+```
+MindAttic.UiUx/
+├── fonts/outfit/            # shared Outfit woff2 (Latin + Latin-Extended)
+└── mindatticcares.com/
+    ├── logos/               # M-Cares art (300/720 px web sizes) + the Child's Play logo
+    ├── icons/               # favicon / apple-touch icon
+    └── images/              # photos, video poster, page background
+```
+
+- **URL pattern:** `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/mindatticcares.com/<category>/<file>` — e.g. `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/mindatticcares.com/logos/m-cares-black-red-transparent-720.png`. Fonts: `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/fonts/outfit/outfit-latin.woff2`.
+- **Pinned to a tag.** `@V7` is a whole-number UiUx release tag (HOUSE-LAW-1). Tags are immutable on
+  jsDelivr, so what the page loads today is exactly what it loads tomorrow. To change an asset, add
+  or replace the file in UiUx, cut a new tag, and bump the tag in `index.htm`.
+- **Naming:** lowercase kebab-case, descriptive, with the pixel width as a suffix for resized web
+  variants (`…-300.png`, `…-720.png`, `…-960.jpg`).
+- **Full resolution:** lossy files (JPEG) are stored byte-identical at full resolution — the Y2K
+  photo is the original 1920×1200, with a 960-px variant offered through `srcset`. PNGs may be
+  recompressed only losslessly.
+- **What is allowed to be external:** only static files from this package (MAC-A2). No analytics,
+  trackers, or third-party fonts (no Google Fonts requests).
+
 ## Editing the site
 
 Open `index.htm` in any editor. Sections are demarcated by `<h2 id="sec-*" class="sec">` headers
@@ -202,7 +235,8 @@ When adding a new event:
 4. Namespace new `sec-*` IDs per event to avoid anchor collisions with the existing Y2K playbook
    (see [RFC 0001](docs/rfc/0001-multi-event-playbooks.md) for the agreed approach once a second
    event lands).
-5. Deploy via MindAttic.Deploy (see [Deploying](#deploying)).
+5. Put any new image in `MindAttic.UiUx/mindatticcares.com/<category>/` (see [Assets](#assets)), tag a new UiUx release, and point the page at it.
+6. Deploy via MindAttic.Deploy (see [Deploying](#deploying)).
 
 ## Claude Code project setup
 

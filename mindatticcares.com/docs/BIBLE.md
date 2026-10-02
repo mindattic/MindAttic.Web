@@ -4,7 +4,7 @@ project: MindAttic Cares
 code: MAC
 layer: bible
 status: living
-updated: 2026-06-07
+updated: 2026-10-02
 ---
 
 # MindAttic Cares — Project Bible
@@ -14,7 +14,7 @@ updated: 2026-06-07
 
 ## 1. The one sentence {#MAC-§1}
 
-MindAttic Cares is a **single self-contained `index.htm`** that publishes MindAttic's charity
+MindAttic Cares is a **single hand-authored `index.htm`** (inline CSS/JS, no framework, no build step, assets pinned on a CDN) that publishes MindAttic's charity
 event playbooks — flagship being the Y2K: End of the World Party fundraiser for Child's Play —
 in full public detail so any sibling charity can fork and reuse them.
 
@@ -26,9 +26,10 @@ in full public detail so any sibling charity can fork and reuse them.
 - **100% pass-through giving.** Funds raised go to a named partner charity directly
   ([childsplaycharity.org](https://childsplaycharity.org)); MindAttic LLC covers operations so
   donors do not pay overhead.
-- **One file, no CMS.** The entire site is `index.htm` — inlined CSS, inlined JS, base64-inlined
-  fonts/graphics. No CDN, no database, no static-site generator. Fork it, edit in a text editor,
-  host your own copy.
+- **One page, no CMS.** The whole site is `index.htm` — inline CSS and JS. Fonts and images are
+  static files served from the shared MindAttic.UiUx package on jsDelivr, pinned to a release tag
+  ([MAC-A2](AMENDMENTS.md#MAC-A2)). No database, no static-site generator, no analytics. Fork it,
+  edit in a text editor, host your own copy.
 - **Reusable templates.** The 12-week timeline, budget worksheet, sponsorship pitch, and
   volunteer staffing model are designed for a sibling charity to drop into their own event.
 
@@ -36,8 +37,9 @@ in full public detail so any sibling charity can fork and reuse them.
 
 - **NOT a web application.** No accounts, no server-side code, no database, no API. It is a static
   document with a thin client-side navigation/lightbox script.
-- **NOT a multi-file build.** No `npm install`, no bundler, no SSG. There is no build step; the
-  deliverable file IS the source.
+- **NOT a build pipeline.** No `npm install`, no bundler, no SSG. There is no build step; the
+  deliverable file IS the source. (Its assets are separate static files in MindAttic.UiUx — they
+  are served, not built.)
 - **NOT a donation processor.** It links out to the partner charity; it does not collect money.
 - **NOT self-deploying.** Deployment is owned by the central **MindAttic.Deploy** pipeline (sibling
   repo), not by per-project scripts in this folder. (See [§4](#MAC-§4), [MAC-A1](AMENDMENTS.md#MAC-A1).)
@@ -48,13 +50,13 @@ in full public detail so any sibling charity can fork and reuse them.
 
 ```
                  ┌─────────────────────────────────────────────┐
-                 │              index.htm  (one file)            │
+                 │                 index.htm                     │
                  │  ┌─────────┐  ┌──────────┐  ┌──────────────┐  │
                  │  │ <style> │  │  <main>  │  │   <script>   │  │
-                 │  │ inlined │  │  3 .page │  │ hash router  │  │
+                 │  │ inline  │  │  3 .page │  │ hash router  │  │
                  │  │  CSS +  │  │ sections │  │ + lite-YT    │  │
-                 │  │ base64  │  │ + in-page│  │   embed      │  │
-                 │  │  fonts  │  │   TOC    │  │              │  │
+                 │  │ @font-  │  │ + in-page│  │   embed      │  │
+                 │  │  face   │  │   TOC    │  │              │  │
                  │  └─────────┘  └──────────┘  └──────────────┘  │
                  └───────────────────────┬─────────────────────┘
                                          │ FTPS upload of index.htm
@@ -66,12 +68,22 @@ in full public detail so any sibling charity can fork and reuse them.
                  └───────────────────────┬─────────────────────┘
                                          ▼
                           static hosting @ mindatticcares.com
+                                         │ at runtime, the browser fetches
+                                         ▼ fonts / logos / photos
+                 ┌─────────────────────────────────────────────┐
+                 │ jsDelivr CDN → MindAttic.UiUx @V7 (pinned)    │
+                 │ fonts/outfit · mindatticcares.com/...  │
+                 └─────────────────────────────────────────────┘
 ```
 
 ### 4.1 Projects / files
-- **`index.htm`** — the entire deliverable: `<head>` (inlined `@font-face` base64 woff2 + `<style>`),
-  `<header class="topbar">` nav, `<main>` with three `<section class="page">` blocks, and a single
-  trailing `<script>`. (~681 KB, dominated by base64 font/image data.)
+- **`index.htm`** — the entire deliverable: `<head>` (resource hints, `@font-face` rules pointing at
+  CDN woff2 files, `<style>`), `<header class="topbar">` nav, `<main>` with three
+  `<section class="page">` blocks, and a single trailing `<script>`. (~60 KB; fonts and images are
+  referenced by URL, not embedded.)
+- **Assets (external, not in this repo)** — `MindAttic.UiUx/fonts/outfit/` and
+  `MindAttic.UiUx/mindatticcares.com/{logos,icons,images}/`, served by jsDelivr at
+  `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/…` ([MAC-A2](AMENDMENTS.md#MAC-A2)).
 - **`README.md`** — how to build/run/deploy and edit.
 - **`docs/`** — this Codex canon (BIBLE, AMENDMENTS, USER_STORIES, rfc).
 - **`tools/codex.ps1`** — the doctor + digest CLI.
@@ -117,6 +129,11 @@ Project-specific laws:
 The entire site ships as a single `index.htm` with inlined CSS, JS, fonts, and images. No CDN,
 no database, no bundler, no SSG, no `npm install`. The file you edit is the file you deploy.
 
+> **Refined by [MAC-A2](AMENDMENTS.md#MAC-A2)** (amendment wins): the *no build step / no bundler /
+> no framework / file-you-edit-is-the-file-you-deploy* parts still stand in full. The "inlined
+> fonts and images / no CDN" parts no longer apply — fonts and images are tag-pinned static files
+> served from the MindAttic.UiUx package on jsDelivr.
+
 ### MAC-LAW-2 — 100% pass-through giving {#MAC-LAW-2}
 Funds raised at an event go to the named partner charity directly. Operational cost is covered
 separately by MindAttic LLC. The site never collects or processes donations itself.
@@ -136,17 +153,22 @@ Deployment is owned by **MindAttic.Deploy**, not by per-project scripts. The per
 
 ## 6. Verified state {#MAC-§6}
 
-Domain class: **website** (static single-file site). There is **no automated test or build suite**
+Domain class: **website** (static single-page site). There is **no automated test or build suite**
 in this repo — by design (MAC-LAW-1, no build step). Verification is manual/structural.
 
-Evidence gathered 2026-06-07:
+Evidence gathered 2026-06-07 (structure) and 2026-10-02 (assets externalised, MAC-A2):
 - ✅ `index.htm` is well-formed: one `<head>`/`<style>`, three `<section class="page">` (`home`,
   `childs-play`, `y2k`), a 19-item TOC, and one trailing `<script>`. (structural grep)
 - ✅ Hash router (`show`/`fromHash`) and lite-YT embed present and self-consistent with the page IDs.
 - ✅ 19 playbook `sec-*` anchors exist and match the 19 TOC links.
 - ✅ Centralized deploy wired: `.claude/commands/deploy.md` targets `MindAttic.Deploy --site
   mindatticcares.com`.
-- 🟡 Live deploy / browser render **not** re-verified in this pass (no headless harness in-repo).
+- ✅ 2026-10-02: after moving all base64 data to the UiUx package, a headless-Chrome run against a
+  local stand-in for the CDN showed every font and image loading (no failed requests, no console
+  errors) and element boxes identical to the pre-change page on all three pages; `index.htm`
+  dropped from ~681 KB to ~60 KB. (One-off manual check, not an automated test.)
+- 🟡 The live jsDelivr `@V7` URLs and a live deploy/browser render were **not** re-verified in this
+  pass (the `@V7` tag is published by the MindAttic.UiUx maintainer separately).
 - ⬜ No linter, no HTML validator, no link-checker is run in CI (none configured).
 
 Build/test command: **none** (`MAC-LAW-1`). Doctor (`tools/codex.ps1 doctor`) is the only
@@ -166,7 +188,9 @@ A change to MindAttic Cares is "done" when:
    anchors jump; the lite-YT box plays).
 2. Every `sec-*` anchor referenced by the TOC or a "back to contents" link still exists
    (no dangling in-page links).
-3. No new external runtime dependency, build step, or CMS was introduced (MAC-LAW-1).
+3. No new external runtime dependency (beyond the pinned MindAttic.UiUx jsDelivr package and the
+   click-to-load YouTube embed), build step, or CMS was introduced (MAC-LAW-1, MAC-A2). No analytics
+   or third-party fonts.
 4. New events follow the existing section template and update the in-page TOC.
 5. `tools/codex.ps1 doctor` passes for the docs.
 6. Per [HOUSE-LAW-8], status is downgraded to 🟡/⬜ for anything not actually observed working.
@@ -184,3 +208,7 @@ A change to MindAttic Cares is "done" when:
   receiving Y2K proceeds.
 - **MindAttic.Deploy** — the central sibling repo that owns the FTPS deploy pipeline (MAC-LAW-5).
 - **Pass-through giving** — donations route entirely to the partner charity (MAC-LAW-2).
+- **MindAttic.UiUx package** — the shared repo that holds MindAttic's runtime assets (fonts, logos,
+  photos, effects) organised by domain and served by jsDelivr; sites load from it at runtime (MAC-A2).
+- **Asset URL** — `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/mindatticcares.com/<category>/<file>`;
+  `<tag>` is a whole-number release tag (e.g. `V7`), lowercase kebab-case file names.
