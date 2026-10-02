@@ -3955,6 +3955,23 @@ window.consoleBg = (function () {
     }
 
 
+    // ── Host switches ───────────────────────────────────────────────────────
+    // A host may define window.__cyberspaceFx as an object, or a function returning one, keyed by the
+    // EFFECT NAME REGISTRY names in lowercase (crash, tremor, leak, schematic, cascade, artifact,
+    // fragment, trace, pulsar, heist, predator, terminal) plus circuitboard, with numeric multipliers
+    // spawnRate, circuitboardOpacity and circuitboardSpeed. Read LIVE on every tick/frame; anything
+    // omitted keeps the designed behaviour, so a host that defines nothing is unaffected.
+    function fxCfg() {
+        var c = (typeof window !== 'undefined') ? window.__cyberspaceFx : null;
+        if (typeof c === 'function') { try { c = c(); } catch (e) { c = null; } }
+        return (c && typeof c === 'object') ? c : {};
+    }
+    function fxOn(name) { return fxCfg()[name] !== false; }
+    function fxNum(name, dflt) {
+        var v = fxCfg()[name];
+        return (typeof v === 'number' && isFinite(v) && v >= 0) ? v : dflt;
+    }
+
     // ── Scrolling texture layer ─────────────────────────────────────────────
 
     // Hosts can override these by defining window.__cyberspaceCircuitboardSrcs = [a, b, c]
@@ -4060,12 +4077,16 @@ window.consoleBg = (function () {
             // Read live so a resize-driven canvas.width/height change takes effect immediately.
             var w = canvas.width, h = canvas.height;
             ctx.clearRect(0, 0, w, h);
+            var texOn = fxOn('circuitboard');
+            var texSpeed = fxNum('circuitboardSpeed', 1);
+            var texAlpha = fxNum('circuitboardOpacity', 1);
             texLayers.forEach(function (t) {
+                if (!texOn) return;
                 if (!t.img.complete || !t.img.naturalWidth) return;
                 var iw = t.img.width, ih = t.img.height;
-                t.dx = ((t.dx + t.vx) % iw + iw) % iw;
-                t.dy = ((t.dy + t.vy) % ih + ih) % ih;
-                ctx.globalAlpha = t.opacity;
+                t.dx = ((t.dx + t.vx * texSpeed) % iw + iw) % iw;
+                t.dy = ((t.dy + t.vy * texSpeed) % ih + ih) % ih;
+                ctx.globalAlpha = Math.min(1, t.opacity * texAlpha);
                 for (var x = -t.dx; x < w + iw; x += iw) {
                     for (var y = -t.dy; y < h + ih; y += ih) {
                         ctx.drawImage(t.img, x, y);
@@ -7225,7 +7246,7 @@ window.consoleBg = (function () {
         var area = window.innerWidth * window.innerHeight;
         var scale = Math.max(0.35, Math.min(2.5, (1920 * 1080) / area));
         // 15% lower spawn frequency = 1/(1-0.15) ≈ 1.176× longer delay between ticks.
-        return rand(590, 2120) * scale * 1.176;
+        return rand(590, 2120) * scale * 1.176 / Math.max(0.05, fxNum('spawnRate', 1));
     }
 
     function tick() {
@@ -7236,18 +7257,18 @@ window.consoleBg = (function () {
         // restarts the loop when the tab is visible again.
         if (document.hidden) { tickTimer = null; return; }
         var r = Math.random(), t = 0;
-        if      (FX_ERROR    && r < (t += RATE_ERROR))    spawnError();
-        else if (FX_WARN     && r < (t += RATE_WARN))     spawnWarning();
-        else if (FX_MEMO     && r < (t += RATE_MEMO))     spawnMemo();
-        else if (FX_GEO      && r < (t += RATE_GEO))      spawnGeoWindow();
-        else if (FX_CASCADE  && r < (t += RATE_CASCADE))  spawnCascade();
-        else if (FX_ARTIFACT && r < (t += RATE_ARTIFACT)) spawnArtifact();
-        else if (FX_FRAG     && r < (t += RATE_FRAG))     spawnFrag();
-        else if (FX_NET      && r < (t += RATE_NET))      spawnNetConnect();
-        else if (FX_MORSE    && r < (t += RATE_MORSE))    spawnMorseDot();
-        else if (FX_FOLDER   && r < (t += RATE_FOLDER))   spawnFolderRip();
-        else if (FX_PREDATOR && r < (t += RATE_PREDATOR)) spawnArtifactPredator();
-        else if (FX_WIN)                                   spawnWindow();
+        if      (FX_ERROR    && fxOn('crash') && r < (t += RATE_ERROR))    spawnError();
+        else if (FX_WARN     && fxOn('tremor') && r < (t += RATE_WARN))     spawnWarning();
+        else if (FX_MEMO     && fxOn('leak') && r < (t += RATE_MEMO))     spawnMemo();
+        else if (FX_GEO      && fxOn('schematic') && r < (t += RATE_GEO))      spawnGeoWindow();
+        else if (FX_CASCADE  && fxOn('cascade') && r < (t += RATE_CASCADE))  spawnCascade();
+        else if (FX_ARTIFACT && fxOn('artifact') && r < (t += RATE_ARTIFACT)) spawnArtifact();
+        else if (FX_FRAG     && fxOn('fragment') && r < (t += RATE_FRAG))     spawnFrag();
+        else if (FX_NET      && fxOn('trace') && r < (t += RATE_NET))      spawnNetConnect();
+        else if (FX_MORSE    && fxOn('pulsar') && r < (t += RATE_MORSE))    spawnMorseDot();
+        else if (FX_FOLDER   && fxOn('heist') && r < (t += RATE_FOLDER))   spawnFolderRip();
+        else if (FX_PREDATOR && fxOn('predator') && r < (t += RATE_PREDATOR)) spawnArtifactPredator();
+        else if (FX_WIN && fxOn('terminal'))               spawnWindow();
         tickTimer = setTimeout(tick, tickDelay());
     }
 
