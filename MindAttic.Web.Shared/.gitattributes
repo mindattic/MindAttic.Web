@@ -1,0 +1,14 @@
+# Binary assets: never diff or normalise line endings.
+*.png   binary
+*.jpg   binary
+*.jpeg  binary
+*.gif   binary
+*.ico   binary
+*.woff2 binary
+*.woff  binary
+*.ttf   binary
+*.otf   binary
+
+# Keep generated/vendored data out of language statistics and diffs on GitHub.
+assets-manifest.json linguist-generated=true
+Components/SacredGeometry/previews/** linguist-generated=true

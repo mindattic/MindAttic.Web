@@ -1,0 +1,97 @@
+# Example GitHub Actions workflow for the MindAttic.UiUx test suite.
+#
+# NOT active: it lives under tests/ on purpose. Copy it to <repo>/.github/workflows/uiux-tests.yml in the repo that
+# should run it (MindAttic.UiUx is the natural home) after reviewing the secrets/permissions below.
+#
+#  * push / pull_request  -> LOCAL mode: assets + sites. Sites come from checked-out sibling repos, and the CDN is
+#                            answered from the UiUx working tree, so no tag has to exist and no live site is touched.
+#  * schedule / release   -> LIVE mode: the real sites + the real jsDelivr tag (cdn + sites + assets).
+name: uiux-tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  release:
+    types: [published]
+  schedule:
+    - cron: '17 6 * * *'     # daily, after the CDN edge has had time to settle
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  local:
+    name: Local (assets + sites)
+    runs-on: ubuntu-latest
+    steps:
+      # The suite expects the four repos side by side:  <root>/MindAttic.UiUx, <root>/mindattic.com, ...
+      - uses: actions/checkout@v4
+        with: { path: MindAttic.UiUx }
+      - uses: actions/checkout@v4
+        with: { repository: mindattic/mindattic.com, path: mindattic.com }
+      - uses: actions/checkout@v4
+        with: { repository: mindattic/ryandebraal.com, path: ryandebraal.com }
+      - uses: actions/checkout@v4
+        with: { repository: mindattic/mindatticcares.com, path: mindatticcares.com }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: MindAttic.UiUx/tests/package-lock.json
+      - name: Install
+        working-directory: MindAttic.UiUx/tests
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Assets
+        working-directory: MindAttic.UiUx/tests
+        run: npm run test:assets
+      - name: Sites (local)
+        working-directory: MindAttic.UiUx/tests
+        env: { TEST_MODE: local, PW_CHANNEL: chromium, CI: 'true' }
+        run: npm run test:sites
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-local
+          path: |
+            MindAttic.UiUx/tests/playwright-report
+            MindAttic.UiUx/tests/test-results
+          if-no-files-found: ignore
+
+  live:
+    name: Live (real sites + real CDN)
+    if: github.event_name == 'schedule' || github.event_name == 'release' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: MindAttic.UiUx }
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: MindAttic.UiUx/tests/package-lock.json
+      - name: Install
+        working-directory: MindAttic.UiUx/tests
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+      - name: Live (assets + cdn + sites)
+        working-directory: MindAttic.UiUx/tests
+        env:
+          TEST_MODE: live
+          PW_CHANNEL: chromium
+          CI: 'true'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # only raises the GitHub API rate limit for the tag test
+          # UIUX_TAG: V8                                # set when the sites should be pinned to a newer tag
+        run: npx playwright test
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report-live
+          path: |
+            MindAttic.UiUx/tests/playwright-report
+            MindAttic.UiUx/tests/test-results
+          if-no-files-found: ignore

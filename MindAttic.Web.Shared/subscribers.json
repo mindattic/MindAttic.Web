@@ -19,11 +19,7 @@
       "target":     "D:/Projects/MindAttic/mindattic.com/index.htm",
       "syncScript": "sync-mindattic-com.ps1",
       "subscriptions": [
-        { "component": "OutfitFont" },
-        { "component": "AtticFont",   "applyToSelector": ".site-name" },
-        { "component": "Cyberspace"  },
-        { "component": "PinFooter"   },
-        { "component": "WebSnapshot" }
+        { "component": "Cyberspace"  }
       ]
     },
 

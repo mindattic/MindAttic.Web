@@ -99,8 +99,9 @@ window.__cyberspaceCircuitboardSrcs = [
 
 mindattic.com points these at pinned jsDelivr URLs (emitted by
 `sync/sync-mindattic-com.ps1`). Prose leaves the default and serves them
-via `/api/media/…`. The `assets/` folder here is the lossless source — re-pull
-with `sync/bootstrap-textures.ps1` if upstream changes.
+via `/api/media/…`. The `assets/` folder here is the canonical, lossless source (pixel-identical
+to the original artwork, re-encoded as 8-bit palette PNGs); edit it here and
+regenerate `assets-manifest.json`.
 
 ---
 

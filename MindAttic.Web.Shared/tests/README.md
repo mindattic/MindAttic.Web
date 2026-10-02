@@ -1,0 +1,123 @@
+# MindAttic.UiUx — test suite
+
+End-to-end tests that prove two things:
+
+1. **The package is complete and sound** — `MindAttic.UiUx` contains every file the sites need, laid out per
+   [`docs/ASSETS.md`](../docs/ASSETS.md), well-formed (fonts decode, images decode, nothing downscaled or re-encoded) and
+   described exactly by `assets-manifest.json`.
+2. **The three sites pull their data properly** — `mindattic.com`, `ryandebraal.com` and `mindatticcares.com` load with
+   no failed requests or console errors, talk only to allowed hosts, pin the expected release tag, fetch only what they
+   need (lazily, from the CDN), and keep their layout correct at every viewport.
+
+Framework: **[Playwright Test](https://playwright.dev/docs/intro)**. It intercepts and asserts on network requests natively,
+runs real Chrome across a viewport matrix, and records traces for failures. No browser download is needed — it drives the
+Google Chrome that is already installed (`channel: 'chrome'`).
+
+## Install
+
+```powershell
+cd MindAttic.UiUx\tests
+npm ci                       # installs @playwright/test + cross-env (see package-lock.json)
+```
+
+No Chrome? `set PW_CHANNEL=chromium` and run `npx playwright install chromium` once (or `PW_CHANNEL=msedge`).
+Optional: `pip install fonttools brotli` enables the deep font check (the structural WOFF2 check always runs).
+
+## Run
+
+| Command | What it does |
+|---|---|
+| `npm test` / `npm run test:local` | Everything, **local mode** (default). Sites come from the sibling repos; every `cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/**` request is answered from *this working tree*, so it passes before a tag exists and fails loudly if a referenced file is missing. No other network. |
+| `npm run test:live` | Everything against the **real sites and real CDN** (no interception). |
+| `npm run test:assets` | Package tests only (no browser, ~2 s). |
+| `npm run test:sites` | Site tests only (needs Chrome, ~20 s). |
+| `npm run test:cdn` | Live CDN verification only (forces live mode). |
+| `npm run baseline:update` | Re-record `baselines.json` after you **deliberately** add/replace an image (see below). |
+| `npm run report` | Open the last HTML report (CI runs produce one). |
+
+Environment variables: `TEST_MODE=live`, `UIUX_TAG=V8` (the tag every site must pin; default `V7`),
+`SITES_ROOT=<dir>` (where the sibling site repos live; default: the parent of this repo), `PW_CHANNEL`, `GITHUB_TOKEN`
+(only raises the GitHub API rate limit for the tag test).
+
+Failures keep a Playwright trace: `npx playwright show-trace test-results/<test>/trace.zip`.
+
+## What each group guards
+
+### `specs/assets/` — the package (no browser)
+
+| Spec | Guards |
+|---|---|
+| `layout.spec` | Every file the sites rely on exists (fonts, Cyberspace engine + textures, SacredGeometry, each site's logos/images/themes); each font family keeps its TTF source; **no `assets/` level** under a domain folder; domain folders are split into category folders; no junk files (`.DS_Store`, `Thumbs.db`, `*.tmp`, `*.bak`, leftover `_test.htm`). |
+| `manifest.spec` | `assets-manifest.json` exists, is well formed, lists *exactly* the files on disk, and every size + SHA-256 matches; no duplicate files (MAU-LAW-5). |
+| `naming.spec` | Lowercase kebab-case names, no spaces/`+`/`_`, zero-padded gap-free series (`sunset-01…20`). |
+| `fonts.spec` | Every woff2 is structurally valid (signature, declared length, table directory, Brotli stream decodes to the promised size) — a corrupt woff2 makes browsers *silently* fall back to a system font, which is exactly how the old embedded Outfit-latin bug hid. TTF sources are valid sfnt. Deep check (when Python + fontTools exist): decodes, correct family, glyph count. |
+| `images.spec` | Every PNG/JPEG/ICO/GIF decodes (CRCs, no truncation); Cyberspace textures are 1080×1920 PNGs; **nothing was downscaled** (dimensions ≥ baseline); **lossy files are byte-identical to their baseline** (never re-encoded). |
+| `budgets.spec` | Per-type size ceilings and per-folder totals (`lib/budgets.mjs`). |
+
+### `specs/sites/` — the three sites (browser)
+
+`common.spec` runs for every site: well-formed page; **no failed / non-2xx requests, no console errors, no uncaught
+exceptions**; requests only to the site's origin + the allow-list (`lib/paths.mjs → SITES[*].allowedHosts`); pins exactly the
+expected `@V<n>` tag (never `@main`, no stale tag); every UiUx URL in the HTML exists in the package and every asset is in
+the manifest; `<link rel=preconnect>` to jsDelivr; HTML size budget and no oversized `data:` URIs (guards against
+re-embedding base64); fonts actually load from the CDN (Outfit latin / Attic; latin-ext stays unfetched unless needed); no
+horizontal scrollbar from 320 to 1920 px; comments no longer claim "one file / no external requests".
+
+Site-specific:
+
+* **`mindattic.spec`** — at ten viewports (320×568 … 3440×1440, 1920×300, 400×1920, 120×600): three equal-width buttons whose
+  combined width equals the wordmark width (±0.5 px), lockup fully on-screen and centered (±1 px), no scrollbars, footer
+  fixed to the bottom; fonts/colours (Attic wordmark, Outfit buttons, white text at rest and hover); links have the right
+  `href`/`target`/`rel`; engine scripts are `defer`red, textures + fonts preloaded; the engine exposes every effect the tap
+  handler uses; **tap-anywhere spawns an effect** (≥ 12 of 15 taps, auto-spawner off), tapping a link spawns nothing and opens
+  the right site in a new window (external navigations are stubbed, so the test never leaves the sandbox).
+* **`ryandebraal.spec`** — no base64 JPEG/PNG/WOFF2 payloads left; every image of the sunset/sakura series exists in the
+  package + manifest; first paint requests *only* the Outfit latin font and the avatar; switching to the sakura / sunset / noir
+  themes fetches that theme's artwork from the CDN with 200; the avatar lightbox opens and lazily loads the portrait; PDF
+  export loads `html2pdf` on demand (stubbed in local mode, real in live mode).
+* **`mindatticcares.spec`** — every `<img>` has `width`/`height`/`alt`, below-the-fold art is `loading=lazy`; first paint
+  loads only the Home art; navigating to *Child's Play* / *Y2K* fetches that page's art on demand; deep links (`#y2k`,
+  `#sec-budget`) work; the YouTube player is click-to-play (no third-party request before the click).
+
+### `specs/cdn/` — live CDN (live mode only)
+
+For every site, parses the tag it pins from the **live** HTML and checks that each referenced file is served by jsDelivr with
+HTTP 200, the right `content-type`, `access-control-allow-origin: *`, a year-long/immutable `cache-control`, and **bytes +
+SHA-256 identical to `assets-manifest.json`**. Also: tags are whole-number and contiguous (`V1…Vn`, via the GitHub API) and
+the expected tag is published. Expect these to fail until the tag is pushed **and** the sites are deployed — that is the point.
+
+## Known issue encoded in the suite
+
+`ryandebraal.com` overflows horizontally by 118 px at 320 px wide and 48 px at 390 px (measured on the page as committed
+*before* the asset migration, so it is not a regression). `common.spec.mjs` marks that one test with `test.fail(...)`: it
+passes while the bug exists and **fails the day it is fixed** — remove the `test.fail` line then.
+
+## The baseline ratchet (`baselines.json`)
+
+Records every raster asset's pixel size, plus the SHA-256 of every JPEG. The tests then enforce: images never get smaller, JPEGs
+never change bytes, and every image is recorded. After adding or *deliberately* replacing an image run
+`npm run baseline:update` and commit `baselines.json` with the asset (and regenerate the manifest with
+`tools\build-asset-manifest.ps1`). A tag is immutable, so a changed lossy file normally ships under a new name or a new tag.
+
+## Adding things
+
+* **An asset** — put it under `<domain>/<category>/` (or `fonts/`), kebab-case; `tools\build-asset-manifest.ps1`;
+  `npm run baseline:update`; `npm run test:assets`.
+* **A site** — add an entry to `SITES` in `lib/paths.mjs` (dir, live URL, allowed hosts, HTML budget, fonts used) and a
+  `<site>.spec.mjs` for its specifics; `common.spec` picks it up automatically. Add its folder to `DOMAIN_ROOTS`.
+* **A budget / allowed host** — edit `lib/budgets.mjs` / `lib/paths.mjs` and say why in the commit.
+
+## CI
+
+`ci.workflow.example.yml` is a ready-to-copy GitHub Actions workflow (kept here, **not** under `.github/`): it checks out the
+four repos side by side, runs `assets` + `sites` in local mode on every push, and `test:live` + `test:cdn` on a schedule and
+after a release. Local-mode runs need no network beyond installing npm packages.
+
+## Layout of this folder
+
+```
+tests/
+├── package.json  playwright.config.mjs  baselines.json  README.md  ci.workflow.example.yml
+├── lib/   paths.mjs budgets.mjs walk.mjs binfmt.mjs site-session.mjs static-server.mjs update-baselines.mjs font_check.py
+└── specs/ assets/*.spec.mjs   cdn/cdn.live.spec.mjs   sites/{common,mindattic,ryandebraal,mindatticcares}.spec.mjs
+```

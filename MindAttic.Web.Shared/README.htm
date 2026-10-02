@@ -6,7 +6,7 @@
 <title>MindAttic.UiUx</title>
 <meta name="description" content="One repo, every front-end. Drop-in CSS, JS, and HTML bundles, delivered three ways.">
 <meta name="generator" content="MindAttic Codex build-readme.ps1">
-<meta name="generated" content="2026-08-14">
+<meta name="generated" content="2026-10-02">
 <style>:root{
   --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
   --border:#30363d;
@@ -125,6 +125,7 @@ pre:hover .cpbtn{opacity:1}
 <pre><code class="language-html">&lt;!-- pinned production --&gt;
 &lt;script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V5/Components/Cyberspace/console-bg.js"&gt;&lt;/script&gt;
 &lt;link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V5/Components/Cyberspace/frontpage.css"&gt;</code></pre>
+<p><strong>Shared runtime assets.</strong> Besides components, this repo is the one asset package every MindAttic site loads from jsDelivr — fonts, brand art, theme art and the Cyberspace textures, organised by domain (<code>mindattic.com/</code>, <code>mindatticcares.com/</code>, <code>ryandebraal.com/</code>, <code>fonts/</code>). See <a href="docs/ASSETS.md"><code>docs/ASSETS.md</code></a> for the layout, naming/quality rules and how a site consumes it, and <a href="assets-manifest.json"><code>assets-manifest.json</code></a> for the verified file list. Tests: a Playwright suite in <a href="tests/README.md"><code>tests/</code></a> validates the package and the three sites that load from it.</p>
 <p><strong>Why MindAttic.UiUx:</strong></p>
 <ul>
 <li><strong>Three delivery modes, one source of truth.</strong> jsDelivr CDN for runtime, GitHub Actions for cross-repo PRs, PowerShell scripts for local dev — all reading the same   <a href="subscribers.json"><code>subscribers.json</code></a>.</li>
@@ -268,28 +269,39 @@ pre:hover .cpbtn{opacity:1}
 ├── Themes/
 │   └── Cyberspace/                # theme.css, body-prelude.html, deps.json, Cyberspace.md
 │
+├── fonts/                         # shared web fonts (served over jsDelivr; see docs/ASSETS.md)
+│   ├── outfit/                    #   outfit-latin.woff2, outfit-latin-ext.woff2, outfit.ttf
+│   └── attic/                     #   attic.woff2, attic.ttf
+├── mindattic.com/          # per-site runtime assets, one top-level folder per domain
+│   └── logos/                     #   m-monogram*.png, m-icon-16.png, favicon.ico, wordmark PNGs
+├── mindatticcares.com/     #
+│   └── logos/                     #   m-cares*.png
+├── ryandebraal.com/        #
+│   ├── themes/&lt;name&gt;/             #   sunset, sakura, noir ... one folder per theme
+│   ├── icons/  images/            #
+├── assets-manifest.json           # generated: path, bytes, SHA-256, pixel size of every asset
+├── tests/                         # Playwright suite: validates this package + the 3 sites that consume it
+│
 ├── sync/                         # PowerShell splice-in-place scripts (see below)
 │   ├── _subscribers.ps1          #   shared helper: reads subscribers.json, marker-splice + EOL utilities
 │   ├── sync-all.ps1              #   umbrella: glob-discovers and runs every sync-*.ps1
-│   ├── sync-mindattic-com.ps1    #   inlines bundles into mindattic.com/index.htm
+│   ├── sync-mindattic-com.ps1    #   splices the CYBERSPACE block into mindattic.com/index.htm (fonts/logo/engine load from the CDN)
 │   ├── sync-prose.ps1            #   splices into BOTH Prose.Writer and Prose.Codex wwwroot
 │   ├── sync-mindattic-psst.ps1   #   splices terms.htm + privacy.htm in MindAttic.Psst
 │   ├── sync-ideas.ps1            #   splices into MindAttic.Ideas.Web wwwroot (no-op: 0 subscriptions)
 │   ├── sync-tutor.ps1            #   splices into Tutor.Blazor wwwroot (no-op: 0 subscriptions)
-│   ├── bootstrap-textures.ps1    #   one-shot: pull circuitboard PNGs from Prose's media folder
-│   ├── bootstrap-streetsamurai-appcss.ps1  # one-shot: insert marker pair into StreetSamurai.Blazor/wwwroot/app.css (see note below)
 │   └── sync.md                   #   sync/ folder's own detailed reference doc
 │
 ├── docs/                          # Codex canon: BIBLE.md, AMENDMENTS.md, USER_STORIES.md, rfc/, data/
 ├── tools/
 │   ├── codex.ps1                 # Codex doctor/digest tool (docs canon validation)
+│   ├── build-asset-manifest.ps1  # regenerates assets-manifest.json (-Verify fails if stale)
 │   └── build-readme.ps1          # thin wrapper -&gt; shared engine at ../codex-standard/build-readme.ps1
 ├── subscribers.json               # canonical map: components registry + subscriber map + per-subscriber config
 ├── build.ps1                      # standalone-copy build CLI (idea/blazor outputs are stubs — see below)
 ├── README.md                      # (this file)
 ├── CLAUDE.md                       # working-directory rules for the AI agent
 └── .github/                       # PIPELINES.md + workflows/sync-subscribers.yml</code></pre>
-<blockquote><p><strong>Naming note (verified, not fixed here):</strong> <code>sync/bootstrap-streetsamurai-appcss.ps1</code> still targets <code>D:/Projects/MindAttic/StreetSamurai/v3/StreetSamurai.Blazor/wwwroot/app.css</code> — a leftover from before that project was renamed to <code>Prose</code>. <code>README.md</code>/<code>CLAUDE.md</code> prose elsewhere calls the equivalent one-shot script <code>bootstrap-prose-appcss.ps1</code>, but no file with that name exists on disk; the actual file is the <code>streetsamurai</code>-named one above. Left as-is per this task's scope (no source files touched).</p></blockquote>
 <hr>
 <h2 id="subscribers-sync-mechanism">Subscribers &amp; sync mechanism</h2>
 <p><strong>Canonical source of truth: <a href="subscribers.json"><code>subscribers.json</code></a></strong>. It has two sections:</p>
@@ -732,7 +744,7 @@ powershell -File tools/codex.ps1 doctor   # validate IDs, links, front-matter, c
 </tr>
 </tbody></table>
 
-    <p class="codex-footer">Generated 2026-08-14 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
+    <p class="codex-footer">Generated 2026-10-02 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
   </main>
 </div>
 <script>(function(){

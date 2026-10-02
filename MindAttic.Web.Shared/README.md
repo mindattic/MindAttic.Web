@@ -23,6 +23,13 @@ build/run/catalog tour and does not restate them):
 <link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V5/Components/Cyberspace/frontpage.css">
 ```
 
+**Shared runtime assets.** Besides components, this repo is the one asset package every MindAttic site
+loads from jsDelivr — fonts, brand art, theme art and the Cyberspace textures, organised by domain
+(`mindattic.com/`, `mindatticcares.com/`, `ryandebraal.com/`, `fonts/`).
+See [`docs/ASSETS.md`](docs/ASSETS.md) for the layout, naming/quality rules and how a site consumes it, and
+[`assets-manifest.json`](assets-manifest.json) for the verified file list.
+Tests: a Playwright suite in [`tests/`](tests/README.md) validates the package and the three sites that load from it.
+
 **Why MindAttic.UiUx:**
 
 - **Three delivery modes, one source of truth.** jsDelivr CDN for runtime, GitHub Actions for
@@ -127,21 +134,33 @@ MindAttic.UiUx/
 ├── Themes/
 │   └── Cyberspace/                # theme.css, body-prelude.html, deps.json, Cyberspace.md
 │
+├── fonts/                         # shared web fonts (served over jsDelivr; see docs/ASSETS.md)
+│   ├── outfit/                    #   outfit-latin.woff2, outfit-latin-ext.woff2, outfit.ttf
+│   └── attic/                     #   attic.woff2, attic.ttf
+├── mindattic.com/          # per-site runtime assets, one top-level folder per domain
+│   └── logos/                     #   m-monogram*.png, m-icon-16.png, favicon.ico, wordmark PNGs
+├── mindatticcares.com/     #
+│   └── logos/                     #   m-cares*.png
+├── ryandebraal.com/        #
+│   ├── themes/<name>/             #   sunset, sakura, noir ... one folder per theme
+│   ├── icons/  images/            #
+├── assets-manifest.json           # generated: path, bytes, SHA-256, pixel size of every asset
+├── tests/                         # Playwright suite: validates this package + the 3 sites that consume it
+│
 ├── sync/                         # PowerShell splice-in-place scripts (see below)
 │   ├── _subscribers.ps1          #   shared helper: reads subscribers.json, marker-splice + EOL utilities
 │   ├── sync-all.ps1              #   umbrella: glob-discovers and runs every sync-*.ps1
-│   ├── sync-mindattic-com.ps1    #   inlines bundles into mindattic.com/index.htm
+│   ├── sync-mindattic-com.ps1    #   splices the CYBERSPACE block into mindattic.com/index.htm (fonts/logo/engine load from the CDN)
 │   ├── sync-prose.ps1            #   splices into BOTH Prose.Writer and Prose.Codex wwwroot
 │   ├── sync-mindattic-psst.ps1   #   splices terms.htm + privacy.htm in MindAttic.Psst
 │   ├── sync-ideas.ps1            #   splices into MindAttic.Ideas.Web wwwroot (no-op: 0 subscriptions)
 │   ├── sync-tutor.ps1            #   splices into Tutor.Blazor wwwroot (no-op: 0 subscriptions)
-│   ├── bootstrap-textures.ps1    #   one-shot: pull circuitboard PNGs from Prose's media folder
-│   ├── bootstrap-streetsamurai-appcss.ps1  # one-shot: insert marker pair into StreetSamurai.Blazor/wwwroot/app.css (see note below)
 │   └── sync.md                   #   sync/ folder's own detailed reference doc
 │
 ├── docs/                          # Codex canon: BIBLE.md, AMENDMENTS.md, USER_STORIES.md, rfc/, data/
 ├── tools/
 │   ├── codex.ps1                 # Codex doctor/digest tool (docs canon validation)
+│   ├── build-asset-manifest.ps1  # regenerates assets-manifest.json (-Verify fails if stale)
 │   └── build-readme.ps1          # thin wrapper -> shared engine at ../codex-standard/build-readme.ps1
 ├── subscribers.json               # canonical map: components registry + subscriber map + per-subscriber config
 ├── build.ps1                      # standalone-copy build CLI (idea/blazor outputs are stubs — see below)
@@ -149,13 +168,6 @@ MindAttic.UiUx/
 ├── CLAUDE.md                       # working-directory rules for the AI agent
 └── .github/                       # PIPELINES.md + workflows/sync-subscribers.yml
 ```
-
-> **Naming note (verified, not fixed here):** `sync/bootstrap-streetsamurai-appcss.ps1` still targets
-> `D:/Projects/MindAttic/StreetSamurai/v3/StreetSamurai.Blazor/wwwroot/app.css` — a leftover from
-> before that project was renamed to `Prose`. `README.md`/`CLAUDE.md` prose elsewhere calls the
-> equivalent one-shot script `bootstrap-prose-appcss.ps1`, but no file with that name exists on disk;
-> the actual file is the `streetsamurai`-named one above. Left as-is per this task's scope (no source
-> files touched).
 
 ---
 

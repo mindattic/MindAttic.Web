@@ -43,11 +43,9 @@ with precedence: explicit subscription override > component JSON default
 sync/
 ├── _subscribers.ps1                   # helper dot-sourced by each sync-*.ps1 (reads subscribers.json)
 ├── sync-all.ps1                       # umbrella; invokes every sync-*.ps1 in this folder
-├── sync-mindattic-com.ps1             # inlines bundles into mindattic.com/index.htm
+├── sync-mindattic-com.ps1             # splices the CYBERSPACE block into mindattic.com/index.htm
 ├── sync-prose.ps1             # rewrites Prose.Blazor wwwroot files
-├── sync-mindattic-psst.ps1            # inlines bundles into MindAttic.Psst/{terms,privacy}.htm
-├── bootstrap-textures.ps1             # one-shot: pull circuitboard PNGs from Prose
-└── bootstrap-prose-appcss.ps1 # one-shot: insert CYBERSPACE markers into app.css
+└── sync-mindattic-psst.ps1            # inlines bundles into MindAttic.Psst/{terms,privacy}.htm
 ```
 
 ---
@@ -94,8 +92,8 @@ its own marker pair. Groups (in load order):
 4. Rewrites the OUTFITFONT + ATTICFONT marker blocks in `wwwroot/app.css` from `Components/OutfitFont/` and `Components/AtticFont/`.
 
 All CSS marker pairs must already exist in `wwwroot/app.css` before the
-first run. If you're standing up a new subscriber, use
-`bootstrap-prose-appcss.ps1` first to insert them.
+first run. If you're standing up a new subscriber, add the `BEGIN/END MINDATTIC.UIUX:<MARKER>`
+pairs to its `app.css` by hand first.
 
 ```powershell
 powershell -File sync/sync-prose.ps1
@@ -113,23 +111,6 @@ from `MindAttic.Psst/README.md`.
 powershell -File sync/sync-mindattic-psst.ps1
 powershell -File sync/sync-mindattic-psst.ps1 -TargetRoot 'D:/path/to/MindAttic.Psst'
 ```
-
-### `bootstrap-textures.ps1`
-
-One-shot. Pulls the three `circuitboard.0X.png` parallax textures from
-Prose's media folder into `Components/Cyberspace/assets/` as lossless
-copies. JPEG block compression breaks the edge-pixel match between tile
-copies and produces visible seams — keep these as PNG.
-
-Re-run only when upstream PNGs change.
-
-### `bootstrap-prose-appcss.ps1`
-
-One-shot. Replaces a hard-coded line range in
-`Prose/wwwroot/app.css` (the legacy CYBERSPACE block) with a
-marker pair, so subsequent `sync-prose.ps1` runs have somewhere to
-write into. Read the file before running on a new branch — the line numbers
-are tied to a specific historical revision.
 
 ---
 
