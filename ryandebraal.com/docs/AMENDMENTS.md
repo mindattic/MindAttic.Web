@@ -4,7 +4,7 @@ project: ryandebraal.com
 code: RDC
 layer: amendments
 status: living
-updated: 2026-06-07
+updated: 2026-10-02
 ---
 
 # ryandebraal.com — Amendments (append-only; amendment wins over the bible)
@@ -54,3 +54,45 @@ extracting it would duplicate source and violate [RDC-LAW-1](BIBLE.md#RDC-LAW-1)
    [RDC-LAW-6](BIBLE.md#RDC-LAW-6); no new files created.
 
 **Migration:** Docs-only. No `index.htm` or source changes.
+
+## RDC-A3 — Static assets move to the jsDelivr CDN (supersedes RDC-LAW-1, refines RDC-LAW-2/RDC-LAW-3) {#RDC-A3}
+
+**Decision (user, 2026-10-02):** the "one file, one request, no CDN, inline everything" philosophy is
+retired. `index.htm` had grown to ~5.2 MB, ~95% of it base64 (theme background JPEGs, portrait and
+moon PNGs, two woff2 fonts, the Neko sprites, and an 880 KB PDF library), which made first load slow.
+Static assets are now real files served from a CDN that is always reachable.
+
+**What changed:**
+
+1. **[RDC-LAW-1](BIBLE.md#RDC-LAW-1) is superseded.** Assets (fonts, images, theme art, large
+   libraries) are no longer inlined. They are separate files hosted in the **MindAttic.UiUx** repo and
+   served by **jsDelivr** at an immutable, whole-number tag (currently `@V7`). `index.htm` stays the
+   only hand-authored page; it references assets by URL. `<link rel="preconnect|preload">`,
+   `loading="lazy"` and `decoding="async"` are allowed and used.
+2. **Allowed external hosts (exhaustive):**
+   - `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/...` — our own assets (Outfit fonts at
+     `fonts/outfit/`; page art at `ryandebraal.com/`).
+   - `https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js` — the PDF export
+     library, loaded on demand the first time a PDF is exported (it was previously inlined; the CDN file
+     is byte-equivalent apart from its header comment).
+   Nothing else. No other host may be added without a new amendment.
+3. **[RDC-LAW-2](BIBLE.md#RDC-LAW-2) refined:** still no package.json/bundler/transpiler/framework in
+   the repo. Loading a pinned third-party file by URL is allowed; installing or building one is not.
+4. **[RDC-LAW-3](BIBLE.md#RDC-LAW-3) refined:** the "no request other than fetching itself" clause is
+   replaced by the host list above. Still forbidden: analytics, tracking pixels, telemetry, third-party
+   fonts (Google Fonts etc.), and any script that phones home.
+5. **Kept inline on purpose:** the 32 Neko sprite frames (~1 KB each; 32 requests would be slower than
+   the ~32 KB they cost in the stylesheet) and the 864-byte link icon.
+6. **Conventions** (see [BIBLE §10](BIBLE.md#RDC-§10)): tag-pinned URLs, kebab-case file names,
+   `themes/<name>/<name>-NN.jpg`, whole-number UiUx tags, fonts at top-level `fonts/`.
+
+**Why:** loading speed. The fonts, images and library are cacheable across visits and sites, the page
+HTML drops from ~5.2 MB to ~0.45 MB, and only the theme background actually in use is downloaded.
+
+**Trade-offs accepted:** the page needs the CDN to show Outfit, the portrait and theme art (system
+fonts and plain backgrounds are the fallback); `exportHTML()` output now references CDN URLs instead of
+being fully offline; PDF export needs a network connection the first time.
+
+**Migration:** `index.htm` rewritten to reference CDN URLs (assets extracted byte-identically for
+JPEGs/fonts, PNGs losslessly recompressed). BIBLE body text, README and USER_STORIES updated to match.
+RDC-LAW-1 keeps its ID (history) and is marked superseded rather than deleted.

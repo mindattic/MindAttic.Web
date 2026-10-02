@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ryandebraal.com</title>
-<meta name="description" content="A resume site as an engineering statement. One file. No build step. No framework. No npm install. No CDN. No tracking. Just a developer who prefers working close to the platform.">
+<meta name="description" content="A resume site as an engineering statement. One hand-authored page. No build step. No framework. No npm install. No tracking. Static assets from a pinned CDN. Just a developer who prefers working close to the platform.">
 <meta name="generator" content="MindAttic Codex build-readme.ps1">
-<meta name="generated" content="2026-08-14">
+<meta name="generated" content="2026-10-02">
 <style>:root{
   --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
   --border:#30363d;
@@ -111,7 +111,7 @@ pre:hover .cpbtn{opacity:1}
   </nav>
   <main id="content">
 <h1 id="ryandebraalcom">ryandebraal.com</h1>
-<p><strong>A resume site as an engineering statement.</strong> One file. No build step. No framework. No npm install. No CDN. No tracking. Just a developer who prefers working close to the platform.</p>
+<p><strong>A resume site as an engineering statement.</strong> One hand-authored page. No build step. No framework. No npm install. No tracking. Static assets from a pinned CDN. Just a developer who prefers working close to the platform.</p>
 <p><a href="https://ryandebraal.com">ryandebraal.com</a></p>
 <hr>
 <h2 id="table-of-contents">Table of contents</h2>
@@ -125,6 +125,7 @@ pre:hover .cpbtn{opacity:1}
 <li><a href="#whats-not-in-this-repo">What's <em>not</em> in this repo</a></li>
 <li><a href="#stack">Stack</a></li>
 <li><a href="#directory-layout">Directory layout</a></li>
+<li><a href="#assets-and-cdn">Assets and CDN</a></li>
 <li><a href="#local-development">Local development</a></li>
 <li><a href="#documentation-codex-canon">Documentation (Codex canon)</a></li>
 <li><a href="#tooling--tools">Tooling — <code>tools/</code></a></li>
@@ -133,7 +134,7 @@ pre:hover .cpbtn{opacity:1}
 </ul>
 <hr>
 <h2 id="what-it-is">What it is</h2>
-<p>A single, hand-authored <code>index.htm</code> — pure HTML, CSS, and JavaScript — that renders a fully interactive, themeable, animated resume in any modern browser. Open the Network tab and filter by anything: you will see one request.</p>
+<p>A single, hand-authored <code>index.htm</code> — pure HTML, CSS, and JavaScript — that renders a fully interactive, themeable, animated resume in any modern browser. Open the Network tab: you will see the page itself plus its fonts, images and theme art from <code>cdn.jsdelivr.net</code> (and, only when you export a PDF, html2pdf.js) — nothing else, and no analytics.</p>
 <p>That's the whole product. There is no server, no API, no database, and no build output — the file you edit is byte-for-byte the file the browser runs.</p>
 <h2 id="why-it-exists">Why it exists</h2>
 <p>Modern web stacks make it easy to ship 30 MB of bundled JavaScript to render a paragraph of text. This project is the deliberate opposite — a demonstration that a polished, production-quality experience can be built without inheriting any of that complexity. Every line of logic, every animation frame, every export pipeline lives in the same file you can read end-to-end in an afternoon.</p>
@@ -142,10 +143,10 @@ pre:hover .cpbtn{opacity:1}
 <ul>
 <li><strong>16 themes</strong> — Light, Dark, Spring, Summer, Autumn, Winter, Matrix, Neko, Ocean, Sunset, Forest, Cyberpunk, Noir, Sakura, Sand, Synthwave. Theme switching is CSS variables only; no JavaScript style mutations.</li>
 <li><strong>3 rendering profiles</strong> — Classic, Pitch, and Complete views of the same underlying resume data, swapped with one click.</li>
-<li><strong>Custom canvas animations per theme</strong> — Bees with a flower-claiming state machine, snow that accumulates into SVG drifts, ten roaming Neko cats with the full 1998 sprite state machine (all 32 frames embedded as base64), sandstorm physics, parallax forest silhouettes, perspective synthwave grids, neon-acid-rain cyberpunk skylines, and more. Written from scratch — no animation libraries. (<code>light</code>, <code>dark</code>, and <code>noir</code> are static CSS-only themes with no bespoke FX.)</li>
+<li><strong>Custom canvas animations per theme</strong> — Bees with a flower-claiming state machine, snow that accumulates into SVG drifts, ten roaming Neko cats with the full 1998 sprite state machine (all 32 frames kept inline as tiny base64 CSS classes), sandstorm physics, parallax forest silhouettes, perspective synthwave grids, neon-acid-rain cyberpunk skylines, and more. Written from scratch — no animation libraries. (<code>light</code>, <code>dark</code>, and <code>noir</code> are static CSS-only themes with no bespoke FX.)</li>
 <li><strong>~200 tech tooltips</strong> — Hover any technology in the skills or experience sections for context.</li>
 <li><strong>Markdown, HTML, and PDF export</strong> — Download the resume in any format from the toolbar.</li>
-<li><strong>The Outfit typeface, embedded</strong> — Weights 100–900, inlined as base64 woff2. No font CDN request is ever made.</li>
+<li><strong>The Outfit typeface, from the CDN</strong> — Weights 100–900 as two woff2 subsets (latin + latin-ext) hosted in MindAttic.UiUx and served by jsDelivr at a pinned tag; the latin file is preloaded. No Google Fonts request.</li>
 <li><strong>Preferences persist</strong> — Theme, profile, font choice, and per-skill familiarity survive page reloads via <code>localStorage</code>.</li>
 <li><strong>Mobile-first toolbar</strong> — Adapts cleanly between desktop and portrait orientations.</li>
 </ul>
@@ -192,15 +193,15 @@ pre:hover .cpbtn{opacity:1}
 <li>Preferences persist in <code>localStorage</code> under the keys <code>resume-settings</code>, <code>resume-theme</code>, <code>resume-theme-rotation-paused</code>, <code>tag-familiarity</code>, and <code>neko-color</code>.</li>
 </ul>
 <h2 id="file-anatomy-of-indexhtm">File anatomy of <code>index.htm</code></h2>
-<p><code>index.htm</code> is a single file (~6,900 lines, ~5.3 MB on disk — the size is almost entirely the embedded Outfit woff2 font weights and the Neko sprite atlas, both base64-inlined). Structurally:</p>
-<pre><code>index.htm  (one file)
+<p><code>index.htm</code> is a single hand-authored page (~7,000 lines, ~0.45 MB on disk). Fonts, the portrait, the theme backgrounds and the PDF library are no longer embedded; they load from jsDelivr (<a href="docs/AMENDMENTS.md#RDC-A3">RDC-A3</a>), which is why it dropped from ~5.3 MB. Structurally:</p>
+<pre><code>index.htm  (one page)
 ├── &lt;!-- Last Updated: &lt;UTC&gt; --&gt;     stamped by the deploy pipeline (MindAttic.Deploy)
 ├── &lt;head&gt;
 │   ├── DevTools easter-egg banner (ASCII, shown via console.log)
 │   └── &lt;style&gt;
 │       ├── CSS custom properties per [data-theme]
 │       ├── layout + toolbar rules
-│       └── @font-face Outfit (base64 woff2, weights 100-900) + Neko 32-frame atlas
+│       └── @font-face Outfit (CDN woff2, weights 100-900) + Neko 32 inline frames
 ├── &lt;body data-theme=… data-profile=…&gt;
 │   ├── resume DOM mount + toolbar
 │   ├── per-theme &lt;canvas&gt; FX layers
@@ -219,13 +220,13 @@ pre:hover .cpbtn{opacity:1}
 │                         exportPrintCV() · printResume() · toggleExportMenu / toggleMoreMenu</code></pre>
 <p>This mirrors <a href="docs/BIBLE.md#RDC-§4">docs/BIBLE.md §4</a>, which is the canonical version of this diagram — update that file first if the architecture changes, then this section.</p>
 <h2 id="whats-not-in-this-repo">What's <em>not</em> in this repo</h2>
-<p>No <code>node_modules</code>. No <code>package.json</code>. No <code>webpack.config.js</code>. No <code>tsconfig.json</code>. No <code>.eslintrc</code>. No CI matrix. No Tailwind. No React. No Vite. No analytics SDK. No tracking pixels. No service worker. No polyfills. No minifier. No transpiler. No CDN links. No test suite, no compiler, no build command — see <a href="docs/BIBLE.md#RDC-§3">docs/BIBLE.md §3 / §6</a>.</p>
+<p>No <code>node_modules</code>. No <code>package.json</code>. No <code>webpack.config.js</code>. No <code>tsconfig.json</code>. No <code>.eslintrc</code>. No CI matrix. No Tailwind. No React. No Vite. No analytics SDK. No tracking pixels. No service worker. No polyfills. No minifier. No transpiler. No third-party fonts. Assets come only from the pinned jsDelivr paths allowed by <a href="docs/AMENDMENTS.md#RDC-A3">RDC-A3</a>. No test suite, no compiler, no build command — see <a href="docs/BIBLE.md#RDC-§3">docs/BIBLE.md §3 / §6</a>.</p>
 <p>The retired per-project <code>deploy.ps1</code>/<code>deploy.bat</code>/<code>settings.json</code> must not be reintroduced — deploy is centralized in the sibling MindAttic.Deploy repo (<a href="docs/BIBLE.md#RDC-LAW-6">RDC-LAW-6</a>).</p>
 <h2 id="stack">Stack</h2>
 <p><code>HTML5</code> · <code>CSS3</code> (custom properties, <code>color-mix</code>, <code>@media (orientation)</code>) · <code>Vanilla JavaScript</code> (ES2020+, IIFE-scoped, no modules) · <code>Canvas 2D</code> · <code>SVG</code></p>
 <h2 id="directory-layout">Directory layout</h2>
 <pre><code>ryandebraal.com/
-├── index.htm              The entire shipped product — one file, one network request
+├── index.htm              The entire hand-authored page (assets are hosted in MindAttic.UiUx)
 ├── README.md               This file
 ├── CLAUDE.md               Claude Code project rules (Codex pointer, code style, /commit, /revert)
 ├── .gitignore
@@ -246,6 +247,14 @@ pre:hover .cpbtn{opacity:1}
     ├── commands/            checkpoint.md, commit.md, deploy.md
     ├── hooks/               inject-digest.ps1, restore-handoff.ps1
     └── skills/              commit/, deploy/, discard/, revert/, run/  (each a SKILL.md)</code></pre>
+<h2 id="assets-and-cdn">Assets and CDN</h2>
+<p>Static assets live in the sibling <strong>MindAttic.UiUx</strong> repo and are served by jsDelivr at a whole-number tag:</p>
+<ul>
+<li>Page art: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/ryandebraal.com/&lt;category&gt;/&lt;file&gt;</code> (<code>themes/&lt;name&gt;/&lt;name&gt;-NN.jpg</code>, <code>images/</code>, <code>icons/</code>)</li>
+<li>Shared fonts: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/fonts/outfit/outfit-latin.woff2</code> (+ <code>outfit-latin-ext.woff2</code>)</li>
+<li>PDF export: html2pdf.js 0.10.2 from jsDelivr npm, loaded on first export</li>
+</ul>
+<p>Names are lowercase kebab-case; JPEGs are never re-encoded. To add or change an asset, put it in MindAttic.UiUx, tag the next whole-number release, push the tag, and bump <code>@V7</code> in <code>index.htm</code>. Full conventions: <a href="docs/BIBLE.md#RDC-§10">docs/BIBLE.md §10</a>.</p>
 <h2 id="local-development">Local development</h2>
 <pre><code># Open it.
 start index.htm</code></pre>
@@ -253,7 +262,7 @@ start index.htm</code></pre>
 <h2 id="documentation-codex-canon">Documentation (Codex canon)</h2>
 <p>This repo follows the MindAttic <strong>Codex</strong> documentation standard. A fact lives in exactly one layer; deeper detail is linked by stable ID, never duplicated here:</p>
 <ul>
-<li><strong><a href="docs/BIBLE.md">docs/BIBLE.md</a></strong> (L0) — what the site IS, is NOT, the architecture (§4), and the project Laws <code>RDC-LAW-1</code> through <code>RDC-LAW-6</code> (one file/one request, zero dependencies, no tracking, CSS-variable themes, one data model, deploy owned by MindAttic.Deploy).</li>
+<li><strong><a href="docs/BIBLE.md">docs/BIBLE.md</a></strong> (L0) — what the site IS, is NOT, the architecture (§4), and the project Laws <code>RDC-LAW-1</code> through <code>RDC-LAW-6</code> (RDC-LAW-1 one-file/one-request — superseded by amendment RDC-A3; no build/package dependencies; no tracking and a host allow-list; CSS-variable themes, one data model, deploy owned by MindAttic.Deploy).</li>
 <li><strong><a href="docs/AMENDMENTS.md">docs/AMENDMENTS.md</a></strong> (L1) — append-only change log (<code>RDC-A1</code> adopted Codex; <code>RDC-A2</code> recorded the dark-theme addition, export-function expansion, and a README deploy-section correction). An amendment wins over the bible; it is never rewritten, only superseded.</li>
 <li><strong><a href="docs/USER<em>STORIES.md">docs/USER</em>STORIES.md</a></strong> (L2) — capabilities by epic (<code>RDC-US-A1</code>…<code>RDC-US-F2</code>), each marked <code>🟡</code> (shipped, manually verified) because this project ships no automated test suite and no build step by design — see <a href="docs/BIBLE.md#RDC-LAW-2">RDC-LAW-2</a>. Nothing here is marked <code>✅</code>, since Codex reserves that status for test- or build-proven facts.</li>
 <li><strong><a href="docs/rfc/">docs/rfc/</a></strong> — design notes that graduate into the bible + stories once decided. Currently one: <a href="docs/rfc/0001-in-browser-smoke-harness.md">RFC 0001 — in-browser smoke harness</a>, which proposes how to make <code>✅</code> reachable (an in-page <code>?selftest=1</code> self-test block, or a sibling harness in MindAttic.Deploy) without adding a build step to this repo.</li>
@@ -295,7 +304,7 @@ start index.htm</code></pre>
 <hr>
 <p>Built and maintained by <a href="https://ryandebraal.com">Ryan DeBraal</a>.</p>
 
-    <p class="codex-footer">Generated 2026-08-14 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
+    <p class="codex-footer">Generated 2026-10-02 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
   </main>
 </div>
 <script>(function(){

@@ -1,6 +1,6 @@
 # ryandebraal.com
 
-**A resume site as an engineering statement.** One file. No build step. No framework. No npm install. No CDN. No tracking. Just a developer who prefers working close to the platform.
+**A resume site as an engineering statement.** One hand-authored page. No build step. No framework. No npm install. No tracking. Static assets from a pinned CDN. Just a developer who prefers working close to the platform.
 
 [ryandebraal.com](https://ryandebraal.com)
 
@@ -17,6 +17,7 @@
 - [What's *not* in this repo](#whats-not-in-this-repo)
 - [Stack](#stack)
 - [Directory layout](#directory-layout)
+- [Assets and CDN](#assets-and-cdn)
 - [Local development](#local-development)
 - [Documentation (Codex canon)](#documentation-codex-canon)
 - [Tooling — `tools/`](#tooling--tools)
@@ -27,7 +28,7 @@
 
 ## What it is
 
-A single, hand-authored `index.htm` — pure HTML, CSS, and JavaScript — that renders a fully interactive, themeable, animated resume in any modern browser. Open the Network tab and filter by anything: you will see one request.
+A single, hand-authored `index.htm` — pure HTML, CSS, and JavaScript — that renders a fully interactive, themeable, animated resume in any modern browser. Open the Network tab: you will see the page itself plus its fonts, images and theme art from `cdn.jsdelivr.net` (and, only when you export a PDF, html2pdf.js) — nothing else, and no analytics.
 
 That's the whole product. There is no server, no API, no database, and no build output — the file you edit is byte-for-byte the file the browser runs.
 
@@ -41,10 +42,10 @@ It's a resume that **is** the work sample.
 
 - **16 themes** — Light, Dark, Spring, Summer, Autumn, Winter, Matrix, Neko, Ocean, Sunset, Forest, Cyberpunk, Noir, Sakura, Sand, Synthwave. Theme switching is CSS variables only; no JavaScript style mutations.
 - **3 rendering profiles** — Classic, Pitch, and Complete views of the same underlying resume data, swapped with one click.
-- **Custom canvas animations per theme** — Bees with a flower-claiming state machine, snow that accumulates into SVG drifts, ten roaming Neko cats with the full 1998 sprite state machine (all 32 frames embedded as base64), sandstorm physics, parallax forest silhouettes, perspective synthwave grids, neon-acid-rain cyberpunk skylines, and more. Written from scratch — no animation libraries. (`light`, `dark`, and `noir` are static CSS-only themes with no bespoke FX.)
+- **Custom canvas animations per theme** — Bees with a flower-claiming state machine, snow that accumulates into SVG drifts, ten roaming Neko cats with the full 1998 sprite state machine (all 32 frames kept inline as tiny base64 CSS classes), sandstorm physics, parallax forest silhouettes, perspective synthwave grids, neon-acid-rain cyberpunk skylines, and more. Written from scratch — no animation libraries. (`light`, `dark`, and `noir` are static CSS-only themes with no bespoke FX.)
 - **~200 tech tooltips** — Hover any technology in the skills or experience sections for context.
 - **Markdown, HTML, and PDF export** — Download the resume in any format from the toolbar.
-- **The Outfit typeface, embedded** — Weights 100–900, inlined as base64 woff2. No font CDN request is ever made.
+- **The Outfit typeface, from the CDN** — Weights 100–900 as two woff2 subsets (latin + latin-ext) hosted in MindAttic.UiUx and served by jsDelivr at a pinned tag; the latin file is preloaded. No Google Fonts request.
 - **Preferences persist** — Theme, profile, font choice, and per-skill familiarity survive page reloads via `localStorage`.
 - **Mobile-first toolbar** — Adapts cleanly between desktop and portrait orientations.
 
@@ -72,17 +73,17 @@ A sibling object, `tooltips` (`index.htm`, near line 913), maps ~200 technology 
 
 ## File anatomy of `index.htm`
 
-`index.htm` is a single file (~6,900 lines, ~5.3 MB on disk — the size is almost entirely the embedded Outfit woff2 font weights and the Neko sprite atlas, both base64-inlined). Structurally:
+`index.htm` is a single hand-authored page (~7,000 lines, ~0.45 MB on disk). Fonts, the portrait, the theme backgrounds and the PDF library are no longer embedded; they load from jsDelivr ([RDC-A3](docs/AMENDMENTS.md#RDC-A3)), which is why it dropped from ~5.3 MB. Structurally:
 
 ```
-index.htm  (one file)
+index.htm  (one page)
 ├── <!-- Last Updated: <UTC> -->     stamped by the deploy pipeline (MindAttic.Deploy)
 ├── <head>
 │   ├── DevTools easter-egg banner (ASCII, shown via console.log)
 │   └── <style>
 │       ├── CSS custom properties per [data-theme]
 │       ├── layout + toolbar rules
-│       └── @font-face Outfit (base64 woff2, weights 100-900) + Neko 32-frame atlas
+│       └── @font-face Outfit (CDN woff2, weights 100-900) + Neko 32 inline frames
 ├── <body data-theme=… data-profile=…>
 │   ├── resume DOM mount + toolbar
 │   ├── per-theme <canvas> FX layers
@@ -105,7 +106,7 @@ This mirrors [docs/BIBLE.md §4](docs/BIBLE.md#RDC-§4), which is the canonical 
 
 ## What's *not* in this repo
 
-No `node_modules`. No `package.json`. No `webpack.config.js`. No `tsconfig.json`. No `.eslintrc`. No CI matrix. No Tailwind. No React. No Vite. No analytics SDK. No tracking pixels. No service worker. No polyfills. No minifier. No transpiler. No CDN links. No test suite, no compiler, no build command — see [docs/BIBLE.md §3 / §6](docs/BIBLE.md#RDC-§3).
+No `node_modules`. No `package.json`. No `webpack.config.js`. No `tsconfig.json`. No `.eslintrc`. No CI matrix. No Tailwind. No React. No Vite. No analytics SDK. No tracking pixels. No service worker. No polyfills. No minifier. No transpiler. No third-party fonts. Assets come only from the pinned jsDelivr paths allowed by [RDC-A3](docs/AMENDMENTS.md#RDC-A3). No test suite, no compiler, no build command — see [docs/BIBLE.md §3 / §6](docs/BIBLE.md#RDC-§3).
 
 The retired per-project `deploy.ps1`/`deploy.bat`/`settings.json` must not be reintroduced — deploy is centralized in the sibling MindAttic.Deploy repo ([RDC-LAW-6](docs/BIBLE.md#RDC-LAW-6)).
 
@@ -117,7 +118,7 @@ The retired per-project `deploy.ps1`/`deploy.bat`/`settings.json` must not be re
 
 ```
 ryandebraal.com/
-├── index.htm              The entire shipped product — one file, one network request
+├── index.htm              The entire hand-authored page (assets are hosted in MindAttic.UiUx)
 ├── README.md               This file
 ├── CLAUDE.md               Claude Code project rules (Codex pointer, code style, /commit, /revert)
 ├── .gitignore
@@ -140,6 +141,16 @@ ryandebraal.com/
     └── skills/              commit/, deploy/, discard/, revert/, run/  (each a SKILL.md)
 ```
 
+## Assets and CDN
+
+Static assets live in the sibling **MindAttic.UiUx** repo and are served by jsDelivr at a whole-number tag:
+
+- Page art: `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/ryandebraal.com/<category>/<file>` (`themes/<name>/<name>-NN.jpg`, `images/`, `icons/`)
+- Shared fonts: `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/fonts/outfit/outfit-latin.woff2` (+ `outfit-latin-ext.woff2`)
+- PDF export: html2pdf.js 0.10.2 from jsDelivr npm, loaded on first export
+
+Names are lowercase kebab-case; JPEGs are never re-encoded. To add or change an asset, put it in MindAttic.UiUx, tag the next whole-number release, push the tag, and bump `@V7` in `index.htm`. Full conventions: [docs/BIBLE.md §10](docs/BIBLE.md#RDC-§10).
+
 ## Local development
 
 ```
@@ -153,7 +164,7 @@ That's it. There is no dev server, because there is nothing to compile.
 
 This repo follows the MindAttic **Codex** documentation standard. A fact lives in exactly one layer; deeper detail is linked by stable ID, never duplicated here:
 
-- **[docs/BIBLE.md](docs/BIBLE.md)** (L0) — what the site IS, is NOT, the architecture (§4), and the project Laws `RDC-LAW-1` through `RDC-LAW-6` (one file/one request, zero dependencies, no tracking, CSS-variable themes, one data model, deploy owned by MindAttic.Deploy).
+- **[docs/BIBLE.md](docs/BIBLE.md)** (L0) — what the site IS, is NOT, the architecture (§4), and the project Laws `RDC-LAW-1` through `RDC-LAW-6` (RDC-LAW-1 one-file/one-request — superseded by amendment RDC-A3; no build/package dependencies; no tracking and a host allow-list; CSS-variable themes, one data model, deploy owned by MindAttic.Deploy).
 - **[docs/AMENDMENTS.md](docs/AMENDMENTS.md)** (L1) — append-only change log (`RDC-A1` adopted Codex; `RDC-A2` recorded the dark-theme addition, export-function expansion, and a README deploy-section correction). An amendment wins over the bible; it is never rewritten, only superseded.
 - **[docs/USER_STORIES.md](docs/USER_STORIES.md)** (L2) — capabilities by epic (`RDC-US-A1`…`RDC-US-F2`), each marked `🟡` (shipped, manually verified) because this project ships no automated test suite and no build step by design — see [RDC-LAW-2](docs/BIBLE.md#RDC-LAW-2). Nothing here is marked `✅`, since Codex reserves that status for test- or build-proven facts.
 - **[docs/rfc/](docs/rfc/)** — design notes that graduate into the bible + stories once decided. Currently one: [RFC 0001 — in-browser smoke harness](docs/rfc/0001-in-browser-smoke-harness.md), which proposes how to make `✅` reachable (an in-page `?selftest=1` self-test block, or a sibling harness in MindAttic.Deploy) without adding a build step to this repo.

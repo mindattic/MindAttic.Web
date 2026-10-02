@@ -4,7 +4,7 @@ project: ryandebraal.com
 code: RDC
 layer: bible
 status: living
-updated: 2026-06-07
+updated: 2026-10-02
 ---
 
 # ryandebraal.com — Project Bible
@@ -15,16 +15,18 @@ updated: 2026-06-07
 ## 1. The one sentence {#RDC-§1}
 
 ryandebraal.com is a single hand-authored `index.htm` — pure HTML, CSS, and vanilla
-JavaScript with **zero external dependencies and no build step** — that renders Ryan DeBraal's
-fully interactive, themeable, animated resume in any modern browser from one network request.
+JavaScript with **no build step and no framework** — that renders Ryan DeBraal's fully
+interactive, themeable, animated resume in any modern browser. Its static assets (fonts, images,
+theme art) are served from the jsDelivr CDN ([RDC-A3](AMENDMENTS.md#RDC-A3)).
 
 ## 2. The product promise {#RDC-§2}
 
-- **One file, one request.** The entire site is `index.htm`. Fonts (The Outfit, weights 100–900),
-  the Neko sprite atlas (32 frames), and every asset are inlined as base64. Open DevTools → Network
-  and you see a single document fetch.
+- **One hand-authored page, fast static assets.** The entire site logic is `index.htm` (~0.45 MB).
+  Fonts (Outfit, weights 100–900), the portrait, the theme background art and the PDF library are
+  separate files on the jsDelivr CDN at pinned tags; only what the current theme needs is downloaded.
+  The 32 Neko sprite frames stay inline as tiny CSS classes.
 - **The resume is the work sample.** The medium proves the message: a polished, production-quality
-  experience built without a framework, bundler, CDN, package manager, or tracking.
+  experience built without a framework, bundler, package manager, or tracking.
 - **It is themeable and expressive.** 16 themes ([§4.2](#RDC-§4)), each with a bespoke from-scratch
   Canvas 2D animation; 3 resume rendering profiles (classic / pitch / complete) over one data model.
 - **It respects the reader.** Preferences (theme, profile, font, skill-familiarity tags) persist in
@@ -36,9 +38,11 @@ fully interactive, themeable, animated resume in any modern browser from one net
 
 - **NOT a framework app.** No React/Angular/Vue, no `node_modules`, no `package.json`,
   no webpack/vite/rollup, no TypeScript, no transpiler, no minifier, no polyfills.
-- **NOT a multi-file site.** No separate `.css`/`.js` assets, no images-as-files, no font CDN,
-  no service worker, no SPA router. Everything is in `index.htm`.
-- **NOT instrumented.** No analytics SDK, no tracking pixels, no third-party scripts of any kind.
+- **NOT a multi-page site.** One hand-authored `index.htm`: no separate `.css`/`.js` source files,
+  no service worker, no SPA router. Static assets (fonts, images, one library) are files hosted in
+  MindAttic.UiUx and loaded by URL ([RDC-A3](AMENDMENTS.md#RDC-A3)).
+- **NOT instrumented.** No analytics SDK, no tracking pixels, no telemetry, no third-party fonts.
+  The only external hosts are the two jsDelivr paths listed in [RDC-A3](AMENDMENTS.md#RDC-A3).
 - **NOT a CMS / not data-driven from a backend.** Resume content is an in-file JS object literal
   (`D`); there is no server, database, or API behind the page.
 - **NOT a generic template.** It is one person's resume; the themes/animations are bespoke, not a
@@ -47,13 +51,13 @@ fully interactive, themeable, animated resume in any modern browser from one net
 ## 4. Architecture canon {#RDC-§4}
 
 ```
-                         index.htm  (one file, ~6.5K lines)
+                         index.htm  (one page, ~7K lines, ~0.45 MB)
    ┌──────────────────────────────────────────────────────────────────────┐
    │  <!-- Last Updated: <UTC> -->   (stamped by the deploy pipeline)        │
    │  <head>                                                                │
    │    DevTools easter-egg banner (ASCII)                                  │
    │    <style>  CSS variables per [data-theme]  ·  layout  ·  toolbar      │
-   │             @font-face Outfit (base64 woff2)  ·  Neko 32-frame atlas   │
+   │             @font-face Outfit (CDN woff2)  ·  Neko 32 inline frames    │
    │  <body data-theme=… data-profile=…>                                    │
    │    resume DOM mount  +  toolbar  +  per-theme <canvas> FX layers       │
    │    <script> (single IIFE-scoped global block):                         │
@@ -100,8 +104,8 @@ cyberpunk, noir, sakura, sand, synthwave — selected via `[data-theme]` on `<ht
   `startSakura`, `startAutumn`, `startWinter`, `startMatrix`, `startForest`, `startOcean`,
   `startCyberpunk`, `startSynthwave`, `startSand`, `startNekoTheme`, …) driving `<canvas>` layers
   via `requestAnimationFrame`; `resizeCanvas`/`stopFX` manage lifecycle.
-- **Export:** `exportMD()` (Markdown download), `exportHTML()` (self-contained HTML download),
-  `runPdfExport(opts)` (shared print/PDF engine) with named wrappers `exportPDF()`,
+- **Export:** `exportMD()` (Markdown download), `exportHTML()` (static HTML download; references CDN URLs for fonts/images),
+  `runPdfExport(opts)` (shared print/PDF engine; lazy-loads html2pdf.js from the CDN on first use) with named wrappers `exportPDF()`,
   `exportPrintPage()`, `exportPrintDocument()`, `exportPrintCV()`; `printResume()` for simple
   print; `toggleExportMenu`/`toggleMoreMenu` for the toolbar.
 
@@ -113,18 +117,24 @@ Most relevant inherited laws: whole-number versioning [see HOUSE-LAW-1], credent
 code/commits [see HOUSE-LAW-3], and "done is verified, not asserted" [see HOUSE-LAW-8].
 Project-specific laws below.
 
-### {#RDC-LAW-1} One file, one request
-The shipped product is a single `index.htm`. No asset (font, image, script, style, sprite) may be
-split into a separate file or loaded from a CDN/third party. New assets are inlined (base64 / data
-URI). If you cannot inline it, it does not ship.
+### {#RDC-LAW-1} One file, one request — SUPERSEDED by [RDC-A3](AMENDMENTS.md#RDC-A3)
+*Original law (kept for history):* the shipped product is a single `index.htm`; no asset may be split
+out or loaded from a CDN; everything is inlined as base64.
+**Now:** `index.htm` is the only hand-authored page, but static assets live as real files in
+MindAttic.UiUx and are loaded from jsDelivr at a pinned whole-number tag. Do not inline large
+assets; do not add hosts beyond those listed in RDC-A3. Tiny assets (the Neko frames) may stay inline.
 
 ### {#RDC-LAW-2} Zero dependencies, zero build step
 No `package.json`, bundler, transpiler, minifier, framework, or polyfill enters the repo. The source
 the author writes is byte-for-byte the source the browser runs. "Open it" is the only build.
+Loading a pinned third-party file by URL is allowed ([RDC-A3](AMENDMENTS.md#RDC-A3)); installing or
+building one is not.
 
-### {#RDC-LAW-3} No tracking, no third-party calls at runtime
-The page makes no network request other than fetching itself. No analytics, tracking pixels,
-telemetry, or third-party scripts — ever.
+### {#RDC-LAW-3} No tracking; external hosts are an allow-list
+No analytics, tracking pixels, telemetry, third-party fonts, or phoning-home scripts — ever. The
+page may request static assets only from the hosts listed in [RDC-A3](AMENDMENTS.md#RDC-A3)
+(jsDelivr: MindAttic.UiUx assets at a pinned tag, and html2pdf.js 0.10.2 on demand). Any new host
+needs a new amendment.
 
 ### {#RDC-LAW-4} Themes are CSS-variable swaps, not JS style mutation
 A theme is a `[data-theme]` value resolving to CSS custom properties. JavaScript sets the attribute
@@ -146,7 +156,7 @@ manual in-browser inspection. Therefore no story below is marked `✅` (which Co
 test- or build-proven facts); shipped-and-manually-confirmed work is marked `🟡`.
 
 Confirmed by direct inspection of `index.htm` (2026-06-07):
-- 🟡 Single-file delivery — only `index.htm` is served; fonts and Neko atlas are inlined base64.
+- 🟡 Asset delivery — `index.htm` (~0.45 MB) references fonts, images and theme art on the jsDelivr CDN (`@V7`); Neko frames stay inline base64 (see [RDC-A3](AMENDMENTS.md#RDC-A3)). Verified 2026-10-02 in headless Chrome against a local copy of the staged assets (fonts, avatar, portrait, moon, theme JPEGs and on-demand html2pdf.js all loaded, no console errors). Live-CDN loading is verified only once the `@V7` tag is published.
 - 🟡 16 themes present as `[data-theme]` blocks (added `dark` theme, 2026-06-07); 3 profiles via `[data-profile]`.
 - 🟡 Render engine, FX engine, export functions present (function inventory in [§4.3](#RDC-§4)).
 - 🟡 `localStorage` persistence wired for theme/profile/font/skill-familiarity/neko-color.
@@ -163,13 +173,14 @@ There is no automated evidence (no green test run) backing any item; all are ins
 ## 8. Quality bar {#RDC-§8}
 
 A change is done when:
-- It lives entirely in `index.htm` (or docs/tooling), adding no new shipped file and no dependency
-  ([RDC-LAW-1](#RDC-LAW-1), [RDC-LAW-2](#RDC-LAW-2)).
+- Page changes live in `index.htm` (or docs/tooling); new static assets go to MindAttic.UiUx under the
+  conventions in [§10](#RDC-§10), and no package/build dependency is added
+  ([RDC-LAW-2](#RDC-LAW-2)).
 - Opening `index.htm` in a current Chromium/Firefox/Safari shows the change with no console errors
-  and a single network request.
+  and every CDN asset returning 200.
 - All 16 themes still render and switch; all 3 profiles still render from `D`; export still works.
 - Preferences still round-trip through `localStorage` across reload.
-- No third-party/runtime network call was introduced ([RDC-LAW-3](#RDC-LAW-3)).
+- No host outside the [RDC-A3](AMENDMENTS.md#RDC-A3) allow-list was introduced ([RDC-LAW-3](#RDC-LAW-3)).
 - Private fields use `camelCase` without an underscore prefix (project CLAUDE.md).
 
 ## 9. Glossary {#RDC-§9}
@@ -183,5 +194,16 @@ A change is done when:
 - **Tooltip map** — the `tooltips` object mapping a technology name to its hover description.
 - **Profile / render projection** — read-only views derived from `D`; never a second content copy.
 - **MindAttic.Deploy** — the sibling repo that stamps and FTPS-uploads `index.htm`.
+- **MindAttic.UiUx** — the sibling repo that hosts this site's static assets (and the shared Outfit/Attic fonts); served by jsDelivr at whole-number tags (`V7`, …).
 - **Skill familiarity** — per-tag familiarity level the reader can cycle; persisted in
   `localStorage` (`tag-familiarity`).
+
+## 10. Conventions {#RDC-§10}
+
+- **Asset URL pattern:** `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/ryandebraal.com/<category>/<file>` — always tag-pinned (`@V7`), never `@latest` or a branch.
+- **Shared fonts** live at the UiUx top level: `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/fonts/outfit/outfit-latin.woff2` (and `outfit-latin-ext.woff2`; Attic at `fonts/attic/attic.woff2`).
+- **Categories under `ryandebraal.com/`:** `themes/<theme-name>/` (per-theme art), `images/` (portrait, avatar), `icons/` (small UI icons, Neko frames), `logos/` if any.
+- **File names:** lowercase kebab-case; numbered series are zero-padded and 1-based — `themes/sakura/sakura-01.jpg` … `sakura-20.jpg`, `themes/sunset/sunset-01.jpg` … `sunset-20.jpg`. The page builds these URLs with `bgSet(theme, count)`; adding a background means adding the file and bumping the count.
+- **Lossy art is never re-encoded** between the original and the CDN file; PNGs may only be recompressed losslessly.
+- **Releasing assets:** copy the files into MindAttic.UiUx, commit, create the next whole-number tag (`V8`, …), push the tag, then bump the `@V7` references in `index.htm`. Old tags stay valid.
+- **Preloads:** only above-the-fold assets are preloaded (latin font, toolbar avatar); backgrounds and the lightbox portrait load on demand.

@@ -18,16 +18,21 @@ updated: 2026-06-07
 > no automated test)**. See [RFC 0001](rfc/0001-in-browser-smoke-harness.md) for a path to make
 > `✅` reachable.
 
-## Epic A — Single-file delivery
+## Epic A — Lean page + CDN assets
 
-- **RDC-US-A1 🟡** As a reader, I can open the resume from a single `index.htm` with no install,
-  build, or server, so it loads instantly anywhere. *Given a modern browser, When I open
-  `index.htm`, Then the resume renders and the Network tab shows one document request.*
-  *(shipped; verified manually — no automated test.)*
-- **RDC-US-A2 🟡** As a skeptical engineer, I can open DevTools and confirm zero third-party
-  requests and an inlined font/sprite atlas. *Given DevTools open, When I filter Network by any
-  type, Then no CDN/analytics/font request appears.* *(shipped; verified manually — no automated
-  test; enforced by [RDC-LAW-1](BIBLE.md#RDC-LAW-1)/[RDC-LAW-3](BIBLE.md#RDC-LAW-3).)*
+- **RDC-US-A1 🟡** As a reader, I can open the resume from a single small `index.htm` (~0.45 MB)
+  with no install or build, and the fonts and art load from the CDN as needed. *Given a modern
+  browser, When I open `index.htm`, Then the resume renders and fonts/images arrive from jsDelivr.*
+  *(rewritten 2026-10-02 per [RDC-A3](AMENDMENTS.md#RDC-A3); checked once in headless Chrome against
+  local copies of the assets — live-CDN check pending the `@V7` tag; no automated test.)*
+  *(original spec — audit log: "open the resume from a single `index.htm` … the Network tab shows one
+  document request.")*
+- **RDC-US-A2 🟡** As a skeptical engineer, I can open DevTools and confirm there is no analytics,
+  tracking, or third-party font, and that the only external hosts are the jsDelivr paths allowed by
+  [RDC-A3](AMENDMENTS.md#RDC-A3). *Given DevTools open, When I view Network, Then every request goes to
+  the page itself or to `cdn.jsdelivr.net`.* *(rewritten 2026-10-02; manual, no automated test;
+  enforced by [RDC-LAW-3](BIBLE.md#RDC-LAW-3).)* *(original spec — audit log: "zero third-party
+  requests and an inlined font/sprite atlas … no CDN/analytics/font request appears.")*
 
 ## Epic B — Themes & animation
 
@@ -75,7 +80,8 @@ updated: 2026-06-07
    asserts all 15 themes mount, all 3 profiles render, and export produces non-empty output — so a
    regression turns a 🟡 into a real `✅`. *(blocked on [RFC 0001](rfc/0001-in-browser-smoke-harness.md).)*
 2. **RDC-US-F2 ⬜** As a maintainer, I can assert in that harness that no runtime network request
-   other than the document fetch occurs, codifying [RDC-LAW-3](BIBLE.md#RDC-LAW-3).
+   goes to a host outside the [RDC-A3](AMENDMENTS.md#RDC-A3) allow-list, codifying
+   [RDC-LAW-3](BIBLE.md#RDC-LAW-3).
 
 ### Audit log
 

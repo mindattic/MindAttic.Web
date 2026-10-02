@@ -7,16 +7,19 @@
 ## 1. The one sentence {#RDC-§1}
 
 ryandebraal.com is a single hand-authored `index.htm` — pure HTML, CSS, and vanilla
-JavaScript with **zero external dependencies and no build step** — that renders Ryan DeBraal's
-fully interactive, themeable, animated resume in any modern browser from one network request.
+JavaScript with **no build step and no framework** — that renders Ryan DeBraal's fully
+interactive, themeable, animated resume in any modern browser. Its static assets (fonts, images,
+theme art) are served from the jsDelivr CDN ([RDC-A3](AMENDMENTS.md#RDC-A3)).
 
 ## 3. What it is NOT {#RDC-§3}
 
 - **NOT a framework app.** No React/Angular/Vue, no `node_modules`, no `package.json`,
   no webpack/vite/rollup, no TypeScript, no transpiler, no minifier, no polyfills.
-- **NOT a multi-file site.** No separate `.css`/`.js` assets, no images-as-files, no font CDN,
-  no service worker, no SPA router. Everything is in `index.htm`.
-- **NOT instrumented.** No analytics SDK, no tracking pixels, no third-party scripts of any kind.
+- **NOT a multi-page site.** One hand-authored `index.htm`: no separate `.css`/`.js` source files,
+  no service worker, no SPA router. Static assets (fonts, images, one library) are files hosted in
+  MindAttic.UiUx and loaded by URL ([RDC-A3](AMENDMENTS.md#RDC-A3)).
+- **NOT instrumented.** No analytics SDK, no tracking pixels, no telemetry, no third-party fonts.
+  The only external hosts are the two jsDelivr paths listed in [RDC-A3](AMENDMENTS.md#RDC-A3).
 - **NOT a CMS / not data-driven from a backend.** Resume content is an in-file JS object literal
   (`D`); there is no server, database, or API behind the page.
 - **NOT a generic template.** It is one person's resume; the themes/animations are bespoke, not a
@@ -30,18 +33,24 @@ Most relevant inherited laws: whole-number versioning [see HOUSE-LAW-1], credent
 code/commits [see HOUSE-LAW-3], and "done is verified, not asserted" [see HOUSE-LAW-8].
 Project-specific laws below.
 
-### {#RDC-LAW-1} One file, one request
-The shipped product is a single `index.htm`. No asset (font, image, script, style, sprite) may be
-split into a separate file or loaded from a CDN/third party. New assets are inlined (base64 / data
-URI). If you cannot inline it, it does not ship.
+### {#RDC-LAW-1} One file, one request — SUPERSEDED by [RDC-A3](AMENDMENTS.md#RDC-A3)
+*Original law (kept for history):* the shipped product is a single `index.htm`; no asset may be split
+out or loaded from a CDN; everything is inlined as base64.
+**Now:** `index.htm` is the only hand-authored page, but static assets live as real files in
+MindAttic.UiUx and are loaded from jsDelivr at a pinned whole-number tag. Do not inline large
+assets; do not add hosts beyond those listed in RDC-A3. Tiny assets (the Neko frames) may stay inline.
 
 ### {#RDC-LAW-2} Zero dependencies, zero build step
 No `package.json`, bundler, transpiler, minifier, framework, or polyfill enters the repo. The source
 the author writes is byte-for-byte the source the browser runs. "Open it" is the only build.
+Loading a pinned third-party file by URL is allowed ([RDC-A3](AMENDMENTS.md#RDC-A3)); installing or
+building one is not.
 
-### {#RDC-LAW-3} No tracking, no third-party calls at runtime
-The page makes no network request other than fetching itself. No analytics, tracking pixels,
-telemetry, or third-party scripts — ever.
+### {#RDC-LAW-3} No tracking; external hosts are an allow-list
+No analytics, tracking pixels, telemetry, third-party fonts, or phoning-home scripts — ever. The
+page may request static assets only from the hosts listed in [RDC-A3](AMENDMENTS.md#RDC-A3)
+(jsDelivr: MindAttic.UiUx assets at a pinned tag, and html2pdf.js 0.10.2 on demand). Any new host
+needs a new amendment.
 
 ### {#RDC-LAW-4} Themes are CSS-variable swaps, not JS style mutation
 A theme is a `[data-theme]` value resolving to CSS custom properties. JavaScript sets the attribute
@@ -66,6 +75,7 @@ retired per-project `deploy.ps1`/`deploy.bat`/`settings.json` must not be reintr
 - **Tooltip map** — the `tooltips` object mapping a technology name to its hover description.
 - **Profile / render projection** — read-only views derived from `D`; never a second content copy.
 - **MindAttic.Deploy** — the sibling repo that stamps and FTPS-uploads `index.htm`.
+- **MindAttic.UiUx** — the sibling repo that hosts this site's static assets (and the shared Outfit/Attic fonts); served by jsDelivr at whole-number tags (`V7`, …).
 - **Skill familiarity** — per-tag familiarity level the reader can cycle; persisted in
   `localStorage` (`tag-familiarity`).
 
