@@ -11,11 +11,11 @@ MindAttic.UiUx still owns: `mindattic.com` (CYBERSPACE block), the
 Prose.Writer, Prose.Codex and Ideas are marked `retired` in `subscribers.json`
 (their target projects no longer exist); their scripts print the note and exit 0.
 `ryandebraal.com` and `mindatticcares.com` are not spliced at all — they load
-fonts and their own assets straight from jsDelivr (see `docs/ASSETS.md`). Everything else in the MindAttic fleet
-(catalog landing pages, Claudia, ChiMesh) is rendered by
-[`MindAttic.Deploy`](../../MindAttic.Deploy/README.md) and pulls components
-from jsDelivr at runtime — those subscribers are not present in
-`subscribers.json` and have no script here.
+fonts and their own assets straight from jsDelivr (see `docs/ASSETS.md`), at the tag
+[`MindAttic.Deploy`](../../MindAttic.Deploy/README.md)'s linked deploy pins. There are no
+other CDN consumers: the catalog landing pages and the Claudia / ChiMesh long-form pages
+that `MindAttic.Deploy` used to render were retired by its DEP-A6 (2026-10-03, see
+[MAU-A7](../docs/AMENDMENTS.md#MAU-A7)); each repo's GitHub README is now its project page.
 
 Each `sync-*.ps1` targets one subscriber. Each subscriber has one or more
 **marker blocks** (HTML comment pairs or CSS comment pairs) that the sync
@@ -60,7 +60,7 @@ sync/
 
 | Trigger | What runs | When |
 |---|---|---|
-| **jsDelivr CDN** | Every tag is served at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<ref>/<path>` — versioned, edge-cached, no infra. Consumed by `MindAttic.Deploy` for every catalog landing page and Claudia/ChiMesh. | Continuously; cache-immutable for `@v*` tags. |
+| **jsDelivr CDN** | Every tag is served at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<ref>/<path>` — versioned, edge-cached, no infra. Consumed by the three sites at the tag the linked deploy pins. | Continuously; cache-immutable for `@V<n>` tags. |
 | **GitHub Action** | `.github/workflows/sync-subscribers.yml` opens cross-repo PRs against `mindattic/mindattic.com` and `mindattic/MindAttic.Psst` with refreshed marker blocks. | Push to `main` touching `Components/Cyberspace/**`, `Components/OutfitFont/**`, `subscribers.json`, `sync/**` or the workflow (not when the commit says `[skip ci]`). |
 | **`sync/*.ps1`** | Same logic as the Action, but runs locally against working copies. `sync-mindattic-com.ps1` is also invoked by `MindAttic.Deploy` as a `preDeploy` hook for `mindattic.com` (the linked deploy passes the release tag). | Manual (`powershell -File sync-all.ps1`). |
 
@@ -111,8 +111,7 @@ powershell -File sync/sync-prose.ps1    # currently prints the two "retired" not
 
 Inlines OutfitFont into `MindAttic.Psst/terms.htm` and `MindAttic.Psst/privacy.htm`
 between `<!-- BEGIN/END MINDATTIC.UIUX:OUTFITFONT -->` markers. The repo's
-`index.htm` is NOT touched here — that file is rendered by `MindAttic.Deploy`
-from `MindAttic.Psst/README.md`.
+`index.htm` is NOT touched here (it has no UiUx marker block).
 
 ```powershell
 powershell -File sync/sync-mindattic-psst.ps1
@@ -123,13 +122,10 @@ powershell -File sync/sync-mindattic-psst.ps1 -TargetRoot 'D:/path/to/MindAttic.
 
 ## Adding a new subscriber
 
-Before adding one here, **make sure it doesn't belong in MindAttic.Deploy
-instead**. If the subscriber:
-- has a `README.md` that's already a polished long-form page, OR
-- is a catalog landing page (just a title, tagline, button row, and the README rendered below), OR
-- is a long-form HTML build (Claudia, ChiMesh class) that pulls components from CDN —
-
-then it belongs in `MindAttic.Deploy/projects.json`, not here. Only add a
+Before adding one here, **make sure it can't simply load from the CDN**. A
+project page is its GitHub README (the `MindAttic.Deploy` catalog that rendered
+READMEs into landing pages was retired by DEP-A6), and a hand-authored page can
+reference components and assets by tag-pinned jsDelivr URL. Only add a
 `sync-<name>.ps1` here if the subscriber genuinely needs build-time
 splice-in-place (e.g. it has hand-authored content outside the marker
 blocks, like `mindattic.com/index.htm` or `MindAttic.Psst/{terms,privacy}.htm`).

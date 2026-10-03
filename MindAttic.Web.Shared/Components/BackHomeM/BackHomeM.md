@@ -4,7 +4,7 @@ A capital "M" in AtticFont pinned to the upper-left of the viewport, linking
 back to `mindattic.com`. No JS — just a styled `<a href>` so it survives
 script-disabled browsers and screen readers see it as a normal link.
 
-Used on every satellite site rendered by `MindAttic.Deploy` (Claudia, ChiMesh, and every catalog landing page) so a visitor can always get back to the hub.
+Built for satellite pages so a visitor can always get back to the hub. It was used on the README-driven catalog landing pages and the Claudia / ChiMesh pages that `MindAttic.Deploy` rendered; those were retired by `MindAttic.Deploy` DEP-A6 (2026-10-03, see [MAU-A7](../../docs/AMENDMENTS.md#MAU-A7)), so no current page consumes it. It stays available on the CDN for any future satellite page.
 
 ---
 
@@ -38,7 +38,7 @@ falls back to a serif if the font hasn't loaded yet.
 Or via jsDelivr:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@v1.0.0/Components/BackHomeM/back-home-m.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/Components/BackHomeM/back-home-m.css">
 ```
 
 ---
@@ -61,11 +61,11 @@ Or via jsDelivr:
 
 ## Delivery
 
-`MindAttic.Deploy` pulls `back-home-m.css` from the jsDelivr CDN at the
-`componentsVersion` it has pinned in `projects.json`. The rendered landing
-pages include the stylesheet via a `<link>` tag and hand-author the
-`<a class="back-home-m">` element directly in the page `<body>` (via
-`MindAttic.Deploy`'s `index.template.htm`). The theme `body-prelude.html`
-files carry only background-effect scaffolding, not this anchor.
+CDN only: a page includes `back-home-m.css` via a tag-pinned jsDelivr `<link>`
+and hand-authors the `<a class="back-home-m">` element in its `<body>`. It is not
+spliced by any sync script. The theme `body-prelude.html` files carry only
+background-effect scaffolding, not this anchor. (The former consumer,
+`MindAttic.Deploy`'s catalog template pinned at `componentsVersion`, was removed
+by DEP-A6.)
 
 Edit here only. Downstream copies are derived artifacts.

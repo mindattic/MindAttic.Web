@@ -4,7 +4,7 @@ project: MindAttic.UiUx
 code: MAU
 layer: bible
 status: living
-updated: 2026-06-07
+updated: 2026-10-03
 ---
 
 # MindAttic.UiUx — Project Bible
@@ -40,9 +40,10 @@ domain, and are loaded over jsDelivr at a pinned tag ([MAU-A4](AMENDMENTS.md#MAU
   [ASSETS.md](ASSETS.md); the verified file list is `assets-manifest.json`.
 
 ## 3. What it is NOT {#MAU-§3}
-- **NOT a deploying repo.** It owns no hosting. Catalog landing pages and the Claudia/ChiMesh long-form
-  builds are rendered by `MindAttic.Deploy`, which pulls components from jsDelivr at runtime. Do not add
-  `landing-page` or `build-html-js` subscriber kinds here ([MAU-LAW-4](#MAU-LAW-4)).
+- **NOT a deploying repo.** It owns no hosting. ~~Catalog landing pages and the Claudia/ChiMesh long-form
+  builds are rendered by `MindAttic.Deploy`, which pulls components from jsDelivr at runtime.~~ **Superseded by [MAU-A7](AMENDMENTS.md#MAU-A7)** —
+  those pages were retired (`MindAttic.Deploy` DEP-A6); the CDN consumers are the three sites, pinned by the
+  linked deploy. Do not add `landing-page` or `build-html-js` subscriber kinds here ([MAU-LAW-4](#MAU-LAW-4)).
 - **NOT a place to hand-edit downstream copies.** Spliced/derived copies in subscriber repos are
   derived artifacts; the next sync overwrites whatever is between the marker pairs.
 - **NOT a multi-component framework with shared runtime.** There is no shared bundle, no cross-component
@@ -63,8 +64,8 @@ domain, and are loaded over jsDelivr at a pinned tag ([MAU-A4](AMENDMENTS.md#MAU
    jsDelivr CDN          sync/*.ps1            .github Action
    @Vn / @main          (splice-in-place)     (cross-repo PRs)
         |                     |                      |
-   MindAttic.Deploy   mindattic.com / Psst /  mindattic.com + Psst
-   (runtime loader,   Tutor (local)           (PR on push to main)
+   the three sites    mindattic.com / Psst /  mindattic.com + Psst
+   (tag pinned by     Tutor (local)           (PR on push to main)
     linked deploy)    via subscribers.json
 ```
 
@@ -148,10 +149,11 @@ Each `Components/<Name>/` ships everything it needs and imports no other compone
 component must be vendorable without dragging the rest.
 
 ### MAU-LAW-4 — This repo does not deploy {#MAU-LAW-4}
-Hosting, catalog landing pages, and the Claudia/ChiMesh long-form builds belong to `MindAttic.Deploy`,
-which pulls from jsDelivr at runtime. Do not add `landing-page`/`build-html-js` kinds to
+Hosting belongs to `MindAttic.Deploy`. ~~Hosting, catalog landing pages, and the Claudia/ChiMesh long-form builds belong to `MindAttic.Deploy`,
+which pulls from jsDelivr at runtime.~~ Do not add `landing-page`/`build-html-js` kinds to
 `subscribers.json` or recreate the deleted `sync-landing-page.ps1` / `sync-claudia.ps1` /
-`sync-chimesh.ps1`. Brand-new catalog pages are configured in `MindAttic.Deploy/projects.json`.
+`sync-chimesh.ps1`. ~~Brand-new catalog pages are configured in `MindAttic.Deploy/projects.json`.~~
+**Superseded by [MAU-A7](AMENDMENTS.md#MAU-A7)** — there are no catalog pages any more; a project's page is its GitHub README.
 
 ### MAU-LAW-5 — Canonical assets are never duplicated into packaging subtrees {#MAU-LAW-5}
 If an `Ideas/*` or other packaging project is reintroduced, it must declare canonical UiUx assets via a
@@ -162,8 +164,8 @@ reinstatement — see MAU-A3.)
 
 ### MAU-LAW-6 — Published CDN tags are immutable {#MAU-LAW-6}
 Never mutate a published whole-number tag (`V1`, `V2`, …). Ship the next number alongside it; subscribers
-pin the exact one (e.g. `MindAttic.Deploy/projects.json:componentsVersion`, or
-`sync-mindattic-com.ps1 -CyberspaceCdnTag`). This refines [HOUSE-LAW-1](../MindAttic.HouseRules.md#HOUSE-LAW-1).
+pin the exact one (e.g. ~~`MindAttic.Deploy/projects.json:componentsVersion`~~ ({L}: key removed), the
+sites' `MindAttic.UiUx@V<n>` URLs set by the linked deploy, or `sync-mindattic-com.ps1 -CyberspaceCdnTag`). This refines [HOUSE-LAW-1](../MindAttic.HouseRules.md#HOUSE-LAW-1).
 
 ## 6. Verified state {#MAU-§6}
 Status legend: ✅ done (verified) · 🟡 partial · ⬜ planned · 🗑️ cut · living.

@@ -2,7 +2,8 @@
  * MindAttic.UiUx -- Themes/Cyberspace/theme.css
  * Dark cyberpunk landing-page chrome. Composes with the Cyberspace
  * Component (effects engine), OutfitFont, AtticFont, BackHomeM.
- * Consumed by MindAttic.Deploy landing pages declaring theme: "Cyberspace".
+ * Built for the MindAttic.Deploy catalog landing pages, retired by
+ * MindAttic.Deploy DEP-A6 (2026-10-03); no current consumer (MAU-A7).
  * ==================================================================== */
 
 :root {

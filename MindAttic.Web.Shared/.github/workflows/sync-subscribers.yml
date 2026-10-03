@@ -7,10 +7,11 @@ name: Sync content to subscribers
 # -> terms.htm/privacy.htm). Tutor is synced locally only (sync-tutor.ps1);
 # Prose.Writer / Prose.Codex / Ideas are "retired" in subscribers.json.
 #
-# Catalog landing pages and the Claudia/ChiMesh long-form HTML builds are
-# rendered by MindAttic.Deploy now -- they pull components from jsDelivr
-# at runtime instead of being spliced. Do not re-add legs here for those
-# subscribers.
+# The three sites load fonts, logos and the Cyberspace engine from jsDelivr
+# at the tag the MindAttic.Deploy linked deploy pins. The former catalog
+# landing pages and Claudia/ChiMesh long-form builds were retired
+# (MindAttic.Deploy DEP-A6, 2026-10-03; see docs/AMENDMENTS.md MAU-A7) --
+# each repo's GitHub README is its project page. Do not re-add legs for them.
 # ====================================================================
 
 on:
@@ -111,7 +112,7 @@ jobs:
           body: |
             Automated sync from [MindAttic.UiUx@${{ github.sha }}](https://github.com/mindattic/MindAttic.UiUx/commit/${{ github.sha }}).
 
-            Marker blocks in `privacy.htm` and `terms.htm` regenerated from canonical sources. The repo's `index.htm` is rendered by MindAttic.Deploy from `README.md`; it is not touched by this workflow.
+            Marker blocks in `privacy.htm` and `terms.htm` regenerated from canonical sources. The repo's `index.htm` has no UiUx marker block and is not touched by this workflow.
           branch: auto/sync-components
           base: main
           delete-branch: true

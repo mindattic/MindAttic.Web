@@ -42,34 +42,31 @@ subscription, so the sync pipeline emits the right rule automatically.
 The component's `attic-font.json` deliberately has no default
 `applyToSelector` — each subscriber declares its own.
 
-For CDN-loaded subscribers (every page rendered by `MindAttic.Deploy`), the
-per-page selector is applied by the theme's CSS, not by this component.
+For CDN-loaded consumers (the three sites), the selector is applied by the
+page's own CSS, not by this component.
 
 Or via jsDelivr:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@v1.0.0/Components/AtticFont/attic-font.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/Components/AtticFont/attic-font.css">
 ```
 
 ---
 
 ## Sync delivery
 
-Two subscribers receive Attic via marker-block splice:
+No active subscriber currently receives Attic via marker-block splice. The
+splice contract is still supported: an `html-inline` subscriber gets it between
+`<!-- BEGIN MINDATTIC.UIUX:ATTICFONT --> … <!-- END … -->` markers, a
+`blazor-wwwroot` subscriber between
+`/* == BEGIN MINDATTIC.UIUX:ATTICFONT.CSS == */` markers. `mindattic.com` was
+unenrolled in MAU-A4 (it loads the font from the CDN), and the Prose
+subscribers are retired (see `subscribers.json`).
 
-- `mindattic.com/index.htm` — inlined between
-  `<!-- BEGIN MINDATTIC.UIUX:ATTICFONT --> … <!-- END … -->` markers by
-  `sync/sync-mindattic-com.ps1`.
-- `Prose/wwwroot/app.css` — rewritten between
-  `/* == BEGIN MINDATTIC.UIUX:ATTICFONT.CSS == */` markers by
-  `sync/sync-prose.ps1`.
-
-Every other subscriber (catalog landing pages, Claudia, ChiMesh) gets
-Attic from the jsDelivr CDN at runtime — pulled via `<link>` tags emitted
-by `MindAttic.Deploy/template/index.template.htm` against the
-`componentsVersion` pinned in `MindAttic.Deploy/projects.json`. Per-page
-selectors (`#claudia`, `#chimesh`, `#idiotproof`, …) are applied by the
-theme's CSS, not by this component.
+The former catalog landing pages and the Claudia / ChiMesh long-form pages,
+which pulled this file from jsDelivr at `MindAttic.Deploy`'s
+`componentsVersion`, were retired by `MindAttic.Deploy` DEP-A6 (2026-10-03,
+see [MAU-A7](../../docs/AMENDMENTS.md#MAU-A7)).
 
 Edit here only. Downstream copies are derived artifacts.
 

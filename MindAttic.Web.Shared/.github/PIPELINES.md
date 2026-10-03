@@ -2,7 +2,7 @@
 
 MindAttic.UiUx is a source-of-truth repo. Content reaches subscribers two ways:
 
-1. **jsDelivr CDN** — every file is served at a versioned URL. `MindAttic.Deploy` consumes the CDN for every catalog landing page (IdiotProof, GridGame2026, MindAttic.Legion, MediaButler, MindAttic.Vault, TaxRateCollector, ThinkTank, Tutor, MindAttic.Psst index) and the Claudia / ChiMesh long-form HTML builds. That's the default path for anything new.
+1. **jsDelivr CDN** — every file is served at a versioned URL. The CDN consumers are the three sites (`mindattic.com`, `ryandebraal.com`, `mindatticcares.com`), pinned to one whole-number tag by `MindAttic.Deploy`'s linked deploy. That's the default path for anything new. (The README-driven catalog landing pages at `mindattic.com/<slug>.htm` and the Claudia / ChiMesh long-form builds that used to load components from the CDN were retired by `MindAttic.Deploy` amendment DEP-A6 on 2026-10-03; each repo's GitHub README is now its project page — see [MAU-A7](../docs/AMENDMENTS.md#MAU-A7).)
 2. **Marker-block sync** (GitHub Action + local PowerShell) — for subscribers that need build-time splice into hand-authored files: `mindattic.com/index.htm` (CYBERSPACE block only), the `MindAttic.Psst` legal pages, and Tutor (local only). Prose.Writer / Prose.Codex / Ideas are marked `retired` in `subscribers.json`.
 
 If you are wiring up a new subscriber, prefer pipeline 1. Pipeline 2 is reserved for cases where the subscriber genuinely needs content inlined inside files it also hand-authors.
@@ -52,7 +52,7 @@ any of the three sites) tags the next `V<n>` when `HEAD` is ahead of the latest 
 verifies every asset on the CDN, then FTPs the sites. Runtime assets (fonts, logos, theme art) are documented
 in [`docs/ASSETS.md`](../docs/ASSETS.md).
 
-To propagate a release to every `MindAttic.Deploy`-rendered subscriber, bump `componentsVersion` in `MindAttic.Deploy/projects.json` and run that repo's deploy.
+There is no other CDN pin to bump: the `componentsVersion` key in `MindAttic.Deploy/projects.json` (which pinned the catalog landing pages) was removed with those pages (DEP-A6, [MAU-A7](../docs/AMENDMENTS.md#MAU-A7)).
 
 **Purging the cache (rare, only needed for branch refs):**
 
@@ -65,7 +65,7 @@ To propagate a release to every `MindAttic.Deploy`-rendered subscriber, bump `co
 It targets the two splice-in-place subscribers that live in their own repos:
 
 - **mindattic.com** — only the CYBERSPACE marker block in `index.htm` (scan-line divs, frontpage CSS, the small loader scripts and the deferred CDN `<script>` tags pinned to the latest tag). Fonts, logos and the engine itself load from jsDelivr.
-- **MindAttic.Psst (terms.htm + privacy.htm)** — small legal pages that are hand-authored around the OutfitFont marker block; `index.htm` is NOT touched (it's rendered by `MindAttic.Deploy` from `MindAttic.Psst/README.md`).
+- **MindAttic.Psst (terms.htm + privacy.htm)** — small legal pages that are hand-authored around the OutfitFont marker block; `index.htm` is NOT touched (it has no UiUx marker block).
 
 For each subscriber it:
 
@@ -115,6 +115,5 @@ powershell -File sync/sync-all.ps1
 | `MindAttic.Psst` legal pages | Inlined OUTFITFONT marker block in `terms.htm` + `privacy.htm` (kept fresh by Action / `sync-mindattic-psst.ps1`) | Small legal pages hand-authored around the block |
 | Tutor (Blazor) | `app.css` marker blocks (local `sync-tutor.ps1` only) | Blazor build needs deterministic input |
 | Prose.Writer / Prose.Codex / Ideas | — (retired) | Target projects no longer exist; see `retired` in `subscribers.json` |
-| Any catalog landing page | jsDelivr CDN, pinned via `MindAttic.Deploy/projects.json:componentsVersion` | No PR overhead; `MindAttic.Deploy` renders these from each project's `README.md` and pulls fonts/effects from the CDN at runtime |
-| Claudia / ChiMesh | jsDelivr CDN, same path as catalog landing pages | They render long-form READMEs with the Cyberspace theme + the parts-picker augmentation; CDN keeps each guide page small |
+| Project pages (IdiotProof, Claudia, ChiMesh, …) | — (none) | Retired by DEP-A6 ([MAU-A7](../docs/AMENDMENTS.md#MAU-A7)): each repo's GitHub README is its project page; nothing is rendered from UiUx components |
 | Anything new | jsDelivr CDN | Only fall back to pipeline 2 if the subscriber needs hand-authored content interleaved with the components |

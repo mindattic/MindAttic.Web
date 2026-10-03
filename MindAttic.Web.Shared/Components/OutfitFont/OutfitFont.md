@@ -51,28 +51,25 @@ through `subscribers.json`.
 Or via jsDelivr:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@v1.0.0/Components/OutfitFont/outfit-font.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/Components/OutfitFont/outfit-font.css">
 ```
 
 ---
 
 ## Sync delivery
 
-Three subscribers receive Outfit via marker-block splice:
+One active subscriber receives Outfit via marker-block splice:
 
-- `mindattic.com/index.htm` — inlined between
+- `MindAttic.Psst/{terms,privacy}.htm` — inlined between
   `<!-- BEGIN MINDATTIC.UIUX:OUTFITFONT --> … <!-- END … -->` markers by
-  `sync/sync-mindattic-com.ps1`.
-- `Prose/wwwroot/app.css` — rewritten between
-  `/* == BEGIN MINDATTIC.UIUX:OUTFITFONT.CSS == */` markers by
-  `sync/sync-prose.ps1`.
-- `MindAttic.Psst/{terms,privacy}.htm` — inlined by
   `sync/sync-mindattic-psst.ps1`.
 
-Every other subscriber (catalog landing pages, Claudia, ChiMesh) gets
-Outfit from the jsDelivr CDN at runtime — pulled via `<link>` tags emitted
-by `MindAttic.Deploy/template/index.template.htm` against the
-`componentsVersion` pinned in `MindAttic.Deploy/projects.json`.
+`mindattic.com` was unenrolled in MAU-A4 (it loads the font from the CDN), and
+the Prose subscribers (`blazor-wwwroot`, `/* == BEGIN MINDATTIC.UIUX:OUTFITFONT.CSS == */`
+markers) are retired (see `subscribers.json`). The former catalog landing pages
+and the Claudia / ChiMesh long-form pages, which pulled this file from jsDelivr at
+`MindAttic.Deploy`'s `componentsVersion`, were retired by `MindAttic.Deploy`
+DEP-A6 (2026-10-03, see [MAU-A7](../../docs/AMENDMENTS.md#MAU-A7)).
 
 Edit here only. Downstream copies are derived artifacts.
 

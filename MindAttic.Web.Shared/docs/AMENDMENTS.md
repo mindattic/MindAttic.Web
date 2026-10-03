@@ -122,3 +122,30 @@ wordmark (opaque + transparent) and the transparent M monogram, the 1024px M-Car
 ryandebraal.com's 32 Neko sprite frames and MindAttic link icon (the page keeps those inline). The package
 now serves 60 files. The test suite fails if `archive/` appears in the manifest or a site links to it.
 
+## MAU-A7 — Catalog landing pages retired downstream; the three sites are the only CDN consumers (records MindAttic.Deploy DEP-A6; supersedes the catalog clauses of BIBLE §3, §4, MAU-LAW-4 and MAU-LAW-6) {#MAU-A7}
+On 2026-10-03 `MindAttic.Deploy` retired its catalog pipeline (its amendment DEP-A6): the README-driven
+landing pages at `mindattic.com/<slug>.htm`, the `componentsVersion` pin in `projects.json`, `src/build.js`,
+`src/parts.js` (the ChiMesh/Claudia parts-picker addon) and repo auto-discovery are gone, and the server
+301-redirects the old `<slug>.htm` URLs to the GitHub repos. Each repo's GitHub README is now its project page.
+
+**Consequence for this repo.** The only jsDelivr consumers of MindAttic.UiUx are the three sites
+(`mindattic.com`, `ryandebraal.com`, `mindatticcares.com`), pinned to one whole-number tag by the linked
+deploy (currently `V9`). Nothing pulls components at a `componentsVersion` any more, so there is no second pin
+to bump after a release.
+
+- **Bible.** §3 "NOT a deploying repo", [MAU-LAW-4](BIBLE.md#MAU-LAW-4) (catalog pages belong to Deploy;
+  new catalog pages go in `projects.json`) and the `componentsVersion` example in
+  [MAU-LAW-6](BIBLE.md#MAU-LAW-6) are struck through and marked superseded; the §4 diagram's CDN consumer is
+  now "the three sites". The laws themselves stand: this repo still does not deploy, and published tags are
+  still immutable.
+- **Docs.** `.github/PIPELINES.md`, `sync/sync.md`, the sync workflow and `sync-all.ps1` header comments,
+  the `subscribers.json` `$comment`, `Components/{AtticFont,OutfitFont,BackHomeM,Cyberspace}/*.md`,
+  `Themes/Cyberspace/Cyberspace.md` and the `theme.css` header no longer describe Deploy-rendered catalog
+  subscribers. The obsolete `@v1.0.0` CDN examples now use the whole-number form (`@V9`). The AtticFont and
+  OutfitFont "Sync delivery" sections also now match `subscribers.json` (mindattic.com unenrolled in MAU-A4,
+  Prose retired in MAU-A5).
+- **Theme and BackHomeM.** `Themes/Cyberspace/` and `Components/BackHomeM/` have no current consumer; they stay
+  in the package (MAU-LAW-6: published tags keep serving them) for any future page.
+
+*Not changed:* no JS/CSS behaviour, no workflow job, no sync target (none of them wrote into Deploy's deleted
+`template/`). *Migration:* none.

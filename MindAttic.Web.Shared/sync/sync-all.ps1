@@ -9,16 +9,17 @@
 #   - sync-prose.ps1           → retired (Prose.Writer / Prose.Codex no longer exist)
 #   - sync-ideas.ps1           → retired (MindAttic.Ideas.Web no longer exists)
 #
-# Catalog landing pages and the Claudia/ChiMesh long-form HTML builds are
-# rendered by MindAttic.Deploy (D:/Projects/MindAttic/MindAttic.Deploy);
-# they pull components from the jsDelivr CDN at runtime and have no sync
-# script here.
+# The three sites load fonts, logos and the engine from the jsDelivr CDN
+# at the tag pinned by MindAttic.Deploy's linked deploy; only mindattic.com's
+# CYBERSPACE block is spliced. The former catalog landing pages and the
+# Claudia/ChiMesh long-form builds were retired by MindAttic.Deploy DEP-A6
+# (2026-10-03, docs/AMENDMENTS.md MAU-A7) and never had a sync script here.
 #
 # Production delivery happens via .github/workflows/sync-subscribers.yml
 # (push-triggered cross-repo PRs). This script is the local equivalent
 # for fast iteration without round-tripping through GitHub; it is also
-# invoked piecewise by MindAttic.Deploy as a preDeploy hook for the
-# mindattic.com build.
+# invoked piecewise by MindAttic.Deploy (sync-mindattic-com.ps1 as the
+# mindattic.com preDeploy hook).
 #
 # Idempotent. Safe to re-run after any edit under Components/ or
 # Themes/, or to subscribers.json.
