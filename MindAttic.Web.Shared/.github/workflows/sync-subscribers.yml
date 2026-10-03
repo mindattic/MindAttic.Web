@@ -1,0 +1,117 @@
+name: Sync content to subscribers
+
+# ====================================================================
+# This workflow handles the two "splice-in-place" subscribers that
+# live in their own GitHub repos: mindattic.com (html-inline,
+# CYBERSPACE block) and the MindAttic.Psst legal pages (html-inline-multi
+# -> terms.htm/privacy.htm). Tutor is synced locally only (sync-tutor.ps1);
+# Prose.Writer / Prose.Codex / Ideas are "retired" in subscribers.json.
+#
+# The three sites load fonts, logos and the Cyberspace engine from jsDelivr
+# at the tag the MindAttic.Deploy linked deploy pins; they need no job here.
+# Project pages are each repo's GitHub README; nothing else consumes UiUx.
+# ====================================================================
+
+on:
+  push:
+    branches: [main]
+    paths:
+      # Only components actually spliced by a job below belong here: mindattic.com
+      # splices Cyberspace, Psst splices OutfitFont. SacredGeometry, BackHomeM, the
+      # fonts/ and <domain>/ asset folders and the auth components are delivered via
+      # jsDelivr, not spliced -- listing them would only produce empty no-change PRs.
+      - 'Components/Cyberspace/**'
+      - 'Components/OutfitFont/**'
+      - 'subscribers.json'
+      - 'sync/**'
+      - '.github/workflows/sync-subscribers.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync-mindattic-com:
+    name: Sync into mindattic.com
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MindAttic.UiUx
+        uses: actions/checkout@v4
+        with:
+          path: content
+          # Full history + tags: sync-mindattic-com.ps1 derives its default CDN tag
+          # from `git describe --tags`, which a shallow, tagless checkout cannot do.
+          fetch-depth: 0
+
+      - name: Checkout mindattic.com
+        uses: actions/checkout@v4
+        with:
+          repository: mindattic/mindattic.com
+          path: mindattic-com
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+
+      - name: Run sync-mindattic-com.ps1
+        shell: pwsh
+        run: |
+          ./content/sync/sync-mindattic-com.ps1 `
+            -ContentRoot "$PWD/content" `
+            -TargetIndex "$PWD/mindattic-com/index.htm"
+
+      - name: Open or update PR if there are changes
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: mindattic-com
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+          commit-message: "chore(components): sync from MindAttic.UiUx@${{ github.sha }}"
+          title: "Sync from MindAttic.UiUx"
+          body: |
+            Automated sync from [MindAttic.UiUx@${{ github.sha }}](https://github.com/mindattic/MindAttic.UiUx/commit/${{ github.sha }}).
+
+            Marker blocks in `index.htm` regenerated from canonical sources.
+          branch: auto/sync-components
+          base: main
+          delete-branch: true
+          author: "MindAttic Components Bot <noreply@mindattic.com>"
+          committer: "MindAttic Components Bot <noreply@mindattic.com>"
+
+  # No Prose job: Prose.Writer / Prose.Codex are marked "retired" in subscribers.json.
+
+  sync-mindattic-psst:
+    name: Sync into MindAttic.Psst (terms.htm + privacy.htm)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MindAttic.UiUx
+        uses: actions/checkout@v4
+        with:
+          path: content
+
+      - name: Checkout MindAttic.Psst
+        uses: actions/checkout@v4
+        with:
+          repository: mindattic/MindAttic.Psst
+          path: mindattic-psst
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+
+      - name: Run sync-mindattic-psst.ps1 (privacy.htm + terms.htm)
+        shell: pwsh
+        run: |
+          ./content/sync/sync-mindattic-psst.ps1 `
+            -ContentRoot "$PWD/content" `
+            -TargetRoot "$PWD/mindattic-psst"
+
+      - name: Open or update PR if there are changes
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: mindattic-psst
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+          commit-message: "chore(components): sync from MindAttic.UiUx@${{ github.sha }}"
+          title: "Sync from MindAttic.UiUx"
+          body: |
+            Automated sync from [MindAttic.UiUx@${{ github.sha }}](https://github.com/mindattic/MindAttic.UiUx/commit/${{ github.sha }}).
+
+            Marker blocks in `privacy.htm` and `terms.htm` regenerated from canonical sources. The repo's `index.htm` has no UiUx marker block and is not touched by this workflow.
+          branch: auto/sync-components
+          base: main
+          delete-branch: true
+          author: "MindAttic Components Bot <noreply@mindattic.com>"
+          committer: "MindAttic Components Bot <noreply@mindattic.com>"
