@@ -27,7 +27,7 @@ Fourteen components live under `Components/`, each with its source files, a usag
 
 | Component | Type | What it does |
 |---|---|---|
-| [Cyberspace](Components/Cyberspace/Cyberspace.md) | HTML + CSS + JS bundle | Cyberpunk console-background engine: 12 named effects (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT with 24 variants, FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR), scan-line overlay, parallax circuit-board, keepout zones around content, spawn-at-a-point origins and a tap spark surge. SCHEMATIC draws its shapes from SacredGeometry. |
+| [Cyberspace](Components/Cyberspace/Cyberspace.md) | HTML + CSS + JS bundle | Cyberpunk console-background engine: 13 named effects (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT with 24 variants, FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR, READER), scan-line overlay, parallax circuit-board, keepout zones around content, spawn-at-a-point origins and a tap spark surge. SCHEMATIC draws its shapes from SacredGeometry; READER opens a Hyperspace Reader over the Hyperspace library. |
 | [SacredGeometry](Components/SacredGeometry/SacredGeometry.md) | JS (UMD) + SVG | 1024 unique, animatable line-art shapes (polyhedra, parametric curves, knots, fractals). One renderer targets a live canvas or a static SVG string; `build-previews.mjs` emits a poster per shape and doubles as a smoke test. |
 | [Hyperspace](Components/Hyperspace/Hyperspace.md) | JS (UMD) | The standard library of 100 higher-dimensional shapes from the Hyperspace page (polytopes, duoprisms, curved manifolds, lattices), each with a stable id, plaque metadata, geometry and a pure projection to Three.js or a 2D canvas, plus the Hyperspace Reader: a scanner window with a Dimensional Threshold bar, rotating readouts and a shutdown sequence. The Hyperspace page builds its gallery from it. |
 | [OutfitFont](Components/OutfitFont/OutfitFont.md) | font + CSS | Outfit variable font (weights 100 to 900) inlined as base64 woff2, Latin and Latin-Extended, plus a `--font-outfit` token. |
@@ -327,14 +327,15 @@ Names and definitions live in the registry header of `console-bg.js`. Toggles (`
 | CRASH | spawnError | FX_ERROR, 1% | Fatal-error popup |
 | TREMOR | spawnWarning | FX_WARN, 1% | Warning popup |
 | LEAK | spawnMemo | FX_MEMO, 4% | Leaked corporate memo, erased character by character |
-| SCHEMATIC | spawnGeoWindow | FX_GEO, 10% | Geometric schematic window with a SacredGeometry shape |
+| SCHEMATIC | spawnGeoWindow | FX_GEO, 11.5% | Geometric schematic window with a SacredGeometry shape |
 | CASCADE | spawnCascade | FX_CASCADE, 3% | Burst of 3 to 6 cascaded console windows |
 | ARTIFACT | spawnArtifact | FX_ARTIFACT, 12% | Floating glyph cluster, 24 variants |
 | FRAGMENT | spawnFrag | FX_FRAG, 40% | Floating code fragments, the most frequent effect |
 | TRACE | spawnNetConnect | FX_NET, 8% | Tron-cycle network wire route |
 | PULSAR | spawnMorseDot | FX_MORSE, 5% | Morse-code glowing dot |
 | HEIST | spawnFolderRip | FX_FOLDER, 4% | Folder-rip file-extraction sequence |
-| PREDATOR | spawnArtifactPredator | FX_PREDATOR, 1.2% | Rare artifact-hunting swarm |
+| PREDATOR | spawnArtifactPredator | FX_PREDATOR, 5% | Rare artifact-hunting swarm |
+| READER | spawnHyperspaceReader | FX_READER, 2.5% | Hyperspace Reader window scanning a random Hyperspace shape for 6 to 11 s, then powering down; needs hyperspace.js and hyperspace-reader.js loaded before console-bg.js |
 
 ARTIFACT rolls one of 24 variants per spawn (`ART_VARIANTS`): SCATTER, LATTICE, ANCHOR, SLUG, CENTIPEDE, PULSE, WANDERER, SPIDER, INCHWORM, HOPPER, JELLY, SQUID, BEETLE, TADPOLE, ANT, MOIRE, VORTEX, EXPLOSION, ORBIT, NETWORK, PHASEFIELD, SHATTER, SPIROGRAM and PULSARRING. The original seven:
 
@@ -366,7 +367,7 @@ Every spawn function takes an optional origin `{ x, y }` as its last (or only) a
 | Effect | With an origin |
 |---|---|
 | CRASH, TREMOR, LEAK | Centred on it |
-| TERMINAL, SCHEMATIC, HEIST | The title bar opens on it and the window unfolds from it |
+| TERMINAL, SCHEMATIC, HEIST, READER | The title bar opens on it and the window unfolds from it |
 | CASCADE | The first window opens on it; the rest step away from the screen centre |
 | FRAGMENT | Types out of it, from whichever corner of the text fits there |
 | ARTIFACT | The glyph body is centred on it |
@@ -374,7 +375,7 @@ Every spawn function takes an optional origin `{ x, y }` as its last (or only) a
 | PULSAR | The dot starts on it |
 | PREDATOR | The swarm launches from it. If no artifact is big enough to hunt, it releases a LATTICE first |
 
-Every placement is clamped fully on screen and pushed out of the **buffer zone**: each keepout rect grown by `KEEPOUT_BUFFER` (16px). The transform origin moves to the point, so scale-in animations grow out of it. `inKeepout(x, y)` tells a host whether a point is in the zone, for example to ignore taps there. Each spawn function returns `true` when it spawned and `false` when it had nothing to do (a TRACE already running, no route, no prey without an origin), so a tap handler can try another.
+Every placement is clamped fully on screen and pushed out of the **buffer zone**: each keepout rect grown by `KEEPOUT_BUFFER` (16px). The transform origin moves to the point, so scale-in animations grow out of it. `inKeepout(x, y)` tells a host whether a point is in the zone, for example to ignore taps there. Each spawn function returns `true` when it spawned and `false` when it had nothing to do (a TRACE already running, no route, no prey without an origin, the Hyperspace scripts missing or three READERs already open), so a tap handler can try another.
 
 `spawnSparkBurst(x, y)` (SURGE) is a momentary power surge for tap feedback: a white-hot flash with an expanding glow ring, and 26 to 40 sparks that fly out with random velocities, fall under gravity, trail short streaks with a hot core, and cool from white through cyan and blue to orange-red and dark, burning out in 300 to 700ms. It draws on one pooled canvas (`canvas.cyberspace-surge`, appended to `<body>`, `position: fixed`, `pointer-events: none`, `z-index: 1`). The canvas sits above the z-index 0 backdrop, below positioned page content with a higher z-index, and never takes a click. Its `requestAnimationFrame` loop stops and clears when nothing is alive (`data-state` reads `running` or `idle`), so it costs nothing at rest. Under `prefers-reduced-motion: reduce` it draws only a brief stationary flash. `_demo.sparkStats()` reports live counters for tests.
 

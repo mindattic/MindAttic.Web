@@ -225,8 +225,11 @@ Status legend: ✅ done (verified) · 🟡 partial · ⬜ planned · living.
   the 100 exhibits of the Hyperspace page (stable ids, plaque metadata, geometry, pure projection for
   Three.js and 2D canvas); the page builds its gallery and explorers from it at a pinned tag, with a
   `../MindAttic.Web.Shared/` fallback when opened from disk. `hyperspace-reader.js` is the scanner window (`HyperspaceReader.show` /
-  `close`). Not yet a Cyberspace effect. Verified 2026-10-03: `npx playwright test --project=components`
-  in `tests/` — 10 passed (`tests/specs/components/hyperspace.spec.mjs`, stories MAU-US-F1 to F5).
+  `close`). It is also the Cyberspace READER effect: `spawnHyperspaceReader(origin)` in `console-bg.js`
+  (`FX_READER`, `RATE_READER` 2.5%, ttl 6 to 11 s), loaded before the engine on mindattic.com and in its tap list.
+  Verified 2026-10-03: `npx playwright test --project=components` in `tests/` — 10 passed
+  (`tests/specs/components/hyperspace.spec.mjs`, stories MAU-US-F1 to F5) — and the READER test in
+  `tests/specs/sites/mindattic.spec.mjs` (MAU-US-F6).
 - 🟡 **Component catalog (`Components/`).** Fourteen self-contained components present with source + docs.
   Only Hyperspace has component-level tests; the others are verified manually (harnesses
   `Components/Cyberspace/index.htm`, `Components/SacredGeometry/index.htm`) and through the sites suite

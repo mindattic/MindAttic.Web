@@ -6,7 +6,7 @@ formation, network tracers fork and acknowledge across the grid, Morse
 pulsars blink in code, folder-rip heists exfiltrate files in real time, and
 a parallax circuit-board hums behind everything under static scan-lines.
 
-12 named effects, content-aware spawning that stays out of your layout,
+13 named effects, content-aware spawning that stays out of your layout,
 spawn-at-a-point origins for tap handlers, a tap spark surge, and no build step. Drops into any page with three `<div>`s, one `<link>`, and
 one `<script>`.
 
@@ -18,7 +18,7 @@ one `<script>`.
 Cyberspace/
 ├── frontpage.html   # DOM scaffolding — three fixed-position layer divs
 ├── frontpage.css    # CYBERSPACE rules, scan-lines, neon-flicker keyframes
-├── console-bg.js    # the engine (12 effects, origins, spark surge, keepout system, parallax)
+├── console-bg.js    # the engine (13 effects, origins, spark surge, keepout system, parallax)
 ├── home-bg.js       # torn-edge portrait compositor — exposes window.homeBg
 ├── tv-static.js     # navigation-transition TV-static overlay
 ├── loader.js        # tiny global loader show/hide helpers
@@ -44,8 +44,15 @@ it):
 <script src="tv-static.js"></script>
 <script src="home-bg.js"></script>
 <script src="../SacredGeometry/sacred-geometry.js"></script>
+<script src="../Hyperspace/hyperspace.js"></script>
+<script src="../Hyperspace/hyperspace-reader.js"></script>
 <script src="console-bg.js"></script>
 ```
+
+`hyperspace.js` and `hyperspace-reader.js` (the [Hyperspace](../Hyperspace/Hyperspace.md)
+component) must also load **before** `console-bg.js`: the READER effect opens a
+`window.HyperspaceReader` over a random `window.Hyperspace` shape. Without them READER
+declines (returns `false`) and nothing else changes.
 
 `sacred-geometry.js` must load **before** `console-bg.js`: the SCHEMATIC effect draws its
 shapes from `window.SacredGeometry` (the shape catalog lives in the
@@ -55,8 +62,10 @@ absent, schematic windows simply don't spawn — everything else is unaffected.
 Production hosts pull the same files from jsDelivr instead of inlining:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/Components/SacredGeometry/sacred-geometry.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/Components/Cyberspace/console-bg.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/Components/SacredGeometry/sacred-geometry.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/Components/Hyperspace/hyperspace.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/Components/Hyperspace/hyperspace-reader.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/Components/Cyberspace/console-bg.js" defer></script>
 <link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/Components/Cyberspace/frontpage.css">
 ```
 
@@ -100,7 +109,7 @@ consoleBg._demo.spawnWindow({ x: 10, y: 15 });           // title bar opens on t
 ```
 
 Popups and memos are centred on it. Console windows (TERMINAL, SCHEMATIC, HEIST,
-CASCADE) open their title bar on it. Fragments type out of it, artifacts are
+CASCADE) and the Hyperspace Reader (READER) open their title bar on it. Fragments type out of it, artifacts are
 centred on it, and TRACE, PULSAR and PREDATOR start from it. With an origin,
 PREDATOR first releases a LATTICE to hunt when there is no prey. The box is
 clamped on screen and pushed out of the buffer zone, and its transform origin
@@ -157,13 +166,23 @@ entirely.
 
 See the package [`README.md`](../../README.md) for the full effect table
 (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT — including its
-7 behavior variants — FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR).
+7 behavior variants — FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR, READER).
 
 **SCHEMATIC** is the geometric-shape window. Its shapes (and the canvas/SVG renderer) now
 live in the standalone [SacredGeometry](../SacredGeometry/SacredGeometry.md) component —
 1024 indexed shapes; `spawnGeoWindow()` picks a random index and calls
 `window.SacredGeometry.draw(ctx, idx, phase, …)` each frame. Cyberspace still owns the
 window chrome (`.cyberspace-geo-*`), the scrolling telemetry, keepout positioning, and TTL.
+
+**READER** is the Hyperspace Reader from the [Hyperspace](../Hyperspace/Hyperspace.md)
+component. `spawnHyperspaceReader(origin)` opens `window.HyperspaceReader.show()` inside the
+`.console-bg-host` layer on a random shape of `window.Hyperspace`, with a ttl of 6 to 11 s:
+the window acquires, goes live (Dimensional Threshold bar, rotating readouts, fast-scrolling
+details) and then runs its own shutdown and removes its DOM. Cyberspace owns the placement:
+a free spot (`bestPos`) without an origin; with one, the title bar opens on the point,
+clamped on screen and pushed out of the buffer zone, like SCHEMATIC. Toggle `FX_READER`,
+rate `RATE_READER` (2.5%), host switch `reader`. It declines when the Hyperspace scripts are
+missing or three readers are already open.
 
 ---
 

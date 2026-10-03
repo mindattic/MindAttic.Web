@@ -26,7 +26,7 @@ Try it: [mindattic.com](https://mindattic.com)
 | `#site-footer` | Copyright line fixed to the bottom edge. The page never scrolls |
 | No selection | Text can't be highlighted (`user-select: none`), long-press shows no iOS copy bubble and taps don't flash a highlight box. Links and keyboard focus still work |
 | Cyberspace block | The backdrop (circuit-board parallax, scanlines, console windows), spliced in by the MindAttic.Web.Shared sync |
-| Tap script | Tap or left-click anywhere around the lockup: a short spark surge bursts from the tap and one random Cyberspace effect starts right there (kept on screen and clear of the lockup). Taps on the lockup or within 16px of it, on a link, or with the right or middle button do nothing. With reduced motion requested the surge is a brief flash |
+| Tap script | Tap or left-click anywhere around the lockup: a short spark surge bursts from the tap and one random Cyberspace effect (any of the 13, including a Hyperspace Reader scanner window) starts right there (kept on screen and clear of the lockup). Taps on the lockup or within 16px of it, on a link, or with the right or middle button do nothing. With reduced motion requested the surge is a brief flash |
 | Link preview | Meta description, canonical URL, `theme-color` and Open Graph / Twitter card tags, so shared links show the M monogram and a one-line summary |
 
 Everything on the page is a multiple of one viewport-relative unit (`--u`, 1% of the smaller visible viewport side), so it keeps the same shape on every screen and aspect ratio.

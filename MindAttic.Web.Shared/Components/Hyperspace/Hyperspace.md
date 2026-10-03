@@ -158,6 +158,14 @@ the engine's `Courier New` monospace. It has `pointer-events: none` so it never 
 
 ---
 
+## In Cyberspace
+
+The Cyberspace engine uses the Reader as its READER effect: `consoleBg._demo.spawnHyperspaceReader(origin)`
+opens one in `.console-bg-host` on a random shape with a ttl of 6 to 11 s, and the auto-spawner fires it about
+2.5% of the time (`FX_READER`, `RATE_READER`). Load `hyperspace.js` and `hyperspace-reader.js` before
+`console-bg.js` (deferred, in that order); `sync-mindattic-com.ps1` emits them as deferred jsDelivr tags for
+mindattic.com. See [Cyberspace](../Cyberspace/Cyberspace.md).
+
 ## Harness
 
 Open `index.htm` (directly or through any static server): every shape animates in a grid (only the

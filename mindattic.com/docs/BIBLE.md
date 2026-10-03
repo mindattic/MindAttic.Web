@@ -139,8 +139,10 @@ tag-pinned jsDelivr package instead of being embedded in the page.
   `KEEPOUT_BUFFER`), it fires `consoleBg.spawnSparkBurst(x, y)` at the tap and then calls the spawn
   functions of `window.consoleBg._demo` (an underscore-prefixed "dev handle" of the engine, the only
   public way to fire a single effect on demand) in a shuffled order, each with the tap as its origin
-  `{ x, y }` in viewport %, until one returns something other than `false`. If the CDN script failed to
-  load it silently does nothing.
+  `{ x, y }` in viewport %, until one returns something other than `false`. The list holds all 13
+  effects: CRASH, TREMOR, TERMINAL, LEAK, FRAGMENT, ARTIFACT, SCHEMATIC, TRACE, PULSAR, HEIST, CASCADE,
+  PREDATOR and READER (a Hyperspace Reader; the CYBERSPACE block loads the Hyperspace library and
+  Reader scripts before the engine). If the CDN script failed to load it silently does nothing.
 
 ### 4.4 Hosting {#MAC-§4.4}
 

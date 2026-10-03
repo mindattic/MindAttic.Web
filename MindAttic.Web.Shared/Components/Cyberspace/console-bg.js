@@ -19,6 +19,8 @@ window.consoleBg = (function () {
     //   HEIST      — folder-rip file extraction  (spawnFolderRip)
     //   PREDATOR   — artifact-hunting swarm      (spawnArtifactPredator)
     //   TERMINAL   — generic console window      (spawnWindow)
+    //   READER     — Hyperspace Reader scanner   (spawnHyperspaceReader; needs hyperspace.js +
+    //                hyperspace-reader.js from Components/Hyperspace, loaded before this file)
     //
     // Every top-level effect takes an optional origin { x, y } (viewport %) and then starts at
     // that point — see "Origins" below.
@@ -4165,10 +4167,38 @@ window.consoleBg = (function () {
     }
 
 
+    // ── Hyperspace Reader ───────────────────────────────────────────────────
+    // READER: a Hyperspace Reader window (Components/Hyperspace/hyperspace-reader.js) locks on to a
+    // random shape from the Hyperspace library (hyperspace.js), fails to make sense of it and powers
+    // down after 6–11 s. Like SCHEMATIC it is a console-style window: an origin opens its title bar
+    // there, clamped fully on screen and pushed out of the keepout buffer zone; without one it takes
+    // a free spot (bestPos). Returns false when either script did not load, when no host exists or
+    // when HSR_MAX readers are already open.
+    // spawnHyperspaceReader(origin)
+    var HSR_W = 282, HSR_H = 200, HSR_MAX = 3;
+    function spawnHyperspaceReader(origin) {
+        origin = findOrigin(arguments);
+        var host = getHost();
+        if (!host) return false;
+        var HR = window.HyperspaceReader, HS = window.Hyperspace;
+        if (!HR || !HS || !HS.count) return false;   // graceful degrade if the scripts didn't load
+        if (HR.active() >= HSR_MAX) return false;
+        var pos = origin ? [0, 0] : bestPos(host, HSR_W, HSR_H, -5, 80, 5, 78);
+        var h = HR.show({
+            host: host,
+            x: pos[0] + '%', y: pos[1] + '%',
+            shape: rand(0, HS.count - 1),
+            ttl: rand(6000, 11000)
+        });
+        if (!h || !h.el) return false;
+        if (origin) placeAt(h.el, origin, HSR_W, HSR_H, 0.5, 'title');
+        return true;
+    }
+
     // ── Host switches ───────────────────────────────────────────────────────
     // A host may define window.__cyberspaceFx as an object, or a function returning one, keyed by the
     // EFFECT NAME REGISTRY names in lowercase (crash, tremor, leak, schematic, cascade, artifact,
-    // fragment, trace, pulsar, heist, predator, terminal) plus circuitboard, with numeric multipliers
+    // fragment, trace, pulsar, heist, predator, terminal, reader) plus circuitboard, with numeric multipliers
     // spawnRate, circuitboardOpacity and circuitboardSpeed. Read LIVE on every tick/frame; anything
     // omitted keeps the designed behaviour, so a host that defines nothing is unaffected.
     function fxCfg() {
@@ -7689,6 +7719,7 @@ window.consoleBg = (function () {
     var FX_FOLDER   = true;   // folder-rip browser windows
     var FX_PREDATOR = true;   // RARE artifact-predator swarm (consumes large artifacts)
     var FX_WIN      = true;   // console windows (black / blue / amber)
+    var FX_READER   = true;   // Hyperspace Reader scanner windows
 
     // ── Spawn rate constants — edit here to tune both hosts identically ────────
     var RATE_ERROR    = 0.01;  // fatal error popups
@@ -7702,6 +7733,7 @@ window.consoleBg = (function () {
     var RATE_MORSE    = 0.05;  // glowing Morse-code dots
     var RATE_FOLDER   = 0.04;  // folder-rip browser windows
     var RATE_PREDATOR = 0.05;  // artifact-predator swarm — bumped from 0.012 for more visible hunts
+    var RATE_READER   = 0.025; // Hyperspace Reader scanner windows (occasional)
     // RATE_WIN = remainder — console windows (black / blue / amber)
 
     function tickDelay() {
@@ -7730,6 +7762,7 @@ window.consoleBg = (function () {
         else if (FX_MORSE    && fxOn('pulsar') && r < (t += RATE_MORSE))    spawnMorseDot();
         else if (FX_FOLDER   && fxOn('heist') && r < (t += RATE_FOLDER))   spawnFolderRip();
         else if (FX_PREDATOR && fxOn('predator') && r < (t += RATE_PREDATOR)) spawnArtifactPredator();
+        else if (FX_READER   && fxOn('reader') && r < (t += RATE_READER))   spawnHyperspaceReader();
         else if (FX_WIN && fxOn('terminal'))               spawnWindow();
         tickTimer = setTimeout(tick, tickDelay());
     }
@@ -7801,6 +7834,7 @@ window.consoleBg = (function () {
             SacredGeometry: (typeof window !== 'undefined') ? window.SacredGeometry : null,
             spawnArtifact: spawnArtifact,
             spawnGeoWindow: spawnGeoWindow,
+            spawnHyperspaceReader: spawnHyperspaceReader,
             spawnError: spawnError,
             spawnWarning: spawnWarning,
             spawnMemo: spawnMemo,

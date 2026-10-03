@@ -54,7 +54,7 @@ updated: 2026-10-03
   Cyberspace effect starts right where I tapped, so the page feels alive. *Given* the engine has loaded,
   *when* I press outside the keepout buffer zone (the `.lockup` plus the engine's 16px margin), *then* one
   effect spawns with my tap as its origin: popups and memos centred on it, console windows opening from it,
-  fragments typing out of it, traces, pulsars, cascades and predator swarms spreading from it, always kept
+  fragments typing out of it, a Hyperspace Reader opening on it, traces, pulsars, cascades and predator swarms spreading from it, always kept
   on screen and out of the buffer zone. A press inside the zone, or on a link, spawns nothing.
   *(verified by: `MindAttic.Web.Shared/tests` `mindattic.spec.mjs` — `a tap outside the keepout spawns an effect
   that starts at the tap point`, `every spawn function honours an origin…`, `a tap inside the keepout buffer

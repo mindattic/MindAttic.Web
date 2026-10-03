@@ -13,6 +13,8 @@
     "Components/Cyberspace/tv-static.js",
     "Components/Cyberspace/home-bg.js",
     "Components/SacredGeometry/sacred-geometry.js",
+    "Components/Hyperspace/hyperspace.js",
+    "Components/Hyperspace/hyperspace-reader.js",
     "Components/Cyberspace/console-bg.js"
   ],
 

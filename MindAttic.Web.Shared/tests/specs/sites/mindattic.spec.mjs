@@ -186,7 +186,7 @@ test.describe('mindattic.com — Cyberspace', () => {
       await loadSite(s);
       const missing = await s.page.evaluate(() => {
         const fx = window.consoleBg && window.consoleBg._demo;
-        const need = ['spawnError', 'spawnWarning', 'spawnWindow', 'spawnMemo', 'spawnFrag', 'spawnArtifact', 'spawnGeoWindow', 'spawnNetConnect', 'spawnMorseDot', 'spawnFolderRip', 'spawnCascade', 'spawnArtifactPredator', 'setAutoSpawn'];
+        const need = ['spawnError', 'spawnWarning', 'spawnWindow', 'spawnMemo', 'spawnFrag', 'spawnArtifact', 'spawnGeoWindow', 'spawnNetConnect', 'spawnMorseDot', 'spawnFolderRip', 'spawnCascade', 'spawnArtifactPredator', 'spawnHyperspaceReader', 'setAutoSpawn'];
         return fx ? need.filter((n) => typeof fx[n] !== 'function') : ['window.consoleBg._demo'];
       });
       expect(missing).toEqual([]);
@@ -271,7 +271,8 @@ test.describe('mindattic.com — Cyberspace', () => {
       await watchHost(s.page);
       await untilQuiet(s.page);
       const FNS = ['spawnError', 'spawnWarning', 'spawnWindow', 'spawnMemo', 'spawnFrag', 'spawnArtifact', 'spawnGeoWindow',
-        'spawnNetConnect', 'spawnMorseDot', 'spawnFolderRip', 'spawnCascade', 'spawnArtifactPredator'];
+        'spawnNetConnect', 'spawnMorseDot', 'spawnFolderRip', 'spawnCascade', 'spawnArtifactPredator', 'spawnHyperspaceReader'];
+      await s.page.evaluate(() => window.HyperspaceReader.closeAll()); // READER caps open readers at three
       const out = [];
       for (const fn of FNS) {
         const [x, y] = CLEAR_TAPS[FNS.indexOf(fn) % CLEAR_TAPS.length];
@@ -311,11 +312,13 @@ test.describe('mindattic.com — Cyberspace', () => {
       expect(corner.r).toBeLessThanOrEqual(corner.w + 0.5); expect(corner.b).toBeLessThanOrEqual(corner.h + 0.5);
 
       // Pushed out: an origin just outside the buffer zone, beside the lockup, never lets a window overlap it.
+      // READER allows three open readers at a time, so close the ones already open before spawning two more.
+      await s.page.evaluate(() => window.HyperspaceReader.closeAll());
       const beside = await s.page.evaluate(() => {
         const lock = document.querySelector('.lockup').getBoundingClientRect();
         const pad = window.consoleBg._demo.KEEPOUT_BUFFER;
         const res = [];
-        for (const name of ['spawnError', 'spawnWarning', 'spawnMemo', 'spawnFolderRip', 'spawnGeoWindow']) {
+        for (const name of ['spawnError', 'spawnWarning', 'spawnMemo', 'spawnFolderRip', 'spawnGeoWindow', 'spawnHyperspaceReader']) {
           for (const [px, py] of [[lock.left - pad - 2, (lock.top + lock.bottom) / 2], [(lock.left + lock.right) / 2, lock.bottom + pad + 2]]) {
             const host = document.querySelector('.console-bg-host'); const before = new Set(host.children);
             window.consoleBg._demo[name]({ x: px / innerWidth * 100, y: py / innerHeight * 100 });
@@ -330,6 +333,57 @@ test.describe('mindattic.com — Cyberspace', () => {
         expect(b.ov, `${b.name} beside the lockup must not overlap it`).toBe(0);
         expect(b.on, `${b.name} stays on screen`).toBe(true);
       }
+      expect(s.rec.pageErrors).toEqual([]);
+    } finally { await s.context.close(); }
+  });
+
+  test('READER: a Hyperspace Reader spawns at an origin, shows the threshold bar and the scrolling details, and shuts down cleanly', async ({ browser }) => {
+    const s = await openSite(browser, site, { viewport: ROOMY });
+    try {
+      await loadSite(s);
+      await watchHost(s.page);
+      await untilQuiet(s.page);
+      await s.page.evaluate(() => window.HyperspaceReader.closeAll()); // an ambient reader must not be mistaken for ours
+      const [x, y] = CLEAR_TAPS[0];
+      const r = await s.page.evaluate(([px, py]) => {
+        const host = document.querySelector('.console-bg-host');
+        const before = new Set(host.children);
+        const ret = window.consoleBg._demo.spawnHyperspaceReader({ x: px / innerWidth * 100, y: py / innerHeight * 100 });
+        const el = [...host.children].find((n) => !before.has(n) && n.classList.contains('hsr'));
+        return { ret, inHost: !!el, d: el ? window.__distTo(el, { x: px, y: py }) : null, lib: !!window.Hyperspace && !!window.HyperspaceReader };
+      }, [x, y]);
+      expect(r.lib, 'hyperspace.js and hyperspace-reader.js load before console-bg.js').toBe(true);
+      expect(r.ret, 'spawnHyperspaceReader returns true').toBe(true);
+      expect(r.inHost, 'the reader opens inside the Cyberspace host').toBe(true);
+      expect(r.d, 'the reader starts at the origin').toBeLessThanOrEqual(30);
+
+      const win = s.page.locator('.console-bg-host .hsr');
+      await expect(win).toHaveAttribute('data-state', 'live', { timeout: 3000 });
+      await expect(win.locator('.hsr-thresh-head')).toContainText('DIMENSIONAL THRESHOLD');
+      const sample = () => s.page.evaluate(() => {
+        const w = document.querySelector('.console-bg-host .hsr');
+        return {
+          threshold: Number(w.dataset.threshold),
+          clip: w.querySelector('.hsr-bar-fill').style.clipPath,
+          scroll: w.querySelector('.hsr-details-inner').style.transform,
+          text: w.querySelector('.hsr-details-inner').textContent,
+        };
+      });
+      await s.page.waitForTimeout(1200);
+      const a = await sample();
+      await s.page.waitForTimeout(700);
+      const b = await sample();
+      expect(a.threshold, 'threshold bar is filled').toBeGreaterThan(0);
+      expect(a.clip).toMatch(/^inset\(/);
+      expect(b.threshold, 'threshold bar moves').not.toBe(a.threshold);
+      expect(b.scroll, 'details scroll').toMatch(/^translateY\(/);
+      expect(b.text, 'details advance').not.toBe(a.text);
+
+      // Shutdown: the ttl (6-11 s) closes it on its own; the power-down line prints and its DOM is removed.
+      await expect(win).toHaveAttribute('data-state', /closing|off/, { timeout: 12_000 });
+      await expect(win.locator('.hsr-foot')).toContainText('POWERING DOWN', { timeout: 2000 });
+      await expect(s.page.locator('.console-bg-host .hsr')).toHaveCount(0, { timeout: 3000 });
+      expect(await s.page.evaluate(() => window.HyperspaceReader.active())).toBe(0);
       expect(s.rec.pageErrors).toEqual([]);
     } finally { await s.context.close(); }
   });

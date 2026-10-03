@@ -8,6 +8,10 @@ jsDelivr serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web
   Hyperspace exhibits (stable ids, plaque metadata, geometry, pure projection for Three.js and 2D canvas),
   and `hyperspace-reader.js`, the Hyperspace Reader scanner window. The Hyperspace page pins this tag.
 - Tests: new `components` project (`tests/specs/components/hyperspace.spec.mjs`).
+- **READER Cyberspace effect**: `console-bg.js` gains `spawnHyperspaceReader(origin)` (`FX_READER`,
+  `RATE_READER` 2.5%, ttl 6 to 11 s, host switch `reader`). `hyperspace.js` and `hyperspace-reader.js` are listed in
+  `subscribers.json` and `Themes/Cyberspace/deps.json`, emitted by `sync-mindattic-com.ps1` as deferred CDN tags
+  before `console-bg.js`, and loaded by the Cyberspace harness; mindattic.com's tap list includes READER.
 - **MindAttic.Web monorepo**: the package is the `MindAttic.Web.Shared/` folder of the MindAttic.Web repo, next to
   mindattic.com, ryandebraal.com, mindatticcares.com and Hyperspace, and loads from
   `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/<path>`. Whole-number tags continue

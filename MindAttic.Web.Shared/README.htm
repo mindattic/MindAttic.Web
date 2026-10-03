@@ -136,7 +136,7 @@ pre:hover .cpbtn{opacity:1}
 <tr>
 <td><a href="Components/Cyberspace/Cyberspace.md">Cyberspace</a></td>
 <td>HTML + CSS + JS bundle</td>
-<td>Cyberpunk console-background engine: 12 named effects (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT with 24 variants, FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR), scan-line overlay, parallax circuit-board, keepout zones around content, spawn-at-a-point origins and a tap spark surge. SCHEMATIC draws its shapes from SacredGeometry.</td>
+<td>Cyberpunk console-background engine: 13 named effects (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT with 24 variants, FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR, READER), scan-line overlay, parallax circuit-board, keepout zones around content, spawn-at-a-point origins and a tap spark surge. SCHEMATIC draws its shapes from SacredGeometry; READER opens a Hyperspace Reader over the Hyperspace library.</td>
 </tr>
 <tr>
 <td><a href="Components/SacredGeometry/SacredGeometry.md">SacredGeometry</a></td>
@@ -518,7 +518,7 @@ npx playwright test --project=components   # component checks (Hyperspace), no s
 <tr>
 <td>SCHEMATIC</td>
 <td>spawnGeoWindow</td>
-<td>FX_GEO, 10%</td>
+<td>FX_GEO, 11.5%</td>
 <td>Geometric schematic window with a SacredGeometry shape</td>
 </tr>
 <tr>
@@ -560,8 +560,14 @@ npx playwright test --project=components   # component checks (Hyperspace), no s
 <tr>
 <td>PREDATOR</td>
 <td>spawnArtifactPredator</td>
-<td>FX_PREDATOR, 1.2%</td>
+<td>FX_PREDATOR, 5%</td>
 <td>Rare artifact-hunting swarm</td>
+</tr>
+<tr>
+<td>READER</td>
+<td>spawnHyperspaceReader</td>
+<td>FX_READER, 2.5%</td>
+<td>Hyperspace Reader window scanning a random Hyperspace shape for 6 to 11 s, then powering down; needs hyperspace.js and hyperspace-reader.js loaded before console-bg.js</td>
 </tr>
 </tbody></table>
 <p>ARTIFACT rolls one of 24 variants per spawn (<code>ART_VARIANTS</code>): SCATTER, LATTICE, ANCHOR, SLUG, CENTIPEDE, PULSE, WANDERER, SPIDER, INCHWORM, HOPPER, JELLY, SQUID, BEETLE, TADPOLE, ANT, MOIRE, VORTEX, EXPLOSION, ORBIT, NETWORK, PHASEFIELD, SHATTER, SPIROGRAM and PULSARRING. The original seven:</p>
@@ -632,7 +638,7 @@ npx playwright test --project=components   # component checks (Hyperspace), no s
 <td>Centred on it</td>
 </tr>
 <tr>
-<td>TERMINAL, SCHEMATIC, HEIST</td>
+<td>TERMINAL, SCHEMATIC, HEIST, READER</td>
 <td>The title bar opens on it and the window unfolds from it</td>
 </tr>
 <tr>
@@ -660,7 +666,7 @@ npx playwright test --project=components   # component checks (Hyperspace), no s
 <td>The swarm launches from it. If no artifact is big enough to hunt, it releases a LATTICE first</td>
 </tr>
 </tbody></table>
-<p>Every placement is clamped fully on screen and pushed out of the <strong>buffer zone</strong>: each keepout rect grown by <code>KEEPOUT_BUFFER</code> (16px). The transform origin moves to the point, so scale-in animations grow out of it. <code>inKeepout(x, y)</code> tells a host whether a point is in the zone, for example to ignore taps there. Each spawn function returns <code>true</code> when it spawned and <code>false</code> when it had nothing to do (a TRACE already running, no route, no prey without an origin), so a tap handler can try another.</p>
+<p>Every placement is clamped fully on screen and pushed out of the <strong>buffer zone</strong>: each keepout rect grown by <code>KEEPOUT_BUFFER</code> (16px). The transform origin moves to the point, so scale-in animations grow out of it. <code>inKeepout(x, y)</code> tells a host whether a point is in the zone, for example to ignore taps there. Each spawn function returns <code>true</code> when it spawned and <code>false</code> when it had nothing to do (a TRACE already running, no route, no prey without an origin, the Hyperspace scripts missing or three READERs already open), so a tap handler can try another.</p>
 <p><code>spawnSparkBurst(x, y)</code> (SURGE) is a momentary power surge for tap feedback: a white-hot flash with an expanding glow ring, and 26 to 40 sparks that fly out with random velocities, fall under gravity, trail short streaks with a hot core, and cool from white through cyan and blue to orange-red and dark, burning out in 300 to 700ms. It draws on one pooled canvas (<code>canvas.cyberspace-surge</code>, appended to <code>&lt;body&gt;</code>, <code>position: fixed</code>, <code>pointer-events: none</code>, <code>z-index: 1</code>). The canvas sits above the z-index 0 backdrop, below positioned page content with a higher z-index, and never takes a click. Its <code>requestAnimationFrame</code> loop stops and clears when nothing is alive (<code>data-state</code> reads <code>running</code> or <code>idle</code>), so it costs nothing at rest. Under <code>prefers-reduced-motion: reduce</code> it draws only a brief stationary flash. <code>_demo.sparkStats()</code> reports live counters for tests.</p>
 <p>mindattic.com's tap script uses both: outside the zone and off a link, it fires the surge at the tap, then tries the effects in random order with the tap as origin until one spawns.</p>
 <h2 id="project-layout">Project layout</h2>
