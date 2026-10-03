@@ -1,0 +1,12 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+
+# FTP deploy credentials — never commit
+/settings.json
+
+# Generated IdiotProof replay archive (published via MindAttic.Deploy, not committed)
+idiotproof/replays/
+.claude/quicksave.md*

@@ -1,0 +1,2096 @@
+<!-- Last Updated: 2026-10-03T20:22:58Z -->
+<!--
+  ════════════════════════════════════════════════════════════════════════════
+  ║  Hey. You opened View Source.  I see you, and I appreciate it.           ║
+  ║                                                                          ║
+  ║   __  __ _           _    _   _   _   _                                  ║
+  ║  |  \/  (_)_ __   __| |  / \ | |_| |_(_) ___                             ║
+  ║  | |\/| | | '_ \ / _` | / _ \| __| __| |/ __|                            ║
+  ║  | |  | | | | | | (_| |/ ___ \ |_| |_| | (__                             ║
+  ║  |_|  |_|_|_| |_|\__,_/_/   \_\__|\__|_|\___|                            ║
+  ║                                                                          ║
+  ╠══════════════════════════════════════════════════════════════════════════╣
+  ║  You found the workshop floor of mindattic.com.                          ║
+  ║  No build step. No framework. No npm install. No tracking.               ║
+  ║  Just markup, styles, and a sprinkle of script — the way the platform    ║
+  ║  hands them to you.                                                      ║
+  ╠══════════════════════════════════════════════════════════════════════════╣
+  ║                                                                          ║
+  ║  WHY NO BUILD STEP?                                                      ║
+  ║                                                                          ║
+  ║  Because the page is small enough that the cost of a build pipeline      ║
+  ║  outweighs its benefits.  No bundler, no transpiler, no dist/ folder     ║
+  ║  to ship.  Edit, save, refresh.                                          ║
+  ║                                                                          ║
+  ║  The heavy stuff -- fonts, the logo, the parallax textures and the       ║
+  ║  effects engine -- is deliberately NOT baked into this file.  It is      ║
+  ║  plain static files served from a CDN (jsDelivr, straight out of the     ║
+  ║  MindAttic.UiUx repo, pinned to a release tag), so it is cached by the   ║
+  ║  browser, shared between MindAttic sites, and never delays the first     ║
+  ║  paint of the page itself.  No tracking pixels, no analytics, no         ║
+  ║  third-party fonts, no JavaScript frameworks.                            ║
+  ║                                                                          ║
+  ║  The tradeoff is that the page depends on that CDN being reachable.      ║
+  ║  Every asset URL is pinned to an immutable tag, so what you see today    ║
+  ║  is exactly what you get tomorrow.                                       ║
+  ║                                                                          ║
+  ╠══════════════════════════════════════════════════════════════════════════╣
+  ║                                                                          ║
+  ║  TABLE OF CONTENTS                                                       ║
+  ║  ─────────────────────────────────────────────────────────────────────   ║
+  ║  § 1  Fonts ............... Two woff2 typefaces, served from the CDN     ║
+  ║  § 2  Theme tokens ........ Dark-palette custom properties + logo URLs   ║
+  ║  § 3  Background .......... Painted by the CYBERSPACE bundle (§ 12)      ║
+  ║  § 4  Accessibility ....... Focus rings                                  ║
+  ║  § 5  Reset ............... Box-sizing + minimal normalization           ║
+  ║  § 6  Wordmark ............ The "MindAttic" logotype, set in Attic       ║
+  ║  § 7  Content ............. Centered column: wordmark, motto, buttons    ║
+  ║  § 8  Logo assets ......... Sized helpers for the CDN-hosted logo        ║
+  ║  § 9  Link buttons ........ Equal-width, as wide as the wordmark         ║
+  ║  § 10 Footer .............. Copyright line, fixed to the bottom edge     ║
+  ║  § 11 Body ................ The DOM, in the order you read it            ║
+  ║  § 12 Cyberspace .......... Backdrop effects, synced from MindAttic.UiUx ║
+  ║                                                                          ║
+  ╠══════════════════════════════════════════════════════════════════════════╣
+  ║                                                                          ║
+  ║  A NOTE ON COMMENTS                                                      ║
+  ║                                                                          ║
+  ║  These comments exist because someone read this far.  That someone       ║
+  ║  is you.  Code without explanation is a puzzle; code with explanation    ║
+  ║  is a conversation.  I'd rather have the conversation.                   ║
+  ║                                                                          ║
+  ║  If you spot something that could be done better, the GitHub mirror      ║
+  ║  is linked from the GitHub button on the page.  Pull requests welcome.   ║
+  ║                                                                          ║
+  ╚══════════════════════════════════════════════════════════════════════════╝
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindAttic</title>
+<!-- Search-result snippet and link-preview card (Open Graph / Twitter). The image is served
+     from the MindAttic.UiUx CDN package like every other asset on this page. -->
+<meta name="description" content="MindAttic, the software studio of Ryan DeBraal: his résumé, his projects on GitHub, and the MindAttic Cares nonprofit.">
+<link rel="canonical" href="https://mindattic.com/">
+<meta name="theme-color" content="#0d1117">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MindAttic">
+<meta property="og:title" content="MindAttic">
+<meta property="og:description" content="MindAttic, the software studio of Ryan DeBraal: his résumé, his projects on GitHub, and the MindAttic Cares nonprofit.">
+<meta property="og:url" content="https://mindattic.com/">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindattic.com/logos/m-monogram.png">
+<meta property="og:image:width" content="320">
+<meta property="og:image:height" content="320">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MindAttic">
+<meta name="twitter:description" content="MindAttic, the software studio of Ryan DeBraal: his résumé, his projects on GitHub, and the MindAttic Cares nonprofit.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindattic.com/logos/m-monogram.png">
+
+<!-- Resource hints.  Open the CDN connection immediately (TLS handshake in
+     parallel with parsing) and start the two fonts the first paint needs
+     before the stylesheet has even been parsed.  Font preloads need
+     `crossorigin`: browsers always fetch fonts in CORS mode, so a preload
+     without it would not match the real request and the font would be
+     downloaded twice. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="icon" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindattic.com/logos/favicon.ico" sizes="48x48">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/fonts/attic/attic.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/fonts/outfit/outfit-latin.woff2">
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+     §  STYLESHEET
+     ─────────────────────────────────────────────────────────────────────
+     The styles that lay out this page live inline: they are small, and an
+     external stylesheet would be one more render-blocking request.  Bulky
+     binary assets (fonts, images, textures) are never inlined -- they are
+     referenced by URL and served from the CDN.  No build-time CSS modules,
+     no preprocessor.  The only "framework" used here is the browser itself.
+
+     Order matters: tokens (themes) are declared before the rules that
+     consume them, and resets come before component styles so cascade
+     specificity works in our favor without !important.
+     ═══════════════════════════════════════════════════════════════════ -->
+<style>
+
+/* ──────────────────────────────────────────────────────────────────────
+   §  1   FONTS
+   ──────────────────────────────────────────────────────────────────────
+   Two faces are used:
+
+     1.  'Attic'   — a custom display face used only for the wordmark.
+     2.  'Outfit'  — Google's variable sans-serif, weights 100–900,
+                     used everywhere else.
+
+   Both are plain woff2 files served from the CDN (jsDelivr, out of the
+   MindAttic.UiUx repo under fonts/, pinned to a release tag)
+   and are preloaded from <head>, so they start downloading before the CSS
+   is parsed.  The @font-face rules sit in the <style> block right after
+   this comment.  Outfit is split by unicode-range, so the browser only
+   downloads the Latin-Extended file if a page actually uses one of its
+   glyphs.  Attic uses font-display: block (a very short invisible period)
+   so the wordmark never flashes in a fallback face; Outfit uses swap.
+
+   ──────────────────────────────────────────────────────────────────── */
+
+</style>
+
+<style id="mindattic-fonts-css">
+/* Outfit — Google Fonts, variable weight axis 100-900, split by unicode-range.
+   Use the quoted stack ('Outfit', system-ui, sans-serif) or var(--font-outfit);
+   a bare `font-family: Outfit;` can fail silently. */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/fonts/outfit/outfit-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/fonts/outfit/outfit-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Attic — the custom display face (wordmark only). */
+@font-face {
+  font-family: 'Attic';
+  font-style: normal;
+  font-weight: normal;
+  font-display: block;
+  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/fonts/attic/attic.woff2') format('woff2');
+}
+
+/* Ergonomic reuse: var(--font-outfit) / var(--font-attic) instead of
+   repeating the full stacks. */
+:root { --font-outfit: 'Outfit', system-ui, sans-serif; --font-attic: 'Attic', serif; }
+
+html, body { font-family: 'Outfit', system-ui, sans-serif; }
+.site-name { font-family: 'Attic', serif; }
+</style>
+
+<style>
+
+/* ──────────────────────────────────────────────────────────────────────
+   §  2   THEME TOKENS
+   ──────────────────────────────────────────────────────────────────────
+   Every color the site uses lives here as a CSS custom property.
+
+   The pattern:
+     :root                    → the one and only palette (console-bg dark).
+
+   The legacy light/dark toggle, the [data-theme="dark"] override, and the
+   prefers-color-scheme media query have all been removed. Tokens stay on
+   :root so a future palette can drop in here without touching every
+   selector.
+
+   Naming convention: --bg/--bg2/--bg3 walk from the page background
+   inward (deeper surfaces get higher numbers).  --text/--text2/--text3
+   walk from primary copy out toward muted captions the same way.
+
+   --logo / --logo-tiny are the logo PNGs, served from the CDN (see § 8).
+   ──────────────────────────────────────────────────────────────────── */
+
+:root {
+  --bg: #0d1117;
+  --bg2: #13161b;
+  --bg3: #1a1e25;
+  --border: #2a2f3a;
+  --accent: #6ba3e8;
+  --accent2: #90bbf0;
+  --text: #e8eaf0;
+  --text2: #9aa0b0;
+  --text3: #5c6275;
+  --rule: #3d6fa3;
+  --logo: url("https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindattic.com/logos/m-monogram.png");
+  --logo-tiny: url("https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindattic.com/logos/m-icon-16.png");
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   §  3   BACKGROUND
+   ──────────────────────────────────────────────────────────────────────
+   No rules here: the backdrop is the parallax circuit board painted by
+   the CYBERSPACE bundle further down in this file (§ 12).  Edit the
+   bundle in MindAttic.UiUx (not this file) to change it.
+   ──────────────────────────────────────────────────────────────────── */
+
+/* ──────────────────────────────────────────────────────────────────────
+   §  4   ACCESSIBILITY
+   ──────────────────────────────────────────────────────────────────────
+   :focus-visible restores a clearly visible focus outline.  Browsers
+   vary; this guarantees one consistent ring in the accent color.  We
+   override the UA default rather than disable it — disabling focus
+   styles is one of the fastest ways to make a site unusable.
+   ──────────────────────────────────────────────────────────────────── */
+
+:focus-visible {
+  outline: 0.125rem solid var(--accent);
+  outline-offset: 0.125rem;
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   §  5   RESET
+   ──────────────────────────────────────────────────────────────────────
+   Not Eric Meyer's reset, not normalize.css.  Just three lines that
+   the rest of the file actually depends on:
+
+     box-sizing: border-box   — so widths include padding and border.
+                                 The single most useful reset rule.
+     margin / padding: 0      — so spacing comes from the components,
+                                 not from accidental user-agent defaults.
+
+   Below the universal reset, html/body get just enough setup to look
+   intentional: anti-aliased text, the primary typeface, and a fixed
+   viewport-height box with overflow hidden — the whole page is one
+   screen that scales to fit, so there is never a scrollbar.
+
+   Nothing on the page is selectable: it is a logo and three buttons, and
+   a tap around it spawns a Cyberspace effect, so a drag or long-press should
+   never paint a highlight.  user-select stops text selection,
+   -webkit-touch-callout stops the iOS long-press copy/lookup bubble, and a
+   transparent tap-highlight stops the grey flash on each tap.  Links still
+   click, and keyboard focus rings (§ 4) are unaffected.
+   ──────────────────────────────────────────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Outfit', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+html, body {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--accent2);
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   §  6   WORDMARK
+   ──────────────────────────────────────────────────────────────────────
+   The "MindAttic" logotype, centered above the motto and the link buttons.
+
+   The wordmark uses 'Attic' (the custom face from § 1) — that's the
+   only place the custom font appears.  Forcing pure white via
+   #site-name instead of --text is deliberate: the wordmark is a brand
+   element, not body copy, and it should always sit at maximum contrast.
+
+   Its size is --wm = 11 × --u (both set on .lockup in § 7), so it is a
+   fixed fraction of the screen.  white-space: nowrap makes the
+   wordmark's own width the width of the whole lockup, which the buttons
+   then match (§ 9).
+   ──────────────────────────────────────────────────────────────────── */
+
+#site-name {
+  font-family: 'Attic', serif;
+  font-size: var(--wm);
+  color: #fff;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  margin: 0 auto calc(var(--u) * 1.2);
+  font-weight: normal;
+  text-align: center;
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+}
+
+/* The motto, between the wordmark and the buttons.  It is always exactly
+   as wide as the wordmark:
+
+     - width: 0 + min-width: 100% means the motto adds nothing to the
+       lockup's max-content width (the wordmark alone sets it) and then
+       stretches to fill it.
+     - Without JavaScript it is simply justified to that width.
+     - With JavaScript, the fitter script in § 11 measures the wordmark and
+       the motto's natural width in Outfit, then solves for the font-size
+       and letter-spacing that make the first and last letters line up
+       with the wordmark's edges.  The trailing letter-space after the last
+       letter is cancelled with an equal negative margin.  If one line
+       would be too small to read (narrow phones), the motto is split into
+       2-3 balanced lines; every line still spans the wordmark exactly. */
+#site-motto {
+  width: 0;
+  min-width: 100%;
+  margin: 0 0 calc(var(--u) * 2.4);
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-weight: 300;
+  font-size: calc(var(--wm) * 0.13);
+  line-height: 1.35;
+  color: var(--text2);
+  text-align: justify;
+  text-align-last: justify;
+}
+
+#site-motto.fitted { text-align: left; text-align-last: auto; }
+#site-motto .motto-line { display: block; white-space: nowrap; }
+
+/* ──────────────────────────────────────────────────────────────────────
+   §  7   CONTENT
+   ──────────────────────────────────────────────────────────────────────
+   A single full-height column that centers the lockup (wordmark, motto
+   and link buttons) both ways on every screen.
+
+   .lockup shrink-wraps to the wordmark (width: max-content), and the
+   button row inside is told to fill 100% of it — so the three buttons
+   together are exactly as wide as the "MindAttic" logo.
+
+   One unit drives everything:  --u = 1% of the smaller visible viewport
+   side (dvmin).  Every size on the page — wordmark, buttons, padding,
+   gaps — is a fixed multiple of --u, so the layout is the same shape at
+   every size and aspect ratio.  The wordmark is 5.3 × its font-size
+   wide, i.e. ~58 × --u, which is always less than the smaller viewport
+   side, so it can never overflow in portrait or landscape.  --u stops
+   growing at 0.7273rem (wordmark capped at 8rem) so very large screens
+   don't get absurdly big type.
+
+   #content is a <div role="main">, not a <main>: Cyberspace treats every
+   <main> as a keepout zone that effects stay out of, and a full-screen
+   <main> would block the whole screen.  Only the .lockup carries
+   .cyberspace-keepout, so effects fill everything around it.
+   ──────────────────────────────────────────────────────────────────── */
+
+#content {
+  padding: 0;
+  /* Sits above every Cyberspace layer (cyberspace-sl-fine/coarse and
+     console-bg-host, all z-index 0, and the tap-spark canvas, z-index 1).
+     position:relative is required for z-index to take effect on a
+     non-positioned element. */
+  position: relative;
+  z-index: 1000;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+  /* Center the lockup both ways on every screen.  dvh follows the visible
+     area on phones as the browser toolbar shows and hides. */
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.lockup {
+  --u: min(1dvmin, 0.7273rem);
+  --wm: calc(var(--u) * 11);
+  width: max-content;
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   §  8   LOGO ASSETS
+   ──────────────────────────────────────────────────────────────────────
+   Two helper classes for the CDN-hosted logo PNG (defined back in § 2):
+
+     .logo       —  20rem hero variant.
+     .logo-tiny  —   1rem favicon-sized variant.
+
+   Both pull from the same artwork, so changing it in one place updates
+   every appearance.  Neither is currently referenced in the body; they're
+   kept here as ready-to-use hooks (favicons, inline list bullets, future
+   use).
+   ──────────────────────────────────────────────────────────────────── */
+
+.logo,
+.logo-tiny {
+  display: block;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.logo {
+  background-image: var(--logo);
+  width: 20rem;
+  height: 20rem;
+}
+
+.logo-tiny {
+  background-image: var(--logo-tiny);
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   §  9   LINK BUTTONS
+   ──────────────────────────────────────────────────────────────────────
+   The three buttons (Résumé / GitHub / MindAttic Cares).  They open in
+   new windows.
+
+   Layout: one row of equal-width columns that fills 100% of the lockup,
+   i.e. exactly the width of the wordmark.  Each 1fr track is the same
+   width, and the widest label ("MindAttic Cares") sets the minimum, so no
+   label can clip.  The row never wraps — it scales instead, so all three
+   buttons are always visible.
+
+   Sizing: every length inside is a multiple of --btn-u, which is a fixed
+   fraction of the wordmark's size (--wm).  At 0.15 the three buttons'
+   natural width is ~4.1 × the wordmark's font-size, comfortably under the
+   wordmark's ~5.3 ×, so the label text stays small next to the logo and
+   the spare space is shared evenly by the three equal columns.  (Anything
+   up to ~0.19 still fits without clipping.)  Padding, gaps, radius,
+   border, glow and lift all grow and shrink with the screen.
+
+   Hover/focus: solid red fill, brighter border, soft glow and a small
+   lift, eased in and out.  Text stays white in every link state (the
+   global `a:hover` rule would otherwise recolor it).
+   ──────────────────────────────────────────────────────────────────── */
+
+.link-row {
+  --btn-u: calc(var(--wm) * 0.15);
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  width: 100%;
+  align-items: stretch;
+  justify-content: center;
+  font-size: var(--btn-u);
+  gap: calc(var(--btn-u) * 0.6);
+}
+
+.link-btn {
+  padding: calc(var(--btn-u) * 0.3) calc(var(--btn-u) * 0.6);
+  border: max(0.0625rem, calc(var(--btn-u) * 0.12)) solid #e5484d;
+  border-radius: calc(var(--btn-u) * 0.5);
+  background: var(--bg2);
+  color: #fff;
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: var(--btn-u);
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  /* Smooth in/out interpolation between rest and hover states. */
+  transition: background-color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.link-btn:link,
+.link-btn:visited,
+.link-btn:hover,
+.link-btn:focus,
+.link-btn:active { color: #fff; }
+
+.link-btn:hover,
+.link-btn:focus-visible {
+  background: #e5484d;
+  border-color: #ff6b70;
+  box-shadow: 0 0 calc(var(--btn-u) * 0.9) rgba(229, 72, 77, 0.55);
+  transform: translateY(calc(var(--btn-u) * -0.12));
+}
+
+/* ──────────────────────────────────────────────────────────────────────
+   §  10  FOOTER
+   ──────────────────────────────────────────────────────────────────────
+   A single-line copyright, dim-on-purpose so it never competes with the
+   lockup for attention.  Fixed to the bottom edge of the screen (the page
+   never scrolls, so it is always in view) and centered.  pointer-events:
+   none keeps it from ever intercepting a click.
+   ──────────────────────────────────────────────────────────────────── */
+
+#site-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  text-align: center;
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  color: var(--text2);   /* --text3 is only ~3:1 on --bg; --text2 stays dim but readable (WCAG AA) */
+  pointer-events: none;
+}
+
+</style>
+
+</head>
+<body>
+
+<!-- BEGIN MINDATTIC.UIUX:CYBERSPACE -->
+<!-- Generated by MindAttic.UiUx/sync/sync-mindattic-com.ps1. Do not edit by hand.
+     Edit MindAttic.UiUx/Components/Cyberspace/* and re-run the sync.
+     console-bg.js + sacred-geometry.js load from jsDelivr (pinned tag); bump -CyberspaceCdnTag to ship a new build. -->
+<!-- ════════════════════════════════════════════════════════════════════════
+     MindAttic.UiUx - cyberspace/frontpage.html
+     The DOM scaffolding the CYBERSPACE effects expect.
+
+       .cyberspace-sl-fine     : fine scan-line overlay (#ff0033 1px gradient)
+       .cyberspace-sl-coarse   : coarse scan-line overlay (#ff2633 1px/7px gradient)
+       .console-bg-host : positioned host that console-bg.js paints into
+
+     These three fixed-position layers sit behind everything (z-index: 0)
+     and are pointer-events: none so they never intercept clicks.
+     ════════════════════════════════════════════════════════════════════════ -->
+<div class="cyberspace-sl-fine"     aria-hidden="true"></div>
+<div class="cyberspace-sl-coarse"   aria-hidden="true"></div>
+<div class="console-bg-host" aria-hidden="true"></div>
+
+<link rel="preload" as="image" fetchpriority="low" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/Components/Cyberspace/assets/circuitboard.00.png">
+<link rel="preload" as="image" fetchpriority="low" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/Components/Cyberspace/assets/circuitboard.01.png">
+<link rel="preload" as="image" fetchpriority="low" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/Components/Cyberspace/assets/circuitboard.02.png">
+<style id="mindattic-components-cyberspace-css">
+/* ====================================================================
+ * MindAttic.UiUx - cyberspace/frontpage.css
+ * Cyberpunk console-background (CYBERSPACE) effects system.
+ * Lifted from Prose/wwwroot/app.css (lines 1079-1803).
+ * Canonical source. DO NOT EDIT downstream copies - edit here and re-sync.
+ * ==================================================================== */
+
+/* ── Home page — entity portrait as background corner image ─────────────── */
+.home-wrapper { position: relative; overflow: hidden; min-height: calc(100vh - var(--topnav-height, 48px)); }
+.home-content { position: relative; z-index: 1; }
+.home-bg-img {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: clamp(260px, 30vw, 480px);
+    height: auto;
+    max-height: 80vh;
+    object-fit: cover;
+    object-position: top center;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Console background windows (home / tile-board only) ───────────────── */
+.console-bg-host {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+.cyberspace-win {
+    position: absolute;
+    width: clamp(148px, 15vw, 228px);
+    background: rgba(10, 12, 9, 0.92);
+    border: 1px solid rgba(42, 52, 42, 0.52);
+    border-radius: 4px;
+    backdrop-filter: blur(3px);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.42);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.57rem;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transform: scaleY(0.06) scaleX(0.88);
+    transform-origin: top left;
+    animation: cyberspace-in 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+.cyberspace-win--out { animation: cyberspace-out 0.14s cubic-bezier(0.5, 0, 1, 0.6) forwards !important; }
+/* ── Console color variants ─── */
+.cyberspace-win--blue { background: rgba(8, 12, 22, 0.92); border-color: rgba(40, 80, 180, 0.52); }
+.cyberspace-win--blue .cyberspace-title { background: rgba(10, 16, 30, 0.94); color: rgba(100, 140, 220, 0.62); border-bottom-color: rgba(40, 80, 180, 0.42); }
+.cyberspace-win--amber { background: rgba(18, 12, 4, 0.92); border-color: rgba(160, 100, 20, 0.52); }
+.cyberspace-win--amber .cyberspace-title { background: rgba(22, 15, 5, 0.94); color: rgba(200, 150, 60, 0.62); border-bottom-color: rgba(160, 100, 20, 0.42); }
+.cyberspace-cascade { animation: cyberspace-cascade-in 0.22s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+@keyframes cyberspace-cascade-in {
+    from { opacity: 0.08; transform: scale(0.97); }
+    to   { opacity: 0.44; transform: scale(1); }
+}
+@keyframes cyberspace-in {
+    to { opacity: 0.76; transform: scale(1); }
+}
+@keyframes cyberspace-out {
+    0%   { opacity: 0.44; transform: scale(1); }
+    40%  { opacity: 0.2;  transform: scaleX(0.86) scaleY(0.12) translateY(-4px); }
+    100% { opacity: 0;    transform: scaleX(0.6)  scaleY(0)    translateY(-9px); }
+}
+.cyberspace-title {
+    background: rgba(16, 18, 13, 0.94);
+    color: rgba(130, 148, 120, 0.62);
+    padding: 2px 7px;
+    font-size: 0.51rem;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid rgba(42, 52, 42, 0.42);
+    filter: blur(0.4px);
+}
+.cyberspace-body {
+    padding: 4px 7px 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    max-height: 112px;
+    overflow: hidden;
+}
+.cyberspace-line {
+    color: rgba(255, 255, 255, 0.38);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: clip;
+    filter: blur(1.2px);
+    opacity: 0;
+    animation: cyberspace-line-in 0.1s ease forwards;
+}
+@keyframes cyberspace-line-in {
+    from { opacity: 0; transform: translateX(-3px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+.cyberspace-ok  { color: rgba(63,  185, 80,  0.6); filter: blur(1.2px); }
+.cyberspace-err { color: rgba(248,  81, 73,  0.6); filter: blur(1.2px); }
+
+/* Fatal error popup — scary red box, icon left, text right, no button */
+.cyberspace-err-popup {
+    position: absolute;
+    width: clamp(210px, 22vw, 310px);
+    background: rgba(40, 8, 8, 0.94);
+    border: 1px solid rgba(220, 53, 69, 0.75);
+    outline: 1px solid rgba(255, 80, 80, 0.18);
+    backdrop-filter: blur(3px);
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px rgba(220, 53, 69, 0.3),
+                0 6px 28px rgba(180, 20, 20, 0.5);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.57rem;
+    overflow: hidden;
+    pointer-events: none;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    opacity: 0;
+    transform: scale(0.92);
+    animation: cyberspace-err-in 0.18s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes cyberspace-err-in {
+    to { opacity: 0.86; transform: scale(1); }
+}
+.cyberspace-err-popup-icon { display: none; }
+.cyberspace-err-popup-content {
+    flex: 1;
+    padding: 7px 9px 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+.cyberspace-err-popup-title {
+    color: rgba(255, 90, 90, 1);
+    font-size: 0.59rem;
+    font-weight: bold;
+    letter-spacing: 0.04em;
+    filter: blur(0.5px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.cyberspace-err-popup-msg {
+    color: rgba(255, 140, 140, 0.88);
+    filter: blur(1px);
+    white-space: pre-line;
+    line-height: 1.45;
+}
+
+/* ── Scan lines — static, 90-95% transparent ────────────────────────────── */
+.cyberspace-sl-fine,
+.cyberspace-sl-coarse {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+.cyberspace-sl-fine {
+    /* #ff0033 = rgb(255, 0, 51) */
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 0, 51, 0.09) 0px,
+        rgba(255, 0, 51, 0.09) 1px,
+        transparent            1px,
+        transparent            3px
+    );
+    opacity: 0.08;
+}
+.cyberspace-sl-coarse {
+    /* #ff0033 + 15% green variance → rgb(255, 38, 51) */
+    background: repeating-linear-gradient(
+        to bottom,
+        rgba(255, 38, 51, 0.06) 0px,
+        rgba(255, 38, 51, 0.06) 1px,
+        transparent             1px,
+        transparent             7px
+    );
+    opacity: 0.06;
+}
+
+/* ── Warning popup — amber box, less severe than error ──────────────────── */
+.cyberspace-warn-popup {
+    position: absolute;
+    width: clamp(190px, 20vw, 290px);
+    background: rgba(18, 14, 0, 0.94);
+    border: 1px solid rgba(200, 150, 20, 0.75);
+    outline: 1px solid rgba(255, 190, 0, 0.14);
+    backdrop-filter: blur(3px);
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px rgba(200, 150, 20, 0.25),
+                0 6px 28px rgba(120, 80, 0, 0.35);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.57rem;
+    overflow: hidden;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    transform: scale(0.92);
+    animation: cyberspace-warn-in 0.18s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes cyberspace-warn-in {
+    to { opacity: 0.82; transform: scale(1); }
+}
+.cyberspace-warn-popup-content {
+    flex: 1;
+    padding: 7px 9px 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    min-width: 0;
+}
+.cyberspace-warn-popup-title {
+    color: rgba(255, 200, 50, 1);
+    font-size: 0.59rem;
+    font-weight: bold;
+    letter-spacing: 0.04em;
+    filter: blur(0.5px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.cyberspace-warn-popup-msg {
+    color: rgba(255, 200, 100, 0.85);
+    filter: blur(1px);
+    white-space: pre-line;
+    line-height: 1.45;
+}
+
+/* ── Floating code fragments ────────────────────────────────────────────── */
+.cyberspace-frag {
+    position: absolute;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.42rem;
+    color: rgba(110, 210, 130, 0.75);
+    white-space: pre;
+    line-height: 1.38;
+    pointer-events: none;
+    filter: blur(2.4px);
+    opacity: 0;
+    animation: cyberspace-frag-in 0.06s ease forwards;
+}
+@keyframes cyberspace-frag-in {
+    to { opacity: 1; }
+}
+/* Fragment color variants — additive over the base .cyberspace-frag green. */
+.cyberspace-frag--cyan    { color: rgba(110, 220, 230, 0.75); }
+.cyberspace-frag--amber   { color: rgba(220, 180,  90, 0.75); }
+.cyberspace-frag--magenta { color: rgba(220, 110, 200, 0.75); }
+.cyberspace-frag--white   { color: rgba(220, 225, 230, 0.65); }
+
+.cyberspace-frag--out {
+    animation: cyberspace-frag-blink 0.34s steps(1) forwards !important;
+}
+@keyframes cyberspace-frag-blink {
+    0%   { opacity: 1; }
+    16%  { opacity: 0; }
+    33%  { opacity: 0.8; }
+    50%  { opacity: 0; }
+    66%  { opacity: 0.4; }
+    83%  { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+/* ── Geometry schematic windows ───────────────────────────────────────── */
+.cyberspace-geo-win {
+    width: fit-content;
+    padding: 6px;
+    border-color: rgba(48, 90, 200, 0.42);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.42), 0 0 10px rgba(48, 120, 255, 0.07);
+    animation: cyberspace-geo-in 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes cyberspace-geo-in {
+    from { opacity: 0; transform: scaleY(0.06) scaleX(0.88); }
+    to   { opacity: 0.32; transform: scale(1); }
+}
+.cyberspace-geo-body {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 6px;
+}
+.cyberspace-geo-canvas { display: block; background: transparent; flex-shrink: 0; }
+.cyberspace-geo-report {
+    width: 144px;
+    height: 110px;
+    overflow: hidden;
+    position: relative;
+    border-left: 1px solid rgba(70, 200, 160, 0.15);
+    padding-left: 5px;
+    flex-shrink: 0;
+}
+.cyberspace-geo-report-inner {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.33rem;
+    color: rgba(70, 210, 160, 0.55);
+    line-height: 1.45;
+    white-space: pre;
+    pointer-events: none;
+    will-change: transform;
+}
+@media (max-width: 480px) {
+    .cyberspace-geo-win { width: 120px; }
+    .cyberspace-geo-report { display: none; }
+}
+
+/* ── Floating artifacts — blurry glyph clusters that drift and fade ─────── */
+.cyberspace-artifact {
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+    width: 0;
+    height: 0;
+}
+/* Predator wasps use #ff2244. ARTIFACT cells stay off that hue so the consume-and-
+   convert flash is visually unambiguous: spawnArtifact picks only white, blue or
+   amber (see ART_PALETTES in console-bg.js). */
+.cyberspace-artifact--white { color: rgba(220, 225, 230, 0.37); }
+.cyberspace-artifact--blue  { color: rgba(60,  130, 255, 0.37); }
+.cyberspace-artifact--amber { color: rgba(255, 185, 60,  0.37); }
+.cyberspace-artifact-char {
+    position: absolute;
+    font-family: 'Courier New', Courier, monospace;
+    line-height: 1;
+    pointer-events: none;
+    animation: cyberspace-art-flicker 0.7s steps(1) infinite;
+}
+/* Quake-style stepped flicker — rapid strobing like a bad CRT contact */
+@keyframes cyberspace-art-flicker {
+    0%   { opacity: 1.00; }
+    7%   { opacity: 0.00; }
+    14%  { opacity: 0.85; }
+    21%  { opacity: 0.00; }
+    28%  { opacity: 1.00; }
+    35%  { opacity: 0.20; }
+    42%  { opacity: 0.90; }
+    49%  { opacity: 0.00; }
+    56%  { opacity: 0.75; }
+    63%  { opacity: 0.00; }
+    70%  { opacity: 1.00; }
+    77%  { opacity: 0.10; }
+    84%  { opacity: 0.95; }
+    91%  { opacity: 0.00; }
+    100% { opacity: 1.00; }
+}
+/* Each artifact body segment — its own grid container, offset behind the leader so segments
+   overlap. The seg-wave animation sways the whole segment perpendicular to the travel axis,
+   with each segment phase-shifted so the chain moves like a peristaltic wave. */
+.cyberspace-artifact-seg {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+}
+@keyframes cyberspace-art-seg-wave {
+    0%, 100% { transform: translate(0, 0); }
+    50%      { transform: translate(var(--swx, 0px), var(--swy, 0px)); }
+}
+
+/* Slug-crawl on the artifact container — translates the whole structure across the screen
+   while it lives, fades in at the start, disintegrates (fade out + slight scale collapse) at the end. */
+@keyframes cyberspace-artifact-crawl {
+    0%   { transform: translate(0, 0) scale(0.92); opacity: 0; }
+    8%   { transform: translate(calc(var(--cdx, 0px) * 0.03), calc(var(--cdy, 0px) * 0.03)) scale(1.0); opacity: 1; }
+    78%  { transform: translate(calc(var(--cdx, 0px) * 0.78), calc(var(--cdy, 0px) * 0.78)) scale(1.0); opacity: 1; }
+    92%  { transform: translate(calc(var(--cdx, 0px) * 0.94), calc(var(--cdy, 0px) * 0.94)) scale(1.06); opacity: 0.45; }
+    100% { transform: translate(var(--cdx, 0px), var(--cdy, 0px)) scale(0.7); opacity: 0; }
+}
+
+/* Per-cell undulation — each cell slides through a small loop on its own random phase.
+   Neighbors out of phase = the lattice deforms/breathes like an amoeba's body. */
+@keyframes cyberspace-art-undulate {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25%      { transform: translate(var(--ux, 0px), var(--uy, 0px)) scale(1.03); }
+    50%      { transform: translate(0, calc(var(--uy, 0px) * 0.5)) scale(0.97); }
+    75%      { transform: translate(calc(var(--ux, 0px) * -0.7), 0) scale(1.02); }
+}
+
+/* Heartbeat — radial outward push twice in quick succession (lub-dub), then a long rest.
+   Each cell's --px/--py is its own outward direction, magnitude scaled per ring. */
+@keyframes cyberspace-art-heartbeat {
+    0%   { transform: translate(0, 0); }
+    /* lub */
+    8%   { transform: translate(var(--px, 0px), var(--py, 0px)); }
+    18%  { transform: translate(0, 0); }
+    /* dub — slightly weaker */
+    26%  { transform: translate(calc(var(--px, 0px) * 0.7), calc(var(--py, 0px) * 0.7)); }
+    36%  { transform: translate(0, 0); }
+    /* rest — diastole */
+    100% { transform: translate(0, 0); }
+}
+
+/* Purposeful one-way drift — each char travels toward --adx1/--ady1 (a shared
+   cluster direction with per-glyph spread). The further it gets, the more it
+   blurs and fades. Plays once with forwards fill so it vanishes at its destination. */
+@keyframes cyberspace-art-drift {
+    0%   { transform: translate(0, 0);
+           filter: blur(var(--abl)) opacity(0.88); }
+    40%  { transform: translate(calc(var(--adx1) * 0.4), calc(var(--ady1) * 0.4));
+           filter: blur(calc(var(--abl) * 1.3)) opacity(0.80); }
+    75%  { transform: translate(calc(var(--adx1) * 0.75), calc(var(--ady1) * 0.75));
+           filter: blur(calc(var(--abl) * 2.6)) opacity(0.38); }
+    92%  { transform: translate(var(--adx1), var(--ady1));
+           filter: blur(calc(var(--abl) * 4.0)) opacity(0.08); }
+    100% { transform: translate(var(--adx1), var(--ady1));
+           filter: blur(calc(var(--abl) * 4.5)) opacity(0); }
+}
+
+/* ── Entity tab neon flicker — broken-neon-sign effect on entity load ─────────
+   Cyberpunk urban-decay vibe. Irregular opacity drops, brief saturation shifts,
+   then a clean settle. Lives ~1.6s, applied to ~25% of tabs by JS at entity load. */
+.entity-tab-flicker {
+    animation: cyberspace-tab-neon-flicker 1.6s linear forwards;
+}
+/* ── List-item neon flicker — same animation, but LOOPED so it keeps misbehaving
+   until the user clicks the item. Clicking removes the class and the item
+   "fixes itself" on selection. Nothing applies the class at present; a host
+   enables it by adding the class to list items from JS. */
+.neon-flicker-loop {
+    animation: cyberspace-tab-neon-flicker 2.4s linear infinite;
+}
+@keyframes cyberspace-tab-neon-flicker {
+    0%   { opacity: 1; filter: none; text-shadow: 0 0 6px currentColor; }
+    3%   { opacity: 0.10; filter: brightness(0.5) saturate(0.6); }
+    6%   { opacity: 1;    filter: brightness(1.3) saturate(1.4); text-shadow: 0 0 9px currentColor, 0 0 16px currentColor; }
+    9%   { opacity: 0.05; filter: brightness(0.4); }
+    13%  { opacity: 1;    filter: brightness(1.2); }
+    17%  { opacity: 0.35; }
+    21%  { opacity: 1; }
+    28%  { opacity: 0.06; filter: brightness(0.3) saturate(0.4); }
+    33%  { opacity: 1;    filter: brightness(1.4) saturate(1.5); text-shadow: 0 0 12px currentColor; }
+    40%  { opacity: 0.50; }
+    47%  { opacity: 1; }
+    56%  { opacity: 0.12; filter: brightness(0.5); }
+    62%  { opacity: 1; }
+    74%  { opacity: 0.7;  filter: brightness(1.1); }
+    85%  { opacity: 1;    filter: none; text-shadow: 0 0 4px currentColor; }
+    100% { opacity: 1;    filter: none; text-shadow: none; }
+}
+
+/* ── HEIST — semi-transparent file browser, solid color (no scan lines) ─────── */
+.cyberspace-folder-win {
+    position: absolute;
+    width: 220px;
+    background: rgba(8, 9, 14, 0.32);   /* more transparent — what's underneath shows through clearly */
+    border: 1px solid rgba(120, 130, 150, 0.32);
+    color: rgba(200, 210, 220, 0.88);
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.55rem;
+    padding: 8px 10px 10px;
+    pointer-events: none;
+    z-index: 4;
+    overflow: visible;                  /* let ripped folders slide outside the window */
+    /* Override cyberspace-in's 0.76 endpoint — heist window sits 15% more transparent overall (0.61). */
+    animation: cyberspace-folder-win-in 0.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+@keyframes cyberspace-folder-win-in {
+    to { opacity: 0.61; transform: scale(1); }
+}
+.cyberspace-folder-win .cyberspace-title {
+    position: relative;
+    z-index: 1;
+    font-size: 0.55rem;
+    color: rgba(180, 195, 210, 0.85);
+    border-bottom: 1px solid rgba(120, 130, 150, 0.30);
+    padding-bottom: 3px;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.cyberspace-folder-list {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    overflow: visible;                  /* folders escape the list bounds during the rip */
+}
+/* Folder rectangle with the upper-RIGHT corner cut at 45° (manila-folder tab silhouette).
+   Background is OPAQUE so the semi-transparent heist window's see-through backdrop cannot
+   bleed through the rows — only the empty parts of the window stay see-through. */
+.cyberspace-folder {
+    position: relative;
+    background: rgb(20, 26, 36);
+    border: 1px solid rgba(140, 160, 180, 0.18);
+    color: rgba(210, 220, 235, 0.75);
+    font-size: 0.6rem;
+    padding: 3px 14px 3px 8px;
+    line-height: 1.3;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 0 100%);
+    transition: background 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+    will-change: transform, opacity;
+}
+.cyberspace-folder.cyberspace-folder-highlight {
+    background: rgb(28, 58, 78);
+    border-color: rgba(140, 220, 255, 0.75);
+    color: rgba(230, 245, 255, 0.9);
+    box-shadow: 0 0 9px rgba(80, 200, 255, 0.45);
+}
+/* The ripping folder must lift above its siblings AND the window so it visibly slides
+   past the right edge instead of getting clipped underneath. */
+.cyberspace-folder.cyberspace-folder-ripping {
+    z-index: 5;
+}
+/* Sleek single-motion extraction. The transform interpolates ONLY between 0% and 100%, so
+   the slide is one continuous easing curve with no velocity changes. Opacity shimmer lives on
+   intermediate keyframes that omit transform — they don't perturb the motion. */
+@keyframes cyberspace-folder-rip {
+    0%   { transform: translate(0, 0); opacity: 1; filter: blur(0); }
+    24%  { opacity: 0.55; }
+    40%  { opacity: 0.95; }
+    100% { transform: translate(var(--rx, 240px), 0); opacity: 0; filter: blur(1.2px); }
+}
+/* Window dissolve after the steal completes. Driven by a keyframe rather than
+   an inline opacity transition because the window still has cyberspace-in's
+   animation-fill-mode:forwards asserting opacity 0.76 — a transition can lose
+   the race against that fill-state. A fresh animation overrides the prior
+   forwards fill cleanly so the fade resolves every time. */
+@keyframes cyberspace-folder-win-fade {
+    0%   { opacity: 0.61; }
+    100% { opacity: 0;    }
+}
+.cyberspace-folder-win--fade {
+    animation: cyberspace-folder-win-fade 0.55s ease forwards !important;
+}
+
+/* ── Morse-code glowing dot — pulses or shifts at cheat-code speed, with blur ─ */
+/* Outer "orbit" container — drifts very slowly across the sky like a satellite.
+   The dot inside is positioned at 0,0 so its shift-mode transform composes with the drift. */
+.cyberspace-morse-orbit {
+    position: absolute;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    z-index: 3;
+    will-change: transform;
+}
+@keyframes cyberspace-morse-orbit-drift {
+    from { transform: translate(0, 0); }
+    to   { transform: translate(var(--ox, 0), var(--oy, 0)); }
+}
+.cyberspace-morse-dot {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 3;
+    background: rgba(var(--mc, 255, 255, 255), 0.18);
+    box-shadow: 0 0 2px rgba(var(--mc, 255, 255, 255), 0.25);
+    transform: translate(0, 0);
+    /* Soft halo blur — the dot is fuzzy at the edges so fast shifts smear like motion blur */
+    filter: blur(0.5px);
+    will-change: transform, background, box-shadow, filter;
+}
+.cyberspace-morse-dot.cyberspace-morse-on {
+    background: rgba(var(--mc, 255, 255, 255), 1);
+    box-shadow:
+        0 0 5px  rgba(var(--mc, 255, 255, 255), 1),
+        0 0 12px rgba(var(--mc, 255, 255, 255), 0.85),
+        0 0 24px rgba(var(--mc, 255, 255, 255), 0.50);
+    /* Stronger blur when lit so fast keystrokes look like a glowing trail */
+    filter: blur(0.9px);
+}
+
+/* ── Network connection attempts ───────────────────────────────────────── */
+.cyberspace-net-node {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+    font-family: 'Courier New', monospace;
+    font-size: 0.55rem;
+    padding: 2px 5px;
+    border: 1px solid;
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
+    animation: cyberspace-net-in 0.18s ease forwards;
+}
+@keyframes cyberspace-net-in {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.7); }
+    to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+/* Three-blink success signal — wire canvas + both nodes pulse in lock-step before fading.
+   Six opacity flips over the duration: dim, restore, dim, restore, dim, restore. */
+@keyframes cyberspace-net-success-blink {
+    0%, 100% { opacity: 1; }
+    16.66%   { opacity: 0.08; }
+    33.33%   { opacity: 1; }
+    50%      { opacity: 0.08; }
+    66.66%   { opacity: 1; }
+    83.33%   { opacity: 0.08; }
+}
+.cyberspace-net-fail {
+    position: absolute;
+    pointer-events: none;
+    z-index: 3;
+    font-family: 'Courier New', monospace;
+    font-size: 0.60rem;
+    font-weight: bold;
+    white-space: nowrap;
+    transform: translate(-50%, -50%);
+    animation: cyberspace-net-fail-flash 0.13s steps(1) 7, cyberspace-net-fail-out 0.35s ease 0.95s forwards;
+}
+@keyframes cyberspace-net-fail-flash {
+    0%, 100% { opacity: 1; }
+    50%      { opacity: 0; }
+}
+@keyframes cyberspace-net-fail-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+.cyberspace-net-ping {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+    width: 12px; height: 12px;
+    border: 1px solid;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    animation: cyberspace-net-ping-out 0.7s ease-out forwards;
+}
+@keyframes cyberspace-net-ping-out {
+    0%   { transform: translate(-50%, -50%) scale(0); opacity: 0.9; }
+    100% { transform: translate(-50%, -50%) scale(3.5); opacity: 0; }
+}
+.cyberspace-net-tracer {
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+    font-family: 'Courier New', monospace;
+    font-size: 0.55rem;
+    transform: translate(-50%, -50%);
+    opacity: 0.9;
+}
+
+/* Network interception — mean character swarms at every successful corner / arrival.
+   Each wasp glyph cycles through 4 random waypoints so the cluster looks chaotic, not synchronized. */
+.cyberspace-net-wasp {
+    position: absolute;
+    pointer-events: none;
+    z-index: 4;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    line-height: 1;
+    text-shadow: 0 0 4px currentColor, 0 0 9px currentColor;
+    transform: translate(-50%, -50%);
+    animation: cyberspace-net-wasp-buzz var(--bd, 130ms) ease-in-out infinite;
+}
+@keyframes cyberspace-net-wasp-buzz {
+    0%   { transform: translate(-50%, -50%); }
+    20%  { transform: translate(calc(-50% + var(--bx1)), calc(-50% + var(--by1))); }
+    40%  { transform: translate(calc(-50% + var(--bx2)), calc(-50% + var(--by2))); }
+    60%  { transform: translate(calc(-50% + var(--bx3)), calc(-50% + var(--by3))); }
+    80%  { transform: translate(calc(-50% + var(--bx4)), calc(-50% + var(--by4))); }
+    100% { transform: translate(-50%, -50%); }
+}
+
+/* Sharp-turn spark — short bright particle that flies off the corner and fades */
+.cyberspace-net-spark {
+    position: absolute;
+    pointer-events: none;
+    z-index: 4;
+    width: 2px;
+    height: 2px;
+    background: currentColor;
+    border-radius: 50%;
+    box-shadow: 0 0 5px currentColor, 0 0 10px currentColor;
+    transform: translate(-50%, -50%);
+    animation: cyberspace-net-spark-fly 320ms ease-out forwards;
+}
+@keyframes cyberspace-net-spark-fly {
+    0%   { transform: translate(-50%, -50%);
+           opacity: 1; }
+    70%  { opacity: 0.85; }
+    100% { transform: translate(calc(-50% + var(--sx)), calc(-50% + var(--sy)));
+           opacity: 0; }
+}
+
+/* ── Corporate memo intercept ──────────────────────────────────────────── */
+.cyberspace-memo {
+    position: absolute;
+    font-family: 'Courier New', monospace;
+    font-size: 0.6rem;
+    line-height: 1.45;
+    color: rgba(255, 185, 60, 0.82);
+    background: rgba(13, 10, 2, 0.90);
+    border: 1px solid rgba(180, 130, 20, 0.30);
+    border-radius: 2px;
+    padding: 8px 10px;
+    white-space: pre;
+    z-index: 2;
+    pointer-events: none;
+    animation: cyberspace-memo-in 0.18s ease forwards;
+    backdrop-filter: blur(3px);
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.08), 0 0 8px rgba(40, 80, 240, 0.05);
+    outline: 1px solid rgba(60, 100, 255, 0.06);
+}
+@keyframes cyberspace-memo-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 0.55; transform: translateY(0); }
+}
+.cyberspace-memo--collapse {
+    transform-origin: center center;
+    animation: cyberspace-memo-collapse 0.34s cubic-bezier(0.65, 0, 0.85, 0.35) forwards;
+}
+@keyframes cyberspace-memo-collapse {
+    0%   { opacity: 0.55; transform: scale(1, 1);     filter: blur(0); }
+    55%  { opacity: 0.50; transform: scale(1, 0.04);  filter: blur(0.4px); }
+    100% { opacity: 0;    transform: scale(0, 0.04);  filter: blur(1.6px); }
+}
+/* memo exit: JS clears characters, then triggers cyberspace-memo--collapse */
+
+/* ── Console prompt cursor ─────────────────────────────────────────────── */
+.cyberspace-cursor {
+    display: inline-block;
+    animation: cyberspace-cursor-blink 1.1s steps(1) infinite;
+}
+@keyframes cyberspace-cursor-blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+hr {
+    border: 0;
+    border-top: 1px solid #30363d;
+    margin: 20px 0;
+}
+</style>
+<script id="mindattic-components-cyberspace-js">
+/* ---- circuitboard textures (jsDelivr URLs @V11) ---- */
+window.__cyberspaceCircuitboardSrcs = [
+  'https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/Components/Cyberspace/assets/circuitboard.00.png',
+  'https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/Components/Cyberspace/assets/circuitboard.01.png',
+  'https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/Components/Cyberspace/assets/circuitboard.02.png'
+];
+
+/* ---- loader.js ---- */
+// Focus helper — used by SearchOverlay to focus the input after mount
+window.focusElement = function(el) { if (el) { el.focus(); } };
+
+// Terminal auto-scroll — used by Script Runner in Utilities
+window.scrollTerminalToBottom = function(id) {
+    var el = document.getElementById(id);
+    if (el) el.scrollTop = el.scrollHeight;
+};
+
+// Shared Google Maps API loader — deduplicates script injection across meridianMap + geoMap
+window.__gmapsLoad = function(apiKey, cb) {
+    if (window.google && window.google.maps) { if (cb) cb(); return; }
+    window.__gmapsCbs = window.__gmapsCbs || [];
+    if (cb) window.__gmapsCbs.push(cb);
+    if (window.__gmapsLoading) return;
+    window.__gmapsLoading = true;
+    var s = document.createElement('script');
+    s.src = 'https://maps.googleapis.com/maps/api/js?key=' + apiKey + '&callback=__gmapsReady';
+    s.async = true; s.defer = true;
+    // If the script fails to load (404, bad key, offline), release the latch so
+    // a later __gmapsLoad call can retry instead of hanging forever. Drop the
+    // dead <script> and clear the queued callbacks — they'll never be invoked.
+    s.onerror = function () {
+        window.__gmapsLoading = false;
+        window.__gmapsCbs = [];
+        if (s.parentNode) s.parentNode.removeChild(s);
+    };
+    document.head.appendChild(s);
+};
+window.__gmapsReady = function() {
+    (window.__gmapsCbs || []).forEach(function(cb) { try { cb(); } catch(e) {} });
+    window.__gmapsCbs = [];
+};
+
+// Navigation loader — small corner indicator only. C# code (MainLayout)
+// calls __loaderShow(delay) / __loaderHide(); the element starts display:none
+// in Blazor. A delay > 0 defers showing it; 0 shows it at once.
+(function() {
+    var timeout = null;
+
+    function getEl() { return document.getElementById('app-loader'); }
+
+    window.__loaderShow = function(delay) {
+        clearTimeout(timeout);
+        if (delay > 0) {
+            timeout = setTimeout(function() {
+                var el = getEl(); if (el) el.style.display = 'block';
+            }, delay);
+        } else {
+            var el = getEl(); if (el) el.style.display = 'block';
+        }
+    };
+
+    window.__loaderHide = function() {
+        clearTimeout(timeout);
+        timeout = null;
+        var el = getEl(); if (el) el.style.display = 'none';
+    };
+})();
+
+
+/* ---- tv-static.js ---- */
+// TV static / CRT channel-change effect — from ryandebraal.com/index.htm
+// Fires on 10% of page navigations (triggered from MainLayout.razor).
+(function () {
+  var overlay = null;
+  var currentGen = 0;
+
+  window.__tvStaticShow = function () {
+    if (!overlay) {
+      overlay = document.createElement('canvas');
+      overlay.id = 'crt-overlay';
+      overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9998;pointer-events:none;opacity:1;';
+      document.body.appendChild(overlay);
+    }
+    // Bump generation so any in-flight drawStatic from a prior call self-aborts.
+    var gen = ++currentGen;
+    overlay.width = window.innerWidth;
+    overlay.height = window.innerHeight;
+    overlay.style.display = 'block';
+    overlay.style.opacity = '1';
+    var ctx = overlay.getContext('2d');
+    var w = overlay.width, h = overlay.height;
+
+    // Keep the canvas covering the viewport if it resizes mid-effect; otherwise
+    // a resize during the ~300-450ms burst leaves new screen area unpainted.
+    // The listener is self-removing — it detaches when this generation ends.
+    function onResize() {
+        if (gen !== currentGen) { window.removeEventListener('resize', onResize); return; }
+        overlay.width  = w = window.innerWidth;
+        overlay.height = h = window.innerHeight;
+    }
+    window.addEventListener('resize', onResize);
+
+    var start = performance.now();
+    var duration = 300 + Math.floor(Math.random() * 150);
+    var squeezeSpeed = 2 + Math.random() * 2;
+    var tintR = Math.floor(Math.random() * 40);
+    var tintG = Math.floor(Math.random() * 40);
+    var tintB = Math.floor(Math.random() * 40);
+    var hShiftChance = 0.02 + Math.random() * 0.06;
+
+    function drawStatic() {
+      // A newer __tvStaticShow() bumped currentGen — abandon this burst and
+      // detach its resize listener now, rather than waiting for the next
+      // resize event to let onResize self-remove (which leaks until then).
+      if (gen !== currentGen) { window.removeEventListener('resize', onResize); return; }
+      var elapsed = performance.now() - start;
+      var pct = elapsed / duration;
+      if (pct >= 1) {
+        overlay.style.display = 'none';
+        window.removeEventListener('resize', onResize);
+        return;
+      }
+      var imgData = ctx.createImageData(w, h);
+      var d = imgData.data;
+      var fade = 1 - pct;
+      var squeeze = Math.max(0, 1 - pct * squeezeSpeed);
+      var barTop = Math.floor((1 - squeeze) * h * 0.5);
+      var barBot = h - barTop;
+      // random brighter horizontal band
+      var shiftY = -1, shiftH = 0;
+      if (Math.random() < hShiftChance) {
+        shiftY = Math.floor(Math.random() * h);
+        shiftH = 5 + Math.floor(Math.random() * 40);
+      }
+      for (var i = 0; i < d.length; i += 4) {
+        var px = (i / 4) | 0;
+        var y = (px / w) | 0;
+        if (y < barTop || y > barBot) {
+          d[i] = d[i+1] = d[i+2] = 0;
+          d[i+3] = Math.floor(255 * fade);
+        } else {
+          var v = (Math.random() * 255) | 0;
+          d[i]   = Math.min(255, v + tintR);
+          d[i+1] = Math.min(255, v + tintG);
+          d[i+2] = Math.min(255, v + tintB);
+          var opacity = y >= shiftY && y < shiftY + shiftH ? 240 : 200;
+          d[i+3] = Math.floor(opacity * fade);
+        }
+      }
+      ctx.putImageData(imgData, 0, 0);
+      // horizontal distortion lines
+      var lineCount = 2 + Math.floor(Math.random() * 8);
+      for (var l = 0; l < lineCount; l++) {
+        var ly = Math.floor(Math.random() * h);
+        var lh = 1 + Math.floor(Math.random() * 4);
+        var lop = (0.15 + Math.random() * 0.35) * fade;
+        ctx.fillStyle = 'rgba(255,255,255,' + lop + ')';
+        ctx.fillRect(0, ly, w, lh);
+      }
+      // occasional color flash band
+      if (Math.random() < 0.15) {
+        var bandY = Math.floor(Math.random() * h);
+        var bandH = 2 + Math.floor(Math.random() * 8);
+        var colors = ['rgba(255,0,0,','rgba(0,255,0,','rgba(0,0,255,','rgba(255,255,0,'];
+        ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)] + (0.2 * fade) + ')';
+        ctx.fillRect(0, bandY, w, bandH);
+      }
+      requestAnimationFrame(drawStatic);
+    }
+    drawStatic();
+  };
+})();
+
+
+/* ---- home-bg.js ---- */
+// Home page background — torn-edge compositing.
+//
+// Effect: the image fades into the page with a ragged, organic tear on the
+// left and top edges, a corner bite eating into the top-left, and a
+// smattering of cigarette burns scattered across the visible area.
+//
+// Public API (called from Home.razor via JS interop):
+//   window.homeBg.apply(imgElementId, imageUrl)
+
+window.homeBg = (function () {
+    'use strict';
+
+    // ── Noise primitives ────────────────────────────────────────────────────
+
+    function hash(x, y) {
+        var n = Math.sin(x * 127.1 + y * 311.7) * 43758.5453123;
+        return n - Math.floor(n);
+    }
+
+    function vnoise(x, y) {
+        var ix = Math.floor(x), iy = Math.floor(y);
+        var fx = x - ix, fy = y - iy;
+        var ux = fx * fx * (3.0 - 2.0 * fx);
+        var uy = fy * fy * (3.0 - 2.0 * fy);
+        var a = hash(ix,     iy),  b = hash(ix + 1, iy);
+        var c = hash(ix, iy + 1),  d = hash(ix + 1, iy + 1);
+        return a + (b - a) * ux + (c - a) * uy + (a - b - c + d) * ux * uy;
+    }
+
+    // Fractal Brownian Motion — 2.07× avoids visible lattice repetition
+    function fbm(x, y, octaves) {
+        var value = 0, amp = 0.5, freq = 1.0, sum = 0;
+        for (var i = 0; i < octaves; i++) {
+            value += vnoise(x * freq, y * freq) * amp;
+            sum   += amp;
+            amp   *= 0.5;
+            freq  *= 2.07;
+        }
+        return value / sum;
+    }
+
+    function smoothstep(e0, e1, t) {
+        t = Math.max(0, Math.min(1, (t - e0) / (e1 - e0)));
+        return t * t * (3.0 - 2.0 * t);
+    }
+
+    // ── Per-session seed & opacity ───────────────────────────────────────────
+    // Both change every load so the fraying pattern, burns, and overall opacity
+    // differ each time.
+    var SEED           = Math.random() * 1000;
+    var GLOBAL_OPACITY = 0.90 + Math.random() * 0.06;  // 0.90–0.96
+
+    // ── Cigarette burns ──────────────────────────────────────────────────────
+    // Positions randomised per session via SEED.
+
+    var BURNS = (function () {
+        var list = [];
+        var count = 3 + Math.floor(hash(SEED, SEED * 2.3) * 5); // 3–7 burns
+        for (var b = 0; b < count; b++) {
+            var baseR = 0.014 + hash(b * 9.1 + SEED, b * 2.7 + 6.1) * 0.082;
+            // ~20% chance of a severe deep burn (cigar rather than cigarette)
+            if (hash(b * 3.3 + SEED, b * 19.7) < 0.20) baseR = 0.06 + hash(b * 5.5 + SEED, b * 8.1) * 0.12;
+            list.push({
+                nx: hash(b * 17.3 + SEED, b * 7.1 + 2.3) * 0.50 + 0.42,  // off-centre, right-biased
+                ny: hash(b *  3.7 + 4.1,  b * 11.9 + SEED) * 0.60 + 0.36,  // lower two-thirds
+                r:  baseR
+            });
+        }
+        return list;
+    })();
+
+    // Returns an alpha multiplier in [0,1]: 0 at burn centre, 1 outside radius.
+    function burnFactor(nx, ny) {
+        var factor = 1.0;
+        for (var b = 0; b < BURNS.length; b++) {
+            var bd = BURNS[b];
+            var ddx = nx - bd.nx, ddy = ny - bd.ny;
+            var t = Math.sqrt(ddx * ddx + ddy * ddy) / bd.r;
+            if (t < 1.25) {
+                // Charred ring: fades from fully transparent at centre to opaque at edge
+                factor = Math.min(factor, smoothstep(0.22, 1.0, t));
+            }
+        }
+        return factor;
+    }
+
+    // ── Torn-edge + corner alpha ─────────────────────────────────────────────
+    //
+    // Layers (multiplied together):
+    //   torn  — fBm noise drives the ragged tear line; wide FEATHER = fading opacity
+    //   fade  — smooth gradient from the literal image border (always 0 at edge)
+    //   bite  — exponential corner penalty eats deeper into the top-left corner
+    //   burn  — circular cigarette-burn cutouts
+
+    var EDGE_FRAC_X = 0.42;  // left tear zone  (42% of width)
+    var EDGE_FRAC_Y = 0.22;  // top  tear zone  (22% of height)
+    var NOISE_FREQ  = 4.5;
+    var NOISE_OCTS  = 6;
+    var TEAR_SCALE  = 0.62;  // noise max contribution to tear depth
+    var FEATHER     = 0.38;  // wide feather → gradual fading opacity
+    var EDGE_FADE   = 0.24;  // gradient ramp over first 24% of fade zone
+
+    function tornAlpha(x, y, W, H) {
+        var nx = x / W, ny = y / H;
+
+        var dx = Math.min(nx / EDGE_FRAC_X, 1.0);
+        var dy = Math.min(ny / EDGE_FRAC_Y, 1.0);
+
+        // ── Corner bite ──────────────────────────────────────────────────────
+        // Double-exponential decay: approaches 0 when EITHER axis is near 0,
+        // creating a deeper transparent region along the diagonal than
+        // min(dx,dy) alone would produce.
+        var bite = 1.0 - Math.exp(-2.2 * dx) * Math.exp(-2.2 * dy);
+
+        var edge = Math.min(dx, dy) * bite;
+
+        // ── Torn boundary ────────────────────────────────────────────────────
+        var n    = fbm(nx * NOISE_FREQ + SEED, ny * NOISE_FREQ + SEED, NOISE_OCTS);
+        var lo   = n * TEAR_SCALE;
+        var torn = smoothstep(lo, lo + FEATHER, edge);
+        var fade = smoothstep(0.0, EDGE_FADE, edge);
+
+        // ── Cigarette burns ──────────────────────────────────────────────────
+        var burn = burnFactor(nx, ny);
+
+        return torn * fade * burn * GLOBAL_OPACITY;
+    }
+
+    // ── Canvas compositing ───────────────────────────────────────────────────
+
+    var MAX_W = 480;
+
+    function renderTorn(img) {
+        var scale = img.naturalWidth > MAX_W ? MAX_W / img.naturalWidth : 1.0;
+        var W = Math.round(img.naturalWidth  * scale);
+        var H = Math.round(img.naturalHeight * scale);
+
+        var canvas = document.createElement('canvas');
+        canvas.width = W; canvas.height = H;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, W, H);
+
+        var imgd = ctx.getImageData(0, 0, W, H);
+        var d = imgd.data;
+
+        for (var y = 0; y < H; y++) {
+            for (var x = 0; x < W; x++) {
+                var i = (y * W + x) * 4;
+                d[i + 3] = Math.round(d[i + 3] * tornAlpha(x, y, W, H));
+            }
+        }
+
+        ctx.putImageData(imgd, 0, 0);
+        try { return canvas.toDataURL('image/png'); } catch (e) { return null; }
+    }
+
+    // ── Quake light-style opacity breathing ─────────────────────────────────
+    // Classic Quake engine light sequences: each char is a brightness level,
+    // 'a' = dark (0), 'm' = normal (0.5), 'z' = full bright (1).  Ticks ~10 Hz.
+    // Opacity is mapped to [0.50, 1.00] so the image never fully disappears.
+
+    var LIGHT_STYLES = [
+        'mmnmmommommnonmmonqnmmo',                              // flicker 1
+        'abcdefghijklmnopqrstuvwxyzyxwvutsrqponmlkjihgfedcba', // slow strong pulse
+        'jklmnopqrstuvwxyzyxwvutsrqponmlkj',                   // gentle pulse
+        'nmonqnmomnmomomno',                                    // flicker 2
+        'mmamammmmammamamaaamammma',                            // candle
+        'abcdefghijklmnopqrrqponmlkjihgfedcba',                 // slow, no black
+    ];
+
+    var lightTimer = null;
+    var lightPos   = 0;
+    var lightSeq   = '';
+
+    function stopLightFlicker() {
+        if (lightTimer) { clearInterval(lightTimer); lightTimer = null; }
+    }
+
+    function startLightFlicker(imgEl) {
+        stopLightFlicker();
+        lightSeq = LIGHT_STYLES[Math.floor(Math.random() * LIGHT_STYLES.length)];
+        lightPos = Math.floor(Math.random() * lightSeq.length);  // random start phase
+
+        lightTimer = setInterval(function () {
+            var ch   = lightSeq.charCodeAt(lightPos % lightSeq.length) - 97;  // 0–25
+            var norm = ch / 25;                              // 0.0–1.0
+            imgEl.style.opacity = (0.50 + norm * 0.50).toFixed(3);  // 0.50–1.00
+            lightPos++;
+        }, 100);  // 10 Hz
+    }
+
+    // ── Animated scanline overlay ────────────────────────────────────────────
+    // A live canvas sits over the image and runs its own rAF loop.
+    // Drifting red scan lines + highlight boxes that hold then fade out.
+
+    var scanlinesRaf = null;
+    var scanStartRaf = null;
+    var scanlinesEl  = null;
+
+    function stopScanlineAnim() {
+        if (scanlinesRaf) { cancelAnimationFrame(scanlinesRaf); scanlinesRaf = null; }
+        // Also cancel a pending deferred-start rAF (see apply()); otherwise a
+        // rapid re-apply() can't stop the prior start and two loops briefly run.
+        if (scanStartRaf) { cancelAnimationFrame(scanStartRaf); scanStartRaf = null; }
+        if (scanlinesEl && scanlinesEl.parentNode) scanlinesEl.parentNode.removeChild(scanlinesEl);
+        scanlinesEl = null;
+    }
+
+    function startScanlineAnim(imgEl) {
+        stopScanlineAnim();
+
+        var ol = document.createElement('canvas');
+        ol.id = 'home-bg-scanlines';
+        ol.style.cssText = 'position:fixed;pointer-events:none;z-index:1;';
+        document.body.appendChild(ol);
+        scanlinesEl = ol;
+
+        var ctx2 = ol.getContext('2d');
+
+        // Match the image rect, refresh each frame
+        function syncRect() {
+            var r = imgEl.getBoundingClientRect();
+            ol.style.left   = r.left   + 'px';
+            ol.style.top    = r.top    + 'px';
+            ol.style.width  = r.width  + 'px';
+            ol.style.height = r.height + 'px';
+            ol.width  = Math.round(r.width);
+            ol.height = Math.round(r.height);
+        }
+        syncRect();
+
+        // Scan lines — all single-pass (despawn after crossing the image).
+        // A rolling spawner fires every 300–1200 ms and injects 1–5 lines.
+        // Non-overlapping: new lines are rejected if a same-direction line is
+        // already within MIN_GAP px of the entry edge.
+        var MAX_LINES = 16;
+        var MIN_GAP   = 8;   // px minimum between same-direction lines at entry
+
+        function makeLine(goDown, sharedSpeed) {
+            var spd = sharedSpeed !== undefined
+                ? sharedSpeed * (0.88 + Math.random() * 0.24)  // ±12% of shared speed
+                : (2.5 + Math.random() * 5.5);
+            return {
+                y:          goDown ? -2 : ol.height + 2,
+                speed:      spd * (goDown ? 1 : -1),
+                h:          1 + Math.floor(Math.random() * 2),
+                noiseSeed:  Math.random() * 500,
+                noiseFreq:  0.0005 + Math.random() * 0.0015,  // ~0.7–2 s noise period
+                flickerRate: 0.10
+            };
+        }
+
+        // Returns true if a new line going goDown can spawn without overlapping
+        function canSpawn(goDown) {
+            if (lines.length >= MAX_LINES) return false;
+            var entryY = goDown ? -2 : ol.height + 2;
+            for (var i = 0; i < lines.length; i++) {
+                if ((lines[i].speed > 0) === goDown &&
+                    Math.abs(lines[i].y - entryY) < MIN_GAP) return false;
+            }
+            return true;
+        }
+
+        // Seed lines scattered across the image so it isn't empty on load
+        var lines = [];
+        var seedCount = 5 + Math.floor(Math.random() * 6);  // 5–10
+        for (var i = 0; i < seedCount; i++) {
+            var goDown = Math.random() < 0.5;
+            var ln = makeLine(goDown);
+            ln.y = (ol.height / seedCount) * i + Math.random() * (ol.height / seedCount);
+            lines.push(ln);
+        }
+
+        // Rolling spawner
+        var lastSpawnTime  = 0;
+        var nextSpawnDelay = 300 + Math.random() * 900;
+
+        function trySpawn(now) {
+            // ~1% chance: one oddly slow line
+            if (Math.random() < 0.01) {
+                var dir = Math.random() < 0.5;
+                if (canSpawn(dir)) {
+                    var slow = makeLine(dir, 0.5 + Math.random() * 0.7);
+                    slow.noiseFreq   = 0.0001 + Math.random() * 0.0003;  // very slow undulation
+                    slow.flickerRate = 0.03;  // barely flickers — eerily steady
+                    lines.push(slow);
+                }
+                return;
+            }
+
+            // Occasionally a cluster (same direction, shared base speed)
+            var isCluster   = Math.random() < 0.30;
+            var goDown      = Math.random() < 0.5;
+            var sharedSpeed = isCluster ? (2.5 + Math.random() * 5.5) : undefined;
+            var count       = isCluster ? 2 + Math.floor(Math.random() * 4) : 1;
+            for (var k = 0; k < count; k++) {
+                if (!canSpawn(isCluster ? goDown : Math.random() < 0.5)) continue;
+                var dir = isCluster ? goDown : Math.random() < 0.5;
+                lines.push(makeLine(dir, isCluster ? sharedSpeed : undefined));
+            }
+        }
+
+        function frame(now) {
+            syncRect();
+            ctx2.clearRect(0, 0, ol.width, ol.height);
+
+            // Spawn
+            if (now - lastSpawnTime > nextSpawnDelay) {
+                trySpawn(now);
+                lastSpawnTime  = now;
+                nextSpawnDelay = 300 + Math.random() * 900;
+            }
+
+            // Advance + draw + cull
+            for (var j = lines.length - 1; j >= 0; j--) {
+                var ln = lines[j];
+                ln.y += ln.speed;
+
+                if (ln.y > ol.height + ln.h || ln.y < -ln.h - 2) {
+                    lines.splice(j, 1);  // one pass — despawn, no replacement
+                    continue;
+                }
+
+                // Noise-driven base opacity: smoothly undulates each line independently
+                var noiseVal = vnoise(now * ln.noiseFreq + ln.noiseSeed, ln.noiseSeed * 2.71828);
+                var noiseOp  = 0.10 + noiseVal * 0.55;  // 0.10–0.65
+
+                // Violent flicker spike on top of noise
+                var flicker = Math.random() < ln.flickerRate
+                    ? (Math.random() < 0.5 ? -noiseOp * 1.8 : noiseOp * 1.2)
+                    : 0;
+                var op = Math.max(0, Math.min(0.95, noiseOp + flicker));
+                ctx2.fillStyle = 'rgba(13,17,23,' + op + ')';
+                ctx2.fillRect(0, Math.round(ln.y), ol.width, ln.h);
+            }
+
+            scanlinesRaf = requestAnimationFrame(frame);
+        }
+
+        // Capture the initial frame's id too, so a stopScanlineAnim() that lands
+        // before the first frame fires can cancel it — otherwise that orphaned
+        // callback re-arms itself and runs forever on a detached canvas.
+        scanlinesRaf = requestAnimationFrame(frame);
+    }
+
+    // ── Public entry point ───────────────────────────────────────────────────
+
+    function apply(imgId, imageUrl) {
+        var imgEl = document.getElementById(imgId);
+        if (!imgEl) return;
+
+        stopScanlineAnim();
+        stopLightFlicker();
+
+        var src = new Image();
+        src.onload = function () {
+            var dataUrl = renderTorn(src);
+            if (dataUrl) { imgEl.src = dataUrl; }
+            imgEl.style.opacity = '1';
+            startLightFlicker(imgEl);
+            // Wait one frame so the img has its final layout rect. Track the id
+            // so a stopScanlineAnim() landing before it fires can cancel it.
+            scanStartRaf = requestAnimationFrame(function () {
+                scanStartRaf = null;
+                startScanlineAnim(imgEl);
+            });
+        };
+        src.onerror = function () { imgEl.style.opacity = '1'; };
+        src.src = imageUrl;
+    }
+
+    return { apply: apply };
+})();
+
+</script>
+<script id="mindattic-components-cyberspace-sacred-geometry-js" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/Components/SacredGeometry/sacred-geometry.js" defer></script>
+<script id="mindattic-components-cyberspace-console-bg-js" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/Components/Cyberspace/console-bg.js" defer></script>
+<!-- END MINDATTIC.UIUX:CYBERSPACE -->
+
+<!-- ═════════════════════════════════════════════
+     §  11  BODY
+     ─────────────────────────────────────────────
+     Reading order from top to bottom, exactly as the DOM ships:
+
+       #content           — one centered lockup: the wordmark, the motto
+                            (fitted to the wordmark's width) and the three
+                            link buttons beneath them.
+       <footer>           — Copyright, fixed to the bottom edge.
+       <script>           — fits the motto to the wordmark's width.
+       <script>           — tap outside the lockup: a spark surge and a
+                            random Cyberspace effect, both at the tap.
+
+     The three links are plain <a> elements — no script builds them, so
+     they render even if JavaScript is off.  Each opens in a new window
+     (noopener noreferrer keeps the new page from touching this one), and
+     aria-describedby points at a hidden "Opens in a new window." note so
+     screen readers announce that without changing the visible label.
+
+     #content is a <div role="main"> rather than a <main> on purpose: see
+     the keepout note in § 7.  The explicit role keeps it a landmark for
+     screen readers.
+     ═════════════════════════════════════════════ -->
+
+<div id="content" role="main">
+  <div class="lockup cyberspace-keepout">
+    <h1 id="site-name" class="site-name">MindAttic</h1>
+    <p id="site-motto">A distributed software development company specializing in interactive media.</p>
+    <nav class="link-row" aria-label="Links">
+      <a class="link-btn" href="https://ryandebraal.com" target="_blank" rel="noopener noreferrer" aria-describedby="new-window-note">R&eacute;sum&eacute;</a>
+      <a class="link-btn" href="https://github.com/mindattic" target="_blank" rel="noopener noreferrer" aria-describedby="new-window-note">GitHub</a>
+      <a class="link-btn" href="https://mindatticcares.com" target="_blank" rel="noopener noreferrer" aria-describedby="new-window-note">MindAttic Cares</a>
+    </nav>
+    <span id="new-window-note" hidden>Opens in a new window.</span>
+  </div>
+</div>
+
+<!-- The footer.  document.write() is used here for a one-shot,
+     pre-DOMContentLoaded year stamp — no need for a global handler
+     when the value is needed exactly once at parse time.  In any
+     other context document.write would be a code smell; this is the
+     one legitimate use that survived the modern era. -->
+<footer id="site-footer" role="contentinfo">
+  <span>&copy; <script>document.write(new Date().getFullYear())</script> MindAttic LLC</span>
+</footer>
+
+<!-- Motto fitter: keeps #site-motto exactly as wide as the wordmark.
+     The wordmark's width W is its text's advance width minus its own
+     trailing letter-space.  Each motto line's natural width at 1px is
+     measured with canvas (Outfit 300, after the fonts load).  For a line
+     of n characters, natural em-width N and letter-spacing s (in em):
+
+         visible width = f * (N + (n - 1) * s)
+
+     The longest line gets the base tracking s0, which sets the font-size
+     f = W / (N + (n - 1) * s0); every other line keeps that f and gets its
+     own s = (W / f - N) / (n - 1).  The trailing letter-space after each
+     line's last character is cancelled with margin-right: -s.  If one line
+     would render below MIN_PX, the words are split into 2 (then 3) lines
+     of balanced width.  Re-runs whenever the wordmark changes size. -->
+<script>
+(function () {
+  var MIN_PX = 10, BASE_TRACK = 0.06, MAX_TRACK = 0.2, MAX_LINES = 3;
+  var title = document.getElementById('site-name');
+  var motto = document.getElementById('site-motto');
+  if (!title || !motto || !window.requestAnimationFrame) return;
+  var words = motto.textContent.trim().split(/\s+/);
+  var ctx = document.createElement('canvas').getContext('2d');
+  if (!ctx) return;
+
+  function natural(text) { return ctx.measureText(text).width / 100; } // em at 1px
+
+  // Split words into k lines (k <= 3, few words: brute force).  Every line
+  // shares one font-size, so the extra tracking a short line needs grows with
+  // how much narrower it is than the widest line.  Score a split by its
+  // widest line plus its spread (widest - narrowest): small and even wins.
+  function balance(k) {
+    if (k === 1) return [words.join(' ')];
+    var best = null, bestScore = Infinity, n = words.length;
+    function consider(lines) {
+      var ws = lines.map(natural);
+      var max = Math.max.apply(null, ws), min = Math.min.apply(null, ws);
+      var score = max + 2 * (max - min);
+      if (score < bestScore) { bestScore = score; best = lines; }
+    }
+    for (var i = 1; i < n; i++) {
+      if (k === 2) {
+        consider([words.slice(0, i).join(' '), words.slice(i).join(' ')]);
+      } else {
+        for (var j = i + 1; j < n; j++) {
+          consider([words.slice(0, i).join(' '), words.slice(i, j).join(' '), words.slice(j).join(' ')]);
+        }
+      }
+    }
+    return best;
+  }
+
+  function fit() {
+    var range = document.createRange();
+    range.selectNodeContents(title);
+    var cs = getComputedStyle(title);
+    var W = range.getBoundingClientRect().width - (parseFloat(cs.letterSpacing) || 0);
+    if (!(W > 0)) return;
+    ctx.font = '300 100px Outfit';
+
+    // Choose the line count: the fewest lines that are readable
+    // (font-size >= MIN_PX) with no line needing more than MAX_TRACK of
+    // letter-spacing.  Failing that, the readable layout with the most even
+    // tracking; failing that (tiny screens), the largest font-size.
+    var cands = [];
+    for (var k = 1; k <= MAX_LINES; k++) {
+      var cand = balance(k);
+      var widest = 0, widestLen = 1;
+      cand.forEach(function (l) { var w = natural(l); if (w > widest) { widest = w; widestLen = l.length; } });
+      var fk = W / (widest + (widestLen - 1) * BASE_TRACK);
+      var maxTrack = Math.max.apply(null, cand.map(function (l) {
+        return (W / fk - natural(l)) / Math.max(1, l.length - 1);
+      }));
+      cands.push({ lines: cand, f: fk, track: maxTrack });
+    }
+    var readable = cands.filter(function (c) { return c.f >= MIN_PX; });
+    var pick = readable.filter(function (c) { return c.track <= MAX_TRACK; })[0]
+      || readable.sort(function (a, b) { return a.track - b.track; })[0]
+      || cands.sort(function (a, b) { return b.f - a.f; })[0];
+    var lines = pick.lines, f = pick.f;
+
+    motto.textContent = '';
+    lines.forEach(function (l) {
+      var s = (W / f - natural(l)) / Math.max(1, l.length - 1);
+      var span = document.createElement('span');
+      span.className = 'motto-line';
+      span.textContent = l;
+      span.style.letterSpacing = s + 'em';
+      span.style.marginRight = (-s) + 'em';
+      motto.appendChild(span);
+    });
+    motto.style.fontSize = f + 'px';
+    motto.classList.add('fitted');
+
+    // Canvas and layout can differ by a fraction of a pixel (kerning,
+    // rounding), so measure each rendered line once and spread the
+    // remaining error across its letter gaps.
+    Array.prototype.forEach.call(motto.children, function (span) {
+      var gaps = Math.max(1, span.textContent.length - 1);
+      var r = document.createRange();
+      r.selectNodeContents(span);
+      var ls = parseFloat(getComputedStyle(span).letterSpacing) || 0;
+      var err = W - (r.getBoundingClientRect().width - ls);
+      var s = parseFloat(span.style.letterSpacing) + err / gaps / f;
+      span.style.letterSpacing = s + 'em';
+      span.style.marginRight = (-s) + 'em';
+    });
+  }
+
+  var pending = false;
+  function schedule() {
+    if (pending) return;
+    pending = true;
+    requestAnimationFrame(function () { pending = false; fit(); });
+  }
+
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(function () {
+    fit();
+    if (window.ResizeObserver) new ResizeObserver(schedule).observe(title);
+    window.addEventListener('resize', schedule);
+  });
+})();
+</script>
+
+<!-- Tap / click around the lockup → a spark surge and one random Cyberspace
+     effect, both starting where you tapped.
+     console-bg.js (loaded above in the CYBERSPACE block) exposes:
+       consoleBg.inKeepout(x, y)        — is this point in the buffer zone
+                                          (the .lockup keepout plus a small
+                                          margin)?
+       consoleBg.spawnSparkBurst(x, y)  — a short shower of sparks that
+                                          cool from white to cyan to
+                                          orange-red and burn out, with a
+                                          flash ring (only a brief flash if
+                                          you prefer reduced motion).
+       consoleBg._demo.spawn*(origin)   — one effect each.  Underscore-
+                                          prefixed means "dev handle, not a
+                                          stable API", but it's the only
+                                          public way to fire a single effect
+                                          on demand.
+     Points are viewport percentages.  Given an origin { x, y }, every effect
+     starts there: windows and popups open on it, fragments type out from
+     it, glyph clusters gather around it, and traces, pulsars, cascades and
+     predator swarms spread out from it.
+     The engine keeps each effect on screen and out of the buffer zone.  An
+     effect that has nothing to do (a trace already running, say) returns
+     false, and the next one in the shuffled list is tried instead.
+     Taps on a link, or inside the buffer zone, do nothing, so the buttons
+     just open their sites.  If the CDN script failed to load,
+     window.consoleBg is undefined and this does nothing. -->
+<script>
+// The engine scripts are `defer`red, so they run after parsing and before
+// DOMContentLoaded; look the engine up then, not at parse time.
+document.addEventListener('DOMContentLoaded', function () {
+  var cb = window.consoleBg;
+  var fx = cb && cb._demo;
+  if (!fx) return;
+
+  var effects = [
+    function (o) { return fx.spawnError(o); },            // CRASH     — fatal-error popup
+    function (o) { return fx.spawnWarning(o); },          // TREMOR    — warning popup
+    function (o) { return fx.spawnWindow(o); },           // TERMINAL  — console window
+    function (o) { return fx.spawnMemo(o); },             // LEAK      — leaked memo
+    function (o) { return fx.spawnFrag(o); },             // FRAGMENT  — code fragment
+    function (o) { return fx.spawnArtifact(o); },         // ARTIFACT  — glyph cluster
+    function (o) { return fx.spawnGeoWindow(o); },        // SCHEMATIC — geometry window
+    function (o) { return fx.spawnNetConnect(o); },       // TRACE     — network wire
+    function (o) { return fx.spawnMorseDot(o); },         // PULSAR    — Morse dot
+    function (o) { return fx.spawnFolderRip(o); },        // HEIST     — folder rip
+    function (o) { return fx.spawnCascade(o); },          // CASCADE   — window burst
+    function (o) { return fx.spawnArtifactPredator(o); }  // PREDATOR  — wasp swarm
+  ];
+
+  document.addEventListener('pointerdown', function (e) {
+    if (e.button > 0) return;   // right/middle click: leave the context menu alone
+    if (e.target.closest && e.target.closest('a')) return;
+    var o = { x: e.clientX / window.innerWidth  * 100,
+              y: e.clientY / window.innerHeight * 100 };
+    if (cb.inKeepout && cb.inKeepout(o.x, o.y)) return;
+    try { if (cb.spawnSparkBurst) cb.spawnSparkBurst(o.x, o.y); } catch (err) {}
+    // Try the effects in a random order until one spawns.
+    var order = effects.slice();
+    for (var i = order.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)), t = order[i];
+      order[i] = order[j]; order[j] = t;
+    }
+    for (var k = 0; k < order.length; k++) {
+      try { if (order[k](o) !== false) break; } catch (err) {}
+    }
+  });
+});
+</script>
+
+</body>
+</html>
