@@ -190,7 +190,7 @@ pre:hover .cpbtn{opacity:1}
 <ul>
 <li><strong>Themes (16)</strong> — <code>light</code>, <code>dark</code>, <code>spring</code>, <code>summer</code>, <code>autumn</code>, <code>winter</code>, <code>matrix</code>, <code>neko</code>, <code>ocean</code>, <code>sunset</code>, <code>forest</code>, <code>cyberpunk</code>, <code>noir</code>, <code>sakura</code>, <code>sand</code>, <code>synthwave</code>. Selected via the <code>[data-theme]</code> attribute on <code>&lt;html&gt;</code>; every theme is a block of CSS custom properties, never a JavaScript style mutation (<a href="docs/BIBLE.md#RDC-LAW-4">RDC-LAW-4</a>).</li>
 <li><strong>Profiles (3)</strong> — <code>classic</code>, <code>pitch</code>, <code>complete</code>. Selected via <code>[data-profile]</code> on <code>&lt;body&gt;</code>; <code>render()</code> reprojects the same <code>D</code> object for the chosen audience (<a href="docs/BIBLE.md#RDC-LAW-5">RDC-LAW-5</a>).</li>
-<li>Preferences persist in <code>localStorage</code> under the keys <code>resume-settings</code>, <code>resume-theme</code>, <code>resume-theme-rotation-paused</code>, <code>tag-familiarity</code>, and <code>neko-color</code>.</li>
+<li>Preferences persist in <code>localStorage</code> under the keys <code>resume-settings</code> (all Settings-panel values, including theme timeout and transition), <code>resume-theme</code>, <code>tag-familiarity</code>, <code>neko-color</code> and <code>fx-quality-level</code> (the adaptive FX quality step). Theme-rotation pause is per visit and is not persisted.</li>
 </ul>
 <h2 id="file-anatomy-of-indexhtm">File anatomy of <code>index.htm</code></h2>
 <p><code>index.htm</code> is a single hand-authored page (~7,000 lines, ~0.45 MB on disk). Fonts, the portrait, the theme backgrounds and the PDF library are no longer embedded; they load from jsDelivr (<a href="docs/AMENDMENTS.md#RDC-A3">RDC-A3</a>), which is why it dropped from ~5.3 MB. Structurally:</p>
@@ -254,7 +254,7 @@ pre:hover .cpbtn{opacity:1}
 <li>Shared fonts: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/fonts/outfit/outfit-latin.woff2</code> (+ <code>outfit-latin-ext.woff2</code>)</li>
 <li>PDF export: html2pdf.js 0.10.2 from jsDelivr npm, loaded on first export</li>
 </ul>
-<p>Names are lowercase kebab-case; JPEGs are never re-encoded. To add or change an asset, put it in MindAttic.UiUx, tag the next whole-number release, push the tag, and bump <code>@V7</code> in <code>index.htm</code>. Full conventions: <a href="docs/BIBLE.md#RDC-§10">docs/BIBLE.md §10</a>.</p>
+<p>Names are lowercase kebab-case; JPEGs are never re-encoded. To add or change an asset, put it in MindAttic.UiUx (<code>ryandebraal.com/&lt;category&gt;/</code>), regenerate its <code>assets-manifest.json</code> (<code>toolsuild-asset-manifest.ps1</code>), commit it, then run the linked <code>/deploy</code>: it tags the next whole-number release, pushes it, rewrites the <code>@V&lt;n&gt;</code> pins in <code>index.htm</code> and checks the CDN before uploading. Full conventions: <a href="docs/BIBLE.md#RDC-§10">docs/BIBLE.md §10</a>.</p>
 <h2 id="local-development">Local development</h2>
 <pre><code># Open it.
 start index.htm</code></pre>
@@ -289,17 +289,17 @@ start index.htm</code></pre>
 </tbody></table>
 <p><code>README.htm</code> is a generated artifact (dark-themed, sidebar-TOC HTML rendering of this file) and is <strong>not</strong> the site's <code>index.htm</code> — the two are unrelated. <code>index.htm</code> is the shipped product; <code>README.htm</code> is developer-facing documentation output.</p>
 <h2 id="deploy">Deploy</h2>
-<p>Deploy via the <code>/deploy</code> skill (<code>.claude/skills/deploy/SKILL.md</code>), which shells out to the sibling <strong>MindAttic.Deploy</strong> repo:</p>
+<p>Deploy via the <code>/deploy</code> command (<code>.claude/commands/deploy.md</code>), which shells out to the sibling <strong>MindAttic.Deploy</strong> repo. This site is part of the permanently <strong>linked group</strong> <code>mindattic-web</code> (MindAttic.UiUx + ryandebraal.com + mindatticcares.com + mindattic.com): deploying any one of them deploys all four, in one run:</p>
 <pre><code class="language-powershell">powershell -NoProfile -ExecutionPolicy Bypass -Command "cd D:\Projects\MindAttic\MindAttic.Deploy; npm run deploy -- --site ryandebraal.com"</code></pre>
-<p>MindAttic.Deploy stamps the <code>&lt;!-- Last Updated --&gt;</code> comment in <code>index.htm</code> and FTPS-uploads it to the site root. This site's profile lives in <code>MindAttic.Deploy/projects.json</code> under <code>sites[]</code>; credentials are centralized in <code>MindAttic.Deploy/secrets/ftp.json</code>. The per-project <code>deploy.ps1</code>/<code>deploy.bat</code>/<code>settings.json</code> approach is retired and must not be reintroduced (<a href="docs/BIBLE.md#RDC-LAW-6">RDC-LAW-6</a>).</p>
+<p>The run publishes the MindAttic.UiUx package first (tags the next <code>V&lt;n&gt;</code> if it has unreleased commits, pushes the tag), pins that tag in every site's <code>index.htm</code>, verifies every asset is live on jsDelivr byte-for-byte, and only then stamps the <code>&lt;!-- Last Updated --&gt;</code> comment and FTPS-uploads <code>index.htm</code> to the site root (<code>/</code>), followed by mindatticcares.com and mindattic.com. <code>--dry-run</code> previews the whole run without changing anything; <code>--no-link</code> deploys this site alone. The deploy never commits or pushes this repo. This site's profile lives in <code>MindAttic.Deploy/projects.json</code> under <code>sites[]</code>; credentials are centralized in <code>MindAttic.Deploy/secrets/ftp.json</code>. The per-project <code>deploy.ps1</code>/<code>deploy.bat</code>/<code>settings.json</code> approach is retired and must not be reintroduced (<a href="docs/BIBLE.md#RDC-LAW-6">RDC-LAW-6</a>).</p>
 <h2 id="claude-code-project-setup">Claude Code project setup</h2>
 <p>This repo carries a <code>.claude/</code> directory with project-specific Claude Code configuration:</p>
 <ul>
-<li><strong>Commands</strong> (<code>.claude/commands/</code>) — <code>checkpoint.md</code> (paper-transcript handoff across <code>/clear</code>), <code>commit.md</code>, <code>deploy.md</code>.</li>
-<li><strong>Skills</strong> (<code>.claude/skills/</code>) — <code>commit/</code>, <code>deploy/</code>, <code>discard/</code>, <code>revert/</code>, <code>run/</code>, each a <code>SKILL.md</code>.</li>
-<li><strong>Hooks</strong> (<code>.claude/hooks/</code>) — <code>inject-digest.ps1</code> (injects <code>docs/BIBLE.digest.md</code> at session start) and <code>restore-handoff.ps1</code> (re-ingests <code>.claude/checkpoint.md</code> on <code>/clear</code>, then deletes it — one-shot).</li>
+<li><strong>Commands</strong> (<code>.claude/commands/</code>) — <code>deploy.md</code> (the linked 4-in-1 deploy above), <code>quicksave.md</code> (prints the current discussion to a paper transcript so it survives <code>/clear</code>) and <code>quickload.md</code> (restores the last quicksave).</li>
+<li><strong>Skills</strong> (<code>.claude/skills/</code>) — <code>commit/</code> (<code>SKILL.md</code>: stage, commit, push and print the hash).</li>
+<li><strong>Hooks</strong> (<code>.claude/hooks/</code>) — <code>inject-digest.ps1</code> (SessionStart: injects <code>docs/BIBLE.digest.md</code>) and <code>quickload-on-do.ps1</code> (UserPromptSubmit: restores a quicksave when you reply <code>do</code>).</li>
 <li><strong><code>.claude/statusline.ps1</code></strong> — live context-window usage gauge.</li>
-<li>Project rules live in <a href="CLAUDE.md">CLAUDE.md</a>: the Codex pointer above, a code-style rule (no underscore-prefixed private fields — <code>camelCase</code> without the prefix), and the <code>/commit</code> / <code>/revert</code> conventions.</li>
+<li><strong>Agent rules</strong> — <code>CLAUDE.md</code> is a provider forwarder: it points at the workspace-wide <code>D:\Projects\MindAttic\MINDATTIC_AGENT.md</code> and <code>mindattic-agent-standard\AGENTS.md</code>, and <code>AGENTS.md</code> is this project's agent entrypoint. Neither duplicates workflow.</li>
 </ul>
 <hr>
 <p>Built and maintained by <a href="https://ryandebraal.com">Ryan DeBraal</a>.</p>

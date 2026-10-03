@@ -69,7 +69,7 @@ A sibling object, `tooltips` (`index.htm`, near line 913), maps ~200 technology 
 
 - **Themes (16)** — `light`, `dark`, `spring`, `summer`, `autumn`, `winter`, `matrix`, `neko`, `ocean`, `sunset`, `forest`, `cyberpunk`, `noir`, `sakura`, `sand`, `synthwave`. Selected via the `[data-theme]` attribute on `<html>`; every theme is a block of CSS custom properties, never a JavaScript style mutation ([RDC-LAW-4](docs/BIBLE.md#RDC-LAW-4)).
 - **Profiles (3)** — `classic`, `pitch`, `complete`. Selected via `[data-profile]` on `<body>`; `render()` reprojects the same `D` object for the chosen audience ([RDC-LAW-5](docs/BIBLE.md#RDC-LAW-5)).
-- Preferences persist in `localStorage` under the keys `resume-settings`, `resume-theme`, `resume-theme-rotation-paused`, `tag-familiarity`, and `neko-color`.
+- Preferences persist in `localStorage` under the keys `resume-settings` (all Settings-panel values, including theme timeout and transition), `resume-theme`, `tag-familiarity`, `neko-color` and `fx-quality-level` (the adaptive FX quality step). Theme-rotation pause is per visit and is not persisted.
 
 ## File anatomy of `index.htm`
 
@@ -149,7 +149,7 @@ Static assets live in the sibling **MindAttic.UiUx** repo and are served by jsDe
 - Shared fonts: `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/fonts/outfit/outfit-latin.woff2` (+ `outfit-latin-ext.woff2`)
 - PDF export: html2pdf.js 0.10.2 from jsDelivr npm, loaded on first export
 
-Names are lowercase kebab-case; JPEGs are never re-encoded. To add or change an asset, put it in MindAttic.UiUx, tag the next whole-number release, push the tag, and bump `@V7` in `index.htm`. Full conventions: [docs/BIBLE.md §10](docs/BIBLE.md#RDC-§10).
+Names are lowercase kebab-case; JPEGs are never re-encoded. To add or change an asset, put it in MindAttic.UiUx (`ryandebraal.com/<category>/`), regenerate its `assets-manifest.json` (`toolsuild-asset-manifest.ps1`), commit it, then run the linked `/deploy`: it tags the next whole-number release, pushes it, rewrites the `@V<n>` pins in `index.htm` and checks the CDN before uploading. Full conventions: [docs/BIBLE.md §10](docs/BIBLE.md#RDC-§10).
 
 ## Local development
 
@@ -194,24 +194,23 @@ powershell -ExecutionPolicy Bypass -File tools/codex.ps1 digest
 
 ## Deploy
 
-Deploy via the `/deploy` skill (`.claude/skills/deploy/SKILL.md`), which shells out to the sibling **MindAttic.Deploy** repo:
+Deploy via the `/deploy` command (`.claude/commands/deploy.md`), which shells out to the sibling **MindAttic.Deploy** repo. This site is part of the permanently **linked group** `mindattic-web` (MindAttic.UiUx + ryandebraal.com + mindatticcares.com + mindattic.com): deploying any one of them deploys all four, in one run:
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "cd D:\Projects\MindAttic\MindAttic.Deploy; npm run deploy -- --site ryandebraal.com"
 ```
 
-MindAttic.Deploy stamps the `<!-- Last Updated -->` comment in `index.htm` and FTPS-uploads it to the site root. This site's profile lives in `MindAttic.Deploy/projects.json` under `sites[]`; credentials are centralized in `MindAttic.Deploy/secrets/ftp.json`. The per-project `deploy.ps1`/`deploy.bat`/`settings.json` approach is retired and must not be reintroduced ([RDC-LAW-6](docs/BIBLE.md#RDC-LAW-6)).
+The run publishes the MindAttic.UiUx package first (tags the next `V<n>` if it has unreleased commits, pushes the tag), pins that tag in every site's `index.htm`, verifies every asset is live on jsDelivr byte-for-byte, and only then stamps the `<!-- Last Updated -->` comment and FTPS-uploads `index.htm` to the site root (`/`), followed by mindatticcares.com and mindattic.com. `--dry-run` previews the whole run without changing anything; `--no-link` deploys this site alone. The deploy never commits or pushes this repo. This site's profile lives in `MindAttic.Deploy/projects.json` under `sites[]`; credentials are centralized in `MindAttic.Deploy/secrets/ftp.json`. The per-project `deploy.ps1`/`deploy.bat`/`settings.json` approach is retired and must not be reintroduced ([RDC-LAW-6](docs/BIBLE.md#RDC-LAW-6)).
 
 ## Claude Code project setup
 
 This repo carries a `.claude/` directory with project-specific Claude Code configuration:
 
-- **Commands** (`.claude/commands/`) — `checkpoint.md` (paper-transcript handoff across `/clear`), `commit.md`, `deploy.md`.
-- **Skills** (`.claude/skills/`) — `commit/`, `deploy/`, `discard/`, `revert/`, `run/`, each a `SKILL.md`.
-- **Hooks** (`.claude/hooks/`) — `inject-digest.ps1` (injects `docs/BIBLE.digest.md` at session start) and `restore-handoff.ps1` (re-ingests `.claude/checkpoint.md` on `/clear`, then deletes it — one-shot).
+- **Commands** (`.claude/commands/`) — `deploy.md` (the linked 4-in-1 deploy above), `quicksave.md` (prints the current discussion to a paper transcript so it survives `/clear`) and `quickload.md` (restores the last quicksave).
+- **Skills** (`.claude/skills/`) — `commit/` (`SKILL.md`: stage, commit, push and print the hash).
+- **Hooks** (`.claude/hooks/`) — `inject-digest.ps1` (SessionStart: injects `docs/BIBLE.digest.md`) and `quickload-on-do.ps1` (UserPromptSubmit: restores a quicksave when you reply `do`).
 - **`.claude/statusline.ps1`** — live context-window usage gauge.
-- Project rules live in [CLAUDE.md](CLAUDE.md): the Codex pointer above, a code-style rule (no underscore-prefixed private fields — `camelCase` without the prefix), and the `/commit` / `/revert` conventions.
-
+- **Agent rules** — `CLAUDE.md` is a provider forwarder: it points at the workspace-wide `D:\Projects\MindAttic\MINDATTIC_AGENT.md` and `mindattic-agent-standard\AGENTS.md`, and `AGENTS.md` is this project's agent entrypoint. Neither duplicates workflow.
 ---
 
 Built and maintained by [Ryan DeBraal](https://ryandebraal.com).

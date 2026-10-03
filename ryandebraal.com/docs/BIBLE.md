@@ -97,9 +97,9 @@ cyberpunk, noir, sakura, sand, synthwave — selected via `[data-theme]` on `<ht
   `patHTML`, `corpHTML`, `skillsHTML`, `secHTML`, `tag`, `buildTooltip`).
 - **State / preferences:** `setTheme`, `setProfile`, `cycleTheme`/`pickTheme`, `cycleProfile`,
   `filterSkills`, `cycleTagLevel`/`saveSkillFam`, `resetDefaults`, theme-rotation
-  (`startThemeRotation`/`stopThemeRotation`/`toggleThemeRotation`) — persisted to `localStorage`
-  keys `resume-settings`, `resume-theme`, `resume-theme-rotation-paused`, `tag-familiarity`,
-  `neko-color`.
+  (`startThemeRotation`/`stopThemeRotation`/`toggleThemeRotation`; the pause state is per visit,
+  not persisted) — persisted to `localStorage` keys `resume-settings`, `resume-theme`,
+  `tag-familiarity`, `neko-color` and `fx-quality-level`.
 - **FX engine:** one `start<Theme>` initializer per animated theme (`startSpring`, `startSummer`,
   `startSakura`, `startAutumn`, `startWinter`, `startMatrix`, `startForest`, `startOcean`,
   `startCyberpunk`, `startSynthwave`, `startSand`, `startNekoTheme`, …) driving `<canvas>` layers
@@ -156,13 +156,13 @@ manual in-browser inspection. Therefore no story below is marked `✅` (which Co
 test- or build-proven facts); shipped-and-manually-confirmed work is marked `🟡`.
 
 Confirmed by direct inspection of `index.htm` (2026-06-07):
-- 🟡 Asset delivery — `index.htm` (~0.45 MB) references fonts, images and theme art on the jsDelivr CDN (`@V7`); Neko frames stay inline base64 (see [RDC-A3](AMENDMENTS.md#RDC-A3)). Verified 2026-10-02 in headless Chrome against a local copy of the staged assets (fonts, avatar, portrait, moon, theme JPEGs and on-demand html2pdf.js all loaded, no console errors). Live-CDN loading is verified only once the `@V7` tag is published.
+- 🟡 Asset delivery — `index.htm` (~0.45 MB) references fonts, images and theme art on the jsDelivr CDN (`@V7`); Neko frames stay inline base64 (see [RDC-A3](AMENDMENTS.md#RDC-A3)). Verified 2026-10-02 in headless Chrome against a local copy of the staged assets (fonts, avatar, portrait, moon, theme JPEGs and on-demand html2pdf.js all loaded, no console errors). Since 2026-10-02 `@V7` is published and the live site loads from it: verified by the MindAttic.UiUx Playwright suite in live mode (`MindAttic.UiUx/tests`, `specs/sites/ryandebraal.spec.mjs` + `specs/sites/common.spec.mjs` + `specs/cdn/cdn.live.spec.mjs`).
 - 🟡 16 themes present as `[data-theme]` blocks (added `dark` theme, 2026-06-07); 3 profiles via `[data-profile]`.
 - 🟡 Render engine, FX engine, export functions present (function inventory in [§4.3](#RDC-§4)).
-- 🟡 `localStorage` persistence wired for theme/profile/font/skill-familiarity/neko-color.
-- 🟡 Deploy delegated to MindAttic.Deploy (per `.claude/skills/deploy/SKILL.md`).
+- 🟡 `localStorage` persistence wired for settings (incl. font size and theme timeout), theme, skill familiarity, Neko colour and FX quality.
+- 🟡 Deploy delegated to MindAttic.Deploy as part of the linked `mindattic-web` group (per `.claude/commands/deploy.md`).
 
-There is no automated evidence (no green test run) backing any item; all are inspection-level only.
+Automated evidence now exists outside this repo: the MindAttic.UiUx Playwright suite (`MindAttic.UiUx/tests`) loads this page in Chrome locally and live and checks asset loading, the host allow-list, theme switching (sunset, sakura, noir), the lightbox, on-demand PDF loading and horizontal overflow. Items it does not cover remain inspection-level.
 
 ## 7. Active frontier {#RDC-§7}
 
@@ -205,5 +205,5 @@ A change is done when:
 - **Categories under `ryandebraal.com/`:** `themes/<theme-name>/` (per-theme art), `images/` (portrait, avatar), `icons/` (small UI icons, Neko frames), `logos/` if any.
 - **File names:** lowercase kebab-case; numbered series are zero-padded and 1-based — `themes/sakura/sakura-01.jpg` … `sakura-20.jpg`, `themes/sunset/sunset-01.jpg` … `sunset-20.jpg`. The page builds these URLs with `bgSet(theme, count)`; adding a background means adding the file and bumping the count.
 - **Lossy art is never re-encoded** between the original and the CDN file; PNGs may only be recompressed losslessly.
-- **Releasing assets:** copy the files into MindAttic.UiUx, commit, create the next whole-number tag (`V8`, …), push the tag, then bump the `@V7` references in `index.htm`. Old tags stay valid.
+- **Releasing assets:** copy the files into MindAttic.UiUx, regenerate `assets-manifest.json`, commit, then run the linked deploy (`.claude/commands/deploy.md`): it creates and pushes the next whole-number tag (`V8`, …), rewrites the `@V<n>` pins in `index.htm`, verifies the CDN and uploads. Old tags stay valid.
 - **Preloads:** only above-the-fold assets are preloaded (latin font, toolbar avatar); backgrounds and the lightbox portrait load on demand.
