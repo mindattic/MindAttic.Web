@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ryandebraal.com</title>
-<meta name="description" content="A resume site as an engineering statement. One hand-authored page. No build step. No framework. No npm install. No tracking. Static assets from a pinned CDN. Just a developer who prefers working close to the platform.">
+<meta name="description" content="A resume that is its own work sample: one hand-authored HTML page with 16 animated themes, 3 profiles, hover tooltips for 447 technologies, and Markdown, HTML and PDF export, with no build step.">
 <meta name="generator" content="MindAttic Codex build-readme.ps1">
-<meta name="generated" content="2026-10-02">
+<meta name="generated" content="2026-10-03">
 <style>:root{
   --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
   --border:#30363d;
@@ -111,66 +111,108 @@ pre:hover .cpbtn{opacity:1}
   </nav>
   <main id="content">
 <h1 id="ryandebraalcom">ryandebraal.com</h1>
-<p><strong>A resume site as an engineering statement.</strong> One hand-authored page. No build step. No framework. No npm install. No tracking. Static assets from a pinned CDN. Just a developer who prefers working close to the platform.</p>
-<p><a href="https://ryandebraal.com">ryandebraal.com</a></p>
-<hr>
-<h2 id="table-of-contents">Table of contents</h2>
+<p>A resume that is its own work sample: one hand-authored HTML page with 16 animated themes, 3 profiles, hover tooltips for 447 technologies, and Markdown, HTML and PDF export, with no build step.</p>
+<p><a href="index.htm"><img src="https://img.shields.io/badge/HTML5-one%20page-e34f26" alt="HTML5"></a> <a href="index.htm"><img src="https://img.shields.io/badge/JavaScript-vanilla%20ES2020-f7df1e" alt="JavaScript"></a> <a href="index.htm"><img src="https://img.shields.io/badge/Canvas%202D-hand--written%20FX-8e44ad" alt="Canvas 2D"></a> <a href="docs/BIBLE.md"><img src="https://img.shields.io/badge/build%20step-none-555555" alt="Build"></a> <a href="https://ryandebraal.com"><img src="https://img.shields.io/badge/status-live-2ea043" alt="Status"></a></p>
+<p><img src="docs/images/theme-synthwave.png" alt="The resume in the Synthwave theme: a neon sunset behind wireframe mountains and a perspective grid, with the resume card, summary and Bank of America experience in front"></p>
+<p>Try it: <a href="https://ryandebraal.com">ryandebraal.com</a></p>
+<h2 id="why">Why</h2>
 <ul>
-<li><a href="#what-it-is">What it is</a></li>
-<li><a href="#why-it-exists">Why it exists</a></li>
-<li><a href="#features">Features</a></li>
-<li><a href="#content-model--the-d-object">Content model — the <code>D</code> object</a></li>
-<li><a href="#themes-and-profiles">Themes and profiles</a></li>
-<li><a href="#file-anatomy-of-indexhtm">File anatomy of <code>index.htm</code></a></li>
-<li><a href="#whats-not-in-this-repo">What's <em>not</em> in this repo</a></li>
-<li><a href="#stack">Stack</a></li>
-<li><a href="#directory-layout">Directory layout</a></li>
-<li><a href="#assets-and-cdn">Assets and CDN</a></li>
-<li><a href="#local-development">Local development</a></li>
-<li><a href="#documentation-codex-canon">Documentation (Codex canon)</a></li>
-<li><a href="#tooling--tools">Tooling — <code>tools/</code></a></li>
-<li><a href="#deploy">Deploy</a></li>
-<li><a href="#claude-code-project-setup">Claude Code project setup</a></li>
+<li>A resume that proves the claims on it. Every animation frame and export pipeline is in the file you can read end to end in an afternoon.</li>
+<li>One set of content, three audiences. Switch between a classic, a pitch and a complete view of the same data with one click.</li>
+<li>Take it with you in the format the reader wants: Markdown, standalone HTML, PDF or a print layout, straight from the toolbar.</li>
+<li>Nothing between you and the page. The file you edit is byte for byte the file the browser runs: no bundler, no framework, no <code>npm install</code>.</li>
+<li>No tracking. Open the Network tab and you see the page, its fonts, images and theme art from <code>cdn.jsdelivr.net</code>, and html2pdf.js only when you export a PDF.</li>
 </ul>
-<hr>
-<h2 id="what-it-is">What it is</h2>
-<p>A single, hand-authored <code>index.htm</code> — pure HTML, CSS, and JavaScript — that renders a fully interactive, themeable, animated resume in any modern browser. Open the Network tab: you will see the page itself plus its fonts, images and theme art from <code>cdn.jsdelivr.net</code> (and, only when you export a PDF, html2pdf.js) — nothing else, and no analytics.</p>
-<p>That's the whole product. There is no server, no API, no database, and no build output — the file you edit is byte-for-byte the file the browser runs.</p>
-<h2 id="why-it-exists">Why it exists</h2>
-<p>Modern web stacks make it easy to ship 30 MB of bundled JavaScript to render a paragraph of text. This project is the deliberate opposite — a demonstration that a polished, production-quality experience can be built without inheriting any of that complexity. Every line of logic, every animation frame, every export pipeline lives in the same file you can read end-to-end in an afternoon.</p>
-<p>It's a resume that <strong>is</strong> the work sample.</p>
 <h2 id="features">Features</h2>
+<p><img src="docs/images/theme-light.png" alt="The default Light theme: the resume card on a white background, with the theme player and settings toolbar across the top"></p>
+<h3 id="themes">Themes</h3>
 <ul>
-<li><strong>16 themes</strong> — Light, Dark, Spring, Summer, Autumn, Winter, Matrix, Neko, Ocean, Sunset, Forest, Cyberpunk, Noir, Sakura, Sand, Synthwave. Theme switching is CSS variables only; no JavaScript style mutations.</li>
-<li><strong>3 rendering profiles</strong> — Classic, Pitch, and Complete views of the same underlying resume data, swapped with one click.</li>
-<li><strong>Custom canvas animations per theme</strong> — Bees with a flower-claiming state machine, snow that accumulates into SVG drifts, ten roaming Neko cats with the full 1998 sprite state machine (all 32 frames kept inline as tiny base64 CSS classes), sandstorm physics, parallax forest silhouettes, perspective synthwave grids, neon-acid-rain cyberpunk skylines, and more. Written from scratch — no animation libraries. (<code>light</code>, <code>dark</code>, and <code>noir</code> are static CSS-only themes with no bespoke FX.)</li>
-<li><strong>~200 tech tooltips</strong> — Hover any technology in the skills or experience sections for context.</li>
-<li><strong>Markdown, HTML, and PDF export</strong> — Download the resume in any format from the toolbar.</li>
-<li><strong>The Outfit typeface, from the CDN</strong> — Weights 100–900 as two woff2 subsets (latin + latin-ext) hosted in MindAttic.UiUx and served by jsDelivr at a pinned tag; the latin file is preloaded. No Google Fonts request.</li>
-<li><strong>Preferences persist</strong> — Theme, profile, font choice, and per-skill familiarity survive page reloads via <code>localStorage</code>.</li>
-<li><strong>Mobile-first toolbar</strong> — Adapts cleanly between desktop and portrait orientations.</li>
+<li>16 themes: Light, Dark, Spring, Summer, Autumn, Winter, Matrix, Neko, Ocean, Sunset, Forest, Cyberpunk, Noir, Sakura, Sand and Synthwave.</li>
+<li>Theme switching is CSS custom properties only, never a JavaScript style mutation (<a href="docs/BIBLE.md#RDC-LAW-4">RDC-LAW-4</a>).</li>
+<li>A theme player in the toolbar shows what is playing and what is up next, and rotates through themes until you pause it.</li>
+<li>Custom Canvas 2D animations per theme, written from scratch with no animation library: bees with a flower-claiming state machine, snow that settles into SVG drifts, ten roaming Neko cats with the full 1998 sprite state machine (all 32 frames kept inline as tiny base64 CSS classes), sandstorm physics, parallax forest silhouettes, a perspective synthwave grid, neon acid-rain cyberpunk skylines and more.</li>
+<li><code>light</code>, <code>dark</code> and <code>noir</code> are static CSS-only themes with no bespoke effects.</li>
+<li>An adaptive quality step (<code>fx-quality-level</code>) scales the effects back on slower machines.</li>
 </ul>
-<h2 id="content-model-the-d-object">Content model — the <code>D</code> object</h2>
-<p>All resume content lives once, as a single in-file JavaScript object literal named <code>D</code> (<code>index.htm</code>, near line 1528). Every profile and export format is a read-only projection of this one object — there is never a second copy of the content. Its keys:</p>
+<p><img src="docs/images/theme-winter.png" alt="The Winter theme: snowflakes drifting over a pale blue background behind the resume card"></p>
+<h3 id="profiles">Profiles</h3>
+<ul>
+<li>Three rendering profiles, <code>classic</code>, <code>pitch</code> and <code>complete</code>, each a different view of the same resume data.</li>
+<li><code>render()</code> reprojects the one data object for the chosen audience (<a href="docs/BIBLE.md#RDC-LAW-5">RDC-LAW-5</a>).</li>
+</ul>
+<h3 id="tech-tooltips">Tech tooltips</h3>
+<ul>
+<li>Hover any technology tag in the skills or experience sections for a short description and where it was used.</li>
+<li>447 entries live in one <code>tooltips</code> object.</li>
+<li>Skill tags have a per-skill familiarity level you can cycle; it is remembered.</li>
+</ul>
+<h3 id="export">Export</h3>
+<ul>
+<li>Markdown (<code>exportMD</code>), standalone HTML (<code>exportHTML</code>) and PDF (<code>exportPDF</code>).</li>
+<li>Print layouts: <code>exportPrintPage</code>, <code>exportPrintDocument</code>, <code>exportPrintCV</code> and <code>printResume</code>.</li>
+<li>PDF export loads html2pdf.js 0.10.2 from jsDelivr on first use only.</li>
+</ul>
+<h3 id="everything-else">Everything else</h3>
+<ul>
+<li>The Outfit typeface from the CDN: weights 100 to 900 as two woff2 subsets (latin and latin-ext) hosted in MindAttic.UiUx and served by jsDelivr at a pinned tag. The latin file is preloaded. No Google Fonts request.</li>
+<li>Preferences persist in <code>localStorage</code>: theme, profile, font choice, theme timeout and transition, and per-skill familiarity.</li>
+<li>A mobile-first toolbar that adapts between desktop and portrait orientations.</li>
+<li>A DevTools easter egg: an ASCII banner printed to the console.</li>
+</ul>
+<h2 id="quick-start">Quick start</h2>
+<p>You need a modern browser and a network connection (fonts, portrait and theme art load from jsDelivr).</p>
+<pre><code class="language-powershell">git clone https://github.com/mindattic/ryandebraal.com
+cd ryandebraal.com
+start index.htm</code></pre>
+<p>That's it. There is no dev server, because there is nothing to compile. You should see the resume with the theme player running in the toolbar. Use the player buttons to step through themes; profiles, settings and export are in the toolbar menus.</p>
+<h2 id="how-it-works">How it works</h2>
+<p><code>index.htm</code> is a single hand-authored page (about 7,000 lines, about 0.45 MB on disk). Fonts, the portrait, the theme backgrounds and the PDF library are no longer embedded; they load from jsDelivr (<a href="docs/AMENDMENTS.md#RDC-A3">RDC-A3</a>), which is why it dropped from about 5.3 MB.</p>
+<pre><code class="language-text">index.htm  (one page)
+├── &lt;!-- Last Updated: &lt;UTC&gt; --&gt;     stamped by the deploy pipeline (MindAttic.Deploy)
+├── &lt;head&gt;
+│   ├── DevTools easter-egg banner (ASCII, shown via console.log)
+│   └── &lt;style&gt;
+│       ├── CSS custom properties per [data-theme]
+│       ├── layout + toolbar rules
+│       └── @font-face Outfit (CDN woff2, weights 100-900) + Neko 32 inline frames
+├── &lt;body data-theme=… data-profile=…&gt;
+│   ├── resume DOM mount + toolbar
+│   ├── per-theme &lt;canvas&gt; FX layers
+│   └── &lt;script&gt;                      one IIFE-scoped global block
+│       ├── § DATA        const D = {…}              (the resume content)
+│       ├── § TOOLTIPS    const tooltips = {…}        (447 tech entries)
+│       ├── § RENDER      secHTML / expHTML / projHTML / eduHTML / patHTML / corpHTML /
+│       │                 skillsHTML / tag / buildTooltip / render()  (pure string builders)
+│       ├── § STATE       setTheme / setProfile / cycleTheme / pickTheme / cycleProfile /
+│       │                 filterSkills / cycleTagLevel / saveSkillFam / resetDefaults /
+│       │                 startThemeRotation / stopThemeRotation / toggleThemeRotation
+│       ├── § FX ENGINE   one start&lt;Theme&gt;() Canvas 2D initializer per animated theme,
+│       │                 driven by requestAnimationFrame; resizeCanvas / stopFX manage lifecycle
+│       └── § EXPORT      exportMD() · exportHTML() · runPdfExport(opts) with named wrappers
+│                         exportPDF() / exportPrintPage() / exportPrintDocument() /
+│                         exportPrintCV() · printResume() · toggleExportMenu / toggleMoreMenu</code></pre>
+<p>This mirrors <a href="docs/BIBLE.md#RDC-§4">docs/BIBLE.md §4</a>, the canonical version of this diagram. If the architecture changes, update that file first, then this section.</p>
+<h2 id="content-model">Content model</h2>
+<p>All resume content lives once, as a single in-file JavaScript object literal named <code>D</code> (<code>index.htm</code>, near line 1592). Every profile and export format is a read-only projection of this one object; there is never a second copy of the content.</p>
 <table><thead><tr>
 <th>Key</th>
 <th>What it holds</th>
 </tr></thead><tbody>
 <tr>
 <td><code>summary</code>, <code>pitchSummary</code></td>
-<td>Prose blurbs (full vs. pitch tone)</td>
+<td>Prose blurbs (full and pitch tone)</td>
 </tr>
 <tr>
 <td><code>skillsCore</code>, <code>skillsComplete</code></td>
-<td>Grouped skill lists (label + <code>items[]</code>)</td>
+<td>Grouped skill lists (label and <code>items[]</code>)</td>
 </tr>
 <tr>
 <td><code>experience[]</code></td>
-<td><code>{ title, company, location, dates, tech[], bullets[] }</code></td>
+<td>Title, company, location, dates, <code>tech[]</code> and <code>bullets[]</code> per role</td>
 </tr>
 <tr>
 <td><code>projects[]</code></td>
-<td><code>{ name, desc }</code> — the MindAttic portfolio (Tutor, IdiotProof, ThinkTank, MindAttic.Legion, TaxRateCollector, FractionsOfAPenny, GridGame2026, StreetSamurai, Ciao-ChatGpt-Bonjour-Claude, mindattic.com)</td>
+<td>Name, URL and label per link: currently the MindAttic GitHub organisation and MindAttic books on Amazon</td>
 </tr>
 <tr>
 <td><code>education[]</code></td>
@@ -185,126 +227,104 @@ pre:hover .cpbtn{opacity:1}
 <td>Registered entities</td>
 </tr>
 </tbody></table>
-<p>A sibling object, <code>tooltips</code> (<code>index.htm</code>, near line 913), maps ~200 technology names to hover-context descriptions, powering the tech tooltips feature.</p>
-<h2 id="themes-and-profiles">Themes and profiles</h2>
+<p>A sibling object, <code>tooltips</code> (<code>index.htm</code>, lines 977 to 1463), maps 447 technology names to hover descriptions.</p>
+<h2 id="themes-and-profiles-reference">Themes and profiles reference</h2>
 <ul>
-<li><strong>Themes (16)</strong> — <code>light</code>, <code>dark</code>, <code>spring</code>, <code>summer</code>, <code>autumn</code>, <code>winter</code>, <code>matrix</code>, <code>neko</code>, <code>ocean</code>, <code>sunset</code>, <code>forest</code>, <code>cyberpunk</code>, <code>noir</code>, <code>sakura</code>, <code>sand</code>, <code>synthwave</code>. Selected via the <code>[data-theme]</code> attribute on <code>&lt;html&gt;</code>; every theme is a block of CSS custom properties, never a JavaScript style mutation (<a href="docs/BIBLE.md#RDC-LAW-4">RDC-LAW-4</a>).</li>
-<li><strong>Profiles (3)</strong> — <code>classic</code>, <code>pitch</code>, <code>complete</code>. Selected via <code>[data-profile]</code> on <code>&lt;body&gt;</code>; <code>render()</code> reprojects the same <code>D</code> object for the chosen audience (<a href="docs/BIBLE.md#RDC-LAW-5">RDC-LAW-5</a>).</li>
-<li>Preferences persist in <code>localStorage</code> under the keys <code>resume-settings</code> (all Settings-panel values, including theme timeout and transition), <code>resume-theme</code>, <code>tag-familiarity</code>, <code>neko-color</code> and <code>fx-quality-level</code> (the adaptive FX quality step). Theme-rotation pause is per visit and is not persisted.</li>
+<li>Theme names: <code>light</code>, <code>dark</code>, <code>spring</code>, <code>summer</code>, <code>autumn</code>, <code>winter</code>, <code>matrix</code>, <code>neko</code>, <code>ocean</code>, <code>sunset</code>, <code>forest</code>, <code>cyberpunk</code>, <code>noir</code>, <code>sakura</code>, <code>sand</code>, <code>synthwave</code>. Selected with the <code>[data-theme]</code> attribute on <code>&lt;html&gt;</code>.</li>
+<li>Profile names: <code>classic</code>, <code>pitch</code>, <code>complete</code>. Selected with <code>[data-profile]</code> on <code>&lt;body&gt;</code>.</li>
+<li><code>localStorage</code> keys: <code>resume-settings</code> (all Settings-panel values, including theme timeout and transition), <code>resume-theme</code>, <code>tag-familiarity</code>, <code>neko-color</code> and <code>fx-quality-level</code>. Theme-rotation pause lasts for one visit and is not saved.</li>
 </ul>
-<h2 id="file-anatomy-of-indexhtm">File anatomy of <code>index.htm</code></h2>
-<p><code>index.htm</code> is a single hand-authored page (~7,000 lines, ~0.45 MB on disk). Fonts, the portrait, the theme backgrounds and the PDF library are no longer embedded; they load from jsDelivr (<a href="docs/AMENDMENTS.md#RDC-A3">RDC-A3</a>), which is why it dropped from ~5.3 MB. Structurally:</p>
-<pre><code>index.htm  (one page)
-├── &lt;!-- Last Updated: &lt;UTC&gt; --&gt;     stamped by the deploy pipeline (MindAttic.Deploy)
-├── &lt;head&gt;
-│   ├── DevTools easter-egg banner (ASCII, shown via console.log)
-│   └── &lt;style&gt;
-│       ├── CSS custom properties per [data-theme]
-│       ├── layout + toolbar rules
-│       └── @font-face Outfit (CDN woff2, weights 100-900) + Neko 32 inline frames
-├── &lt;body data-theme=… data-profile=…&gt;
-│   ├── resume DOM mount + toolbar
-│   ├── per-theme &lt;canvas&gt; FX layers
-│   └── &lt;script&gt;                      one IIFE-scoped global block
-│       ├── § DATA        const D = {…}              (the resume content — see above)
-│       ├── § TOOLTIPS    const tooltips = {…}        (~200 tech entries)
-│       ├── § RENDER      secHTML / expHTML / projHTML / eduHTML / patHTML / corpHTML /
-│       │                 skillsHTML / tag / buildTooltip / render()  — pure string builders
-│       ├── § STATE       setTheme / setProfile / cycleTheme / pickTheme / cycleProfile /
-│       │                 filterSkills / cycleTagLevel / saveSkillFam / resetDefaults /
-│       │                 startThemeRotation / stopThemeRotation / toggleThemeRotation
-│       ├── § FX ENGINE   one start&lt;Theme&gt;() Canvas 2D initializer per animated theme,
-│       │                 driven by requestAnimationFrame; resizeCanvas / stopFX manage lifecycle
-│       └── § EXPORT      exportMD() · exportHTML() · runPdfExport(opts) with named wrappers
-│                         exportPDF() / exportPrintPage() / exportPrintDocument() /
-│                         exportPrintCV() · printResume() · toggleExportMenu / toggleMoreMenu</code></pre>
-<p>This mirrors <a href="docs/BIBLE.md#RDC-§4">docs/BIBLE.md §4</a>, which is the canonical version of this diagram — update that file first if the architecture changes, then this section.</p>
-<h2 id="whats-not-in-this-repo">What's <em>not</em> in this repo</h2>
-<p>No <code>node_modules</code>. No <code>package.json</code>. No <code>webpack.config.js</code>. No <code>tsconfig.json</code>. No <code>.eslintrc</code>. No CI matrix. No Tailwind. No React. No Vite. No analytics SDK. No tracking pixels. No service worker. No polyfills. No minifier. No transpiler. No third-party fonts. Assets come only from the pinned jsDelivr paths allowed by <a href="docs/AMENDMENTS.md#RDC-A3">RDC-A3</a>. No test suite, no compiler, no build command — see <a href="docs/BIBLE.md#RDC-§3">docs/BIBLE.md §3 / §6</a>.</p>
-<p>The retired per-project <code>deploy.ps1</code>/<code>deploy.bat</code>/<code>settings.json</code> must not be reintroduced — deploy is centralized in the sibling MindAttic.Deploy repo (<a href="docs/BIBLE.md#RDC-LAW-6">RDC-LAW-6</a>).</p>
-<h2 id="stack">Stack</h2>
-<p><code>HTML5</code> · <code>CSS3</code> (custom properties, <code>color-mix</code>, <code>@media (orientation)</code>) · <code>Vanilla JavaScript</code> (ES2020+, IIFE-scoped, no modules) · <code>Canvas 2D</code> · <code>SVG</code></p>
-<h2 id="directory-layout">Directory layout</h2>
-<pre><code>ryandebraal.com/
-├── index.htm              The entire hand-authored page (assets are hosted in MindAttic.UiUx)
-├── README.md               This file
-├── CLAUDE.md               Claude Code project rules (Codex pointer, code style, /commit, /revert)
-├── .gitignore
-├── docs/                   Codex canonical documentation (see below)
-│   ├── BIBLE.md            L0 — what the site IS / is NOT, architecture, the Laws (RDC-LAW-n)
-│   ├── AMENDMENTS.md        L1 — append-only change log (RDC-A&lt;n&gt;); an amendment wins over the bible
-│   ├── USER_STORIES.md      L2 — capabilities + status (RDC-US-&lt;Epic&gt;&lt;n&gt;)
-│   ├── BIBLE.digest.md      GENERATED by tools/codex.ps1 digest — never hand-edit
-│   └── rfc/
-│       └── 0001-in-browser-smoke-harness.md   Design note: path to a dependency-free test harness
-├── tools/
-│   ├── codex.ps1            Codex doctor + digest tool (validates/regenerates docs/ canon)
-│   └── build-readme.ps1      Regenerates README.htm from this file (thin wrapper — see below)
-└── .claude/                 Claude Code project config
-    ├── settings.json / settings.local.json
-    ├── launch.json
-    ├── statusline.ps1
-    ├── commands/            checkpoint.md, commit.md, deploy.md
-    ├── hooks/               inject-digest.ps1, restore-handoff.ps1
-    └── skills/              commit/, deploy/, discard/, revert/, run/  (each a SKILL.md)</code></pre>
 <h2 id="assets-and-cdn">Assets and CDN</h2>
-<p>Static assets live in the sibling <strong>MindAttic.UiUx</strong> repo and are served by jsDelivr at a whole-number tag:</p>
+<p>Static assets live in the sibling MindAttic.UiUx repo and are served by jsDelivr at a whole-number tag. The page currently pins <code>V9</code>.</p>
 <ul>
-<li>Page art: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/ryandebraal.com/&lt;category&gt;/&lt;file&gt;</code> (<code>themes/&lt;name&gt;/&lt;name&gt;-NN.jpg</code>, <code>images/</code>, <code>icons/</code>)</li>
-<li>Shared fonts: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/fonts/outfit/outfit-latin.woff2</code> (+ <code>outfit-latin-ext.woff2</code>)</li>
-<li>PDF export: html2pdf.js 0.10.2 from jsDelivr npm, loaded on first export</li>
+<li>Page art: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/ryandebraal.com/&lt;category&gt;/&lt;file&gt;</code> (<code>themes/&lt;name&gt;/&lt;name&gt;-NN.jpg</code>, <code>images/</code>, <code>icons/</code>).</li>
+<li>Shared fonts: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/fonts/outfit/outfit-latin.woff2</code> (and <code>outfit-latin-ext.woff2</code>).</li>
+<li>PDF export: html2pdf.js 0.10.2 from jsDelivr npm, loaded on first export.</li>
 </ul>
-<p>Names are lowercase kebab-case; JPEGs are never re-encoded. To add or change an asset, put it in MindAttic.UiUx (<code>ryandebraal.com/&lt;category&gt;/</code>), regenerate its <code>assets-manifest.json</code> (<code>toolsuild-asset-manifest.ps1</code>), commit it, then run the linked <code>/deploy</code>: it tags the next whole-number release, pushes it, rewrites the <code>@V&lt;n&gt;</code> pins in <code>index.htm</code> and checks the CDN before uploading. Full conventions: <a href="docs/BIBLE.md#RDC-§10">docs/BIBLE.md §10</a>.</p>
-<h2 id="local-development">Local development</h2>
-<pre><code># Open it.
-start index.htm</code></pre>
-<p>That's it. There is no dev server, because there is nothing to compile.</p>
-<h2 id="documentation-codex-canon">Documentation (Codex canon)</h2>
-<p>This repo follows the MindAttic <strong>Codex</strong> documentation standard. A fact lives in exactly one layer; deeper detail is linked by stable ID, never duplicated here:</p>
-<ul>
-<li><strong><a href="docs/BIBLE.md">docs/BIBLE.md</a></strong> (L0) — what the site IS, is NOT, the architecture (§4), and the project Laws <code>RDC-LAW-1</code> through <code>RDC-LAW-6</code> (RDC-LAW-1 one-file/one-request — superseded by amendment RDC-A3; no build/package dependencies; no tracking and a host allow-list; CSS-variable themes, one data model, deploy owned by MindAttic.Deploy).</li>
-<li><strong><a href="docs/AMENDMENTS.md">docs/AMENDMENTS.md</a></strong> (L1) — append-only change log (<code>RDC-A1</code> adopted Codex; <code>RDC-A2</code> recorded the dark-theme addition, export-function expansion, and a README deploy-section correction). An amendment wins over the bible; it is never rewritten, only superseded.</li>
-<li><strong><a href="docs/USER<em>STORIES.md">docs/USER</em>STORIES.md</a></strong> (L2) — capabilities by epic (<code>RDC-US-A1</code>…<code>RDC-US-F2</code>), each marked <code>🟡</code> (shipped, manually verified) because this project ships no automated test suite and no build step by design — see <a href="docs/BIBLE.md#RDC-LAW-2">RDC-LAW-2</a>. Nothing here is marked <code>✅</code>, since Codex reserves that status for test- or build-proven facts.</li>
-<li><strong><a href="docs/rfc/">docs/rfc/</a></strong> — design notes that graduate into the bible + stories once decided. Currently one: <a href="docs/rfc/0001-in-browser-smoke-harness.md">RFC 0001 — in-browser smoke harness</a>, which proposes how to make <code>✅</code> reachable (an in-page <code>?selftest=1</code> self-test block, or a sibling harness in MindAttic.Deploy) without adding a build step to this repo.</li>
-<li><strong><a href="docs/BIBLE.digest.md">docs/BIBLE.digest.md</a></strong> — GENERATED by <code>tools/codex.ps1 digest</code>. Never hand-edit; regenerate after any change to BIBLE §1/§3/§5/§9 or the latest amendment.</li>
-<li><strong>Org-wide laws</strong> — <a href="../MindAttic.HouseRules.md"><code>../MindAttic.HouseRules.md</code></a>, inherited by reference from BIBLE §5 (not restated here). Most relevant: whole-number versioning, credentials never in code/commits, "done is verified, not asserted."</li>
-</ul>
-<p>After editing anything under <code>docs/</code>, run:</p>
-<pre><code class="language-powershell">powershell -ExecutionPolicy Bypass -File tools/codex.ps1 doctor</code></pre>
-<p>It validates front-matter, section/law IDs, cross-references, cited tests/paths, and digest freshness, and must exit 0. Regenerate the digest with:</p>
-<pre><code class="language-powershell">powershell -ExecutionPolicy Bypass -File tools/codex.ps1 digest</code></pre>
-<h2 id="tooling-tools">Tooling — <code>tools/</code></h2>
+<p>Names are lowercase kebab-case; JPEGs are never re-encoded. To add or change an asset:</p>
+<ol>
+<li>Put it in MindAttic.UiUx under <code>ryandebraal.com/&lt;category&gt;/</code>.</li>
+<li>Regenerate its <code>assets-manifest.json</code> with <code>tools\build-asset-manifest.ps1</code> in that repo, and commit.</li>
+<li>Run the linked <code>/deploy</code>: it tags the next whole-number release, pushes it, rewrites the <code>@V&lt;n&gt;</code> pins in <code>index.htm</code> and checks the CDN before uploading.</li>
+</ol>
+<p>Full conventions: <a href="docs/BIBLE.md#RDC-§10">docs/BIBLE.md §10</a>.</p>
+<h2 id="not-in-this-repo">Not in this repo</h2>
+<p>No <code>node_modules</code>. No <code>package.json</code>. No <code>webpack.config.js</code>. No <code>tsconfig.json</code>. No <code>.eslintrc</code>. No CI matrix. No Tailwind. No React. No Vite. No analytics SDK. No tracking pixels. No service worker. No polyfills. No minifier. No transpiler. No third-party fonts. Assets come only from the pinned jsDelivr paths allowed by <a href="docs/AMENDMENTS.md#RDC-A3">RDC-A3</a>. No test suite, no compiler, no build command (see <a href="docs/BIBLE.md#RDC-§3">docs/BIBLE.md §3</a>).</p>
+<p>The retired per-project <code>deploy.ps1</code>, <code>deploy.bat</code> and <code>settings.json</code> must not be reintroduced: deploy is centralised in the sibling MindAttic.Deploy repo (<a href="docs/BIBLE.md#RDC-LAW-6">RDC-LAW-6</a>).</p>
+<h2 id="project-layout">Project layout</h2>
+<pre><code class="language-text">ryandebraal.com/
+├── index.htm              The entire hand-authored page (assets are hosted in MindAttic.UiUx)
+├── README.md              This file
+├── README.htm             Generated from README.md by tools/build-readme.ps1
+├── AGENTS.md              Project agent entrypoint
+├── CLAUDE.md              Provider forwarder to the MindAttic agent standard
+├── docs/
+│   ├── BIBLE.md           L0: what the site is and is not, architecture, the Laws (RDC-LAW-n)
+│   ├── AMENDMENTS.md      L1: append-only change log (RDC-A&lt;n&gt;)
+│   ├── USER_STORIES.md    L2: capabilities and status (RDC-US-&lt;Epic&gt;&lt;n&gt;)
+│   ├── BIBLE.digest.md    GENERATED by tools/codex.ps1 digest, never hand-edited
+│   ├── images/            README screenshots
+│   └── rfc/
+│       └── 0001-in-browser-smoke-harness.md
+├── tools/
+│   ├── codex.ps1          Codex doctor and digest tool
+│   └── build-readme.ps1   Regenerates README.htm (thin wrapper, see below)
+└── .claude/
+    ├── settings.json, settings.local.json, launch.json, statusline.ps1
+    ├── commands/          deploy.md, quicksave.md, quickload.md
+    ├── hooks/             inject-digest.ps1, quickload-on-do.ps1
+    └── skills/            commit/, deploy/, discard/, revert/, run/ (each a SKILL.md)</code></pre>
+<h2 id="tooling">Tooling</h2>
 <table><thead><tr>
 <th>Script</th>
 <th>Purpose</th>
 </tr></thead><tbody>
 <tr>
 <td><code>tools/codex.ps1</code></td>
-<td>Codex CLI for this repo. <code>doctor</code> validates the <code>docs/</code> canon (front-matter, IDs, cross-refs, cited tests/paths, digest freshness) and exits non-zero on any hard error; <code>digest</code> regenerates <code>docs/BIBLE.digest.md</code> from BIBLE §1/3/5/9 plus a status index and the latest amendment head. Pure Windows PowerShell 5.1, no external modules.</td>
+<td>Codex CLI for this repo. <code>doctor</code> validates the <code>docs/</code> canon (front-matter, IDs, cross-references, cited tests and paths, digest freshness) and exits non-zero on any hard error. <code>digest</code> regenerates <code>docs/BIBLE.digest.md</code> from BIBLE §1, §3, §5 and §9 plus a status index and the latest amendment head. Pure Windows PowerShell 5.1, no external modules.</td>
 </tr>
 <tr>
 <td><code>tools/build-readme.ps1</code></td>
-<td>Thin wrapper that regenerates this repo's <code>README.htm</code> from <code>README.md</code> by delegating to the single shared rendering engine at <code>../codex-standard/build-readme.ps1</code> (workspace root, outside this repo). Every MindAttic repo carries an identical wrapper so all <code>README.htm</code> files share one engine and look/behave identically; the engine is never copied into this repo. Run it with <code>powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1</code>.</td>
+<td>Thin wrapper that regenerates <code>README.htm</code> from <code>README.md</code> by delegating to the shared engine at <code>../codex-standard/build-readme.ps1</code> (workspace root, outside this repo). Every MindAttic repo carries an identical wrapper, so all <code>README.htm</code> files share one engine.</td>
 </tr>
 </tbody></table>
-<p><code>README.htm</code> is a generated artifact (dark-themed, sidebar-TOC HTML rendering of this file) and is <strong>not</strong> the site's <code>index.htm</code> — the two are unrelated. <code>index.htm</code> is the shipped product; <code>README.htm</code> is developer-facing documentation output.</p>
-<h2 id="deploy">Deploy</h2>
-<p>Deploy via the <code>/deploy</code> command (<code>.claude/commands/deploy.md</code>), which shells out to the sibling <strong>MindAttic.Deploy</strong> repo. This site is part of the permanently <strong>linked group</strong> <code>mindattic-web</code> (MindAttic.UiUx + ryandebraal.com + mindatticcares.com + mindattic.com): deploying any one of them deploys all four, in one run:</p>
+<pre><code class="language-powershell">powershell -NoProfile -ExecutionPolicy Bypass -File tools\codex.ps1 doctor
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\codex.ps1 digest
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1</code></pre>
+<p><code>doctor</code> must exit 0 after any change under <code>docs/</code>. <code>README.htm</code> is a generated, developer-facing rendering of this file and is unrelated to the site's <code>index.htm</code>, which is the shipped product.</p>
+<h2 id="deployment">Deployment</h2>
+<p>Deploy with the <code>/deploy</code> command (<code>.claude/commands/deploy.md</code>), which shells out to the sibling MindAttic.Deploy repo. This site is part of the permanently linked group <code>mindattic-web</code> (MindAttic.UiUx, ryandebraal.com, mindatticcares.com and mindattic.com): deploying any one of them deploys all four, in one run.</p>
 <pre><code class="language-powershell">powershell -NoProfile -ExecutionPolicy Bypass -Command "cd D:\Projects\MindAttic\MindAttic.Deploy; npm run deploy -- --site ryandebraal.com"</code></pre>
-<p>The run publishes the MindAttic.UiUx package first (tags the next <code>V&lt;n&gt;</code> if it has unreleased commits, pushes the tag), pins that tag in every site's <code>index.htm</code>, verifies every asset is live on jsDelivr byte-for-byte, and only then stamps the <code>&lt;!-- Last Updated --&gt;</code> comment and FTPS-uploads <code>index.htm</code> to the site root (<code>/</code>), followed by mindatticcares.com and mindattic.com. <code>--dry-run</code> previews the whole run without changing anything; <code>--no-link</code> deploys this site alone. The deploy never commits or pushes this repo. This site's profile lives in <code>MindAttic.Deploy/projects.json</code> under <code>sites[]</code>; credentials are centralized in <code>MindAttic.Deploy/secrets/ftp.json</code>. The per-project <code>deploy.ps1</code>/<code>deploy.bat</code>/<code>settings.json</code> approach is retired and must not be reintroduced (<a href="docs/BIBLE.md#RDC-LAW-6">RDC-LAW-6</a>).</p>
-<h2 id="claude-code-project-setup">Claude Code project setup</h2>
-<p>This repo carries a <code>.claude/</code> directory with project-specific Claude Code configuration:</p>
+<p>The run:</p>
+<ol>
+<li>Publishes the MindAttic.UiUx package first (tags the next <code>V&lt;n&gt;</code> if it has unreleased commits and pushes the tag).</li>
+<li>Pins that tag in every site's <code>index.htm</code>.</li>
+<li>Verifies every asset is live on jsDelivr, byte for byte.</li>
+<li>Only then stamps the <code>Last Updated</code> comment and FTPS-uploads <code>index.htm</code> to the site root, followed by mindatticcares.com and mindattic.com.</li>
+</ol>
+<p><code>--dry-run</code> previews the whole run without changing anything; <code>--no-link</code> deploys this site alone. The deploy never commits or pushes this repo. This site's profile lives in <code>MindAttic.Deploy/projects.json</code> under <code>sites[]</code>; FTP credentials are centralised in MindAttic.Deploy.</p>
+<h2 id="limitations">Limitations</h2>
 <ul>
-<li><strong>Commands</strong> (<code>.claude/commands/</code>) — <code>deploy.md</code> (the linked 4-in-1 deploy above), <code>quicksave.md</code> (prints the current discussion to a paper transcript so it survives <code>/clear</code>) and <code>quickload.md</code> (restores the last quicksave).</li>
-<li><strong>Skills</strong> (<code>.claude/skills/</code>) — <code>commit/</code> (<code>SKILL.md</code>: stage, commit, push and print the hash).</li>
-<li><strong>Hooks</strong> (<code>.claude/hooks/</code>) — <code>inject-digest.ps1</code> (SessionStart: injects <code>docs/BIBLE.digest.md</code>) and <code>quickload-on-do.ps1</code> (UserPromptSubmit: restores a quicksave when you reply <code>do</code>).</li>
-<li><strong><code>.claude/statusline.ps1</code></strong> — live context-window usage gauge.</li>
-<li><strong>Agent rules</strong> — <code>CLAUDE.md</code> is a provider forwarder: it points at the workspace-wide <code>D:\Projects\MindAttic\MINDATTIC_AGENT.md</code> and <code>mindattic-agent-standard\AGENTS.md</code>, and <code>AGENTS.md</code> is this project's agent entrypoint. Neither duplicates workflow.</li>
+<li>No automated test suite yet. Every user story is held at "shipped, manually verified" because this project has no build step by design (<a href="docs/BIBLE.md#RDC-LAW-2">RDC-LAW-2</a>).</li>
+<li><a href="docs/rfc/0001-in-browser-smoke-harness.md">RFC 0001</a> proposes a dependency-free in-browser smoke harness (an in-page <code>?selftest=1</code> block, or a sibling harness in MindAttic.Deploy). It is planned, not built.</li>
 </ul>
+<h2 id="documentation">Documentation</h2>
+<p>This repo follows the MindAttic Codex documentation standard (project code RDC). A fact lives in exactly one layer; deeper detail is linked by stable ID, never duplicated here.</p>
+<ul>
+<li><a href="docs/BIBLE.md">docs/BIBLE.md</a> (L0): what the site is and is not, the architecture (§4) and the project Laws <code>RDC-LAW-1</code> to <code>RDC-LAW-6</code>.</li>
+<li><a href="docs/AMENDMENTS.md">docs/AMENDMENTS.md</a> (L1): append-only change log. An amendment wins over the bible; it is never rewritten, only superseded.</li>
+<li><a href="docs/USER_STORIES.md"><code>docs/USER_STORIES.md</code></a> (L2): capabilities by epic, each with its verification status.</li>
+<li><a href="docs/rfc/">docs/rfc</a>: design notes that graduate into the bible and stories once decided.</li>
+<li><a href="docs/BIBLE.digest.md">docs/BIBLE.digest.md</a>: generated by <code>tools/codex.ps1 digest</code>. Never hand-edit it.</li>
+<li>Org-wide laws: <a href="../MindAttic.HouseRules.md">MindAttic.HouseRules.md</a>, inherited by reference from BIBLE §5 (whole-number versioning, credentials never in code or commits, "done is verified, not asserted").</li>
+<li>Agent instructions: <a href="AGENTS.md">AGENTS.md</a> is the project's agent entrypoint. <code>CLAUDE.md</code> is a provider forwarder to the workspace-wide <code>MINDATTIC_AGENT.md</code> and <code>mindattic-agent-standard/AGENTS.md</code>; neither duplicates workflow. The <code>.claude/</code> folder holds the Claude Code commands, hooks, skills and status line listed in <a href="#project-layout">Project layout</a>.</li>
+</ul>
+<h2 id="license">License</h2>
+<p>This repo has no LICENSE file. All rights reserved. Built and maintained by <a href="https://ryandebraal.com">Ryan DeBraal</a>.</p>
 <hr>
-<p>Built and maintained by <a href="https://ryandebraal.com">Ryan DeBraal</a>.</p>
+<p>Part of <a href="https://mindattic.com">MindAttic</a> — see more projects at <a href="https://github.com/mindattic">github.com/mindattic</a>. Related: <a href="https://github.com/mindattic/mindattic.com">mindattic.com</a>, <a href="https://github.com/mindattic/mindatticcares.com">mindatticcares.com</a>, <a href="https://github.com/mindattic/MindAttic.UiUx">MindAttic.UiUx</a>, <a href="https://github.com/mindattic/MindAttic.Deploy">MindAttic.Deploy</a>.</p>
 
-    <p class="codex-footer">Generated 2026-10-02 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
+    <p class="codex-footer">Generated 2026-10-03 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
   </main>
 </div>
 <script>(function(){
