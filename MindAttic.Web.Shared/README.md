@@ -1,236 +1,211 @@
 # MindAttic.UiUx
 
-**One repo, every front-end. Drop-in CSS, JS, and HTML bundles, delivered three ways.**
+Shared front-end assets for every MindAttic site: a cyberpunk console-background engine, 1024 animated line-art shapes, fonts and UI widgets, served from jsDelivr by immutable tag with no build step.
 
-A growing catalog of self-contained components — fonts, effects, helpers, auth-visual widgets —
-that any subscriber can pull in via jsDelivr CDN at runtime, splice in via marker-block sync at
-build time, or accept as a cross-repo PR from GitHub Actions. Zero build step on the subscriber
-side, no `npm install`, no peerdeps.
+[![JavaScript](https://img.shields.io/badge/JavaScript-vanilla-F7DF1E)](Components/Cyberspace/console-bg.js) [![CSS](https://img.shields.io/badge/CSS-no%20build-264DE4)](Components) [![jsDelivr V9](https://img.shields.io/badge/jsDelivr-V9-E84D3D)](CHANGELOG.md) [![Tests Playwright](https://img.shields.io/badge/tests-Playwright-2EAD33)](tests/README.md) [![Status active](https://img.shields.io/badge/status-active-brightgreen)](docs/BIBLE.md)
 
-Canonical docs (read these for architecture, laws, and verified state — this file is the practical
-build/run/catalog tour and does not restate them):
+![The Cyberspace console-background engine running: console windows, a warning and a fatal-error popup, a geometric schematic window and a file-browser panel over a dark circuit-board backdrop](docs/images/cyberspace-backdrop.png)
 
-- [`docs/BIBLE.md`](docs/BIBLE.md) — L0, what the system is/is not, architecture, the Laws (`MAU-LAW-1..6`)
-- [`docs/AMENDMENTS.md`](docs/AMENDMENTS.md) — L1, append-only change log (`MAU-A<n>`)
-- [`docs/USER_STORIES.md`](docs/USER_STORIES.md) — L2, stories with test/evidence citations
-- [`docs/data/components.json`](docs/data/components.json) — L5, the component catalog as data
-- [`docs/rfc/`](docs/rfc/) — design notes
-- [`CLAUDE.md`](CLAUDE.md) — working rules for the AI agent in this repo
+Try it: the backdrop behind the wordmark on [mindattic.com](https://mindattic.com) is this engine, loaded from `cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9`.
 
-```html
-<!-- pinned production -->
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/Components/Cyberspace/console-bg.js"></script>
-<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/Components/Cyberspace/frontpage.css">
-```
+## Why
 
-**Shared runtime assets.** Besides components, this repo is the one asset package every MindAttic site
-loads from jsDelivr — fonts, brand art, theme art and the Cyberspace textures, organised by domain
-(`mindattic.com/`, `mindatticcares.com/`, `ryandebraal.com/`, `fonts/`).
-See [`docs/ASSETS.md`](docs/ASSETS.md) for the layout, naming/quality rules and how a site consumes it, and
-[`assets-manifest.json`](assets-manifest.json) for the verified file list.
-Tests: a Playwright suite in [`tests/`](tests/README.md) validates the package and the three sites that load from it.
+- Load one pinned URL and get the same bytes forever: tags are immutable, so browsers and the CDN edge cache them indefinitely.
+- Ship a living, animated backdrop with three divs, one stylesheet and two scripts, and no npm install on your side.
+- Keep fonts, logos and theme art in one place instead of copying them into every site.
+- Take a single component without dragging in the rest: each folder is self-contained, with no cross-component imports.
+- Splice components into hand-authored files without merge fights: only the text between marker comments is ever rewritten.
+- Know a release is sound before it ships: a Playwright suite checks the package and the three sites that load it.
 
-**Why MindAttic.UiUx:**
+## Features
 
-- **Three delivery modes, one source of truth.** jsDelivr CDN for runtime, GitHub Actions for
-  cross-repo PRs, PowerShell scripts for local dev — all reading the same
-  [`subscribers.json`](subscribers.json).
-- **Subscribers are declarative.** Add `{ "component": "AtticFont", "applyToSelector": ".site-name" }`
-  to a subscriber's array. The next sync enrolls it. Remove the line, the next sync unenrolls. No
-  hardcoded lists.
-- **Versioned by tag, immutable on CDN.** A whole-number tag (`@V7`, …) is edge-cached forever;
-  `@main` always tracks tip-of-tree. Subscribers pick their guarantee. Tags are whole-number integers
-  (`V1`, `V2`, …; see [`CHANGELOG.md`](CHANGELOG.md) for what each one contains).
-- **Self-contained components.** Each folder ships its own source, usage HTML, markdown doc, and
-  JSON config. No cross-component imports — you can vendor a single component without dragging the
-  rest.
-- **Marker-block contract.** Every splice is bounded by `BEGIN/END MINDATTIC.UIUX:<MARKER>` comments.
-  Subscribers hand-author the rest of the file without conflict; only what's between the markers is
-  regenerated.
+### Components
 
----
+Thirteen components live under `Components/`, each with its source files, a usage `.html` snippet, a `FolderName.md` doc (Textbox is documented in its CSS header) and any companion `.json` config. The catalog is also tracked as data in `docs/data/components.json`.
 
-## What it is / is not
+| Component | Type | What it does |
+|---|---|---|
+| [Cyberspace](Components/Cyberspace/Cyberspace.md) | HTML + CSS + JS bundle | Cyberpunk console-background engine: 12 named effects (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT with 24 variants, FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR), scan-line overlay, parallax circuit-board, keepout zones around content. SCHEMATIC draws its shapes from SacredGeometry. |
+| [SacredGeometry](Components/SacredGeometry/SacredGeometry.md) | JS (UMD) + SVG | 1024 unique, animatable line-art shapes (polyhedra, parametric curves, knots, fractals). One renderer targets a live canvas or a static SVG string; `build-previews.mjs` emits a poster per shape and doubles as a smoke test. |
+| [OutfitFont](Components/OutfitFont/OutfitFont.md) | font + CSS | Outfit variable font (weights 100 to 900) inlined as base64 woff2, Latin and Latin-Extended, plus a `--font-outfit` token. |
+| [AtticFont](Components/AtticFont/AtticFont.md) | font + CSS | Attic display face inlined as base64 woff2 with a `--font-attic` token. Per-subscriber `applyToSelector` controls where it is auto-applied. |
+| [PinFooter](Components/PinFooter/PinFooter.md) | CSS + JS | Pins any `.pin-when-short` element to the bottom while the document is shorter than the viewport; releases it when content overflows. |
+| [BackHomeM](Components/BackHomeM/BackHomeM.md) | CSS only | A capital M in AtticFont pinned upper-left, linking back to mindattic.com. |
+| [WebSnapshot](Components/WebSnapshot/WebSnapshot.md) | Node CLI + browser viewer | Captures a screenshot of any URL with Playwright, cover-fits and crops it, and inlines it as a data URI in a `.web-snapshot` container. |
+| [PageScrollbar](Components/PageScrollbar/PageScrollbar.md) | CSS + JS + optional Razor | Themed, draggable overlay scrollbar with no dependencies. The native bar is hidden only once the script adds `.ma-sb-active`, so no-JS clients keep it. Optional Blazor wrapper. |
+| [Textbox](Components/Textbox/textbox.css) | CSS only | Material-style outlined text field whose label floats into a notch in the top border on focus or when filled. Theme-able via CSS variables. |
+| [Tooltip](Components/Tooltip/Tooltip.md) | CSS + JS + optional Razor | Accessible tooltip driven by a `data-tooltip` attribute, one reused floating node, optional Blazor wrapper. |
+| [UserLogin](Components/UserLogin/UserLogin.md) | CSS + JS + Razor | Styling wrapper around the MindAttic.Authentication static-SSR login form. Does not implement authentication itself. |
+| [UserCircle](Components/UserCircle/UserCircle.md) | CSS + JS + Razor | Authenticated-only avatar or initials circle, upper right; opens a menu or signs out via a native form with an antiforgery token. |
+| [UserTimeout](Components/UserTimeout/UserTimeout.md) | CSS + JS + Razor | 30-minute idle warning with a countdown modal and auto-logout; arms only when authenticated; static-SSR safe. |
 
-This repo **does not deploy** anything itself. It owns no hosting. Two other repos are its natural
-neighbors:
+UserLogin, UserCircle and UserTimeout are the auth-visual trio, spliced into Tutor today.
 
-- [`MindAttic.Deploy`](../MindAttic.Deploy/README.md) renders the catalog landing pages (IdiotProof,
-  GridGame2026, MindAttic.Legion, MediaButler, MindAttic.Vault, TaxRateCollector, ThinkTank, Tutor's
-  marketing page, MindAttic.Psst index) and the Claudia/ChiMesh long-form HTML guides — all of which
-  pull components from the jsDelivr CDN at runtime, pinned via `MindAttic.Deploy/projects.json:componentsVersion`.
-  Nothing in `subscribers.json` targets those pages, and `sync/` intentionally has no scripts for them
-  (see `MAU-LAW-4` in the Bible).
-- A handful of Blazor apps and hand-authored static pages instead receive **splice-in-place** updates:
-  a PowerShell script (or a GitHub Action running the same script) rewrites only the content between
-  `BEGIN/END MINDATTIC.UIUX:<MARKER>` comment pairs in a file that subscriber otherwise hand-authors.
-  See [Subscribers & sync mechanism](#subscribers--sync-mechanism) below.
+![The Cyberspace test harness: the engine running with a panel of buttons that force each effect](docs/images/cyberspace-harness.png)
 
----
+The Cyberspace test harness (`Components/Cyberspace/index.htm`) forces any effect on demand.
 
-## Component catalog
+![SacredGeometry QA grid showing the 1024 line-art shapes as thumbnails](docs/images/sacred-geometry-gallery.png)
 
-Thirteen components live under `Components/`, each fully self-contained: source files, a usage
-`.html` snippet, a `<FolderName>.md` doc (except Textbox, documented inline in its CSS header), and
-any companion `.json` config. Verified against `docs/data/components.json` (updated 2026-06-07).
+The SacredGeometry QA grid (`Components/SacredGeometry/index.htm`) shows every shape in the catalog.
 
-| Component | Type | What it does | Docs |
-|---|---|---|---|
-| **[Cyberspace](Components/Cyberspace/Cyberspace.md)** | HTML + CSS + JS bundle | Cyberpunk console-background effects engine — 12 named effects (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT × 7 variants, FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR), scan-line overlay, parallax circuit-board, keepout zones around content. SCHEMATIC pulls its shapes from SacredGeometry. | [Cyberspace.md](Components/Cyberspace/Cyberspace.md) |
-| **[SacredGeometry](Components/SacredGeometry/SacredGeometry.md)** | JS (UMD) + SVG | Catalog of 1024 unique, animatable line-art shapes (polyhedra, parametric curves, knots, fractals). One pure renderer targets a live `<canvas>` or a static SVG string; a Node build (`build-previews.mjs`) emits a poster per shape and doubles as a smoke test. Feeds Cyberspace's SCHEMATIC effect. | [SacredGeometry.md](Components/SacredGeometry/SacredGeometry.md) |
-| **[OutfitFont](Components/OutfitFont/OutfitFont.md)** | font + CSS | Outfit variable font (Google Fonts, weights 100–900) inlined as base64 woff2. Two `@font-face` declarations (Latin + Latin-Extended) plus `:root { --font-outfit: 'Outfit', system-ui, sans-serif; }`. | [OutfitFont.md](Components/OutfitFont/OutfitFont.md) |
-| **[AtticFont](Components/AtticFont/AtticFont.md)** | font + CSS | Attic display face inlined as base64 woff2. Single `@font-face` plus `:root { --font-attic: 'Attic', serif; }`. Per-subscriber `applyToSelector` controls where Attic is auto-applied (`.site-name`, …). | [AtticFont.md](Components/AtticFont/AtticFont.md) |
-| **[PinFooter](Components/PinFooter/PinFooter.md)** | CSS + JS | Pin-when-short footer. Toggles `position: fixed; bottom: 0` on any element with class `pin-when-short` while the document is shorter than the viewport; releases it when content overflows. | [PinFooter.md](Components/PinFooter/PinFooter.md) |
-| **[BackHomeM](Components/BackHomeM/BackHomeM.md)** | CSS only | A capital "M" in AtticFont pinned to the upper-left, linking back to mindattic.com. Used on satellite sites (Claudia, ChiMesh) so a visitor can always get home. | [BackHomeM.md](Components/BackHomeM/BackHomeM.md) |
-| **[WebSnapshot](Components/WebSnapshot/WebSnapshot.md)** | Node CLI + browser viewer | Capture a fresh screenshot of any URL with Playwright, scale + crop it to a preview rectangle (cover-fit + alignment crop), and inline the result as a base64 data URI inside any `.web-snapshot` container. | [WebSnapshot.md](Components/WebSnapshot/WebSnapshot.md) |
-| **[PageScrollbar](Components/PageScrollbar/PageScrollbar.md)** | CSS + JS + optional Razor | Replaces the native page scrollbar with a themed, draggable overlay (track + thumb). Zero dependencies. Native scrollbar hidden only after the script adds `.ma-sb-active` to `<html>` (progressive enhancement for no-JS clients). Namespaced `.ma-scrollbar*` / `.ma-sb-*`. Optional Blazor `.razor` wrapper for flash-free SSR. | [PageScrollbar.md](Components/PageScrollbar/PageScrollbar.md) |
-| **Textbox** | CSS only | Angular-Material-style outlined text field: the label centers at rest and floats up to overlap the top border on focus/when filled (Material "notch" effect). Theme-able via CSS vars; uses OutfitFont's `--font-outfit` token when present. No `.md` doc — documented in a header comment inside `textbox.css`. | [textbox.css](Components/Textbox/textbox.css) |
-| **[Tooltip](Components/Tooltip/Tooltip.md)** | CSS + JS + optional Razor | Standalone, dependency-free, accessible tooltip driven by a `data-tooltip` attribute; one reused floating node; namespaced `.ma-tooltip*`; optional Blazor wrapper. | [Tooltip.md](Components/Tooltip/Tooltip.md) |
-| **[UserLogin](Components/UserLogin/UserLogin.md)** | CSS + JS + Razor | Styling wrapper around the `MindAttic.Authentication` `MaLogin` static-SSR login form; scoped CSS under `.ul-card`; Blazor Razor wrapper. Does **not** implement authentication itself. | [UserLogin.md](Components/UserLogin/UserLogin.md) |
-| **[UserCircle](Components/UserCircle/UserCircle.md)** | CSS + JS + Razor | Authenticated-only avatar/initials circle, upper-right; click opens a menu or signs out; reads `ClaimsPrincipal` via `AuthorizeView`; logout via native form + antiforgery token. | [UserCircle.md](Components/UserCircle/UserCircle.md) |
-| **[UserTimeout](Components/UserTimeout/UserTimeout.md)** | CSS + JS + Razor | 30-minute idle-timeout warning with countdown modal + auto-logout; renders and arms only when authenticated; logout via native form + antiforgery token; static-SSR safe. | [UserTimeout.md](Components/UserTimeout/UserTimeout.md) |
+### Shared runtime asset package
 
-UserLogin, UserCircle, and UserTimeout are the "auth-visual trio" — landed together and wired into
-`subscribers.json` for the Blazor subscribers (Tutor today; Prose.Writer, Prose.Codex and Ideas are
-`retired` — their target projects no longer exist).
+Besides components, this repo is the one asset package every MindAttic site loads from jsDelivr: fonts, brand art, theme art and the Cyberspace textures, organised by domain. `assets-manifest.json` lists every served file (60 today) with its size, SHA-256 and pixel dimensions, and is regenerated by `tools/build-asset-manifest.ps1`. See [docs/ASSETS.md](docs/ASSETS.md) for the layout, naming and quality rules.
+
+Today three sites load from the package, all pinned to the same tag by MindAttic.Deploy's linked deploy: mindattic.com, ryandebraal.com and mindatticcares.com.
 
 ### Themes
 
-`Themes/` composes components into a ready-to-use bundle rather than shipping a raw effect or
-widget. Currently one theme:
+`Themes/` composes components into a ready-to-use bundle. One theme remains:
 
-| Theme | Composes | Consumed by |
+| Theme | Composes |
+|---|---|
+| [Cyberspace](Themes/Cyberspace/Cyberspace.md) | `theme.css` (page chrome: hero, readme, buttons, layout), `body-prelude.html` (the three fixed-position effect divs) and the Cyberspace, OutfitFont, AtticFont and BackHomeM components declared in `deps.json` |
+
+The theme was built for the MindAttic.Deploy catalog landing pages, which were retired 2026-10-03 (DEP-A6); none of the three current sites loads it. The sister theme `Themes/Hardware/` was retired 2026-05-29.
+
+## Quick start
+
+Add the Cyberspace backdrop to any page, pinned to a release tag.
+
+1. Paste the three layers from `Components/Cyberspace/frontpage.html` at the top of `body`.
+2. Add the stylesheet and scripts from jsDelivr:
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/Components/Cyberspace/frontpage.css">
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/Components/SacredGeometry/sacred-geometry.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/Components/Cyberspace/console-bg.js" defer></script>
+```
+
+Open the page: console windows, fragments and schematics start spawning in the margins around your content. [Components/Cyberspace/Cyberspace.md](Components/Cyberspace/Cyberspace.md) covers the optional `loader.js`, `tv-static.js` and `home-bg.js` scripts.
+
+To try it locally without a page of your own, serve the repo and open the harness:
+
+```powershell
+python -m http.server 8080
+# then open http://localhost:8080/Components/Cyberspace/index.htm
+```
+
+## How it works
+
+```text
+              MindAttic.UiUx (this repo)
+   Components/  Themes/  fonts/  <domain>/  assets-manifest.json
+        |                   |                        |
+        | git tag V<n>      | sync/*.ps1             | .github/workflows/
+        v                   v                        v sync-subscribers.yml
+   jsDelivr CDN        splice between           cross-repo PRs with
+   @V<n> immutable     BEGIN/END markers        refreshed marker blocks
+        |                   |                        |
+        v                   v                        v
+   mindattic.com       mindattic.com            mindattic/mindattic.com
+   ryandebraal.com     MindAttic.Psst legal     mindattic/MindAttic.Psst
+   mindatticcares.com  Tutor (Blazor wwwroot)
+```
+
+Three delivery modes read the same source: the CDN at runtime, PowerShell splices for local working copies, and a GitHub Action that opens PRs. This repo does not deploy anything itself and owns no hosting.
+
+## Delivery pipelines
+
+Full walkthrough, including the one-time PAT setup, in [.github/PIPELINES.md](.github/PIPELINES.md).
+
+| Pipeline | What it does | When it runs |
 |---|---|---|
-| **[Cyberspace](Themes/Cyberspace/Cyberspace.md)** | `theme.css` (page chrome: `.hero`, `.readme`, `.btn`, layout) + `body-prelude.html` (the three Cyberspace fixed-position effect divs) + the Cyberspace, OutfitFont, AtticFont, and BackHomeM **components** (declared in `deps.json`) | `MindAttic.Deploy` catalog landing pages that declare `theme: "Cyberspace"` in `projects.json` — no splice markers, no per-project CSS overrides. Prose consumes the Cyberspace **component** directly from its own `wwwroot` instead of this theme (it wants the effects engine, not the page chrome). |
+| jsDelivr CDN | Serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@REF/PATH`. REF is a whole-number tag (immutable), `main` (tracks tip of tree, about 7-day cache) or a commit SHA. | Continuously. Consumed by mindattic.com, ryandebraal.com and mindatticcares.com. |
+| GitHub Actions cross-repo sync | `.github/workflows/sync-subscribers.yml` opens PRs against mindattic/mindattic.com (CYBERSPACE block) and mindattic/MindAttic.Psst (OUTFITFONT block). | On push to main touching `Components/Cyberspace`, `Components/OutfitFont`, `subscribers.json`, `sync/` or the workflow; skipped when the commit message contains `[skip ci]`. |
+| PowerShell sync scripts | Local fallback with the same logic as the Action, run against your working copies; retired subscribers are skipped. MindAttic.Deploy runs `sync-mindattic-com.ps1` as a preDeploy hook for mindattic.com, passing the release tag. | Manually, or from MindAttic.Deploy. |
 
-The former sister theme `Themes/Hardware/` (light/dark documentation aesthetic) was retired
-2026-05-29; ChiMesh and Claudia now render on Cyberspace with `MindAttic.Deploy`'s parts-picker
-augmentation.
+### Tagging a release
 
----
+Tags are whole numbers (`V1`, `V2`, ...), never SemVer, and a published tag never moves. [CHANGELOG.md](CHANGELOG.md) lists what each contains.
 
-## Layout
+For the linked group (this repo plus mindattic.com, ryandebraal.com and mindatticcares.com) you normally do not tag by hand. MindAttic.Deploy's linked deploy (`npm run deploy -- --uiux`) tags the next `V<n>` when HEAD is ahead of the latest tag, rewrites the pins in the three sites, verifies every asset on jsDelivr and then uploads the sites. `sync-mindattic-com.ps1` takes `-CyberspaceCdnTag`, which defaults to the latest `V*` tag in this repo, and the linked deploy passes the release tag explicitly.
 
-```
-MindAttic.UiUx/
-│
-├── Components/                  # 13 self-contained components (catalog above)
-│   ├── Cyberspace/               #   frontpage.{html,css}, console-bg.js, home-bg.js, tv-static.js,
-│   │                             #   loader.js, index.htm (test harness), assets/ (parallax PNGs), Cyberspace.md
-│   ├── SacredGeometry/           #   sacred-geometry.js (UMD), build-previews.mjs, package.json,
-│   │                             #   previews/ (shape-0000..1023.svg), index.htm (QA grid), SacredGeometry.md
-│   ├── OutfitFont/               #   outfit-font.{html,css,json}, OutfitFont.md
-│   ├── AtticFont/                #   attic-font.{html,css,json}, AtticFont.md
-│   ├── PinFooter/                #   pin-footer.{html,css,js}, PinFooter.md
-│   ├── BackHomeM/                #   back-home-m.{html,css}, BackHomeM.md
-│   ├── WebSnapshot/               #   web-snapshot.{css,html,js}, snapshot.js (CLI), snapshots.config.js,
-│   │                             #   web-snapshot-viewer.js, package.json, previews/, WebSnapshot.md
-│   ├── PageScrollbar/            #   page-scrollbar.{css,js}, PageScrollbar.razor, index.htm, PageScrollbar.md
-│   ├── Textbox/                  #   textbox.css only (no .md — doc header lives in the CSS file)
-│   ├── Tooltip/                  #   tooltip.{css,js}, Tooltip.razor, index.htm, Tooltip.md
-│   ├── UserLogin/                #   user-login.{css,js}, UserLogin.razor, index.htm, UserLogin.md
-│   ├── UserCircle/                #   user-circle.{css,js}, UserCircle.razor, index.htm, UserCircle.md
-│   └── UserTimeout/               #   user-timeout.{css,js}, UserTimeout.razor, index.htm, UserTimeout.md
-│
-├── Themes/
-│   └── Cyberspace/                # theme.css, body-prelude.html, deps.json, Cyberspace.md
-│
-├── fonts/                         # shared web fonts (served over jsDelivr; see docs/ASSETS.md)
-│   ├── outfit/                    #   outfit-latin.woff2, outfit-latin-ext.woff2
-│   └── attic/                     #   attic.woff2
-├── mindattic.com/          # per-site runtime assets, one top-level folder per domain
-│   └── logos/                     #   m-monogram.png, m-icon-16.png, favicon.ico
-├── mindatticcares.com/     #
-│   └── logos/                     #   m-cares*.png
-├── ryandebraal.com/        #
-│   ├── themes/<name>/             #   sunset, sakura, noir ... one folder per theme
-│   └── images/                    #
-├── archive/                       # kept, NOT served: font TTF sources, brand masters, unused art (archive/README.md)
-├── assets-manifest.json           # generated: path, bytes, SHA-256, pixel size of every asset
-├── tests/                         # Playwright suite: validates this package + the 3 sites that consume it
-│
-├── sync/                         # PowerShell splice-in-place scripts (see below)
-│   ├── _subscribers.ps1          #   shared helper: reads subscribers.json, marker-splice + EOL utilities
-│   ├── sync-all.ps1              #   umbrella: glob-discovers and runs every sync-*.ps1
-│   ├── sync-mindattic-com.ps1    #   splices the CYBERSPACE block into mindattic.com/index.htm (fonts/logo/engine load from the CDN)
-│   ├── sync-prose.ps1            #   Prose.Writer + Prose.Codex (both retired: reports and exits 0)
-│   ├── sync-mindattic-psst.ps1   #   splices terms.htm + privacy.htm in MindAttic.Psst
-│   ├── sync-ideas.ps1            #   MindAttic.Ideas.Web (retired: reports and exits 0)
-│   ├── sync-tutor.ps1            #   splices UserLogin/UserCircle/UserTimeout into Tutor.Blazor wwwroot
-│   └── sync.md                   #   sync/ folder's own detailed reference doc
-│
-├── docs/                          # Codex canon: BIBLE.md, AMENDMENTS.md, USER_STORIES.md, rfc/, data/
-├── tools/
-│   ├── codex.ps1                 # Codex doctor/digest tool (docs canon validation)
-│   ├── build-asset-manifest.ps1  # regenerates assets-manifest.json (-Verify fails if stale)
-│   └── build-readme.ps1          # thin wrapper -> shared engine at ../codex-standard/build-readme.ps1
-├── subscribers.json               # canonical map: components registry + subscriber map + per-subscriber config
-├── build.ps1                      # standalone-copy build CLI (idea/blazor outputs are stubs — see below)
-├── README.md                      # (this file)
-├── CLAUDE.md                       # working-directory rules for the AI agent
-└── .github/                       # PIPELINES.md + workflows/sync-subscribers.yml
+To tag by hand:
+
+```bash
+git tag -a V10 -m "..."
+git push origin main V10
+# jsDelivr serves the new tag immediately; purge a branch ref if needed:
+# GET https://purge.jsdelivr.net/gh/mindattic/MindAttic.UiUx@main/Components/Cyberspace/console-bg.js
 ```
 
----
+### Why the two biggest Cyberspace scripts are CDN-loaded on mindattic.com
 
-## Subscribers & sync mechanism
+`console-bg.js` is about 580 KB and `sacred-geometry.js` about 60 KB. `sync-mindattic-com.ps1` keeps the small Cyberspace scripts (`loader.js`, `tv-static.js`, `home-bg.js`) and a circuit-board texture override inline, but emits those two as external jsDelivr script tags so the browser caches them across page loads. Both carry `defer`, so they download in parallel with parsing and never block first paint, and still run in document order: the inline block defines `window.__cyberspaceCircuitboardSrcs`, then `sacred-geometry.js` defines `window.SacredGeometry`, then `console-bg.js` reads both. The three parallax textures are preloaded at low priority.
 
-**Canonical source of truth: [`subscribers.json`](subscribers.json)**. It has two sections:
+### GitHub Action PAT
 
-- **`components`** — every shippable component: its `type`, marker name, and source-file paths
-  (`cssFile`, `jsonFile`, `htmlFile`, `jsFiles[]`, `assetsDir`).
-- **`subscribers`** — one entry per consuming property, each declaring `kind`, `target` (absolute
-  local path), `syncScript`, and a `subscriptions` array of `{ component, ...overrides }`.
+The cross-repo sync workflow needs a fine-grained personal access token, stored as the repository secret `SUBSCRIBER_REPO_TOKEN` under Settings, Secrets and variables, Actions. Generate it at [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new):
 
-As verified on disk, the current subscriber map is:
+| Field | Value |
+|---|---|
+| Resource owner | mindattic |
+| Repository access | All repositories owned by mindattic |
+| Expiration | About 1 year (rotate on calendar) |
+| Permission: Metadata | Read-only (auto-included) |
+| Permission: Contents | Read and write (push the auto/sync-components branch) |
+| Permission: Pull requests | Read and write (open or update the cross-repo PR) |
 
-| Subscriber | `kind` | Target | Sync script | Subscriptions |
+Leave every other permission unchecked. Never paste the token into the repo, chat or a commit message; if you do, revoke it and generate a new one.
+
+The same token is mirrored into the MindAttic.Vault token store under the GitHub bucket:
+
+```csharp
+using MindAttic.Vault.Credentials;
+
+var pat = TokenStore.ForBucket("GitHub").Get("mindattic-uiux-pat");
+```
+
+The GitHub secret and the Vault entry are independent copies; rotating the token means updating both.
+
+## Subscribers and sync
+
+The canonical map is [subscribers.json](subscribers.json). It has two sections:
+
+- `components`: every shippable component with its `type`, marker name and source-file paths (`cssFile`, `jsonFile`, `htmlFile`, `jsFiles`, `assetsDir`).
+- `subscribers`: one entry per spliced property, each declaring `kind`, `target`, `syncScript` and a `subscriptions` array of `{ component, ...overrides }`.
+
+| Subscriber | Kind | Target | Sync script | Subscriptions |
 |---|---|---|---|---|
-| `mindattic.com` | `html-inline` | `mindattic.com/index.htm` | `sync-mindattic-com.ps1` | Cyberspace (fonts and logo load from the CDN — see [MAU-A4](docs/AMENDMENTS.md#MAU-A4)) |
-| `Prose.Writer` — **retired** | `blazor-wwwroot` | `Prose/v3/Prose.Writer` (no longer exists) | `sync-prose.ps1` | OutfitFont, AtticFont (no auto-apply), Cyberspace, PinFooter (`jsOnly`), UserLogin, UserCircle, UserTimeout |
-| `Prose.Codex` — **retired** | `blazor-wwwroot` | `Prose/v3/Prose.Codex` (no longer exists) | `sync-prose.ps1` | same set as Prose.Writer |
-| `MindAttic.Psst.Legal` | `html-inline-multi` | `MindAttic.Psst/{terms.htm, privacy.htm}` | `sync-mindattic-psst.ps1` | OutfitFont |
-| `Ideas` (MindAttic.Ideas.Web) — **retired** | `blazor-wwwroot` | `MindAttic.Ideas/src/MindAttic.Ideas.Web` (no longer exists) | `sync-ideas.ps1` | UserLogin, UserCircle, UserTimeout |
-| `Tutor` (Tutor.Blazor) | `blazor-wwwroot` | `Tutor/Tutor.Blazor` | `sync-tutor.ps1` | UserLogin, UserCircle, UserTimeout |
+| mindattic.com | html-inline | mindattic.com/index.htm | sync-mindattic-com.ps1 | Cyberspace (fonts and logo load from the CDN, see MAU-A4) |
+| MindAttic.Psst.Legal | html-inline-multi | MindAttic.Psst terms.htm and privacy.htm | sync-mindattic-psst.ps1 | OutfitFont |
+| Tutor | blazor-wwwroot | Tutor/Tutor.Blazor | sync-tutor.ps1 | UserLogin, UserCircle, UserTimeout |
+| Prose.Writer (retired) | blazor-wwwroot | no longer exists | sync-prose.ps1 | OutfitFont, AtticFont, Cyberspace, PinFooter, UserLogin, UserCircle, UserTimeout |
+| Prose.Codex (retired) | blazor-wwwroot | no longer exists | sync-prose.ps1 | same as Prose.Writer |
+| Ideas (retired) | blazor-wwwroot | no longer exists | sync-ideas.ps1 | UserLogin, UserCircle, UserTimeout |
 
-Everyone else in the MindAttic fleet — the `MindAttic.Deploy`-rendered catalog landing pages and the
-Claudia/ChiMesh long-form builds — pulls components from the jsDelivr CDN at runtime instead, pinned
-via `MindAttic.Deploy/projects.json:componentsVersion`; they are intentionally absent from
-`subscribers.json` (`subscribers.json`'s own `$comment` field states this explicitly).
+ryandebraal.com and mindatticcares.com are not spliced; they reference the package by jsDelivr URL only.
 
 ### How a sync script works
 
-Every `sync-*.ps1` dot-sources the shared helper `sync/_subscribers.ps1`, which supplies:
+Every `sync-*.ps1` dot-sources `sync/_subscribers.ps1`, which supplies:
 
-- `Get-Subscriber` / `Get-ComponentDescriptor` — read the two sections of `subscribers.json`.
-- `Build-FontCssBody` — assembles a `font-css` component's CSS plus its `applyToSelector` rule, with
-  precedence **subscription override > component JSON default > no rule**.
-- `Get-DominantEol` / `ConvertTo-Eol` — detect a host file's CRLF/LF convention before writing, so a
-  splice never introduces a mixed-EOL diff (component sources are LF; most subscriber files are CRLF).
+- `Get-Subscriber` and `Get-ComponentDescriptor` to read the two sections of `subscribers.json`.
+- `Build-FontCssBody` to assemble a font component's CSS plus its `applyToSelector` rule (subscription override, then component default, then no rule).
+- `Get-DominantEol` and `ConvertTo-Eol` so a splice keeps the host file's CRLF or LF convention.
 
-Each script then does the standard idempotent splice:
+Each script then does the same idempotent splice:
 
-1. Read the subscriber's target file(s).
-2. For each entry in that subscriber's `subscriptions` array, dispatch on the component name to a
-   per-type builder (a `switch` inside the sync script — new component *types* need a new case).
-3. Replace everything between that component's `<!-- BEGIN/END MINDATTIC.UIUX:<MARKER> -->` (HTML) or
-   `/* == BEGIN/END MINDATTIC.UIUX:<MARKER>.CSS == */` (CSS) comment pair with the freshly-built block.
-   Anything outside the markers is left untouched — subscribers hand-author the rest of the file.
-4. Write the file back, normalized to its original line ending.
+1. Read the subscriber's target files.
+2. For each entry in its `subscriptions`, dispatch on the component to a builder (a `switch` in the script; a new component type needs a new case).
+3. Replace everything between that component's BEGIN and END marker comments with the freshly built block. Everything outside the markers is left alone.
+4. Write the file back with its original line endings.
 
-Running a script twice with no source change produces a byte-identical file — this is the
-idempotency contract every `sync-*.ps1` must satisfy.
+Running a script twice with no source change produces a byte-identical file.
 
-**Retired subscribers.** A subscriber whose target project is gone is not deleted; it carries a
-`"retired": "<date>: <why / how to re-enroll>"` field in `subscribers.json`. Its sync script prints that
-note and exits 0 (via `Test-SubscriberRetired` in `_subscribers.ps1`), so `sync-all.ps1` stays green.
-Prose.Writer, Prose.Codex and Ideas are retired as of 2026-10-02.
+Retired subscribers are not deleted: they carry a `retired` field explaining why and how to re-enroll, and their script prints it and exits 0 (via `Test-SubscriberRetired`), so `sync-all.ps1` stays green.
 
-### Enrolling / unenrolling a subscriber in a component
+### Marker contract
 
-Add or remove one line in that subscriber's `subscriptions` array in `subscribers.json`:
+HTML subscribers use `<!-- BEGIN MINDATTIC.UIUX:MARKER -->` and a matching END comment; CSS subscribers use `/* == BEGIN MINDATTIC.UIUX:MARKER.CSS == */` and a matching END comment. The generated body opens with a "Generated by" comment warning not to hand-edit, because the next sync overwrites it.
 
-```jsonc
+### Enrolling a subscriber in a component
+
+Add or remove one line in that subscriber's `subscriptions` array:
+
+```json
 "Tutor": {
   "kind":       "blazor-wwwroot",
   "target":     "D:/Projects/MindAttic/Tutor/Tutor.Blazor",
@@ -243,299 +218,176 @@ Add or remove one line in that subscriber's `subscriptions` array in `subscriber
 }
 ```
 
-The next sync run enrolls/unenrolls automatically — no code change needed **unless** the component's
-`type` doesn't already have a dispatch case in that subscriber's sync script, in which case add a
-builder function + `switch` case first.
+The next sync enrolls or unenrolls automatically, unless the component's type has no dispatch case in that script yet; then add a builder function and `switch` case first.
 
-| Subscriber kind | What "add a subscription" means |
+| Subscriber kind | What adding a subscription means |
 |---|---|
-| `html-inline` (mindattic.com) | Edit `subscribers.json` only **if** the component's type already has a `switch` case in `sync-mindattic-com.ps1`. New types need a builder + dispatch case. The HTML marker pair must already exist once in `index.htm`. |
-| `blazor-wwwroot` (Tutor; Prose.Writer, Prose.Codex, Ideas are retired) | Edit `subscribers.json` only **if** the component's type already has a `switch` case in the matching sync script. CSS marker pairs in `app.css` are one-time hand-inserts. |
-| `html-inline-multi` (MindAttic.Psst legal) | Same contract as `html-inline`, but `target` is a folder and `targets[]` lists the files (`terms.htm` + `privacy.htm`). |
+| html-inline (mindattic.com) | Edit `subscribers.json` if the type already has a case in `sync-mindattic-com.ps1`. The HTML marker pair must already exist once in `index.htm`. |
+| blazor-wwwroot (Tutor) | Edit `subscribers.json` if the type already has a case in the sync script. CSS marker pairs in `app.css` are one-time hand inserts. |
+| html-inline-multi (MindAttic.Psst legal) | Same as html-inline, but `target` is a folder and `targets` lists the files. |
 
----
+## Building
 
-## Delivery pipelines
+There is no build step for consumers. Three repo tools exist.
 
-Full walkthrough (including the one-time PAT setup) in
-[`.github/PIPELINES.md`](.github/PIPELINES.md).
-
-| Pipeline | What it does | When it runs |
-|---|---|---|
-| **jsDelivr CDN** | Serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<ref>/<path>` — versioned, edge-cached, no infra to run. `<ref>` can be a whole-number tag (`@V7`, immutable), `@main` (tracks tip-of-tree, ~7-day cache), or a commit SHA (immutable). | Continuously. Consumed by `MindAttic.Deploy` for every catalog landing page and the Claudia/ChiMesh long-form builds. |
-| **GitHub Actions cross-repo sync** | `.github/workflows/sync-subscribers.yml` opens PRs against `mindattic/mindattic.com` (CYBERSPACE block) and `mindattic/MindAttic.Psst` (OUTFITFONT block) with refreshed marker blocks. | On push to `main` touching `Components/Cyberspace/**`, `Components/OutfitFont/**`, `subscribers.json`, `sync/**` or the workflow — skipped when the commit message contains `[skip ci]`. |
-| **PowerShell `sync/*.ps1`** | Local dev fallback — same logic as the Action, runs against your working copies (retired subscribers are skipped). `MindAttic.Deploy` runs `sync-mindattic-com.ps1` as a `preDeploy` hook for `mindattic.com`, passing the release tag during a linked deploy. | Manually, or from `MindAttic.Deploy`. |
-
-### Tagging a release
-
-```bash
-git tag -a V8 -m "..."  # the next whole number; never SemVer, never move a published tag
-git push origin main V8
-# jsDelivr serves the new tag immediately; purge a branch ref if needed:
-# GET https://purge.jsdelivr.net/gh/mindattic/MindAttic.UiUx@main/Components/Cyberspace/console-bg.js
-```
-
-For the four linked properties (this repo + `mindattic.com`, `ryandebraal.com`, `mindatticcares.com`) you
-normally don't tag by hand: `MindAttic.Deploy`'s linked deploy (`npm run deploy -- --uiux`) tags the next
-`V<n>` when `HEAD` is ahead of the latest tag, rewrites the pins in the three sites, verifies every asset on
-jsDelivr and then FTPs the sites. `sync-mindattic-com.ps1`'s `-CyberspaceCdnTag` defaults to the latest
-`V*` tag in this repo (via `git describe`), and the linked deploy passes the release tag explicitly.
-To propagate a release to the other `MindAttic.Deploy`-rendered catalog pages, bump `componentsVersion` in
-`MindAttic.Deploy/projects.json` and run that repo's catalog deploy.
-
-### Why Cyberspace's two biggest JS files are CDN-loaded, not inlined, for mindattic.com
-
-`console-bg.js` is ~580 KB and `sacred-geometry.js` (the shape catalog it draws from) is ~60 KB.
-`sync-mindattic-com.ps1` keeps the small Cyberspace scripts (`loader.js`, `tv-static.js`,
-`home-bg.js`) and a circuit-board-texture override inline, but emits `sacred-geometry.js` and
-`console-bg.js` as external `<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/…">`
-tags instead — so the browser can cache them separately across page loads. Both carry `defer`, so they
-download in parallel with parsing and never block the first paint; deferred scripts still execute in
-document order after parsing, so the inline block (defines `window.__cyberspaceCircuitboardSrcs`) has
-already run, then `sacred-geometry.js` (defines `window.SacredGeometry`), then `console-bg.js` (reads both
-globals). The three parallax textures are preloaded at low priority by `<link rel="preload">` tags the sync
-emits.
-
-### GitHub Action PAT — `SUBSCRIBER_REPO_TOKEN`
-
-The cross-repo sync workflow needs a fine-grained personal access token so it can open PRs against
-subscriber repos. Stored as the repository secret **`SUBSCRIBER_REPO_TOKEN`** at
-[`Settings → Secrets and variables → Actions`](https://github.com/mindattic/MindAttic.UiUx/settings/secrets/actions).
-
-Generate at [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new) with:
-
-| Field | Value |
-|---|---|
-| Resource owner | `mindattic` |
-| Repository access | *All repositories owned by `mindattic`* — covers every current and future subscriber automatically |
-| Expiration | ~1 year (rotate on calendar) |
-| Permission: **Metadata** | Read-only *(auto-included on every fine-grained PAT)* |
-| Permission: **Contents** | **Read and write** *(push the `auto/sync-components` branch)* |
-| Permission: **Pull requests** | **Read and write** *(open/update the cross-repo PR)* |
-
-Any other permission is unnecessary — leave Pages, Secrets, security advisories, etc. unchecked.
-
-> **Never paste the PAT value into the repo, into chat, or into a commit message.** If you do, treat
-> it as compromised — revoke it immediately on the PAT settings page and generate a fresh one before
-> saving the new value into the GitHub secret.
-
-**Local retrieval via [`MindAttic.Vault`](../MindAttic.Vault/README.md).** The same PAT is mirrored
-into the family-wide token store at `%APPDATA%\MindAttic\GitHub\tokens.json` under the key
-`mindattic-uiux-pat`:
-
-```csharp
-using MindAttic.Vault.Credentials;
-
-var pat = TokenStore.ForBucket("GitHub").Get("mindattic-uiux-pat");
-```
-
-The two stores (GitHub repo secret and Vault `tokens.json`) are *independent* copies — rotating the
-PAT means updating both, or picking one (the GitHub secret) as authoritative and rewriting the Vault
-entry from it whenever the PAT changes.
-
----
-
-## Marker contract
-
-Every sync edit is bounded by a comment pair. HTML subscribers use
-`<!-- BEGIN MINDATTIC.UIUX:<MARKER> --> … <!-- END … -->`; CSS subscribers use
-`/* == BEGIN MINDATTIC.UIUX:<MARKER>.CSS == */ … /* == END … == */`. Anything outside the markers is
-left untouched, so subscriber projects can hand-author the rest of the file without conflict.
-
-The script-generated body always opens with a `Generated by …` comment warning subscribers not to
-hand-edit, because the next sync will overwrite it.
-
----
-
-## Build & run
-
-There is **no automated test project** in this repo (per `docs/BIBLE.md` §6 — the nearest thing to a
-smoke test is SacredGeometry's `build-previews.mjs`, which regenerates its 1024 shape posters).
-
-### `build.ps1` — standalone / idea / blazor build CLI
+`build.ps1` copies a component's canonical files verbatim:
 
 ```powershell
-# Copy a component's raw canonical assets verbatim to dist/standalone
 .\build.ps1 -Build OutfitFont -Output standalone
-
-# .idea packaging (requires a sibling MindAttic.Ideas repo with the Abstractions SDK + ma-idea packer)
-.\build.ps1 -Build Cyberspace -Output idea
 ```
 
-`-Output idea` and `-Output blazor` are currently **stubs**: the `Ideas/` RCL packaging subtree
-(`Ideas/MindAttic.Ideas.{Plugin|Theme|Control}.<Build>/`) that `-Output idea` depends on was removed
-from this repo 2026-06-07 (`docs/AMENDMENTS.md` `MAU-A3`); `-Output blazor` was never implemented.
-Only `-Output standalone` currently does real work.
+Only `-Output standalone` does real work. `-Output idea` depends on an `Ideas/` packaging subtree removed 2026-06-07 (MAU-A3) and `-Output blazor` was never implemented.
 
-### `sync/sync-all.ps1` — run every splice locally
+Run every splice locally, or one target:
 
 ```powershell
 powershell -File sync/sync-all.ps1
-```
-
-Glob-discovers every `sync-*.ps1` in `sync/` (except itself), runs each in turn, and aggregates
-failures. Or invoke one target directly:
-
-```powershell
 powershell -File sync/sync-mindattic-com.ps1
-powershell -File sync/sync-prose.ps1
 powershell -File sync/sync-mindattic-psst.ps1
-powershell -File sync/sync-ideas.ps1
 powershell -File sync/sync-tutor.ps1
 ```
 
-Downstream copies are derived artifacts — never edit them directly; the next sync overwrites
-whatever's between the marker pairs.
+`sync-all.ps1` discovers every `sync-*.ps1` by glob and aggregates failures. Downstream copies are derived artifacts; never edit between their markers.
 
-### `tools/codex.ps1` — documentation canon validator
-
-```powershell
-powershell -File tools/codex.ps1 digest   # regenerate docs/BIBLE.digest.md
-powershell -File tools/codex.ps1 doctor   # validate IDs, links, front-matter, cited tests/paths
-```
-
-Run `doctor` after editing any file under `docs/`; it must exit 0.
-
-### `tools/build-readme.ps1` — regenerate README.htm
+Regenerate the asset manifest after adding or replacing a served file (`-Verify` fails if it is stale):
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1
+powershell -File tools/build-asset-manifest.ps1
 ```
 
-Thin wrapper around the shared engine at `../codex-standard/build-readme.ps1` (one engine, shared by
-every MindAttic repo, so every `README.htm` looks and behaves identically). Do not duplicate that
-logic here.
+## Testing
 
----
+`tests/` holds a Playwright Test suite that proves the package is complete and well formed (fonts and images decode, nothing re-encoded, manifest exact) and that the three sites load with no failed requests or console errors, talk only to allowed hosts, pin the expected tag and keep their layout across a viewport matrix. It drives the installed Google Chrome.
+
+```powershell
+cd tests
+npm ci
+npm test                # local mode: CDN requests answered from this working tree
+npm run test:live       # real sites and real CDN
+npm run test:assets     # package checks only, no browser
+```
+
+[tests/README.md](tests/README.md) lists every script and environment variable. SacredGeometry's `build-previews.mjs` also acts as a smoke test by regenerating its 1024 posters.
 
 ## Editing a component
 
-Edit files in the component's folder (e.g. `Components/Cyberspace/console-bg.js`). Push to `main` and
-the GitHub Action delivers to its subscriber jobs (see [Delivery pipelines](#delivery-pipelines)), or run
-`sync/sync-all.ps1` locally for fast iteration across every sync script without round-tripping through
-GitHub.
-
-To ship a component change to the CDN-loaded subscribers managed by
-[`MindAttic.Deploy`](../MindAttic.Deploy/README.md), tag a new version of this repo (`git tag Vn &&
-git push --tags`) and bump `componentsVersion` in `MindAttic.Deploy/projects.json`, then run that
-repo's deploy.
+Edit the files in the component's folder, then either push to main (the Action delivers to its subscriber jobs) or run `sync/sync-all.ps1` locally. To ship to the CDN-loaded sites, run MindAttic.Deploy's linked deploy, which tags a new release and repins all three sites.
 
 ## Adding a new component
 
-1. Create a folder under `Components/` with the source files (`<name>.html`, `<name>.css`, optional
-   `<name>.js`, optional `<name>.json` config, and a `<FolderName>.md` doc).
-2. Register it in `subscribers.json` under `components` with its `type`, source-file paths, and a
-   base marker name (without `.CSS`/`.HTML` suffix).
-3. Add `{ "component": "<Name>" }` to each subscriber's `subscriptions` array that should receive it.
-4. For each subscribed project: insert the marker pair into the target file once (hand-edit), and add
-   a builder function + `switch` case to the relevant sync script if that component's type doesn't
-   already have one.
+1. Create a folder under `Components/` with its source files and a `FolderName.md` doc.
+2. Register it in `subscribers.json` under `components` with its `type`, source paths and a base marker name.
+3. Add `{ "component": "Name" }` to each subscriber that should receive it.
+4. In each subscribed project, insert the marker pair once by hand, and add a builder and `switch` case to the sync script if the type is new.
 5. Run `sync/sync-all.ps1` and confirm a clean splice.
-6. Add the component to `docs/data/components.json` (schema at `docs/data/_schema/component.schema.json`)
-   so it is tracked in the L5 canon.
+6. Add the component to `docs/data/components.json` (schema in `docs/data/_schema/component.schema.json`).
 
 ## Adding a new subscriber
 
-Before adding one here, make sure it doesn't belong in `MindAttic.Deploy` instead — a catalog landing
-page or long-form HTML build that just pulls from CDN belongs in `MindAttic.Deploy/projects.json`,
-not here. Only add a splice-in-place subscriber if it genuinely has hand-authored content
-interleaved with the components (like `mindattic.com/index.htm` or the `MindAttic.Psst` legal pages).
+Add a splice-in-place subscriber only when it has hand-authored content interleaved with the components, like `mindattic.com/index.htm` or the MindAttic.Psst legal pages. A page that only needs assets should load them from jsDelivr instead.
 
-1. Add an entry to `subscribers.json` under `subscribers` with `kind`, `target`, `syncScript`, and
-   `subscriptions`.
-2. Create `sync/sync-<subscriber>.ps1` that dot-sources `_subscribers.ps1`, reads its subscriber via
-   `Get-Subscriber`, and iterates `$sub.subscriptions`.
-3. Make it idempotent — running twice with no source changes produces no diff.
-4. `sync-all.ps1` picks it up automatically (it discovers `sync-*.ps1` by glob).
-5. If the subscriber also needs GitHub Action delivery, add a job mirroring the pattern in
-   `.github/workflows/sync-subscribers.yml`.
+1. Add an entry under `subscribers` with `kind`, `target`, `syncScript` and `subscriptions`.
+2. Create `sync/sync-NAME.ps1` that dot-sources `_subscribers.ps1`, reads its entry with `Get-Subscriber` and iterates its subscriptions.
+3. Make it idempotent: two runs with no source change produce no diff.
+4. `sync-all.ps1` picks it up automatically.
+5. For GitHub Action delivery, add a job following `.github/workflows/sync-subscribers.yml`.
 
----
+## Keepout zones
 
-## Keepout zones (Cyberspace)
+`console-bg.js` keeps effects from spawning behind page content. The placer weights overlap with keepout rects four times a normal window overlap, so it strongly prefers the margins. Built-in selectors:
 
-`console-bg.js` ships a keepout system that prevents effects from spawning behind page content. The
-placer (`bestPos` / `safePos`) weights overlap with these rects 4× a normal window overlap, so it
-strongly prefers spawning in the margins.
+- `.cyberspace-keepout`, an opt-in marker for any container.
+- `main`.
+- `.home-content`.
+- `.board-grid`.
 
-Baked-in selectors — any host gets these for free:
-- `.cyberspace-keepout` — opt-in marker; add to any container you want protected.
-- `main` — both subscribers use `<main>` for their content area.
-- `.home-content` — Prose's Home wrapper.
-- `.board-grid` — any tab/tile board.
-
-Hosts can extend at runtime:
+Hosts can add more at runtime:
 
 ```js
 window.__cyberspaceKeepoutSelectors = '.foo, .bar';
 ```
 
----
-
 ## Cyberspace effect catalog
 
-Canonical names + definitions live in the registry header of `console-bg.js`. Toggles (`FX_*`) and
-spawn rates (`RATE_*`) are clustered near the top of the file — flip any `FX_*` to `false` to kill
-that effect.
+Names and definitions live in the registry header of `console-bg.js`. Toggles (`FX_` flags) and spawn rates (`RATE_` constants) sit near the top of the file; set a toggle to `false` to turn an effect off.
 
-### Top-level effects (tick-loop dispatch)
+| Name | Spawn function | Toggle and rate | What it does |
+|---|---|---|---|
+| TERMINAL | spawnWindow | FX_WIN, remainder | Generic console window, the workhorse |
+| CRASH | spawnError | FX_ERROR, 1% | Fatal-error popup |
+| TREMOR | spawnWarning | FX_WARN, 1% | Warning popup |
+| LEAK | spawnMemo | FX_MEMO, 4% | Leaked corporate memo, erased character by character |
+| SCHEMATIC | spawnGeoWindow | FX_GEO, 10% | Geometric schematic window with a SacredGeometry shape |
+| CASCADE | spawnCascade | FX_CASCADE, 3% | Burst of 3 to 6 cascaded console windows |
+| ARTIFACT | spawnArtifact | FX_ARTIFACT, 12% | Floating glyph cluster, 24 variants |
+| FRAGMENT | spawnFrag | FX_FRAG, 40% | Floating code fragments, the most frequent effect |
+| TRACE | spawnNetConnect | FX_NET, 8% | Tron-cycle network wire route |
+| PULSAR | spawnMorseDot | FX_MORSE, 5% | Morse-code glowing dot |
+| HEIST | spawnFolderRip | FX_FOLDER, 4% | Folder-rip file-extraction sequence |
+| PREDATOR | spawnArtifactPredator | FX_PREDATOR, 1.2% | Rare artifact-hunting swarm |
 
-| Name        | Spawn fn                  | Toggle / Rate              | What it does |
-|-------------|---------------------------|----------------------------|--------------|
-| **TERMINAL**| `spawnWindow`             | `FX_WIN` / remainder       | Generic console window (the workhorse) |
-| **CRASH**   | `spawnError`              | `FX_ERROR` / 1%            | Fatal-error popup |
-| **TREMOR**  | `spawnWarning`            | `FX_WARN` / 1%             | Warning popup |
-| **LEAK**    | `spawnMemo`               | `FX_MEMO` / 4%             | Leaked corporate memo, character-by-character erase |
-| **SCHEMATIC**| `spawnGeoWindow`         | `FX_GEO` / 10%             | Geometric schematic window (shape drawn from [SacredGeometry](Components/SacredGeometry/SacredGeometry.md)) |
-| **CASCADE** | `spawnCascade`            | `FX_CASCADE` / 3%          | Burst of 3–6 cascaded console windows |
-| **ARTIFACT**| `spawnArtifact`           | `FX_ARTIFACT` / 12%        | Floating glyph cluster — 7 variants below |
-| **FRAGMENT**| `spawnFrag`               | `FX_FRAG` / 40%            | Floating code fragments (most frequent effect) |
-| **TRACE**   | `spawnNetConnect`         | `FX_NET` / 8%              | Tron-cycle network wire route |
-| **PULSAR**  | `spawnMorseDot`           | `FX_MORSE` / 5%            | Morse-code glowing dot |
-| **HEIST**   | `spawnFolderRip`          | `FX_FOLDER` / 4%           | Folder-rip file-extraction sequence |
-| **PREDATOR**| `spawnArtifactPredator`   | `FX_PREDATOR` / 1.2%       | Rare artifact-hunting swarm |
+ARTIFACT rolls one of 24 variants per spawn (`ART_VARIANTS`): SCATTER, LATTICE, ANCHOR, SLUG, CENTIPEDE, PULSE, WANDERER, SPIDER, INCHWORM, HOPPER, JELLY, SQUID, BEETLE, TADPOLE, ANT, MOIRE, VORTEX, EXPLOSION, ORBIT, NETWORK, PHASEFIELD, SHATTER, SPIROGRAM and PULSARRING. The original seven:
 
-### ARTIFACT — 7 behavior variants
+| Variant | Behaviour |
+|---|---|
+| SCATTER | Random blob; all glyphs drift one direction |
+| LATTICE | Fibonacci grid; the whole lattice drifts with a corner-wave delay |
+| ANCHOR | Stationary grid; glitches in place and emits feelers |
+| SLUG | Single grid crawls with per-cell undulation |
+| CENTIPEDE | Multi-segment chain with a peristaltic wave and leader feelers |
+| PULSE | Concentric Fibonacci rings with a lub-dub heartbeat |
+| WANDERER | Small grid walks the screen and pauses to look around |
 
-| Variant       | Behavior |
-|---------------|----------|
-| **SCATTER**   | Random blob; all glyphs drift one direction |
-| **LATTICE**   | Fibonacci grid; whole lattice drifts with corner-wave delay |
-| **ANCHOR**    | Stationary grid; glitches in place; emits feelers |
-| **SLUG**      | Single grid crawls + per-cell undulation |
-| **CENTIPEDE** | Multi-segment chain; peristaltic wave + leader feelers |
-| **PULSE**     | Concentric Fibonacci rings; lub-dub heartbeat radiating outward |
-| **WANDERER**  | Small grid walks the screen, pauses to "look around" |
+The registry header in `console-bg.js` describes the other seventeen.
 
-### PULSAR — 2 modes
+| Effect | Sub-behaviours |
+|---|---|
+| PULSAR | BLINK (about 90%, classic on/off pulse); SHIFT (about 10%, slides in cardinal directions and color-swaps each symbol) |
+| TRACE | ARC (spark burst at about 30% of sharp turns); ACK (three-blink success then synced fade); SEVER (direction-aligned CONNECTION-LOST message on failure) |
+| HEIST | HIGHLIGHT (cyan glow on a run of files); EXTRACT (slide-right exit with shimmer and per-file stagger); DISSOLVE (window fades when extraction completes) |
+| PREDATOR | STALK (off-screen swarm homes on prey); SCAN (prey detection cone); FLEE (prey redirects away); DEVOUR (cell adopts a wasp glyph then dissolves); DISPERSE (wasps scatter and fade) |
 
-| Mode      | Share | Behavior |
-|-----------|-------|----------|
-| **BLINK** | ~90%  | Classic on/off pulse |
-| **SHIFT** | ~10%  | Slides cardinal directions, color-swaps each symbol |
+## Project layout
 
-### TRACE — 3 sub-behaviors
+```text
+MindAttic.UiUx/
+  Components/            13 self-contained components (table above)
+    Cyberspace/          frontpage.html/.css, console-bg.js, home-bg.js, tv-static.js,
+                         loader.js, index.htm (test harness), assets/ (parallax PNGs)
+    SacredGeometry/      sacred-geometry.js (UMD), build-previews.mjs, previews/, index.htm (QA grid)
+    ...                  OutfitFont, AtticFont, PinFooter, BackHomeM, WebSnapshot, PageScrollbar,
+                         Textbox, Tooltip, UserLogin, UserCircle, UserTimeout
+  Themes/Cyberspace/     theme.css, body-prelude.html, deps.json
+  fonts/                 outfit/ and attic/ woff2 web fonts
+  mindattic.com/         logos/
+  mindatticcares.com/    icons/, images/, logos/
+  ryandebraal.com/       themes/<name>/, images/
+  archive/               kept but not served: font sources, brand masters, unused art
+  assets-manifest.json   generated list of every served file
+  tests/                 Playwright suite for the package and the three sites
+  sync/                  _subscribers.ps1 helper, sync-all.ps1, one sync-*.ps1 per subscriber, sync.md
+  docs/                  BIBLE, AMENDMENTS, USER_STORIES, ASSETS, rfc/, data/, images/
+  tools/                 codex.ps1, build-asset-manifest.ps1, build-readme.ps1
+  subscribers.json       components registry and subscriber map
+  build.ps1              standalone-copy build CLI
+  .github/               PIPELINES.md and workflows/sync-subscribers.yml
+```
 
-| Sub       | Behavior |
-|-----------|----------|
-| **ARC**   | Sharp-turn spark burst at ~30% of corners |
-| **ACK**   | Three-blink success signal then synced fade-out |
-| **SEVER** | Direction-aligned CONNECTION-LOST message on failure |
+## Documentation
 
-### HEIST — 3 sequential phases
+- [docs/BIBLE.md](docs/BIBLE.md): what the system is and is not, architecture, the laws (MAU-LAW-1 to 6).
+- [docs/AMENDMENTS.md](docs/AMENDMENTS.md): append-only change log.
+- [docs/USER-STORIES](docs/USER_STORIES.md): stories with test and evidence citations.
+- [docs/ASSETS.md](docs/ASSETS.md): the runtime asset package.
+- [docs/data/components.json](docs/data/components.json): the component catalog as data.
+- [CHANGELOG.md](CHANGELOG.md): what each release tag contains.
+- [sync/sync.md](sync/sync.md) and [.github/PIPELINES.md](.github/PIPELINES.md): sync and pipeline details.
+- [AGENTS.md](AGENTS.md) and [CLAUDE.md](CLAUDE.md): working rules for coding agents.
 
-| Phase         | Behavior |
-|---------------|----------|
-| **HIGHLIGHT** | Cyan selection glow on adjacent run of files |
-| **EXTRACT**   | Slide-right exit with shimmer + per-file stagger |
-| **DISSOLVE**  | Window fade-out tied to extract completion |
+Run `powershell -File tools/codex.ps1 doctor` after editing anything under `docs/`, and `powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1` after editing this README.
 
-### PREDATOR — 5 sequential sub-behaviors
+## License
 
-| Sub          | Behavior |
-|--------------|----------|
-| **STALK**    | Off-screen swarm origin, homes on prey |
-| **SCAN**     | Prey detection cone (max forward, min behind) |
-| **FLEE**     | Prey panic-redirect of crawl vector away from swarm |
-| **DEVOUR**   | Cell consume-and-convert (cell adopts wasp glyph then dissolves) |
-| **DISPERSE** | Wasps scatter and fade after kill |
+This repo has no LICENSE file. All rights reserved. OutfitFont bundles the Outfit typeface from Google Fonts.
+
+Part of [MindAttic](https://mindattic.com) — see more projects at [github.com/mindattic](https://github.com/mindattic). Related: [MindAttic.Deploy](https://github.com/mindattic/MindAttic.Deploy), [mindattic.com](https://github.com/mindattic/mindattic.com).
