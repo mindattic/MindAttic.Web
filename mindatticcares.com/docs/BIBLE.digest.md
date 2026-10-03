@@ -94,8 +94,8 @@ Deployment is owned by **MindAttic.Deploy**, not by per-project scripts. The per
 
 
 ## Status index (USER_STORIES)
-- done: 0   partial: 9   planned: 2   cut: 0
+- done: 5   partial: 4   planned: 2   cut: 0
 
 ## Latest amendment
-- MAC-A2 — Static assets come from the MindAttic.UiUx jsDelivr package (refines MAC-LAW-1) {#MAC-A2}
+- MAC-A3 — Linked deploy, real hosting layout, automated tests, audit fixes (refines MAC-A1, MAC-LAW-4) {#MAC-A3}
 

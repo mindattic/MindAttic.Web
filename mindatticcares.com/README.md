@@ -40,7 +40,7 @@ the "how to work here" layer; it links to canon rather than duplicating it.
 | Layer | File | What it holds |
 |---|---|---|
 | L0 — Bible | [docs/BIBLE.md](docs/BIBLE.md) | What MindAttic Cares IS / is NOT, architecture, the Laws (`MAC-LAW-*`), verified state, glossary. Section IDs `{#MAC-§N}`. |
-| L1 — Amendments | [docs/AMENDMENTS.md](docs/AMENDMENTS.md) | Append-only change log (`MAC-A<n>`); an amendment **wins** over the bible. Currently two entries: [MAC-A1](docs/AMENDMENTS.md#MAC-A1), retiring the per-project deploy pipeline in favor of MindAttic.Deploy, and [MAC-A2](docs/AMENDMENTS.md#MAC-A2), allowing tag-pinned static assets from the MindAttic.UiUx jsDelivr package. |
+| L1 — Amendments | [docs/AMENDMENTS.md](docs/AMENDMENTS.md) | Append-only change log (`MAC-A<n>`); an amendment **wins** over the bible. Currently three entries: [MAC-A1](docs/AMENDMENTS.md#MAC-A1), retiring the per-project deploy pipeline in favor of MindAttic.Deploy; [MAC-A2](docs/AMENDMENTS.md#MAC-A2), allowing tag-pinned static assets from the MindAttic.UiUx jsDelivr package; and [MAC-A3](docs/AMENDMENTS.md#MAC-A3), recording the linked 4-in-1 deploy, the real hosting layout, the automated tests and the 2026-10-02 audit fixes. |
 | L2 — User stories | [docs/USER_STORIES.md](docs/USER_STORIES.md) | Stories `MAC-US-<Epic><n>` across three epics (Visitor reading the site / Charity forking a playbook / Maintainer publishing). All currently 🟡 — see below. |
 | rfc | [docs/rfc/](docs/rfc/) | Design notes; graduate into the bible + stories once decided. Currently [RFC 0001](docs/rfc/0001-multi-event-playbooks.md) — how to scale past one event on one page. |
 | GENERATED | [docs/BIBLE.digest.md](docs/BIBLE.digest.md) | Produced by `tools/codex.ps1 digest`; injected at Claude Code session start via `.claude/hooks/inject-digest.ps1`. Never hand-edit. |
@@ -131,12 +131,12 @@ The full architectural writeup lives in [BIBLE §4](docs/BIBLE.md#MAC-§4); the 
   `home`, `childs-play`, `y2k` — and exactly one carries the `.active` class at a time.
 - **Hash router.** A single trailing `<script>` block implements `show(name)` (toggles `.active` on
   the matching page and nav link, scrolls to top) and `fromHash()` (routes from
-  `window.location.hash`: bare page names like `#childs-play` select that page directly; anchors
-  prefixed `sec-` — e.g. `#sec-budget` — are treated as belonging to the `y2k` playbook and select
-  that page before the browser's own anchor scroll takes over).
+  `window.location.hash`: bare page names like `#childs-play` select that page directly; any other
+  anchor — e.g. `#sec-budget` or `#contents` — opens the page that contains it and scrolls it into
+  view).
 - **In-page TOC.** The Y2K page carries a `<nav class="toc">` linking to all 19 `<h2 id="sec-*"
   class="sec">` playbook sections; each section also has a "↑ Back to contents" link
-  (`class="back-top" data-page="y2k"`) back to the top of the playbook.
+  (`<a href="#contents" class="back-top">`) back to that contents list (`<nav class="toc" id="contents">`).
 - **Lite-YouTube embed.** The Child's Play intro video is a `.video[data-yt="<id>"]` poster that,
   on click/Enter, swaps itself for a `youtube-nocookie.com` iframe — or, if the page is opened over
   `file://` (where the iframe would be blocked), opens the video in a new tab instead.
@@ -191,6 +191,20 @@ This site is registered as a verbatim root-site FTP upload in `MindAttic.Deploy/
 `files: ["index.htm"]`. The pipeline stamps `index.htm` with a fresh
 `<!-- Last Updated: <ISO8601 UTC> -->` comment and FTPS-uploads it. FTP credentials are centralized
 in `MindAttic.Deploy/secrets/` (gitignored there, not read from this repo).
+
+**Linked deploy.** This site is permanently linked with MindAttic.UiUx, ryandebraal.com and
+mindattic.com: the command above deploys **all four** — it publishes the UiUx package as the next tag
+(if it changed), pins that tag in every site, checks every asset is live on jsDelivr, then FTPs
+ryandebraal.com, this site and mindattic.com. `--dry-run` previews; `--no-link` deploys this site
+alone. Details: [`.claude/commands/deploy.md`](.claude/commands/deploy.md) and MindAttic.Deploy's
+README ("Linked deploy").
+
+**Where it is served.** The FTP path `/mindatticcares.com/` is served at
+`https://ryandebraal.com/mindatticcares.com/`. The domain `https://mindatticcares.com/` is a registrar
+*masked forward*: a frameset whose single frame loads that URL, so the address bar keeps showing
+mindatticcares.com. Two consequences: the page always runs inside a frame (external links therefore
+open in a new tab), and a hash typed after the bare domain (`mindatticcares.com/#y2k`) is not passed
+into the frame — share deep links in the `https://ryandebraal.com/mindatticcares.com/#y2k` form.
 
 ## Assets
 

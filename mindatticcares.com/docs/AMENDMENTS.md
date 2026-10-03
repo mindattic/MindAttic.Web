@@ -70,3 +70,26 @@ has been updated.
 variants, e.g. `-720.png`); whole-number UiUx tags (HOUSE-LAW-1) — a tag is immutable, so changing an
 asset means cutting a new tag and bumping it in `index.htm`; lossy files stay byte-identical at full
 resolution, PNGs may be recompressed only losslessly.
+
+## MAC-A3 — Linked deploy, real hosting layout, automated tests, audit fixes (refines MAC-A1, MAC-LAW-4) {#MAC-A3}
+
+Recorded 2026-10-02.
+
+**Linked deploy.** mindatticcares.com is permanently linked with MindAttic.UiUx, ryandebraal.com and
+mindattic.com in MindAttic.Deploy (`linkedGroups.mindattic-web`, MindAttic.Deploy DEP-A3): deploying
+any one of the four deploys all four — publish the UiUx tag, pin it in every site, verify every asset
+on jsDelivr byte-exact, then FTP the three sites. `--no-link` deploys this site alone.
+
+**Hosting.** The FTP path `/mindatticcares.com/` is served at `https://ryandebraal.com/mindatticcares.com/`;
+`https://mindatticcares.com/` is a registrar masked forward (a frameset loading that URL). The page
+therefore always runs inside a frame, and a hash after the bare domain does not reach the page —
+deep links are shared in the `ryandebraal.com/mindatticcares.com/#…` form.
+
+**Tests.** The site is covered by the shared Playwright suite in `MindAttic.UiUx/tests` (local and
+live modes); MAC-US-A1, A3, A4, A5 and C1 now cite those tests.
+
+**Audit fixes (behaviour).** "↑ Back to contents" links point at the contents list
+(`<nav class="toc" id="contents">`) instead of the page top; `fromHash()` opens whichever page
+contains an in-page anchor (instead of assuming `sec-*` means the Y2K page) and scrolls it into view;
+on screens ≤ 360 px the budget tables use tighter padding so they fit without a sideways scroll.
+`id="contents"` joins the load-bearing IDs of [MAC-LAW-4](BIBLE.md#MAC-LAW-4).

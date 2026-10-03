@@ -67,12 +67,13 @@ in full public detail so any sibling charity can fork and reuse them.
                  │   stamps <!-- Last Updated --> then FTPS PUT  │
                  └───────────────────────┬─────────────────────┘
                                          ▼
-                          static hosting @ mindatticcares.com
+        FTP /mindatticcares.com → https://ryandebraal.com/mindatticcares.com/
+        (mindatticcares.com is a registrar masked forward: a frameset → that URL)
                                          │ at runtime, the browser fetches
                                          ▼ fonts / logos / photos
                  ┌─────────────────────────────────────────────┐
-                 │ jsDelivr CDN → MindAttic.UiUx @V7 (pinned)    │
-                 │ fonts/outfit · mindatticcares.com/...  │
+                 │ jsDelivr CDN → MindAttic.UiUx @V7 (pinned)  │
+                 │ fonts/outfit · mindatticcares.com/...       │
                  └─────────────────────────────────────────────┘
 ```
 
@@ -105,12 +106,13 @@ in full public detail so any sibling charity can fork and reuse them.
 ### 4.3 Key services (VERBS)
 - **`show(name)`** — toggles `.active` on the matching `.page` and the matching `header nav a`,
   scrolls to top. Falls back to `home` for unknown names.
-- **`fromHash()`** — routes from `window.location.hash`: `sec-*` anchors belong to the `y2k` page;
-  bare page names select that page.
+- **`fromHash()`** — routes from `window.location.hash`: bare page names select that page; any other
+  anchor (`#sec-budget`, `#contents`) opens the page that contains it and scrolls it into view.
 - **lite-YT `play()`** — replaces the poster with a `youtube-nocookie` iframe (or opens YouTube in a
   new tab under the `file:` protocol).
-- **deploy** (external) — MindAttic.Deploy stamps the Last-Updated comment and FTPS-uploads
-  `index.htm` to `/mindatticcares.com/`.
+- **deploy** (external) — MindAttic.Deploy's linked group (UiUx + ryandebraal.com + this site +
+  mindattic.com, [MAC-A3](AMENDMENTS.md#MAC-A3)) publishes the asset tag, verifies the CDN, stamps the
+  Last-Updated comment and FTPS-uploads `index.htm` to `/mindatticcares.com/`.
 
 ## 5. The Laws {#MAC-§5}
 
@@ -167,12 +169,21 @@ Evidence gathered 2026-06-07 (structure) and 2026-10-02 (assets externalised, MA
   local stand-in for the CDN showed every font and image loading (no failed requests, no console
   errors) and element boxes identical to the pre-change page on all three pages; `index.htm`
   dropped from ~681 KB to ~60 KB. (One-off manual check, not an automated test.)
-- 🟡 The live jsDelivr `@V7` URLs and a live deploy/browser render were **not** re-verified in this
-  pass (the `@V7` tag is published by the MindAttic.UiUx maintainer separately).
+- ✅ 2026-10-02: `MindAttic.UiUx@V7` published and this site deployed through the linked 4-in-1 deploy;
+  the live page at `https://ryandebraal.com/mindatticcares.com/` serves `@V7` and every UiUx file it
+  references is served byte-exact (MindAttic.UiUx `tests/specs/cdn/cdn.live.spec.mjs`, live mode).
+- ✅ Automated browser tests for this site live in the shared suite `MindAttic.UiUx/tests`
+  (`specs/sites/mindatticcares.spec.mjs` + `common.spec.mjs`): first-paint requests, navigation, deep
+  links, click-to-play video, image dimensions/alt/lazy, allowed hosts, no console errors, no
+  horizontal scrollbar, pinned tag. 18 passed locally on 2026-10-02.
+- ✅ 2026-10-02 audit fixes: "Back to contents" now targets the contents list (`#contents`), any
+  in-page anchor opens its own page and scrolls into view, and the widest budget tables fit a 320 px
+  phone (checked in Chrome: 0 px horizontal overflow at 300/320/390 px).
 - ⬜ No linter, no HTML validator, no link-checker is run in CI (none configured).
 
-Build/test command: **none** (`MAC-LAW-1`). Doctor (`tools/codex.ps1 doctor`) is the only
-automated check this repo carries; it validates the Codex docs, not the site.
+Build command: **none** (`MAC-LAW-1`). This repo carries one automated check of its own,
+`tools/codex.ps1 doctor` (it validates the Codex docs, not the site); the site itself is tested by the
+shared Playwright suite in `MindAttic.UiUx/tests` (`npm run test:local`, `TEST_MODE=live npx playwright test`).
 
 ## 7. Active frontier {#MAC-§7}
 

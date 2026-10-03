@@ -18,28 +18,35 @@ updated: 2026-10-02
 
 ## Epic A — Visitor reading the site
 
-- **MAC-US-A1 🟡** As a visitor, I can switch between the MindAttic Cares, Child's Play, and Y2K
+- **MAC-US-A1 ✅** (verified by `MindAttic.UiUx/tests/specs/sites/mindatticcares.spec.mjs`) As a visitor, I can switch between the MindAttic Cares, Child's Play, and Y2K
   pages from the top nav, so I can find the content I want. *Given the loaded site, When I click a
   nav link, Then exactly that `.page` becomes `.active` and the URL hash updates.*
-  *(behavior present: `show()`/`fromHash()` hash router in `index.htm` `<script>`; no automated UI
-  test in-repo, held 🟡 per HOUSE-LAW-8.)*
+  *(test: MindAttic.UiUx `tests/specs/sites/mindatticcares.spec.mjs` — "navigation switches pages,
+  updates the hash, and fetches that page's art on demand"; passed 2026-10-02.)*
 - **MAC-US-A2 🟡** As a visitor on the Y2K page, I can jump to any of the 19 playbook sections via
   the in-page Table of Contents, so I can navigate the long playbook. *Given the Y2K page, When I
   click a TOC entry, Then the page scrolls to the matching `#sec-*` anchor.*
-  *(19 `sec-*` anchors match the 19 TOC links — structural grep; no automated test, held 🟡.)*
-- **MAC-US-A3 🟡** As a visitor, I can play the Child's Play intro video inline without it loading
+  *(19 `sec-*` anchors match the 19 TOC links — structural grep; TOC click and "Back to contents"
+  (→ `#contents`) checked by hand in Chrome on 2026-10-02; no automated test, held 🟡.)*
+- **MAC-US-A3 ✅** (verified by `MindAttic.UiUx/tests/specs/sites/mindatticcares.spec.mjs`) As a visitor, I can play the Child's Play intro video inline without it loading
   on page open, so the page stays light. *Given the poster, When I click/Enter it, Then a
   `youtube-nocookie` iframe replaces it (or YouTube opens in a new tab under `file://`).*
-  *(lite-YT `play()` present in `<script>`; no automated test, held 🟡.)*
-- **MAC-US-A4 🟡** As a visitor opening a shared `#sec-budget`-style link, I land on the Y2K page at
-  that section. *Given a `#sec-*` hash, When the page loads, Then `fromHash()` selects the `y2k`
-  page.* *(routing logic present in `fromHash`; no automated test, held 🟡.)*
-- **MAC-US-A5 🟡** As a visitor, I get the page text immediately while fonts and images stream in, so
+  *(test: MindAttic.UiUx `tests/specs/sites/mindatticcares.spec.mjs` — "the video is click-to-play: no
+  YouTube request until the poster is clicked"; passed 2026-10-02.)*
+- **MAC-US-A4 ✅** (verified by `MindAttic.UiUx/tests/specs/sites/mindatticcares.spec.mjs`) As a visitor opening a shared `#sec-budget`-style link, I land on the Y2K page at
+  that section. *Given an in-page anchor hash, When the page loads, Then `fromHash()` selects the page
+  that contains it and the anchor is scrolled into view.* *(test: MindAttic.UiUx
+  `tests/specs/sites/mindatticcares.spec.mjs` — "deep links work: #y2k and an in-page anchor
+  (#sec-budget) open the Y2K playbook"; passed 2026-10-02. The scroll position was checked by hand in
+  Chrome. A hash after the bare forwarded domain does not reach the page — see README "Where it is
+  served".)*
+- **MAC-US-A5 ✅** (verified by `MindAttic.UiUx/tests/specs/sites/mindatticcares.spec.mjs`) As a visitor, I get the page text immediately while fonts and images stream in, so
   the site feels fast. *Given the page, When it loads, Then fonts/logos/photos are fetched from the
   pinned jsDelivr package ([MAC-A2](AMENDMENTS.md#MAC-A2)), below-the-fold images load lazily, and
-  `index.htm` itself is ~60 KB.* *(2026-10-02 headless-Chrome check against a local stand-in for the
-  CDN: all requests succeeded, no console errors, layout unchanged; live `@V7` URLs not re-verified;
-  no automated test, held 🟡.)*
+  `index.htm` itself is ~60 KB.* *(tests: MindAttic.UiUx `tests/specs/sites/mindatticcares.spec.mjs` —
+  "first paint (Home) fetches only the Home art, the icon, the background and the Outfit latin font";
+  `common.spec.mjs` — "loads cleanly…" and "no embedded base64 blobs…"; live: `cdn.live.spec.mjs`;
+  all passed 2026-10-02.)*
 
 ## Epic B — Charity forking a playbook
 
@@ -57,11 +64,12 @@ updated: 2026-10-02
 
 ## Epic C — Maintainer publishing
 
-- **MAC-US-C1 🟡** As a maintainer, I can deploy the site with one command via MindAttic.Deploy, so
+- **MAC-US-C1 ✅** (verified by `MindAttic.Deploy/test/linked.test.js`) As a maintainer, I can deploy the site with one command via MindAttic.Deploy, so
   the live site updates and gets a fresh Last-Updated stamp. *Given a change, When I run
-  `npm run deploy -- --site mindatticcares.com`, Then `index.htm` is stamped and FTPS-uploaded.*
-  *(wired in `.claude/commands/deploy.md`; see [MAC-A1](AMENDMENTS.md#MAC-A1). External pipeline,
-  not exercised in this repo's pass, held 🟡.)*
+  `npm run deploy -- --site mindatticcares.com`, Then the whole linked group deploys: the UiUx asset
+  tag is published and verified on the CDN, and `index.htm` is stamped and FTPS-uploaded.*
+  *(tests: MindAttic.Deploy `test/linked.test.js`; exercised for real on 2026-10-02 (`@V7`, 1 file
+  uploaded, live page verified). See [MAC-A1](AMENDMENTS.md#MAC-A1), [MAC-A3](AMENDMENTS.md#MAC-A3).)*
 - **MAC-US-C2 🟡** As a maintainer, I can add a new event by copying the section template and
   updating the TOC, so each event reads consistently. *Given the existing playbook, When I add a
   new `<h1>`/`sec-*` block and update the TOC, Then navigation stays consistent (MAC-LAW-4).*
