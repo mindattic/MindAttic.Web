@@ -69,9 +69,9 @@ GitHub Actions PR.
 
 ### 4.1 Projects / top-level layout
 - `Components/` — canonical component source. Each is self-contained: `<name>.{html,css,js}` +
-  optional `<name>.json` config + `<FolderName>.md` doc. Catalog (13): Cyberspace, SacredGeometry,
-  OutfitFont, AtticFont, PinFooter, BackHomeM, WebSnapshot, PageScrollbar, Textbox, Tooltip, UserLogin,
-  UserCircle, UserTimeout (per-component table in `README.md` and `docs/data/components.json`).
+  optional `<name>.json` config + `<FolderName>.md` doc. Catalog (14): Cyberspace, SacredGeometry,
+  Hyperspace, OutfitFont, AtticFont, PinFooter, BackHomeM, WebSnapshot, PageScrollbar, Textbox, Tooltip,
+  UserLogin, UserCircle, UserTimeout (per-component table in `README.md` and `docs/data/components.json`).
 - `Themes/` — composed bundles built from components (`Themes/Cyberspace/`: `theme.css`,
   `body-prelude.html`, `deps.json`). No current page loads it; it is served for any page that wants it.
 - `fonts/` — web fonts shared by more than one site (`fonts/outfit/`, `fonts/attic/`).
@@ -206,9 +206,16 @@ Status legend: ✅ done (verified) · 🟡 partial · ⬜ planned · living.
   zone; `consoleBg.spawnSparkBurst` draws a gravity spark burst on one pooled, click-through canvas
   whose loop stops at idle (flash only under reduced motion). Verified 2026-10-03:
   `tests/specs/sites/mindattic.spec.mjs` (stories MAU-US-E1 to E4) in `npm run test:local`.
-- 🟡 **Component catalog (`Components/`).** Thirteen self-contained components present with source + docs.
-  No component-level tests; correctness is verified manually (harnesses `Components/Cyberspace/index.htm`,
-  `Components/SacredGeometry/index.htm`) and through the sites suite (Cyberspace on mindattic.com).
+- ✅ **Hyperspace shape library and Hyperspace Reader (`Components/Hyperspace/`).** `hyperspace.js` holds
+  the 100 exhibits of the Hyperspace page (stable ids, plaque metadata, geometry, pure projection for
+  Three.js and 2D canvas); the page builds its gallery and explorers from it at a pinned tag, with a
+  sibling-checkout fallback. `hyperspace-reader.js` is the scanner window (`HyperspaceReader.show` /
+  `close`). Not yet a Cyberspace effect. Verified 2026-10-03: `npx playwright test --project=components`
+  in `tests/` — 10 passed (`tests/specs/components/hyperspace.spec.mjs`, stories MAU-US-F1 to F5).
+- 🟡 **Component catalog (`Components/`).** Fourteen self-contained components present with source + docs.
+  Only Hyperspace has component-level tests; the others are verified manually (harnesses
+  `Components/Cyberspace/index.htm`, `Components/SacredGeometry/index.htm`) and through the sites suite
+  (Cyberspace on mindattic.com).
 - 🟡 **Distribution (`sync/`, Action).** `sync-mindattic-com.ps1` run against a copy of
   `mindattic.com/index.htm` is byte-identical (idempotent); `sync-prose.ps1` and `sync-ideas.ps1` report
   their retired subscribers and exit 0. No automated sync test; the Action's last run is not captured here.

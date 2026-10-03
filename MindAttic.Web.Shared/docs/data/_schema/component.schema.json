@@ -18,6 +18,7 @@
       "enum": [
         "html-css-js-bundle",
         "js-umd-svg",
+        "js-umd",
         "font-css",
         "static-css",
         "css-js",

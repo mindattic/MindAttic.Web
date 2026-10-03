@@ -47,5 +47,6 @@ export default defineConfig({
     { name: 'assets', testDir: './specs/assets' },
     { name: 'cdn', testDir: './specs/cdn' },
     { name: 'sites', testDir: './specs/sites' },
+    { name: 'components', testDir: './specs/components' },
   ],
 });

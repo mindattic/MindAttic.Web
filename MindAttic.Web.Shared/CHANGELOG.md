@@ -3,6 +3,12 @@
 Whole-number release tags (`V1`, `V2`, …). A published tag is immutable ([MAU-LAW-6](docs/BIBLE.md#MAU-LAW-6));
 jsDelivr serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/<path>`.
 
+## Next tag (V12, not yet published)
+- **Hyperspace component** (`Components/Hyperspace/`): `hyperspace.js`, the standard library of the 100
+  Hyperspace exhibits (stable ids, plaque metadata, geometry, pure projection for Three.js and 2D canvas),
+  and `hyperspace-reader.js`, the Hyperspace Reader scanner window. The Hyperspace page pins this tag.
+- Tests: new `components` project (`tests/specs/components/hyperspace.spec.mjs`).
+
 ## V10
 - README rewritten as full documentation and project page.
 - Docs, theme and component headers describe the three sites as the only CDN consumers (each repo's GitHub

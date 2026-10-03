@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MindAttic.UiUx</title>
-<meta name="description" content="Shared front-end assets for every MindAttic site: a cyberpunk console-background engine, 1024 animated line-art shapes, fonts and UI widgets, served from jsDelivr by immutable tag with no build step.">
+<meta name="description" content="Shared front-end assets for every MindAttic site: a cyberpunk console-background engine, 1024 animated line-art shapes, a library of 100 higher-dimensional shapes with a sci-fi scanner window, fonts and UI widgets, se...">
 <meta name="generator" content="MindAttic Codex build-readme.ps1">
 <meta name="generated" content="2026-10-03">
 <style>:root{
@@ -111,7 +111,7 @@ pre:hover .cpbtn{opacity:1}
   </nav>
   <main id="content">
 <h1 id="mindatticuiux">MindAttic.UiUx</h1>
-<p>Shared front-end assets for every MindAttic site: a cyberpunk console-background engine, 1024 animated line-art shapes, fonts and UI widgets, served from jsDelivr by immutable tag with no build step.</p>
+<p>Shared front-end assets for every MindAttic site: a cyberpunk console-background engine, 1024 animated line-art shapes, a library of 100 higher-dimensional shapes with a sci-fi scanner window, fonts and UI widgets, served from jsDelivr by immutable tag with no build step.</p>
 <p><a href="Components/Cyberspace/console-bg.js"><img src="https://img.shields.io/badge/JavaScript-vanilla-F7DF1E" alt="JavaScript"></a> <a href="Components"><img src="https://img.shields.io/badge/CSS-no%20build-264DE4" alt="CSS"></a> <a href="CHANGELOG.md"><img src="https://img.shields.io/badge/jsDelivr-V10-E84D3D" alt="jsDelivr V10"></a> <a href="tests/README.md"><img src="https://img.shields.io/badge/tests-Playwright-2EAD33" alt="Tests Playwright"></a> <a href="docs/BIBLE.md"><img src="https://img.shields.io/badge/status-active-brightgreen" alt="Status active"></a></p>
 <p><img src="docs/images/cyberspace-backdrop.png" alt="The Cyberspace console-background engine running: console windows, a warning and a fatal-error popup, a geometric schematic window and a file-browser panel over a dark circuit-board backdrop"></p>
 <p>Try it: the backdrop behind the wordmark on <a href="https://mindattic.com">mindattic.com</a> is this engine, loaded from <code>cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10</code>.</p>
@@ -126,7 +126,7 @@ pre:hover .cpbtn{opacity:1}
 </ul>
 <h2 id="features">Features</h2>
 <h3 id="components">Components</h3>
-<p>Thirteen components live under <code>Components/</code>, each with its source files, a usage <code>.html</code> snippet, a <code>FolderName.md</code> doc (Textbox is documented in its CSS header) and any companion <code>.json</code> config. The catalog is also tracked as data in <code>docs/data/components.json</code>.</p>
+<p>Fourteen components live under <code>Components/</code>, each with its source files, a usage <code>.html</code> snippet, a <code>FolderName.md</code> doc (Textbox is documented in its CSS header) and any companion <code>.json</code> config. The catalog is also tracked as data in <code>docs/data/components.json</code>.</p>
 <table><thead><tr>
 <th>Component</th>
 <th>Type</th>
@@ -141,6 +141,11 @@ pre:hover .cpbtn{opacity:1}
 <td><a href="Components/SacredGeometry/SacredGeometry.md">SacredGeometry</a></td>
 <td>JS (UMD) + SVG</td>
 <td>1024 unique, animatable line-art shapes (polyhedra, parametric curves, knots, fractals). One renderer targets a live canvas or a static SVG string; <code>build-previews.mjs</code> emits a poster per shape and doubles as a smoke test.</td>
+</tr>
+<tr>
+<td><a href="Components/Hyperspace/Hyperspace.md">Hyperspace</a></td>
+<td>JS (UMD)</td>
+<td>The standard library of 100 higher-dimensional shapes from the Hyperspace page (polytopes, duoprisms, curved manifolds, lattices), each with a stable id, plaque metadata, geometry and a pure projection to Three.js or a 2D canvas, plus the Hyperspace Reader: a scanner window with a Dimensional Threshold bar, rotating readouts and a shutdown sequence. The Hyperspace page builds its gallery from it.</td>
 </tr>
 <tr>
 <td><a href="Components/OutfitFont/OutfitFont.md">OutfitFont</a></td>
@@ -203,6 +208,8 @@ pre:hover .cpbtn{opacity:1}
 <p>The Cyberspace test harness (<code>Components/Cyberspace/index.htm</code>) forces any effect on demand.</p>
 <p><img src="docs/images/sacred-geometry-gallery.png" alt="SacredGeometry QA grid showing the 1024 line-art shapes as thumbnails"></p>
 <p>The SacredGeometry QA grid (<code>Components/SacredGeometry/index.htm</code>) shows every shape in the catalog.</p>
+<p><img src="docs/images/hyperspace-reader.png" alt="The Hyperspace Reader scanning a tesseract: a rotating wireframe on a radar scope, instrument readouts, a Dimensional Threshold bar, UNRESOLVED flags and scrolling details"></p>
+<p>The Hyperspace harness (<code>Components/Hyperspace/index.htm</code>) shows all 100 shapes; click one to point the Hyperspace Reader at it.</p>
 <h3 id="shared-runtime-asset-package">Shared runtime asset package</h3>
 <p>Besides components, this repo is the one asset package every MindAttic site loads from jsDelivr: fonts, brand art, theme art and the Cyberspace textures, organised by domain. <code>assets-manifest.json</code> lists every served file (60 today) with its size, SHA-256 and pixel dimensions, and is regenerated by <code>tools/build-asset-manifest.ps1</code>. See <a href="docs/ASSETS.md">docs/ASSETS.md</a> for the layout, naming and quality rules.</p>
 <p>Today three sites load from the package, all pinned to the same tag by MindAttic.Deploy's linked deploy: mindattic.com, ryandebraal.com and mindatticcares.com.</p>
@@ -439,8 +446,9 @@ powershell -File sync/sync-tutor.ps1</code></pre>
 npm ci
 npm test                # local mode: CDN requests answered from this working tree
 npm run test:live       # real sites and real CDN
-npm run test:assets     # package checks only, no browser</code></pre>
-<p><a href="tests/README.md">tests/README.md</a> lists every script and environment variable. SacredGeometry's <code>build-previews.mjs</code> also acts as a smoke test by regenerating its 1024 posters.</p>
+npm run test:assets     # package checks only, no browser
+npx playwright test --project=components   # component checks (Hyperspace), no sites</code></pre>
+<p>The <code>components</code> project checks the Hyperspace shape library, the Hyperspace Reader and the Hyperspace page that loads them. <a href="tests/README.md">tests/README.md</a> lists every script and environment variable. SacredGeometry's <code>build-previews.mjs</code> also acts as a smoke test by regenerating its 1024 posters.</p>
 <h2 id="editing-a-component">Editing a component</h2>
 <p>Edit the files in the component's folder, then either push to main (the Action delivers to its subscriber jobs) or run <code>sync/sync-all.ps1</code> locally. To ship to the CDN-loaded sites, run MindAttic.Deploy's linked deploy, which tags a new release and repins all three sites.</p>
 <h2 id="adding-a-new-component">Adding a new component</h2>
@@ -653,10 +661,11 @@ npm run test:assets     # package checks only, no browser</code></pre>
 <p>mindattic.com's tap script uses both: outside the zone and off a link, it fires the surge at the tap, then tries the effects in random order with the tap as origin until one spawns.</p>
 <h2 id="project-layout">Project layout</h2>
 <pre><code class="language-text">MindAttic.UiUx/
-  Components/            13 self-contained components (table above)
+  Components/            14 self-contained components (table above)
     Cyberspace/          frontpage.html/.css, console-bg.js, home-bg.js, tv-static.js,
                          loader.js, index.htm (test harness), assets/ (parallax PNGs)
     SacredGeometry/      sacred-geometry.js (UMD), build-previews.mjs, previews/, index.htm (QA grid)
+    Hyperspace/          hyperspace.js (shape library), hyperspace-reader.js, index.htm (harness)
     ...                  OutfitFont, AtticFont, PinFooter, BackHomeM, WebSnapshot, PageScrollbar,
                          Textbox, Tooltip, UserLogin, UserCircle, UserTimeout
   Themes/Cyberspace/     theme.css, body-prelude.html, deps.json

@@ -93,5 +93,5 @@ commit ([ASSETS.md](ASSETS.md)).
 - **`archive/`** — kept-but-unserved files ([MAU-LAW-7](#MAU-LAW-7)).
 
 ## Status index (from USER_STORIES.md)
-- done: 13 | partial: 8 | planned: 1
+- done: 18 | partial: 8 | planned: 2
 

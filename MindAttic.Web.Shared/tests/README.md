@@ -31,6 +31,7 @@ Optional: `pip install fonttools brotli` enables the deep font check (the struct
 | `npm run test:live` | Everything against the **real sites and real CDN** (no interception). |
 | `npm run test:assets` | Package tests only (no browser, ~2 s). |
 | `npm run test:sites` | Site tests only (needs Chrome, ~20 s). |
+| `npx playwright test --project=components` | Component tests only (Hyperspace library, Hyperspace Reader, Hyperspace page; ~20 s). |
 | `npm run test:cdn` | Live CDN verification only (forces live mode). |
 | `npm run baseline:update` | Re-record `baselines.json` after you **deliberately** add/replace an image (see below). |
 | `npm run report` | Open the last HTML report (CI runs produce one). |
@@ -98,6 +99,19 @@ Site-specific:
   loads only the Home art; navigating to *Child's Play* / *Y2K* fetches that page's art on demand; deep links (`#y2k`,
   `#sec-budget`) work; the YouTube player is click-to-play (no third-party request before the click).
 
+### `specs/components/` — components (browser and Node)
+
+`hyperspace.spec` covers the Hyperspace component. **Shape library:** all 100 records are complete with unique
+stable ids; every shape has geometry and projects to finite 2D and 3D coordinates within the normalised radius at
+several times; every shape draws something onto a canvas in the browser. **Hyperspace Reader:** it opens, goes live,
+moves the Dimensional Threshold bar, changes its readouts, scrolls and advances the details span, shows five
+readouts and the UNRESOLVED flag, draws on its scope; `close()` freezes the readouts, prints the power-down line,
+folds the window and removes its DOM; `ttl` and `closeAll()` work; reduced motion holds still; without the
+library `show()` returns null. **Hyperspace page** (the sibling `Hyperspace` repo, opened as a local file, skipped
+if absent): it pins the library to a whole-number tag whose file exists here, and its explorers draw and its
+gallery boots to Ready both from the pinned CDN URL (answered from this tree) and from the sibling-checkout
+fallback (CDN answering 404). three.js is fetched from its real CDN for the gallery; Google Fonts are blocked.
+
 ### `specs/cdn/` — live CDN (live mode only)
 
 For every site, parses the tag it pins from the **live** HTML and checks that each referenced file is served by jsDelivr with
@@ -145,5 +159,6 @@ tests/
 ├── package.json  playwright.config.mjs  baselines.json  README.md  ci.workflow.example.yml
 ├── lib/   paths.mjs budgets.mjs walk.mjs binfmt.mjs site-session.mjs static-server.mjs update-baselines.mjs font_check.py
 ├── specs/ assets/*.spec.mjs   cdn/cdn.live.spec.mjs   sites/{common,mindattic,ryandebraal,mindatticcares}.spec.mjs
+│          components/hyperspace.spec.mjs
 └── pester/ build.Tests.ps1
 ```

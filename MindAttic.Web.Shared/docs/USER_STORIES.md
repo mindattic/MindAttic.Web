@@ -17,7 +17,7 @@ updated: 2026-10-03
 - **MAU-US-A1 🟡** As a component author, I can add a self-contained component under `Components/<Name>/`
   (source + `.json` config + `.md` doc) without touching any other component, so the catalog grows by
   addition. *Given a new folder, When I register it in `subscribers.json` `components`, Then it is
-  shippable.* *(13 components present; no component-level test — manual.)*
+  shippable.* *(14 components present; Hyperspace has component-level tests (Epic F), the rest are manual.)*
 - **MAU-US-A2 🟡** As an author, I can compose a Theme under `Themes/<Name>/` that references components
   via `deps.json`, so a property can adopt a whole look at once. *(Present: `Themes/Cyberspace/`; manual.)*
 - **MAU-US-A3 🟡** As an author, I can regenerate SacredGeometry shape posters with
@@ -52,6 +52,14 @@ updated: 2026-10-03
 - **MAU-US-E2 ✅** As a host page, I can call `consoleBg.spawnSparkBurst(x, y)` for a momentary spark surge (gravity-bound sparks with trails that cool white → cyan/blue → orange-red → dark within ~0.3–0.7s, and a flash ring), drawn on one pooled click-through canvas whose animation loop stops at idle. *(verified by `the tap spark burst draws on one pooled click-through canvas, animates, then goes idle`.)*
 - **MAU-US-E3 ✅** As a visitor who prefers reduced motion, a spark surge is only a brief stationary flash. *(verified by `prefers-reduced-motion: a tap gives only a brief flash (no sparks), and the effect still spawns`.)*
 - **MAU-US-E4 ✅** As a host page, I can ask `consoleBg.inKeepout(x, y)` whether a point is in the buffer zone, so taps there (and on links) spawn nothing. *(verified by `a tap inside the keepout buffer zone spawns nothing (no effect, no sparks)` and `tapping a link opens that site in a new window and spawns no effect and no sparks`.)*
+
+## Epic F — Hyperspace shapes and the Hyperspace Reader
+- **MAU-US-F1 ✅** As a page author, I can load one standard library of the 100 Hyperspace exhibits (`Components/Hyperspace/hyperspace.js`), where each shape has a stable id, its plaque metadata (name, tag, family, native dimension, Schläfli symbol, facts, article, references) and its geometry. *(verified by `loads every shape with a complete record and a unique stable id`.)*
+- **MAU-US-F2 ✅** As a renderer (Three.js or 2D canvas), I can project any shape at any time with pure functions and always get finite coordinates inside the normalised radius. *(verified by `every shape has geometry and projects to finite 2D and 3D coordinates` and `loads in a browser and draws every shape onto a canvas`.)*
+- **MAU-US-F3 ✅** As a host page, I can call `HyperspaceReader.show({ x, y, shape })` to open a scanner window that locks on to a shape (rotating wireframe, a climbing and spiking Dimensional Threshold bar, rotating readouts, flags, fast-scrolling details) and `close()` it, which freezes the readouts, prints a power-down line, folds the window away and removes its DOM. *(verified by `opens, animates the threshold bar, scrolls the details and closes with its DOM removed` and `ttl closes it on its own, and closeAll() clears several`.)*
+- **MAU-US-F4 ✅** As a visitor who prefers reduced motion, the Reader holds still: no rotation, jitter, spikes or scrolling, and a plain fade on close. *(verified by `honours prefers-reduced-motion: no scrolling, no jitter, plain fade`.)*
+- **MAU-US-F5 ✅** As the Hyperspace page, I build my explorers and my 100-exhibit gallery from the pinned library, and still work opened as a local file before the tag is published (sibling-checkout fallback). *(verified by `renders its explorers and gallery from the library` and `pins the library to a whole-number UiUx tag that exists in this tree`.)*
+- **MAU-US-F6 ⬜** As a mindattic.com visitor, I occasionally see a Hyperspace Reader as a Cyberspace effect. *(Not wired into `console-bg.js` yet.)*
 
 ## Priority backlog
 1. Add an in-repo sync-idempotency check so Epic B stories can graduate to ✅ with a named test.

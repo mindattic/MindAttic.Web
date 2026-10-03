@@ -1,11 +1,11 @@
 {
-  "$comment": "L5 canon-as-data: the MindAttic.UiUx component catalog. codex front-matter equivalent: { codex:1, project:MindAttic.UiUx, code:MAU, layer:data, status:living, updated:2026-06-07 }. Schema: _schema/component.schema.json. Prose (BIBLE/README) cites these by id; do not restate fields. Folders verified on disk 2026-06-07 (13 components).",
+  "$comment": "L5 canon-as-data: the MindAttic.UiUx component catalog. codex front-matter equivalent: { codex:1, project:MindAttic.UiUx, code:MAU, layer:data, status:living, updated:2026-10-03 }. Schema: _schema/component.schema.json. Prose (BIBLE/README) cites these by id; do not restate fields. Folders verified on disk 2026-10-03 (14 components).",
   "codex": 1,
   "project": "MindAttic.UiUx",
   "code": "MAU",
   "layer": "data",
   "status": "living",
-  "updated": "2026-06-07",
+  "updated": "2026-10-03",
   "components": [
     {
       "id": "component.cyberspace",
@@ -24,6 +24,15 @@
       "doc": "Components/SacredGeometry/SacredGeometry.md",
       "summary": "Catalog of 1024 animatable line-art shapes; one pure renderer to live <canvas> or static SVG; build-previews.mjs emits one poster per shape.",
       "feeds": ["component.cyberspace"]
+    },
+    {
+      "id": "component.hyperspace",
+      "name": "Hyperspace",
+      "type": "js-umd",
+      "folder": "Components/Hyperspace",
+      "doc": "Components/Hyperspace/Hyperspace.md",
+      "summary": "Standard library of the 100 Hyperspace exhibits (stable ids, plaque metadata, geometry, pure projection for Three.js and 2D canvas) plus the Hyperspace Reader scanner window.",
+      "feeds": []
     },
     {
       "id": "component.outfitfont",
