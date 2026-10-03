@@ -63,9 +63,9 @@ domain, and are loaded over jsDelivr at a pinned tag ([MAU-A4](AMENDMENTS.md#MAU
    jsDelivr CDN          sync/*.ps1            .github Action
    @Vn / @main          (splice-in-place)     (cross-repo PRs)
         |                     |                      |
-   MindAttic.Deploy   mindattic.com / SS /    same 5 splice repos
-   (runtime loader)   Psst / Ideas / Tutor    (PR on push to main)
-                      via subscribers.json
+   MindAttic.Deploy   mindattic.com / Psst /  mindattic.com + Psst
+   (runtime loader,   Tutor (local)           (PR on push to main)
+    linked deploy)    via subscribers.json
 ```
 
 ### 4.1 Projects / top-level layout
@@ -112,8 +112,13 @@ domain, and are loaded over jsDelivr at a pinned tag ([MAU-A4](AMENDMENTS.md#MAU
 - **build** (`build.ps1`) — copy raw canonical assets for `standalone` output. The `idea` and `blazor`
   output targets are stubs (the `Ideas/` RCL subtree was removed — see §6 and MAU-A3).
 - **CDN delivery** — implicit; jsDelivr serves any path at a pinned `@Vn` tag (no infra here).
-- **cross-repo sync** (`.github/workflows/sync-subscribers.yml`) — opens PRs into the 3 splice repos on
-  push to `main`, using the `SUBSCRIBER_REPO_TOKEN` PAT.
+- **cross-repo sync** (`.github/workflows/sync-subscribers.yml`) — opens PRs into the two splice repos it
+  serves (`mindattic.com`, `MindAttic.Psst`) on a push to `main` that touches a spliced component,
+  `subscribers.json`, `sync/**` or the workflow (not when the commit says `[skip ci]`), using the
+  `SUBSCRIBER_REPO_TOKEN` PAT.
+- **retire** — a subscriber whose target project is gone keeps its entry with a `"retired"` note; its sync
+  script prints the note and exits 0 (`Test-SubscriberRetired`), so `sync-all.ps1` stays green
+  ([MAU-A5](AMENDMENTS.md#MAU-A5)).
 
 ## 5. The Laws {#MAU-§5}
 This project **inherits the org-wide House Rules** verbatim — see
@@ -175,9 +180,11 @@ Status legend: ✅ done (verified) · 🟡 partial · ⬜ planned · 🗑️ cut
   genuine Google Fonts file; `ryandebraal.com/` (76 files, byte-verified against the extraction
   manifest) and the brand logos were added. Test coverage lives in `tests/` (see `tests/README.md`).
 - 🟡 **Distribution (`sync/`, CDN, Action).** Five sync scripts (`sync-mindattic-com.ps1`,
-  `sync-prose.ps1`, `sync-mindattic-psst.ps1`, `sync-ideas.ps1`, `sync-tutor.ps1`) + `sync-all.ps1`
-  umbrella present; the GitHub Action workflow is committed. Not exercised in this session — 🟡 (no green
-  run captured here).
+  `sync-mindattic-psst.ps1`, `sync-tutor.ps1`, and `sync-prose.ps1` / `sync-ideas.ps1`, whose subscribers
+  are retired) + `sync-all.ps1` umbrella. Verified 2026-10-02: `sync-mindattic-com.ps1` run against a copy
+  of `mindattic.com/index.htm` is byte-identical (idempotent, tag derived as `V7`); `sync-prose.ps1` and
+  `sync-ideas.ps1` report their retired subscribers and exit 0 (they threw "Path not found" before
+  [MAU-A5](AMENDMENTS.md#MAU-A5)). The GitHub Action's last green run is not captured here — 🟡.
 - 🗑️ **`.idea` packaging build (`build.ps1` + `Ideas/*`).** The `Ideas/` RCL subtree was **removed** from
   this repo as of 2026-06-07 (see MAU-A3). The `build.ps1` `idea` and `blazor` output targets are now
   stubs (warnings only); the `standalone` copy path is unaffected. The previous build evidence
@@ -228,3 +235,30 @@ A feature is **done** (✅) only when:
 - **Asset manifest** — `assets-manifest.json`; the generated, verifiable list of every served asset.
 </content>
 </invoke>
+
+## MAU-A5 — Audit fixes after V7: retired subscribers, workflow repair, test hardening (refines MAU-A4) {#MAU-A5}
+Audit pass, 2026-10-02, after `V7` shipped:
+
+- **Retired subscribers.** `Prose.Writer` and `Prose.Codex` (Prose was restructured; no `v3/Prose.Writer` /
+  `v3/Prose.Codex` Blazor wwwroot with UiUx marker blocks exists) and `Ideas` (`MindAttic.Ideas.Web` no longer
+  exists) made `sync-prose.ps1`, `sync-ideas.ps1` and therefore `sync-all.ps1` fail with "Path not found". They
+  now carry a `"retired"` field in `subscribers.json`; `_subscribers.ps1` gained `Test-SubscriberRetired`, and
+  both scripts print the note and exit 0. Re-enroll by pointing `target` at the successor project, adding the
+  marker pairs and deleting the field.
+- **Workflow repaired.** `.github/workflows/sync-subscribers.yml`: the dead `sync-prose` job (it passed a
+  `-BlazorRoot` parameter the script no longer has, against a Prose layout that no longer exists) is removed;
+  the paths filter now lists only what a job splices (`Components/Cyberspace/**`, `Components/OutfitFont/**`,
+  plus `subscribers.json`, `sync/**` and the workflow) instead of components nobody splices (AtticFont,
+  PinFooter, WebSnapshot); the mindattic.com job checks UiUx out with `fetch-depth: 0` so the sync's
+  `git describe` default tag works in CI.
+- **Correction to MAU-A4.** `sync-mindattic-com.ps1` does not hard-code `V7`: `-CyberspaceCdnTag` defaults to
+  the latest `V*` tag in the repo (`git describe`, fallback `V7`), and the linked deploy passes the release tag.
+- **Tests.** The expected tag now follows the highest whole-number tag (`UIUX_TAG` overrides). Chrome runs with
+  classic scrollbars, the overflow check visits every view (mindatticcares.com's hash pages, every
+  ryandebraal.com theme at phone widths) and waits for layout to settle, a static guard rejects in-flow
+  `width:100vw`, the cares spec covers `#contents` anchors and "Back to contents", and the output folder is
+  configurable (`PW_OUTPUT_DIR`). Each new check was shown to fail on the earlier page versions it targets.
+- **Cyberspace harness.** `Components/Cyberspace/index.htm` threw on load (`demo.GEO_KEYS` no longer exists since
+  SCHEMATIC moved to SacredGeometry); it now reports the SacredGeometry shape count.
+- **Docs.** README, `sync/sync.md`, `.github/PIPELINES.md` and the sync script headers no longer describe SemVer
+  tags, a `V4`/`V5` "current" tag, a Prose job or "no subscriptions yet" for Tutor.

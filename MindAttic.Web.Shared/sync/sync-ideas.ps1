@@ -2,14 +2,14 @@
 # MindAttic.UiUx -> MindAttic.Ideas
 # --------------------------------------------------------------------
 # Drives MindAttic.Ideas.Web's wwwroot from MindAttic.UiUx/subscribers.json.
-# Splice-in-place, identical model to sync-prose.ps1:
+# Splice-in-place:
 #   - OutfitFont / AtticFont -> CSS marker block in wwwroot/app.css
 #   - html-bundle components  -> jsFiles copied to wwwroot/js + CSS marker block
 #
-# The shared auth-visual components (UserLogin / UserCircle / UserTimeout) are
-# added to subscribers."Ideas".subscriptions once they are authored under
-# Components/, along with a matching dispatch case below and a marker pair in
-# wwwroot/app.css. Until then the subscription list is empty and this is a no-op.
+# RETIRED (2026-10-02): the MindAttic.Ideas.Web project no longer exists, so the
+# "Ideas" subscriber carries a "retired" field in subscribers.json and this script
+# reports it and exits 0. Re-enroll by pointing target at the successor project,
+# adding the marker pairs to its wwwroot/app.css, and deleting the field.
 #
 # Usage:
 #   powershell -File sync-ideas.ps1
@@ -32,6 +32,7 @@ if (-not $ContentRoot) {
 
 $utf8 = [System.Text.UTF8Encoding]::new($false)
 $sub  = Get-Subscriber -Name 'Ideas' -ContentRoot $ContentRoot
+if (Test-SubscriberRetired -Subscriber $sub) { return }
 
 # No subscriptions yet -> nothing to splice. Keeps sync-all.ps1 green before the
 # shared auth components are authored and wired into subscribers.json.

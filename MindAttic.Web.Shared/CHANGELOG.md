@@ -3,6 +3,16 @@
 Whole-number release tags (`V1`, `V2`, …). A published tag is immutable ([MAU-LAW-6](docs/BIBLE.md#MAU-LAW-6));
 jsDelivr serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/<path>`.
 
+## Unreleased (next tag)
+- Retired the Prose.Writer, Prose.Codex and Ideas subscribers (targets no longer exist); their sync scripts now
+  report and exit 0, so `sync-all.ps1` is green again ([MAU-A5](docs/AMENDMENTS.md#MAU-A5)).
+- `sync-subscribers.yml`: removed the dead Prose job, trimmed the paths filter to spliced components, full-history
+  checkout for tag derivation.
+- Cyberspace test harness (`Components/Cyberspace/index.htm`) no longer throws on load.
+- Tests: tag expectation follows the latest tag; classic scrollbars; overflow checked in every view; 100vw guard;
+  cares anchor routing; `PW_OUTPUT_DIR`; live CDN spec expands base-prefix URLs and checks the framed cares page.
+- Docs brought in line with the tree (README, sync.md, PIPELINES.md, BIBLE, script headers).
+
 ## V7
 - **Shared runtime asset package** ([MAU-A4](docs/AMENDMENTS.md#MAU-A4), [docs/ASSETS.md](docs/ASSETS.md)):
   global web fonts in `fonts/`; per-site assets in `mindattic.com/`, `mindatticcares.com/`, `ryandebraal.com/`;
@@ -10,10 +20,12 @@ jsDelivr serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiU
 - Cyberspace parallax textures losslessly recompressed: 6.2 MB → 1.7 MB, pixel-identical.
 - **Fix:** the Outfit *Latin* font embedded in `Components/OutfitFont/outfit-font.css` was corrupt (browsers
   silently fell back to a system font); replaced with the genuine Google Fonts file.
-- `sync-mindattic-com.ps1`: default `-CyberspaceCdnTag V7`, CDN scripts `defer`red, texture preloads emitted.
+- `sync-mindattic-com.ps1`: `-CyberspaceCdnTag` defaults to the latest `V*` tag (`git describe`), CDN scripts
+  `defer`red, texture preloads emitted.
 - `subscribers.json`: `mindattic.com` is now enrolled in `Cyberspace` only (fonts load from the CDN).
 - Removed obsolete one-shot scripts `sync/bootstrap-textures.ps1` and `sync/bootstrap-streetsamurai-appcss.ps1`.
 - Added a Playwright test suite in `tests/`.
+- Added the linked-deploy `/deploy` command (`.claude/commands/deploy.md`).
 
 ## V6
 - Cyberspace: host switches (`window.__cyberspaceFx`), keepout and comment updates; `console-bg.js` refresh.

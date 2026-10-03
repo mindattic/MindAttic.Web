@@ -123,6 +123,18 @@ test.describe('mindattic.com — layout is exact at every size and aspect ratio'
   });
 });
 
+// Wait until the Cyberspace host has had no new direct children for a full second (max ~8s), then reset the
+// counter. Effects scheduled before setAutoSpawn(false) can still land a few seconds later; counting from a
+// quiet baseline keeps them from being mistaken for (or masking) the effects a tap is supposed to cause.
+async function untilQuiet(page) {
+  for (let i = 0; i < 8; i++) {
+    const n0 = await page.evaluate(() => window.__added);
+    await page.waitForTimeout(1000);
+    if ((await page.evaluate(() => window.__added)) === n0) break;
+  }
+  await page.evaluate(() => { window.__added = 0; });
+}
+
 test.describe('mindattic.com — Cyberspace', () => {
   test('the engine exposes every effect the tap handler uses', async ({ browser }) => {
     const s = await openSite(browser, site);
@@ -148,7 +160,7 @@ test.describe('mindattic.com — Cyberspace', () => {
         window.__added = 0;
         new MutationObserver((ml) => { for (const m of ml) window.__added += m.addedNodes.length; }).observe(document.querySelector('.console-bg-host'), { childList: true }); // direct children only: one per spawned effect (lines typed inside an existing window do not count)
       });
-      await s.page.waitForTimeout(1500); // let anything already scheduled finish
+      await untilQuiet(s.page); // effects scheduled before the auto-spawner was switched off must land first
       const lock = await s.page.evaluate(() => { const r = document.querySelector('.lockup').getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top, b: r.bottom }; });
       const taps = [];
       for (let i = 0; taps.length < 15; i++) {
@@ -159,8 +171,12 @@ test.describe('mindattic.com — Cyberspace', () => {
       for (const [x, y] of taps) {
         const before = await s.page.evaluate(() => window.__added);
         await s.page.mouse.click(x, y);
-        await s.page.waitForTimeout(250);
-        if ((await s.page.evaluate(() => window.__added)) > before) hits++;
+        // Some effects attach their DOM after a short internal delay (cascades, network traces), so give each tap
+        // up to 600ms to show up instead of a single fixed 250ms look (that made the live run flaky at 11/15).
+        for (let t = 0; t < 6; t++) {
+          await s.page.waitForTimeout(100);
+          if ((await s.page.evaluate(() => window.__added)) > before) { hits++; break; }
+        }
       }
       expect(hits, `${hits}/15 taps spawned an effect`).toBeGreaterThanOrEqual(12);
       expect(s.rec.pageErrors).toEqual([]);
@@ -176,7 +192,7 @@ test.describe('mindattic.com — Cyberspace', () => {
         window.__added = 0;
         new MutationObserver((ml) => { for (const m of ml) window.__added += m.addedNodes.length; }).observe(document.querySelector('.console-bg-host'), { childList: true }); // direct children only: one per spawned effect (lines typed inside an existing window do not count)
       });
-      await s.page.waitForTimeout(1500);
+      await untilQuiet(s.page);
       for (let i = 0; i < LINKS.length; i++) {
         const [popup] = await Promise.all([s.context.waitForEvent('page'), s.page.locator('.link-btn').nth(i).click()]);
         await popup.waitForLoadState('domcontentloaded');

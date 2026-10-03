@@ -17,6 +17,9 @@ const channel = ch === 'chromium' ? undefined : ch;
 
 export default defineConfig({
   testDir: './specs',
+  // Per-run artefacts (traces, screenshots). Override with PW_OUTPUT_DIR when two runs happen at once so they do
+  // not delete each other's files (Playwright empties this folder at the start of every run).
+  outputDir: process.env.PW_OUTPUT_DIR || './test-results',
   timeout: 60_000,
   expect: { timeout: 10_000 },
   fullyParallel: true,
@@ -26,6 +29,10 @@ export default defineConfig({
   use: {
     channel,
     headless: true,
+    // Headless Chrome hides scrollbars by default, which gives every page the full viewport width and hides
+    // real overflow: on a desktop browser the vertical scrollbar takes ~15-17px, so a page that fits 320px
+    // headless can still scroll sideways for a visitor. Keep classic scrollbars so layout checks see that.
+    launchOptions: { ignoreDefaultArgs: ['--hide-scrollbars'] },
     trace: 'retain-on-failure',
   },
   webServer: live

@@ -86,16 +86,32 @@ test.describe('mindatticcares.com — runtime asset loading', () => {
     } finally { await s.context.close(); }
   });
 
-  test('deep links work: #y2k and an in-page anchor (#sec-budget) open the Y2K playbook', async ({ browser }) => {
-    for (const hash of ['#y2k', '#sec-budget']) {
+  test('deep links work: #y2k, and in-page anchors (#sec-budget, #contents) open the Y2K playbook scrolled to the anchor', async ({ browser }) => {
+    for (const hash of ['#y2k', '#sec-budget', '#contents']) {
       const s = await openSite(browser, site);
       try {
         await s.page.goto(`${s.url}${hash}`, { waitUntil: 'load' });
         await s.page.evaluate(() => document.fonts.ready);
         await expect(s.page.locator('#y2k')).toHaveClass(/active/);
+        if (hash !== '#y2k') await expect(s.page.locator(hash), `${hash} should be scrolled into view`).toBeInViewport();
         expect(s.rec.pageErrors).toEqual([]);
       } finally { await s.context.close(); }
     }
+  });
+
+  test('"Back to contents" links stay on the Y2K page and bring the table of contents into view', async ({ browser }) => {
+    const s = await openSite(browser, site, { viewport: { width: 390, height: 844 } });
+    try {
+      await s.page.goto(`${s.url}#sec-budget`, { waitUntil: 'load' });
+      await expect(s.page.locator('#y2k')).toHaveClass(/active/);
+      const back = s.page.locator('#y2k a.back-top').last();
+      await expect(back).toHaveAttribute('href', '#contents');
+      await back.scrollIntoViewIfNeeded();
+      await back.click();
+      await expect(s.page.locator('#y2k')).toHaveClass(/active/);
+      await expect(s.page.locator('nav.toc#contents')).toBeInViewport();
+      expect(s.rec.pageErrors).toEqual([]);
+    } finally { await s.context.close(); }
   });
 
   test('the video is click-to-play: no YouTube request until the poster is clicked', async ({ browser }) => {

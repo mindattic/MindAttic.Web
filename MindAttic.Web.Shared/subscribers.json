@@ -24,6 +24,7 @@
     },
 
     "Prose.Writer": {
+      "retired":   "2026-10-02: Prose was restructured; no v3/Prose.Writer Blazor wwwroot with UiUx marker blocks exists any more. Point target at the new project, add the marker pairs, and delete this field to re-enroll.",
       "kind":       "blazor-wwwroot",
       "target":     "D:/Projects/MindAttic/Prose/v3/Prose.Writer",
       "syncScript": "sync-prose.ps1",
@@ -39,6 +40,7 @@
     },
 
     "Prose.Codex": {
+      "retired":   "2026-10-02: Prose was restructured; no v3/Prose.Codex Blazor wwwroot with UiUx marker blocks exists any more. Point target at the new project, add the marker pairs, and delete this field to re-enroll.",
       "kind":       "blazor-wwwroot",
       "target":     "D:/Projects/MindAttic/Prose/v3/Prose.Codex",
       "syncScript": "sync-prose.ps1",
@@ -64,7 +66,8 @@
     },
 
     "Ideas": {
-      "$comment":   "MindAttic.Ideas Blazor CMS. Splice-in-place like Prose (JS -> wwwroot/js, CSS marker blocks in wwwroot/app.css). Subscriptions start empty; the shared auth-visual components (UserLogin, UserCircle, UserTimeout) are added here once authored under Components/.",
+      "$comment":   "MindAttic.Ideas Blazor CMS. Splice-in-place like Tutor. Retired: the MindAttic.Ideas.Web project no longer exists (see retired).",
+      "retired":   "2026-10-02: the MindAttic.Ideas.Web project no longer exists. Point target at its successor, add the marker pairs, and delete this field to re-enroll.",
       "kind":       "blazor-wwwroot",
       "target":     "D:/Projects/MindAttic/MindAttic.Ideas/src/MindAttic.Ideas.Web",
       "syncScript": "sync-ideas.ps1",
@@ -76,7 +79,7 @@
     },
 
     "Tutor": {
-      "$comment":   "Tutor Blazor study app. Splice-in-place like Prose. Subscriptions start empty; the shared auth-visual components (UserLogin, UserCircle, UserTimeout) are added here once authored under Components/. (Tutor.Blazor has no wwwroot yet -- create wwwroot/app.css + wwwroot/js when the first subscription is added.)",
+      "$comment":   "Tutor Blazor study app. Splice-in-place (CSS marker blocks in wwwroot/app.css, JS copied to wwwroot/js). Enrolled in the auth-visual trio (UserLogin, UserCircle, UserTimeout); local sync only (sync-tutor.ps1) -- the GitHub workflow has no Tutor job.",
       "kind":       "blazor-wwwroot",
       "target":     "D:/Projects/MindAttic/Tutor/Tutor.Blazor",
       "syncScript": "sync-tutor.ps1",

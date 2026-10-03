@@ -102,5 +102,7 @@ minute, retry; `https://purge.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/<path>
 `tests/` holds a Playwright suite that validates this package and the three sites that consume it (see
 [`tests/README.md`](../tests/README.md)): the manifest matches the tree, fonts and images decode, lossy files keep their
 full resolution and bytes, size budgets hold, every UiUx URL a site references exists, and each site loads with no failed
-requests, no console errors and the right layout at every viewport. `npm run test:local` (in `tests/`) runs it against the
+requests, no console errors and the right layout at every viewport — in every view a visitor can reach (hash pages,
+themes), with desktop-style scrollbars so overflow a Windows visitor would see is caught. The expected tag follows the
+highest `V<n>` tag automatically (override with `UIUX_TAG`). `npm run test:local` (in `tests/`) runs it against the
 working tree before a tag is published; `npm run test:live` / `npm run test:cdn` verify what jsDelivr actually serves.

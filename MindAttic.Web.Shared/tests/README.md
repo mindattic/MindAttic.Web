@@ -35,9 +35,21 @@ Optional: `pip install fonttools brotli` enables the deep font check (the struct
 | `npm run baseline:update` | Re-record `baselines.json` after you **deliberately** add/replace an image (see below). |
 | `npm run report` | Open the last HTML report (CI runs produce one). |
 
-Environment variables: `TEST_MODE=live`, `UIUX_TAG=V8` (the tag every site must pin; default `V7`),
-`SITES_ROOT=<dir>` (where the sibling site repos live; default: the parent of this repo), `PW_CHANNEL`, `GITHUB_TOKEN`
-(only raises the GitHub API rate limit for the tag test).
+Environment variables:
+
+- `TEST_MODE=live` — test the real sites and the real CDN instead of local copies.
+- `UIUX_TAG=V8` — the tag every site must pin. Default: the highest whole-number `V<n>` tag in this repo (the same
+  rule the linked deploy uses), so it follows each release automatically; falls back to `V7` only when the tags are
+  not available (a shallow CI checkout — use `fetch-depth: 0`).
+- `SITES_ROOT=<dir>` — where the sibling site repos live (default: the parent of this repo). Point it at a folder
+  of older page copies to prove a check catches a regression.
+- `PW_CHANNEL` — `chrome` (default), `msedge` or `chromium`.
+- `PW_OUTPUT_DIR=<dir>` — where traces/screenshots go (default `test-results/`). Playwright empties this folder at
+  the start of a run, so give concurrent runs different folders.
+- `GITHUB_TOKEN` — only raises the GitHub API rate limit for the tag test.
+
+Chrome runs headless **with classic scrollbars** (`--hide-scrollbars` is removed in `playwright.config.mjs`), so
+layout checks see the ~15-17px a desktop scrollbar takes — the overflow a Windows visitor would actually get.
 
 Failures keep a Playwright trace: `npx playwright show-trace test-results/<test>/trace.zip`.
 

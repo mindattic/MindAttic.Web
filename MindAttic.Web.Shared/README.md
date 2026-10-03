@@ -19,8 +19,8 @@ build/run/catalog tour and does not restate them):
 
 ```html
 <!-- pinned production -->
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V5/Components/Cyberspace/console-bg.js"></script>
-<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V5/Components/Cyberspace/frontpage.css">
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/Components/Cyberspace/console-bg.js"></script>
+<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/Components/Cyberspace/frontpage.css">
 ```
 
 **Shared runtime assets.** Besides components, this repo is the one asset package every MindAttic site
@@ -38,9 +38,9 @@ Tests: a Playwright suite in [`tests/`](tests/README.md) validates the package a
 - **Subscribers are declarative.** Add `{ "component": "AtticFont", "applyToSelector": ".site-name" }`
   to a subscriber's array. The next sync enrolls it. Remove the line, the next sync unenrolls. No
   hardcoded lists.
-- **Versioned by tag, immutable on CDN.** `@V5` is edge-cached forever; `@main` always tracks
-  tip-of-tree. Subscribers pick their guarantee. Tags are whole-number integers (`V1` … `V5`, current
-  latest tag in this repo).
+- **Versioned by tag, immutable on CDN.** A whole-number tag (`@V7`, …) is edge-cached forever;
+  `@main` always tracks tip-of-tree. Subscribers pick their guarantee. Tags are whole-number integers
+  (`V1`, `V2`, …; see [`CHANGELOG.md`](CHANGELOG.md) for what each one contains).
 - **Self-contained components.** Each folder ships its own source, usage HTML, markdown doc, and
   JSON config. No cross-component imports — you can vendor a single component without dragging the
   rest.
@@ -91,7 +91,8 @@ any companion `.json` config. Verified against `docs/data/components.json` (upda
 | **[UserTimeout](Components/UserTimeout/UserTimeout.md)** | CSS + JS + Razor | 30-minute idle-timeout warning with countdown modal + auto-logout; renders and arms only when authenticated; logout via native form + antiforgery token; static-SSR safe. | [UserTimeout.md](Components/UserTimeout/UserTimeout.md) |
 
 UserLogin, UserCircle, and UserTimeout are the "auth-visual trio" — landed together and wired into
-`subscribers.json` for the Blazor subscribers (Prose.Writer, Prose.Codex, Ideas, Tutor).
+`subscribers.json` for the Blazor subscribers (Tutor today; Prose.Writer, Prose.Codex and Ideas are
+`retired` — their target projects no longer exist).
 
 ### Themes
 
@@ -151,10 +152,10 @@ MindAttic.UiUx/
 │   ├── _subscribers.ps1          #   shared helper: reads subscribers.json, marker-splice + EOL utilities
 │   ├── sync-all.ps1              #   umbrella: glob-discovers and runs every sync-*.ps1
 │   ├── sync-mindattic-com.ps1    #   splices the CYBERSPACE block into mindattic.com/index.htm (fonts/logo/engine load from the CDN)
-│   ├── sync-prose.ps1            #   splices into BOTH Prose.Writer and Prose.Codex wwwroot
+│   ├── sync-prose.ps1            #   Prose.Writer + Prose.Codex (both retired: reports and exits 0)
 │   ├── sync-mindattic-psst.ps1   #   splices terms.htm + privacy.htm in MindAttic.Psst
-│   ├── sync-ideas.ps1            #   splices into MindAttic.Ideas.Web wwwroot (no-op: 0 subscriptions)
-│   ├── sync-tutor.ps1            #   splices into Tutor.Blazor wwwroot (no-op: 0 subscriptions)
+│   ├── sync-ideas.ps1            #   MindAttic.Ideas.Web (retired: reports and exits 0)
+│   ├── sync-tutor.ps1            #   splices UserLogin/UserCircle/UserTimeout into Tutor.Blazor wwwroot
 │   └── sync.md                   #   sync/ folder's own detailed reference doc
 │
 ├── docs/                          # Codex canon: BIBLE.md, AMENDMENTS.md, USER_STORIES.md, rfc/, data/
@@ -184,11 +185,11 @@ As verified on disk, the current subscriber map is:
 
 | Subscriber | `kind` | Target | Sync script | Subscriptions |
 |---|---|---|---|---|
-| `mindattic.com` | `html-inline` | `mindattic.com/index.htm` | `sync-mindattic-com.ps1` | OutfitFont, AtticFont (`.site-name`), Cyberspace, PinFooter, WebSnapshot |
-| `Prose.Writer` | `blazor-wwwroot` | `Prose/v3/Prose.Writer` | `sync-prose.ps1` | OutfitFont, AtticFont (no auto-apply), Cyberspace, PinFooter (`jsOnly`), UserLogin, UserCircle, UserTimeout |
-| `Prose.Codex` | `blazor-wwwroot` | `Prose/v3/Prose.Codex` | `sync-prose.ps1` | same set as Prose.Writer |
+| `mindattic.com` | `html-inline` | `mindattic.com/index.htm` | `sync-mindattic-com.ps1` | Cyberspace (fonts and logo load from the CDN — see [MAU-A4](docs/AMENDMENTS.md#MAU-A4)) |
+| `Prose.Writer` — **retired** | `blazor-wwwroot` | `Prose/v3/Prose.Writer` (no longer exists) | `sync-prose.ps1` | OutfitFont, AtticFont (no auto-apply), Cyberspace, PinFooter (`jsOnly`), UserLogin, UserCircle, UserTimeout |
+| `Prose.Codex` — **retired** | `blazor-wwwroot` | `Prose/v3/Prose.Codex` (no longer exists) | `sync-prose.ps1` | same set as Prose.Writer |
 | `MindAttic.Psst.Legal` | `html-inline-multi` | `MindAttic.Psst/{terms.htm, privacy.htm}` | `sync-mindattic-psst.ps1` | OutfitFont |
-| `Ideas` (MindAttic.Ideas.Web) | `blazor-wwwroot` | `MindAttic.Ideas/src/MindAttic.Ideas.Web` | `sync-ideas.ps1` | UserLogin, UserCircle, UserTimeout |
+| `Ideas` (MindAttic.Ideas.Web) — **retired** | `blazor-wwwroot` | `MindAttic.Ideas/src/MindAttic.Ideas.Web` (no longer exists) | `sync-ideas.ps1` | UserLogin, UserCircle, UserTimeout |
 | `Tutor` (Tutor.Blazor) | `blazor-wwwroot` | `Tutor/Tutor.Blazor` | `sync-tutor.ps1` | UserLogin, UserCircle, UserTimeout |
 
 Everyone else in the MindAttic fleet — the `MindAttic.Deploy`-rendered catalog landing pages and the
@@ -219,27 +220,21 @@ Each script then does the standard idempotent splice:
 Running a script twice with no source change produces a byte-identical file — this is the
 idempotency contract every `sync-*.ps1` must satisfy.
 
-**Verified against current `subscribers.json`:** both `Ideas` and `Tutor` already list UserLogin,
-UserCircle, and UserTimeout subscriptions, so `sync-ideas.ps1` and `sync-tutor.ps1` are *not* no-ops
-as of this writing — each splices those three components into its target's `wwwroot`. The header
-comments inside both scripts still say "no subscriptions yet -- nothing to sync" / "no-op until
-subscribed," which predates the auth-visual trio landing (`docs/AMENDMENTS.md` `MAU-A3`). Trust
-`subscribers.json` itself over those stale script comments.
+**Retired subscribers.** A subscriber whose target project is gone is not deleted; it carries a
+`"retired": "<date>: <why / how to re-enroll>"` field in `subscribers.json`. Its sync script prints that
+note and exits 0 (via `Test-SubscriberRetired` in `_subscribers.ps1`), so `sync-all.ps1` stays green.
+Prose.Writer, Prose.Codex and Ideas are retired as of 2026-10-02.
 
 ### Enrolling / unenrolling a subscriber in a component
 
 Add or remove one line in that subscriber's `subscriptions` array in `subscribers.json`:
 
 ```jsonc
-"Prose.Writer": {
+"Tutor": {
   "kind":       "blazor-wwwroot",
-  "target":     "D:/Projects/MindAttic/Prose/v3/Prose.Writer",
-  "syncScript": "sync-prose.ps1",
+  "target":     "D:/Projects/MindAttic/Tutor/Tutor.Blazor",
+  "syncScript": "sync-tutor.ps1",
   "subscriptions": [
-    { "component": "OutfitFont" },
-    { "component": "AtticFont",  "applyToSelector": null },
-    { "component": "Cyberspace" },
-    { "component": "PinFooter",  "jsOnly": true },
     { "component": "UserLogin" },
     { "component": "UserCircle" },
     { "component": "UserTimeout" }
@@ -254,7 +249,7 @@ builder function + `switch` case first.
 | Subscriber kind | What "add a subscription" means |
 |---|---|
 | `html-inline` (mindattic.com) | Edit `subscribers.json` only **if** the component's type already has a `switch` case in `sync-mindattic-com.ps1`. New types need a builder + dispatch case. The HTML marker pair must already exist once in `index.htm`. |
-| `blazor-wwwroot` (Prose.Writer, Prose.Codex, Ideas, Tutor) | Edit `subscribers.json` only **if** the component's type already has a `switch` case in the matching sync script. CSS marker pairs in `app.css` are one-time hand-inserts. |
+| `blazor-wwwroot` (Tutor; Prose.Writer, Prose.Codex, Ideas are retired) | Edit `subscribers.json` only **if** the component's type already has a `switch` case in the matching sync script. CSS marker pairs in `app.css` are one-time hand-inserts. |
 | `html-inline-multi` (MindAttic.Psst legal) | Same contract as `html-inline`, but `target` is a folder and `targets[]` lists the files (`terms.htm` + `privacy.htm`). |
 
 ---
@@ -266,34 +261,26 @@ Full walkthrough (including the one-time PAT setup) in
 
 | Pipeline | What it does | When it runs |
 |---|---|---|
-| **jsDelivr CDN** | Serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<ref>/<path>` — versioned, edge-cached, no infra to run. `<ref>` can be a whole-number tag (`@V5`, immutable), `@main` (tracks tip-of-tree, ~7-day cache), or a commit SHA (immutable). | Continuously. Consumed by `MindAttic.Deploy` for every catalog landing page and the Claudia/ChiMesh long-form builds. |
-| **GitHub Actions cross-repo sync** | `.github/workflows/sync-subscribers.yml` opens PRs against `mindattic/mindattic.com`, `mindattic/Prose`, and `mindattic/MindAttic.Psst` with refreshed marker blocks / wwwroot copies, using the `SUBSCRIBER_REPO_TOKEN` PAT. | Every push to `main` that touches `Components/{AtticFont,Cyberspace,OutfitFont,PinFooter,WebSnapshot}/**`, `subscribers.json`, `sync/**`, or the workflow file itself; also `workflow_dispatch`. |
-| **PowerShell `sync/*.ps1`** | Local dev fallback — same logic as the Action, runs against your working copies. Also invoked by `MindAttic.Deploy` as a `preDeploy` hook for `mindattic.com` and `Prose` so the bundle is fresh before FTPS upload. | Manual (`powershell -File sync/sync-all.ps1`). |
-
-> **Verified drift, not fixed here:** the GitHub Action workflow (`sync-subscribers.yml`) still has a
-> single `sync-prose` job that checks out `mindattic/Prose` and runs
-> `sync-prose.ps1 -BlazorRoot "$PWD/prose/v3/Prose.Blazor"` — but `sync-prose.ps1` no longer declares a
-> `-BlazorRoot` parameter (it now hardcodes both `Prose.Writer` and `Prose.Codex` by reading
-> `subscribers.json`), and `subscribers.json` no longer has a `Prose` subscriber entry (it was split
-> into `Prose.Writer` / `Prose.Codex`). The workflow also has no jobs at all for `Ideas` or `Tutor`.
-> Local `sync-all.ps1` picks up all five scripts correctly; the GitHub Action is the piece that has not
-> been updated for the Prose split or the two newer Blazor subscribers. Fixing the workflow is out of
-> scope for this documentation pass.
+| **jsDelivr CDN** | Serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<ref>/<path>` — versioned, edge-cached, no infra to run. `<ref>` can be a whole-number tag (`@V7`, immutable), `@main` (tracks tip-of-tree, ~7-day cache), or a commit SHA (immutable). | Continuously. Consumed by `MindAttic.Deploy` for every catalog landing page and the Claudia/ChiMesh long-form builds. |
+| **GitHub Actions cross-repo sync** | `.github/workflows/sync-subscribers.yml` opens PRs against `mindattic/mindattic.com` (CYBERSPACE block) and `mindattic/MindAttic.Psst` (OUTFITFONT block) with refreshed marker blocks. | On push to `main` touching `Components/Cyberspace/**`, `Components/OutfitFont/**`, `subscribers.json`, `sync/**` or the workflow — skipped when the commit message contains `[skip ci]`. |
+| **PowerShell `sync/*.ps1`** | Local dev fallback — same logic as the Action, runs against your working copies (retired subscribers are skipped). `MindAttic.Deploy` runs `sync-mindattic-com.ps1` as a `preDeploy` hook for `mindattic.com`, passing the release tag during a linked deploy. | Manually, or from `MindAttic.Deploy`. |
 
 ### Tagging a release
 
 ```bash
-git tag V6            # whole numbers only — never SemVer (V1..V5 exist today)
-git push --tags
+git tag -a V8 -m "..."  # the next whole number; never SemVer, never move a published tag
+git push origin main V8
 # jsDelivr serves the new tag immediately; purge a branch ref if needed:
 # GET https://purge.jsdelivr.net/gh/mindattic/MindAttic.UiUx@main/Components/Cyberspace/console-bg.js
 ```
 
-To propagate a release to every `MindAttic.Deploy`-rendered subscriber, bump `componentsVersion` in
-`MindAttic.Deploy/projects.json` and run that repo's deploy. `sync-mindattic-com.ps1` separately pins
-its own CDN tag for two externalized Cyberspace files (see below) via its `-CyberspaceCdnTag`
-parameter (default `V4` as committed today) — bump that independently when `console-bg.js` or
-`sacred-geometry.js` changes.
+For the four linked properties (this repo + `mindattic.com`, `ryandebraal.com`, `mindatticcares.com`) you
+normally don't tag by hand: `MindAttic.Deploy`'s linked deploy (`npm run deploy -- --uiux`) tags the next
+`V<n>` when `HEAD` is ahead of the latest tag, rewrites the pins in the three sites, verifies every asset on
+jsDelivr and then FTPs the sites. `sync-mindattic-com.ps1`'s `-CyberspaceCdnTag` defaults to the latest
+`V*` tag in this repo (via `git describe`), and the linked deploy passes the release tag explicitly.
+To propagate a release to the other `MindAttic.Deploy`-rendered catalog pages, bump `componentsVersion` in
+`MindAttic.Deploy/projects.json` and run that repo's catalog deploy.
 
 ### Why Cyberspace's two biggest JS files are CDN-loaded, not inlined, for mindattic.com
 
@@ -301,12 +288,12 @@ parameter (default `V4` as committed today) — bump that independently when `co
 `sync-mindattic-com.ps1` keeps the small Cyberspace scripts (`loader.js`, `tv-static.js`,
 `home-bg.js`) and a circuit-board-texture override inline, but emits `sacred-geometry.js` and
 `console-bg.js` as external `<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/…">`
-tags instead — so the browser can cache them separately across page loads. Script order is preserved
-because non-async `<script>` tags execute in document order: the inline block (defines
-`window.__cyberspaceCircuitboardSrcs`) runs first, then `sacred-geometry.js` (defines
-`window.SacredGeometry`), then `console-bg.js` (reads both globals). Only `Prose` still copies all
-Cyberspace + SacredGeometry JS into its own `wwwroot/js` byte-for-byte — `mindattic.com` is the only
-subscriber that uses this CDN split.
+tags instead — so the browser can cache them separately across page loads. Both carry `defer`, so they
+download in parallel with parsing and never block the first paint; deferred scripts still execute in
+document order after parsing, so the inline block (defines `window.__cyberspaceCircuitboardSrcs`) has
+already run, then `sacred-geometry.js` (defines `window.SacredGeometry`), then `console-bg.js` (reads both
+globals). The three parallax textures are preloaded at low priority by `<link rel="preload">` tags the sync
+emits.
 
 ### GitHub Action PAT — `SUBSCRIBER_REPO_TOKEN`
 
@@ -423,9 +410,9 @@ logic here.
 ## Editing a component
 
 Edit files in the component's folder (e.g. `Components/Cyberspace/console-bg.js`). Push to `main` and
-the GitHub Action delivers to its (currently stale — see [Delivery pipelines](#delivery-pipelines))
-subscriber jobs, or run `sync/sync-all.ps1` locally for fast, correct iteration across all five
-scripts without round-tripping through GitHub.
+the GitHub Action delivers to its subscriber jobs (see [Delivery pipelines](#delivery-pipelines)), or run
+`sync/sync-all.ps1` locally for fast iteration across every sync script without round-tripping through
+GitHub.
 
 To ship a component change to the CDN-loaded subscribers managed by
 [`MindAttic.Deploy`](../MindAttic.Deploy/README.md), tag a new version of this repo (`git tag Vn &&

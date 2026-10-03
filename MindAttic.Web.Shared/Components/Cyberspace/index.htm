@@ -321,7 +321,11 @@
         // Default: ON. Already checked in HTML, but call setAutoSpawn to keep engine state honest.
         applyAuto(true);
 
-        bar.textContent = 'ready — ' + demo.ART_VARIANTS.length + ' artifact variants, ' + demo.GEO_KEYS.length + ' geo keys';
+        // console-bg.js's _demo exposes ART_VARIANTS and the SacredGeometry catalog (there is no GEO_KEYS
+        // list since SCHEMATIC moved to SacredGeometry), so report the catalog's shape count instead.
+        var geo = demo.SacredGeometry || window.SacredGeometry;
+        bar.textContent = 'ready — ' + demo.ART_VARIANTS.length + ' artifact variants, ' +
+            (geo ? geo.count : 0) + ' schematic shapes';
     }
     init();
 })();

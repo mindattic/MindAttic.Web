@@ -1,10 +1,11 @@
 name: Sync content to subscribers
 
 # ====================================================================
-# This workflow only handles the three remaining "splice-in-place"
-# subscribers that MindAttic.UiUx still owns: mindattic.com (html-inline),
-# Prose (blazor-wwwroot), and MindAttic.Psst legal pages
-# (html-inline-multi -> terms.htm/privacy.htm).
+# This workflow only handles the two remaining "splice-in-place"
+# subscribers that MindAttic.UiUx still owns: mindattic.com (html-inline,
+# CYBERSPACE block) and the MindAttic.Psst legal pages (html-inline-multi
+# -> terms.htm/privacy.htm). Tutor is synced locally only (sync-tutor.ps1);
+# Prose.Writer / Prose.Codex / Ideas are "retired" in subscribers.json.
 #
 # Catalog landing pages and the Claudia/ChiMesh long-form HTML builds are
 # rendered by MindAttic.Deploy now -- they pull components from jsDelivr
@@ -16,14 +17,12 @@ on:
   push:
     branches: [main]
     paths:
-      # Only components actually spliced into a subscriber belong here. BackHomeM
-      # is delivered via jsDelivr/MindAttic.Deploy, not spliced — including it
-      # would fire all three jobs to produce empty no-change PRs.
-      - 'Components/AtticFont/**'
+      # Only components actually spliced by a job below belong here: mindattic.com
+      # splices Cyberspace, Psst splices OutfitFont. SacredGeometry, BackHomeM, the
+      # fonts/ and <domain>/ asset folders and the auth components are delivered via
+      # jsDelivr, not spliced -- listing them would only produce empty no-change PRs.
       - 'Components/Cyberspace/**'
       - 'Components/OutfitFont/**'
-      - 'Components/PinFooter/**'
-      - 'Components/WebSnapshot/**'
       - 'subscribers.json'
       - 'sync/**'
       - '.github/workflows/sync-subscribers.yml'
@@ -41,6 +40,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: content
+          # Full history + tags: sync-mindattic-com.ps1 derives its default CDN tag
+          # from `git describe --tags`, which a shallow, tagless checkout cannot do.
+          fetch-depth: 0
 
       - name: Checkout mindattic.com
         uses: actions/checkout@v4
@@ -73,46 +75,8 @@ jobs:
           author: "MindAttic Components Bot <noreply@mindattic.com>"
           committer: "MindAttic Components Bot <noreply@mindattic.com>"
 
-  sync-prose:
-    name: Sync into Prose
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout MindAttic.UiUx
-        uses: actions/checkout@v4
-        with:
-          path: content
-
-      - name: Checkout Prose
-        uses: actions/checkout@v4
-        with:
-          repository: mindattic/Prose
-          path: prose
-          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
-
-      - name: Run sync-prose.ps1
-        shell: pwsh
-        run: |
-          ./content/sync/sync-prose.ps1 `
-            -ContentRoot "$PWD/content" `
-            -BlazorRoot "$PWD/prose/v3/Prose.Blazor"
-
-      - name: Open or update PR if there are changes
-        uses: peter-evans/create-pull-request@v6
-        with:
-          path: prose
-          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
-          commit-message: "chore(components): sync from MindAttic.UiUx@${{ github.sha }}"
-          title: "Sync from MindAttic.UiUx"
-          body: |
-            Automated sync from [MindAttic.UiUx@${{ github.sha }}](https://github.com/mindattic/MindAttic.UiUx/commit/${{ github.sha }}).
-
-            - `wwwroot/js/*.js` overwritten with fresh copies
-            - `wwwroot/app.css` marker blocks regenerated
-          branch: auto/sync-components
-          base: master
-          delete-branch: true
-          author: "MindAttic Components Bot <noreply@mindattic.com>"
-          committer: "MindAttic Components Bot <noreply@mindattic.com>"
+  # sync-prose was removed 2026-10-02: Prose.Writer / Prose.Codex are marked "retired" in
+  # subscribers.json (the v3 Blazor wwwroots with UiUx marker blocks no longer exist in mindattic/Prose).
 
   sync-mindattic-psst:
     name: Sync into MindAttic.Psst (terms.htm + privacy.htm)

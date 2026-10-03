@@ -36,6 +36,18 @@ function Get-Subscriber {
     return $sub
 }
 
+# A subscriber can be parked without deleting it: set "retired": "<date>: <why / how to re-enroll>"
+# on its subscribers.json entry. Sync scripts call this right after Get-Subscriber and return early
+# (exit 0) for a retired subscriber, so sync-all.ps1 stays green while the target project is gone.
+function Test-SubscriberRetired {
+    param([Parameter(Mandatory)][PSCustomObject]$Subscriber)
+    if ($Subscriber.PSObject.Properties.Name -contains 'retired' -and $Subscriber.retired) {
+        Write-Host "  $($Subscriber.name): retired -- $($Subscriber.retired)"
+        return $true
+    }
+    return $false
+}
+
 function Get-ComponentDescriptor {
     param(
         [Parameter(Mandatory)][string]$Name,

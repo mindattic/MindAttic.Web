@@ -1,6 +1,7 @@
 // Where things live, and which files count as "assets". Kept in one place so tests, the baseline
 // tool and tools/build-asset-manifest.ps1 (which must use the same roots + extensions) stay aligned.
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
@@ -11,8 +12,20 @@ export const UIUX_ROOT = path.resolve(here, '..', '..');
 export const SITES_ROOT = process.env.SITES_ROOT ? path.resolve(process.env.SITES_ROOT) : path.resolve(UIUX_ROOT, '..');
 
 export const TEST_MODE = process.env.TEST_MODE === 'live' ? 'live' : 'local';
-/** The release tag every site is expected to pin. Override with UIUX_TAG when a newer tag ships. */
-export const EXPECTED_TAG = process.env.UIUX_TAG || 'V7';
+/**
+ * The release tag every site is expected to pin: UIUX_TAG if set, otherwise the highest whole-number `V<n>` tag
+ * in this repo (numeric, so V10 > V9) — the same rule MindAttic.Deploy's linked deploy uses when it pins the
+ * sites — so the expectation never goes stale after a release. Falls back to 'V7' only when git or the tags
+ * are unavailable (e.g. a shallow, tagless CI checkout — use `fetch-depth: 0` or set UIUX_TAG there).
+ */
+function latestWholeNumberTag() {
+  try {
+    const out = execFileSync('git', ['-C', UIUX_ROOT, 'tag', '--list', 'V*'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+    const nums = out.split(/\r?\n/).map((t) => t.trim().match(/^V(\d+)$/)).filter(Boolean).map((m) => Number(m[1]));
+    return nums.length ? `V${Math.max(...nums)}` : null;
+  } catch { return null; }
+}
+export const EXPECTED_TAG = process.env.UIUX_TAG || latestWholeNumberTag() || 'V7';
 
 export const CDN_HOST = 'cdn.jsdelivr.net';
 export const CDN_BASE = (tag) => `https://${CDN_HOST}/gh/mindattic/MindAttic.UiUx@${tag}/`;

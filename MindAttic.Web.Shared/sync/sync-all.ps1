@@ -3,11 +3,11 @@
 # Runs every downstream sync script in sync/ that matches sync-*.ps1
 # (except this file). Discovery is glob-based, so the subscriber set is
 # whatever is wired up in sync/*.ps1 and subscribers.json. Currently:
-#   - sync-mindattic-com.ps1   → mindattic.com/index.htm (inline)
-#   - sync-mindattic-psst.ps1  → MindAttic.Psst/{terms,privacy}.htm
-#   - sync-prose.ps1   → Prose.Blazor/wwwroot/
-#   - sync-ideas.ps1           → MindAttic.Ideas.Web/wwwroot/   (no-op until subscribed)
-#   - sync-tutor.ps1           → Tutor.Blazor/wwwroot/          (no-op until subscribed)
+#   - sync-mindattic-com.ps1   → mindattic.com/index.htm (CYBERSPACE block)
+#   - sync-mindattic-psst.ps1  → MindAttic.Psst/{terms,privacy}.htm (OUTFITFONT block)
+#   - sync-tutor.ps1           → Tutor.Blazor/wwwroot/ (auth-visual trio)
+#   - sync-prose.ps1           → retired (Prose.Writer / Prose.Codex no longer exist)
+#   - sync-ideas.ps1           → retired (MindAttic.Ideas.Web no longer exists)
 #
 # Catalog landing pages and the Claudia/ChiMesh long-form HTML builds are
 # rendered by MindAttic.Deploy (D:/Projects/MindAttic/MindAttic.Deploy);
@@ -18,7 +18,7 @@
 # (push-triggered cross-repo PRs). This script is the local equivalent
 # for fast iteration without round-tripping through GitHub; it is also
 # invoked piecewise by MindAttic.Deploy as a preDeploy hook for the
-# mindattic.com and Prose builds.
+# mindattic.com build.
 #
 # Idempotent. Safe to re-run after any edit under Components/ or
 # Themes/, or to subscribers.json.

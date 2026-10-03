@@ -87,6 +87,33 @@ pin the exact one (e.g. `MindAttic.Deploy/projects.json:componentsVersion`, or
 </content>
 </invoke>
 
+## MAU-A5 — Audit fixes after V7: retired subscribers, workflow repair, test hardening (refines MAU-A4) {#MAU-A5}
+Audit pass, 2026-10-02, after `V7` shipped:
+
+- **Retired subscribers.** `Prose.Writer` and `Prose.Codex` (Prose was restructured; no `v3/Prose.Writer` /
+  `v3/Prose.Codex` Blazor wwwroot with UiUx marker blocks exists) and `Ideas` (`MindAttic.Ideas.Web` no longer
+  exists) made `sync-prose.ps1`, `sync-ideas.ps1` and therefore `sync-all.ps1` fail with "Path not found". They
+  now carry a `"retired"` field in `subscribers.json`; `_subscribers.ps1` gained `Test-SubscriberRetired`, and
+  both scripts print the note and exit 0. Re-enroll by pointing `target` at the successor project, adding the
+  marker pairs and deleting the field.
+- **Workflow repaired.** `.github/workflows/sync-subscribers.yml`: the dead `sync-prose` job (it passed a
+  `-BlazorRoot` parameter the script no longer has, against a Prose layout that no longer exists) is removed;
+  the paths filter now lists only what a job splices (`Components/Cyberspace/**`, `Components/OutfitFont/**`,
+  plus `subscribers.json`, `sync/**` and the workflow) instead of components nobody splices (AtticFont,
+  PinFooter, WebSnapshot); the mindattic.com job checks UiUx out with `fetch-depth: 0` so the sync's
+  `git describe` default tag works in CI.
+- **Correction to MAU-A4.** `sync-mindattic-com.ps1` does not hard-code `V7`: `-CyberspaceCdnTag` defaults to
+  the latest `V*` tag in the repo (`git describe`, fallback `V7`), and the linked deploy passes the release tag.
+- **Tests.** The expected tag now follows the highest whole-number tag (`UIUX_TAG` overrides). Chrome runs with
+  classic scrollbars, the overflow check visits every view (mindatticcares.com's hash pages, every
+  ryandebraal.com theme at phone widths) and waits for layout to settle, a static guard rejects in-flow
+  `width:100vw`, the cares spec covers `#contents` anchors and "Back to contents", and the output folder is
+  configurable (`PW_OUTPUT_DIR`). Each new check was shown to fail on the earlier page versions it targets.
+- **Cyberspace harness.** `Components/Cyberspace/index.htm` threw on load (`demo.GEO_KEYS` no longer exists since
+  SCHEMATIC moved to SacredGeometry); it now reports the SacredGeometry shape count.
+- **Docs.** README, `sync/sync.md`, `.github/PIPELINES.md` and the sync script headers no longer describe SemVer
+  tags, a `V4`/`V5` "current" tag, a Prose job or "no subscriptions yet" for Tutor.
+
 ## Status index (from USER_STORIES.md)
 - done: 4 | partial: 10 | planned: 3 | cut: 3
 

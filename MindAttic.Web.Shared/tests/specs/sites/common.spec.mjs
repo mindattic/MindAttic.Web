@@ -107,21 +107,58 @@ for (const [name, site] of Object.entries(SITES)) {
       } finally { await s.context.close(); }
     });
 
-    test('no horizontal scrollbar at common viewport sizes', async ({ browser }) => {
-      // (ryandebraal.com used to overflow by 118px @320 / 48px @390 because a long skill tag was nowrap; fixed with a
-      // narrow-screen wrap rule on .tag, so this now runs as a normal assertion for every site.)
+    test('no horizontal scrollbar at common viewport sizes, in every view the site has', async ({ browser }) => {
+      // Every view a visitor can reach is checked, not just the first paint: the hash-routed pages of
+      // mindatticcares.com (its Y2K page once overflowed by 4-8px @320 while Home was fine), and every
+      // ryandebraal.com theme at the narrow phone widths (themes change fonts and add effect layers).
+      // (ryandebraal.com used to overflow by 118px @320 / 48px @390 because a long skill tag was nowrap;
+      // fixed with a narrow-screen wrap rule on .tag.)
+      test.setTimeout(120_000); // ~40 view x viewport combinations on ryandebraal.com
       const s = await openSite(browser, site, { viewport: { width: VIEWPORTS[0][0], height: VIEWPORTS[0][1] } });
       try {
         await loadSite(s, { settleMs: 500 });
+        const views = await viewsOf(name, s.page, html);
         const over = [];
         for (const [w, h] of VIEWPORTS) {
           await s.page.setViewportSize({ width: w, height: h });
-          await s.page.waitForTimeout(250);
-          const r = await s.page.evaluate(() => ({ doc: document.documentElement.scrollWidth - document.documentElement.clientWidth, body: document.body.scrollWidth - document.documentElement.clientWidth }));
-          if (r.doc > 0 || r.body > 0) over.push(`${w}x${h}: documentElement overflows by ${r.doc}px, body by ${r.body}px`);
+          for (const v of views) {
+            if (v.narrowOnly && w > 400) continue;
+            await v.enter(s.page);
+            await s.page.waitForTimeout(v.settleMs ?? 150);
+            // Effects that are still starting (theme FX, intro transitions) can widen the scrollable area for a
+            // few hundred ms. Give layout ~1.2s to settle: overflow that persists fails; a transient flash is
+            // recorded as an annotation so it stays visible without making the check flaky.
+            let r, first;
+            for (let i = 0; i < 8; i++) {
+              r = await s.page.evaluate(() => ({ doc: document.documentElement.scrollWidth - document.documentElement.clientWidth, body: document.body.scrollWidth - document.body.clientWidth }));
+              first ??= r;
+              if (r.doc <= 0 && r.body <= 0) break;
+              await s.page.waitForTimeout(150);
+            }
+            if (r.doc > 0 || r.body > 0) over.push(`${w}x${h} [${v.label}]: documentElement overflows by ${r.doc}px, body by ${r.body}px`);
+            else if (first.doc > 0 || first.body > 0) test.info().annotations.push({ type: 'transient-overflow', description: `${w}x${h} [${v.label}]: ${first.doc}px for a moment after entering the view` });
+          }
         }
         expect(over).toEqual([]);
+        expect(s.rec.pageErrors).toEqual([]);
       } finally { await s.context.close(); }
+    });
+
+    test('no in-flow element is sized with 100vw (it overflows by the scrollbar width on desktop browsers)', () => {
+      // 100vw includes the vertical scrollbar, so on any browser with classic scrollbars (Windows desktop) an
+      // in-flow box that is 100vw wide is ~15-17px wider than the page and adds a sideways scroll. Fixed-position
+      // layers are exempt (they do not take part in the document's scrollable width). Sizes attributes on <img>
+      // (e.g. sizes="100vw") are not CSS and are not checked.
+      const css = [
+        ...[...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map((m) => m[1]),
+        ...[...html.matchAll(/\sstyle="([^"]*)"/gi)].map((m) => `inline{${m[1]}}`),
+      ].join('\n').replace(/\/\*[\s\S]*?\*\//g, '');
+      const hits = [];
+      for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+        const [, selector, body] = m;
+        if (/(?:^|;|\s)(?:min-|max-)?width\s*:\s*100vw\b/i.test(body) && !/position\s*:\s*fixed/i.test(body)) hits.push(`${selector.trim().slice(0, 80)} { ${body.trim().slice(0, 80)} }`);
+      }
+      expect(hits, 'use width:100% (or position:fixed) instead of 100vw').toEqual([]);
     });
 
     test('comments no longer make "all in one file / no external requests" claims', () => {
@@ -130,6 +167,37 @@ for (const [name, site] of Object.entries(SITES)) {
       expect(hits, 'retired philosophy still stated in comments').toEqual([]);
     });
   });
+}
+
+// The views of a site the overflow check visits. Each enter() must actually switch the view; it asserts that
+// it did, so a broken route cannot make the check silently cover less than it claims.
+async function viewsOf(name, page, html) {
+  if (name === 'mindatticcares.com') {
+    return ['home', 'childs-play', 'y2k'].map((id) => ({
+      label: `#${id}`,
+      async enter(p) {
+        await p.evaluate((h) => { window.location.hash = h; }, `#${id}`);
+        await expect(p.locator(`#${id}`)).toHaveClass(/active/);
+      },
+    }));
+  }
+  if (name === 'ryandebraal.com') {
+    // Theme names are read from the page's own CSS ([data-theme="<name>"] blocks), plus the default.
+    const themes = [...new Set([...html.matchAll(/\[data-theme="([a-z0-9-]+)"\]\s*\{/g)].map((m) => m[1]))];
+    expect(themes.length, 'ryandebraal.com should define several themes').toBeGreaterThan(3);
+    const views = [{ label: 'initial theme', async enter() {} }];
+    for (const t of themes) {
+      views.push({
+        label: `theme ${t}`, narrowOnly: true, settleMs: 250,
+        async enter(p) {
+          await p.evaluate((name) => { (window.applyTheme || ((n) => document.documentElement.setAttribute('data-theme', n)))(name); }, t);
+          await expect(p.locator('html')).toHaveAttribute('data-theme', t);
+        },
+      });
+    }
+    return views;
+  }
+  return [{ label: 'page', async enter() {} }];
 }
 
 // Keep unused-import linters quiet without hiding intent: siteUrl is exercised via openSite().

@@ -5,6 +5,12 @@
 # Runs the same component dispatch against each subscriber in turn so
 # the two apps are always in sync after every UiUx update.
 #
+# RETIRED (2026-10-02): Prose was restructured and neither v3/Prose.Writer nor
+# v3/Prose.Codex (Blazor wwwroots with UiUx marker blocks) exists any more, so
+# both subscribers carry a "retired" field in subscribers.json and this script
+# reports them and exits 0. Re-enroll by pointing target at the new project,
+# adding the marker pairs, and deleting the field.
+#
 # Usage:
 #   powershell -File sync-prose.ps1
 # ====================================================================
@@ -63,6 +69,7 @@ function Sync-Subscriber {
     param([string]$SubscriberName, [string]$ContentRoot)
 
     $sub       = Get-Subscriber -Name $SubscriberName -ContentRoot $ContentRoot
+    if (Test-SubscriberRetired -Subscriber $sub) { return }
     $blazorRoot = $sub.target
     $wwwJs     = Join-Path $blazorRoot 'wwwroot/js'
     $appCss    = Join-Path $blazorRoot 'wwwroot/app.css'

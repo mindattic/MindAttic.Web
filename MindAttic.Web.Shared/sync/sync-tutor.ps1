@@ -2,18 +2,14 @@
 # MindAttic.UiUx -> Tutor
 # --------------------------------------------------------------------
 # Drives Tutor.Blazor's wwwroot from MindAttic.UiUx/subscribers.json.
-# Splice-in-place, identical model to sync-prose.ps1:
+# Splice-in-place:
 #   - OutfitFont / AtticFont -> CSS marker block in wwwroot/app.css
 #   - html-bundle components  -> jsFiles copied to wwwroot/js + CSS marker block
 #
-# The shared auth-visual components (UserLogin / UserCircle / UserTimeout) are
-# added to subscribers."Tutor".subscriptions once they are authored under
-# Components/, along with a matching dispatch case below and a marker pair in
-# wwwroot/app.css. Until then the subscription list is empty and this is a no-op.
-#
-# NOTE: Tutor.Blazor has no wwwroot yet. The first time a subscription is added,
-# create wwwroot/app.css (with the marker pairs) and let this script create
-# wwwroot/js.
+# Tutor is enrolled in the auth-visual trio (UserLogin / UserCircle / UserTimeout);
+# wwwroot/app.css carries their marker pairs. If the subscription list is ever
+# emptied this script is a no-op. Local delivery only: the GitHub workflow has no
+# Tutor job.
 #
 # Usage:
 #   powershell -File sync-tutor.ps1
