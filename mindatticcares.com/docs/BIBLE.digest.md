@@ -4,7 +4,7 @@ project: MindAttic Cares
 code: MAC
 layer: digest
 status: living
-updated: 2026-10-02
+updated: 2026-10-03
 generatedFrom: MAC-bible
 ---
 
@@ -29,7 +29,7 @@ in full public detail so any sibling charity can fork and reuse them.
   are served, not built.)
 - **NOT a donation processor.** It links out to the partner charity; it does not collect money.
 - **NOT self-deploying.** Deployment is owned by the central **MindAttic.Deploy** pipeline (sibling
-  repo), not by per-project scripts in this folder. (See [§4](#MAC-§4), [MAC-A1](AMENDMENTS.md#MAC-A1).)
+  repo), not by per-project scripts in this folder. (See [§4](#MAC-§4), [MAC-LAW-5](#MAC-LAW-5).)
 - **NOT a CMS-driven blog.** New events are authored by copying the existing section template
   directly in `index.htm`.
 
@@ -40,21 +40,38 @@ This project **inherits the org-wide House Rules** in
 [`MindAttic.HouseRules.md`](../../MindAttic.HouseRules.md) by reference — they are not restated here.
 Relevant inherited laws:
 - **[HOUSE-LAW-1]** — whole-number versioning.
-- **[HOUSE-LAW-3]** — credentials never committed (the retired `settings.json` is gitignored; FTP
-  secrets live in `MindAttic.Deploy/secrets/`).
+- **[HOUSE-LAW-3]** — credentials never committed (FTP secrets live in `MindAttic.Deploy/secrets/`).
 - **[HOUSE-LAW-8]** — definition of done is verified, not asserted (see [§8](#MAC-§8)).
 - **[HOUSE-LAW-9]** — `psst` only on explicit request.
 
 Project-specific laws:
 
-### MAC-LAW-1 — One file, no build step {#MAC-LAW-1}
-The entire site ships as a single `index.htm` with inlined CSS, JS, fonts, and images. No CDN,
-no database, no bundler, no SSG, no `npm install`. The file you edit is the file you deploy.
+### MAC-LAW-1 — One file, no build step; assets from the pinned UiUx package {#MAC-LAW-1}
+The entire site ships as a single `index.htm` with inline CSS and JS. No database, no bundler, no SSG,
+no framework, no `npm install`. The file you edit is the file you deploy.
 
-> **Refined by [MAC-A2](AMENDMENTS.md#MAC-A2)** (amendment wins): the *no build step / no bundler /
-> no framework / file-you-edit-is-the-file-you-deploy* parts still stand in full. The "inlined
-> fonts and images / no CDN" parts no longer apply — fonts and images are tag-pinned static files
-> served from the MindAttic.UiUx package on jsDelivr.
+Fonts and images are not embedded: they are static files in the shared **MindAttic.UiUx** repo,
+loaded at runtime from jsDelivr pinned to a whole-number release tag:
+
+```
+https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/mindatticcares.com/<category>/<file>
+https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/fonts/outfit/<file>
+```
+
+`<category>` is `logos`, `icons` or `images`; file names are lowercase kebab-case (pixel-width suffix
+for resized variants, e.g. `-720.png`). A tag is immutable, so changing an asset means cutting a new
+tag (via the linked deploy) and re-pinning `index.htm`. Lossy files stay byte-identical at full
+resolution; PNGs may only be recompressed losslessly. The page uses `preconnect`/`preload` hints and
+lazy-loads below-the-fold images.
+
+**Allowed external hosts (the full list):**
+- `cdn.jsdelivr.net` — static assets from MindAttic.UiUx only, pinned to a tag.
+- `www.youtube-nocookie.com` — only after the visitor clicks the Child's Play video poster
+  (`www.youtube.com` is used only for the `file://` open-in-new-tab fallback).
+- Plain outbound links (e.g. childsplaycharity.org) are navigation, not dependencies.
+
+Forbidden: analytics, tracking pixels, third-party font services (e.g. Google Fonts), front-end
+frameworks, a bundler/build step, a CMS.
 
 ### MAC-LAW-2 — 100% pass-through giving {#MAC-LAW-2}
 Funds raised at an event go to the named partner charity directly. Operational cost is covered
@@ -65,13 +82,16 @@ Every event's full playbook (timeline → venue → equipment → run-of-show �
 post-event) is published verbatim on the public page. Nothing operational is kept private.
 
 ### MAC-LAW-4 — Stable section IDs drive navigation {#MAC-LAW-4}
-Pages use `<section class="page" id="...">` and playbook sections use `<h2 id="sec-..." class="sec">`.
-The hash router and in-page TOC key off these IDs; renaming an ID is
+Pages use `<section class="page" id="...">`, playbook sections use `<h2 id="sec-..." class="sec">`,
+and the contents list is `<nav class="toc" id="contents">`. The hash router opens whichever page
+contains a requested anchor, and the in-page TOC keys off these IDs; renaming an ID is
 a breaking change to navigation and must update every reference.
 
 ### MAC-LAW-5 — Deployment is centralized {#MAC-LAW-5}
-Deployment is owned by **MindAttic.Deploy**, not by per-project scripts. The per-folder
-`deploy.ps1`/`deploy.bat`/`settings.json` are retired; do not re-introduce a local FTP pipeline.
+Deployment is owned by **MindAttic.Deploy**, not by per-project scripts. This folder has no
+`deploy.ps1`/`deploy.bat`/`settings.json`; do not introduce a local FTP pipeline. The site's profile
+lives in `MindAttic.Deploy/projects.json` under `sites[]`; FTP credentials live in
+`MindAttic.Deploy/secrets/ftp.json` (gitignored).
 
 
 ## 9. Glossary {#MAC-§9}
@@ -88,14 +108,11 @@ Deployment is owned by **MindAttic.Deploy**, not by per-project scripts. The per
 - **MindAttic.Deploy** — the central sibling repo that owns the FTPS deploy pipeline (MAC-LAW-5).
 - **Pass-through giving** — donations route entirely to the partner charity (MAC-LAW-2).
 - **MindAttic.UiUx package** — the shared repo that holds MindAttic's runtime assets (fonts, logos,
-  photos, effects) organised by domain and served by jsDelivr; sites load from it at runtime (MAC-A2).
+  photos, effects) organised by domain and served by jsDelivr; sites load from it at runtime (MAC-LAW-1).
 - **Asset URL** — `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/mindatticcares.com/<category>/<file>`;
-  `<tag>` is a whole-number release tag (e.g. `V7`), lowercase kebab-case file names.
+  `<tag>` is a whole-number release tag (currently `V10`), lowercase kebab-case file names.
 
 
 ## Status index (USER_STORIES)
-- done: 5   partial: 4   planned: 2   cut: 0
-
-## Latest amendment
-- MAC-A4 — Remove the per-section "Back to contents" links; add meta description and link-preview tags (refines MAC-A3) {#MAC-A4}
+- done: 5   partial: 4   planned: 2
 

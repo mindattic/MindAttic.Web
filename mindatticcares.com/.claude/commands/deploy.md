@@ -1,4 +1,4 @@
-Deploy mindatticcares.com via **MindAttic.Deploy** (sibling repo at `D:\Projects\MindAttic\MindAttic.Deploy`). One repo owns the whole FTP pipeline; the per-project `deploy.ps1` / `deploy.bat` / `settings.json` in this folder are retired.
+Deploy mindatticcares.com via **MindAttic.Deploy** (sibling repo at `D:\Projects\MindAttic\MindAttic.Deploy`). One repo owns the whole FTP pipeline; this folder has no deploy script or FTP settings of its own.
 
 **mindatticcares.com is permanently linked to MindAttic.UiUx, ryandebraal.com and mindattic.com.** Deploying any one of them deploys all four. This site's fonts, logos and images are served from the MindAttic.UiUx jsDelivr package, so its deploy must publish and verify that package first.
 
@@ -21,6 +21,6 @@ This site's profile lives in `MindAttic.Deploy/projects.json` under `sites[]` (g
 After running, summarize the release tag, the pins that changed, the CDN gate result and the per-site upload table, and flag any failure. The deploy does not commit or push this repo — mention any uncommitted changes `git status` shows.
 
 Notes:
-- FTP credentials are centralized in `MindAttic.Deploy/secrets/ftp.json` (gitignored). The per-site `settings.json` is no longer read.
-- The repo was renamed from `MindAtticCares` -> `mindatticcares.com` (GitHub remote and local folder both updated). The MindAttic.Deploy site profile points at the new sourceDir.
-- Rules and rationale: `MindAttic.Deploy/docs/AMENDMENTS.md` (DEP-A3).
+- FTP credentials are centralized in `MindAttic.Deploy/secrets/ftp.json` (gitignored).
+- The MindAttic.Deploy site profile's `sourceDir` is `../mindatticcares.com`.
+- Rules and rationale: `MindAttic.Deploy/docs/BIBLE.md`.

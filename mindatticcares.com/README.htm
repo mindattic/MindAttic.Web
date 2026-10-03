@@ -112,7 +112,7 @@ pre:hover .cpbtn{opacity:1}
   <main id="content">
 <h1 id="mindatticcarescom">mindatticcares.com</h1>
 <p>MindAttic Cares, the charity arm of MindAttic LLC: one static page that publishes full fundraising-event playbooks in the open, starting with a Y2K party benefiting Child's Play.</p>
-<p><a href="index.htm"><img src="https://img.shields.io/badge/HTML5-one%20page-e34f26" alt="HTML5"></a> <a href="index.htm"><img src="https://img.shields.io/badge/JavaScript-vanilla-f7df1e" alt="JavaScript"></a> <a href="https://github.com/mindattic/MindAttic.UiUx"><img src="https://img.shields.io/badge/assets-MindAttic.UiUx%20V9-6c5ce7" alt="Assets"></a> <a href="docs/BIBLE.md"><img src="https://img.shields.io/badge/build%20step-none-555555" alt="Build"></a> <a href="https://mindatticcares.com"><img src="https://img.shields.io/badge/status-live-2ea043" alt="Status"></a></p>
+<p><a href="index.htm"><img src="https://img.shields.io/badge/HTML5-one%20page-e34f26" alt="HTML5"></a> <a href="index.htm"><img src="https://img.shields.io/badge/JavaScript-vanilla-f7df1e" alt="JavaScript"></a> <a href="https://github.com/mindattic/MindAttic.UiUx"><img src="https://img.shields.io/badge/assets-MindAttic.UiUx%20V10-6c5ce7" alt="Assets"></a> <a href="docs/BIBLE.md"><img src="https://img.shields.io/badge/build%20step-none-555555" alt="Build"></a> <a href="https://mindatticcares.com"><img src="https://img.shields.io/badge/status-live-2ea043" alt="Status"></a></p>
 <p><img src="docs/images/home.png" alt="The MindAttic Cares home page: a large black M with a red brush-stroke heart above the MindAttic Cares heading and introduction, with navigation for Child's Play and Y2K: End of the World Party"></p>
 <p>Try it: <a href="https://mindatticcares.com/">mindatticcares.com</a></p>
 <h2 id="why">Why</h2>
@@ -177,7 +177,7 @@ start index.htm</code></pre>
 <ul>
 <li>Three pages, one document. <code>&lt;main&gt;</code> holds three <code>&lt;section class="page"&gt;</code> blocks, <code>home</code>, <code>childs-play</code> and <code>y2k</code>, and exactly one carries the <code>.active</code> class at a time.</li>
 <li>Hash router. One trailing <code>&lt;script&gt;</code> implements <code>show(name)</code> (toggles <code>.active</code> on the matching page and nav link, scrolls to top) and <code>fromHash()</code>. Bare page names like <code>#childs-play</code> select that page directly; any other anchor, such as <code>#sec-budget</code> or <code>#contents</code>, opens the page that contains it and scrolls it into view.</li>
-<li>In-page table of contents. The Y2K page carries <code>&lt;nav class="toc" id="contents"&gt;</code> linking to all 19 <code>&lt;h2 id="sec-*" class="sec"&gt;</code> sections, so <code>#contents</code> deep-links to it. The sections have no per-section "back to contents" links (removed 2026-10-03, MAC-A4).</li>
+<li>In-page table of contents. The Y2K page carries <code>&lt;nav class="toc" id="contents"&gt;</code> linking to all 19 <code>&lt;h2 id="sec-*" class="sec"&gt;</code> sections, so <code>#contents</code> deep-links to it. The sections have no per-section "back to contents" links.</li>
 <li>Click-to-load YouTube. The Child's Play intro video is a <code>.video[data-yt]</code> poster that, on click or Enter, swaps itself for a <code>youtube-nocookie.com</code> iframe. Over <code>file://</code>, where the iframe would be blocked, it opens the video in a new tab instead.</li>
 <li>Last-Updated stamp. The file's first line is a <code>Last Updated</code> HTML comment with an ISO 8601 UTC time, rewritten by the MindAttic.Deploy pipeline on every deploy, not by hand.</li>
 </ul>
@@ -189,11 +189,11 @@ start index.htm</code></pre>
 </tr></thead><tbody>
 <tr>
 <td>Front end</td>
-<td>One hand-authored <code>index.htm</code> (about 60 KB): inline <code>&lt;style&gt;</code> CSS and one inline <code>&lt;script&gt;</code>. No framework, no build step</td>
+<td>One hand-authored <code>index.htm</code> (about 63 KB): inline <code>&lt;style&gt;</code> CSS and one inline <code>&lt;script&gt;</code>. No framework, no build step</td>
 </tr>
 <tr>
 <td>Assets</td>
-<td>Fonts (Outfit), logos, icons and photos are static files in the MindAttic.UiUx repo, served by jsDelivr and pinned to a release tag (<code>@V9</code>). The page uses <code>preconnect</code> and <code>preload</code> for the CDN and the body font, <code>loading="lazy"</code> for below-the-fold images, and <code>srcset</code> for the large Y2K photo</td>
+<td>Fonts (Outfit), logos, icons and photos are static files in the MindAttic.UiUx repo, served by jsDelivr and pinned to a release tag (<code>@V10</code>). The page uses <code>preconnect</code> and <code>preload</code> for the CDN and the body font, <code>loading="lazy"</code> for below-the-fold images, and <code>srcset</code> for the large Y2K photo</td>
 </tr>
 <tr>
 <td>Hosting</td>
@@ -228,11 +228,11 @@ start index.htm</code></pre>
     ├── icons/               # favicon / apple-touch icon
     └── images/              # photos, video poster, page background</code></pre>
 <ul>
-<li>URL pattern: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/mindatticcares.com/&lt;category&gt;/&lt;file&gt;</code>, for example <code>.../logos/m-cares-black-red-transparent-720.png</code>. Fonts: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/fonts/outfit/outfit-latin.woff2</code>.</li>
-<li>Pinned to a tag. <code>@V9</code> is a whole-number UiUx release tag (HOUSE-LAW-1). Tags are immutable on jsDelivr, so what the page loads today is exactly what it loads tomorrow. To change an asset, add or replace the file in UiUx, cut a new tag and bump the tag in <code>index.htm</code> (the linked deploy does the last two steps for you).</li>
+<li>URL pattern: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/mindatticcares.com/&lt;category&gt;/&lt;file&gt;</code>, for example <code>.../logos/m-cares-black-red-transparent-720.png</code>. Fonts: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/fonts/outfit/outfit-latin.woff2</code>.</li>
+<li>Pinned to a tag. <code>@V10</code> is a whole-number UiUx release tag (HOUSE-LAW-1). Tags are immutable on jsDelivr, so what the page loads today is exactly what it loads tomorrow. To change an asset, add or replace the file in UiUx, cut a new tag and bump the tag in <code>index.htm</code> (the linked deploy does the last two steps for you).</li>
 <li>Naming: lowercase kebab-case, descriptive, with the pixel width as a suffix for resized web variants (<code>-300.png</code>, <code>-720.png</code>, <code>-960.jpg</code>).</li>
 <li>Full resolution: JPEGs are stored byte-identical at full resolution. The Y2K photo is the original 1920 by 1200, with a 960 px variant offered through <code>srcset</code>. PNGs may be recompressed only losslessly.</li>
-<li>What may be external: only static files from this package (<a href="docs/AMENDMENTS.md#MAC-A2">MAC-A2</a>). No analytics, trackers or third-party fonts (no Google Fonts requests).</li>
+<li>What may be external: only static files from this package, plus the click-to-load YouTube embed (<a href="docs/BIBLE.md#MAC-LAW-1">MAC-LAW-1</a>). No analytics, trackers or third-party fonts (no Google Fonts requests).</li>
 </ul>
 <h2 id="tooling">Tooling</h2>
 <p><code>tools/</code> holds two independent PowerShell scripts with no npm or build dependency. Both run with Windows PowerShell 5.1 or PowerShell 7+.</p>
@@ -242,7 +242,7 @@ start index.htm</code></pre>
 </tr></thead><tbody>
 <tr>
 <td><code>tools/codex.ps1</code></td>
-<td>Codex documentation CLI. <code>doctor</code> validates <code>docs/</code> (front-matter, stable IDs, cross-references, cited tests and paths, digest freshness) and exits non-zero on any hard error. <code>digest</code> regenerates <code>docs/BIBLE.digest.md</code> from BIBLE §1, §3, §5 and §9 plus a user-story status index and the latest amendment head</td>
+<td>Codex documentation CLI. <code>doctor</code> validates <code>docs/</code> (front-matter, stable IDs, cross-references, cited tests and paths, digest freshness) and exits non-zero on any hard error. <code>digest</code> regenerates <code>docs/BIBLE.digest.md</code> from BIBLE §1, §3, §5 and §9 plus a user-story status index and any pending decisions</td>
 </tr>
 <tr>
 <td><code>tools/build-readme.ps1</code></td>
@@ -252,14 +252,14 @@ start index.htm</code></pre>
 <pre><code class="language-powershell"># Validate the Codex docs (exit 0 required before committing doc changes)
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\codex.ps1 doctor
 
-# Regenerate docs/BIBLE.digest.md after editing BIBLE §1/§3/§5/§9 or adding an amendment
+# Regenerate docs/BIBLE.digest.md after editing BIBLE §1/§3/§5/§9
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\codex.ps1 digest
 
 # Regenerate README.htm from README.md
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1</code></pre>
 <p><code>README.htm</code> and <code>index.htm</code> are unrelated: <code>index.htm</code> is the deployed site; <code>README.htm</code> is a local, generated rendering of this README and is not deployed.</p>
 <h2 id="deployment">Deployment</h2>
-<p>Per-project deploy scripts are retired: <code>deploy.bat</code>, <code>deploy.ps1</code> and a per-folder <code>settings.json</code> no longer exist here (<a href="docs/AMENDMENTS.md#MAC-A1">MAC-A1</a>). Deployment is owned by the sibling MindAttic.Deploy repo. Use the <code>/deploy</code> Claude Code command, or run:</p>
+<p>This repo has no deploy script or FTP settings of its own (<a href="docs/BIBLE.md#MAC-LAW-5">MAC-LAW-5</a>). Deployment is owned by the sibling MindAttic.Deploy repo. Use the <code>/deploy</code> Claude Code command, or run:</p>
 <pre><code class="language-powershell">cd D:\Projects\MindAttic\MindAttic.Deploy
 npm run deploy -- --site mindatticcares.com</code></pre>
 <p>This site is registered as a verbatim root-site FTP upload in <code>MindAttic.Deploy/projects.json</code> under <code>sites[]</code>, with <code>sourceDir: "../mindatticcares.com"</code>, <code>ftpRemotePath: "/mindatticcares.com"</code> and <code>files: ["index.htm"]</code>. The pipeline stamps the <code>Last Updated</code> comment in <code>index.htm</code> and FTPS-uploads it. FTP credentials are centralised in MindAttic.Deploy and never read from this repo.</p>
@@ -290,7 +290,7 @@ npm run deploy -- --site mindatticcares.com</code></pre>
 <tr>
 <td>L1, Amendments</td>
 <td><a href="docs/AMENDMENTS.md">docs/AMENDMENTS.md</a></td>
-<td>Append-only change log (<code>MAC-A&lt;n&gt;</code>); an amendment wins over the bible</td>
+<td>Decisions not yet folded into the bible; normally empty (git history is the change record)</td>
 </tr>
 <tr>
 <td>L2, User stories</td>
@@ -300,7 +300,7 @@ npm run deploy -- --site mindatticcares.com</code></pre>
 <tr>
 <td>rfc</td>
 <td><a href="docs/rfc/">docs/rfc</a></td>
-<td>Design notes that graduate into the bible and stories once decided</td>
+<td>Open design notes; once decided they are folded into the bible and stories and deleted</td>
 </tr>
 <tr>
 <td>Generated</td>

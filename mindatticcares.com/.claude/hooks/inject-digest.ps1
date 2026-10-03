@@ -21,7 +21,7 @@ if ([string]::IsNullOrWhiteSpace($body)) { Write-Output '{}'; return }
 $preamble = @"
 The following is the AUTHORITATIVE Codex digest for MindAttic Cares (MAC), generated from
 docs/BIBLE.md. Treat it as the source of truth for what this project IS, is NOT, and its Laws.
-Full detail lives in docs/BIBLE.md; amendments in docs/AMENDMENTS.md win over the bible.
+Full detail lives in docs/BIBLE.md.
 
 "@
 

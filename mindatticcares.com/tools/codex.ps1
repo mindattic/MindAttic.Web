@@ -7,7 +7,7 @@
               story tests, cited paths, generatedFrom freshness, digest staleness).
               Exits non-zero on any hard error.
     digest  - regenerate docs/BIBLE.digest.md from BIBLE.md (1, 3, 5, 9) + a status index
-              + the latest amendment head.
+              + any pending decisions from AMENDMENTS.md (omitted when there are none).
   No build step; pure PowerShell (5.1 / Win-1252 safe).
 .EXAMPLE
   pwsh tools/codex.ps1 doctor
@@ -268,28 +268,25 @@ function Build-DigestContent {
 
   # status index from USER_STORIES - count only per-story status markers
   # (a story line carries "MAC-US-<E><n> <marker>"), so the legend line is not counted.
-  $done = 0; $partial = 0; $planned = 0; $cut = 0
+  $done = 0; $partial = 0; $planned = 0
   if (Test-Path $Stories) {
     $st = Get-Content -LiteralPath $Stories -Raw -Encoding UTF8
     $check   = [string][char]0x2705                    # done
     $yellow  = [string]([char]0xD83D + [char]0xDFE1)   # partial
     $square  = [string][char]0x2B1C                    # planned
-    $scissor = [string]([char]0xD83D + [char]0xDDD1)   # cut
     foreach ($line in ($st -replace "`r`n","`n" -split "`n")) {
       if ($line -notmatch 'MAC-US-[A-Z]\d+') { continue }
       if     ($line.Contains($check))   { $done++ }
       elseif ($line.Contains($yellow))  { $partial++ }
       elseif ($line.Contains($square))  { $planned++ }
-      elseif ($line.Contains($scissor)) { $cut++ }
     }
   }
 
-  # latest amendment head
-  $amendHead = ''
+  # pending decisions (AMENDMENTS.md entries; normally none)
+  $pending = @()
   if (Test-Path $Amend) {
     $aLines = (Get-Content -LiteralPath $Amend -Raw -Encoding UTF8) -replace "`r`n", "`n" -split "`n"
-    $headers = @($aLines | Where-Object { $_ -match '^##\s+MAC-A\d+' })
-    if ($headers.Count -gt 0) { $amendHead = $headers[-1].TrimStart('#',' ') }
+    $pending = @($aLines | Where-Object { $_ -match '^##\s+MAC-A\d+' } | ForEach-Object { $_.TrimStart('#',' ') })
   }
 
   $today = (Get-Date).ToString('yyyy-MM-dd')
@@ -314,10 +311,12 @@ function Build-DigestContent {
   [void]$sb.AppendLine($s5); [void]$sb.AppendLine("")
   [void]$sb.AppendLine($s9); [void]$sb.AppendLine("")
   [void]$sb.AppendLine("## Status index (USER_STORIES)")
-  [void]$sb.AppendLine("- done: $done   partial: $partial   planned: $planned   cut: $cut")
-  [void]$sb.AppendLine("")
-  [void]$sb.AppendLine("## Latest amendment")
-  [void]$sb.AppendLine("- $amendHead")
+  [void]$sb.AppendLine("- done: $done   partial: $partial   planned: $planned")
+  if ($pending.Count -gt 0) {
+    [void]$sb.AppendLine("")
+    [void]$sb.AppendLine("## Pending decisions (AMENDMENTS.md)")
+    foreach ($h in $pending) { [void]$sb.AppendLine("- $h") }
+  }
   return $sb.ToString()
 }
 
