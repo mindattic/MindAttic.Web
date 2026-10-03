@@ -26,8 +26,8 @@ updated: 2026-10-02
 - **MAC-US-A2 🟡** As a visitor on the Y2K page, I can jump to any of the 19 playbook sections via
   the in-page Table of Contents, so I can navigate the long playbook. *Given the Y2K page, When I
   click a TOC entry, Then the page scrolls to the matching `#sec-*` anchor.*
-  *(19 `sec-*` anchors match the 19 TOC links — structural grep; TOC click and "Back to contents"
-  (→ `#contents`) checked by hand in Chrome on 2026-10-02; no automated test, held 🟡.)*
+  *(19 `sec-*` anchors match the 19 TOC links — structural grep; TOC click and the `#contents`
+  deep link checked by hand in Chrome on 2026-10-02; no automated test, held 🟡.)*
 - **MAC-US-A3 ✅** (verified by `MindAttic.UiUx/tests/specs/sites/mindatticcares.spec.mjs`) As a visitor, I can play the Child's Play intro video inline without it loading
   on page open, so the page stays light. *Given the poster, When I click/Enter it, Then a
   `youtube-nocookie` iframe replaces it (or YouTube opens in a new tab under `file://`).*
@@ -79,7 +79,7 @@ updated: 2026-10-02
 
 1. **MAC-US-A1 / A2** — solidify navigation correctness; this is the site's core interaction.
 2. **MAC-US-C2** — multi-event authoring ergonomics → see [RFC 0001](rfc/0001-multi-event-playbooks.md).
-3. ⬜ **MAC-US-D1** — automated link/anchor checker (verify every TOC/`back-top` link resolves)
+3. ⬜ **MAC-US-D1** — automated link/anchor checker (verify every TOC link resolves)
    so navigation stories can graduate from 🟡 to ✅ with a citable check.
 4. ⬜ **MAC-US-D2** — HTML validation / a11y pass in CI.
 

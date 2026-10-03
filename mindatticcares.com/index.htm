@@ -1,19 +1,36 @@
-<!-- Last Updated: 2026-10-03T00:44:31Z -->
+<!-- Last Updated: 2026-10-03T01:59:22Z -->
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MindAttic Cares</title>
+<!-- Search-result snippet and link-preview card (Open Graph / Twitter). The image is served
+     from the MindAttic.UiUx CDN package like every other asset on this page. -->
+<meta name="description" content="MindAttic Cares is a 501(c)(3) nonprofit that provides digital access, support and educational assistance. This year it supports Child’s Play, which brings games to children in hospitals.">
+<link rel="canonical" href="https://mindatticcares.com/">
+<meta name="theme-color" content="#0d1117">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MindAttic Cares">
+<meta property="og:title" content="MindAttic Cares">
+<meta property="og:description" content="MindAttic Cares is a 501(c)(3) nonprofit that provides digital access, support and educational assistance. This year it supports Child’s Play, which brings games to children in hospitals.">
+<meta property="og:url" content="https://mindatticcares.com/">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/mindatticcares.com/logos/m-cares-black-red-transparent-720.png">
+<meta property="og:image:width" content="720">
+<meta property="og:image:height" content="720">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MindAttic Cares">
+<meta name="twitter:description" content="MindAttic Cares is a 501(c)(3) nonprofit that provides digital access, support and educational assistance. This year it supports Child’s Play, which brings games to children in hospitals.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/mindatticcares.com/logos/m-cares-black-red-transparent-720.png">
 <!-- Resource hints.  Binary assets (fonts, logos, photos) are served from the
      MindAttic.UiUx package on jsDelivr, pinned to a release tag.  Open that
      connection immediately and start the body font before the CSS is parsed.
      Fonts need `crossorigin` even though they are same-page requests -- that
      is how the font fetch is made; without it the preload is fetched twice. -->
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V8/fonts/outfit/outfit-latin.woff2">
-<link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V8/mindatticcares.com/icons/m-cares-icon-96.png">
-<link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V8/mindatticcares.com/icons/m-cares-icon-96.png">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/fonts/outfit/outfit-latin.woff2">
+<link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/mindatticcares.com/icons/m-cares-icon-96.png">
+<link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/mindatticcares.com/icons/m-cares-icon-96.png">
 <style>
 /* latin-ext */
 @font-face {
@@ -21,7 +38,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V8/fonts/outfit/outfit-latin-ext.woff2') format('woff2');
+  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/fonts/outfit/outfit-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 /* latin */
@@ -30,7 +47,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V8/fonts/outfit/outfit-latin.woff2') format('woff2');
+  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/fonts/outfit/outfit-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
@@ -38,7 +55,7 @@
 html { overflow-y: scroll; scroll-behavior: smooth; }
 html,body { margin:0; padding:0; }
 body {
-  background:#fff url("https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V8/mindatticcares.com/images/background-abstract-light-1500x500.png") 0 100% / contain no-repeat fixed;
+  background:#fff url("https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/mindatticcares.com/images/background-abstract-light-1500x500.png") 0 100% / contain no-repeat fixed;
   color:#111;
   font-family: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-weight:300;
@@ -158,13 +175,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
 
 /* Section heading with permalink anchor */
 .sec, .toc { scroll-margin-top:20px; }
-.back-top {
-  display:inline-block;
-  margin:-4px 0 24px;
-  font-size:13px;
-  color:#888;
-}
-.back-top:hover { color:#ff0033; }
 
 /* Budget / cost tables */
 .budget {
@@ -243,7 +253,7 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
 
 <header class="topbar">
   <a class="brand" href="#" data-page="home" aria-label="MindAttic Cares home">
-    <img alt="MindAttic Cares" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V8/mindatticcares.com/logos/m-cares-black-red-transparent-300.png" width="300" height="300" decoding="async">
+    <img alt="MindAttic Cares" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/mindatticcares.com/logos/m-cares-black-red-transparent-300.png" width="300" height="300" decoding="async">
   </a>
   <nav>
     <a href="#" data-page="home">MindAttic Cares</a>
@@ -257,7 +267,7 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
   <!-- HOME -->
   <section class="page" id="home">
     <div class="hero">
-      <img alt="MindAttic Cares" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V8/mindatticcares.com/logos/m-cares-black-red-transparent-720.png" width="720" height="720" fetchpriority="high" decoding="async">
+      <img alt="MindAttic Cares" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/mindatticcares.com/logos/m-cares-black-red-transparent-720.png" width="720" height="720" fetchpriority="high" decoding="async">
     </div>
     <h1>MindAttic Cares</h1>
     <p>MindAttic Cares is a 501(c)(3) nonprofit organization dedicated to serving charitable, educational, and social missions that benefit the public. The organization provides digital access, support, and educational assistance. Its goal is to help individuals who lack the means to access education, entertainment, and resources in the digital space.</p>
@@ -266,12 +276,12 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
   <!-- CHILD'S PLAY -->
   <section class="page" id="childs-play">
     <div class="hero">
-      <img alt="Child&rsquo;s Play &mdash; Play Games. Feel Better." src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V8/mindatticcares.com/logos/childs-play-logo.png" width="768" height="518" loading="lazy" decoding="async">
+      <img alt="Child&rsquo;s Play &mdash; Play Games. Feel Better." src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/mindatticcares.com/logos/childs-play-logo.png" width="768" height="518" loading="lazy" decoding="async">
     </div>
     <h1>Child&rsquo;s Play</h1>
     <p>This year, we are proud to focus our giving efforts on Child&rsquo;s Play, a nonprofit that uses the power of gaming to improve the lives of children in hospitals.</p>
     <div class="video" data-yt="NG4IISU4-iQ" role="button" tabindex="0" aria-label="Play: Hi! We&rsquo;re Child&rsquo;s Play Charity">
-      <img alt="" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V8/mindatticcares.com/images/childs-play-video-poster.jpg" width="800" height="450" loading="lazy" decoding="async">
+      <img alt="" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/mindatticcares.com/images/childs-play-video-poster.jpg" width="800" height="450" loading="lazy" decoding="async">
       <span class="play" aria-hidden="true"></span>
     </div>
     <p>Founded in 2003 by Mike Krahulik and Jerry Holkins of Penny Arcade, Child&rsquo;s Play now supports 190+ hospitals and domestic violence shelters worldwide, reaching countless children. Their initiatives go far beyond providing games; they create meaningful therapeutic opportunities.</p>
@@ -282,7 +292,7 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
   <!-- Y2K -->
   <section class="page" id="y2k">
     <div class="hero">
-      <img alt="Y2K" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V8/mindatticcares.com/images/y2k-end-of-the-world-party-960.jpg" srcset="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V8/mindatticcares.com/images/y2k-end-of-the-world-party-960.jpg 960w, https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V8/mindatticcares.com/images/y2k-end-of-the-world-party.jpg 1920w" sizes="(max-width: 520px) 100vw, 520px" width="1920" height="1200" loading="lazy" decoding="async">
+      <img alt="Y2K" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/mindatticcares.com/images/y2k-end-of-the-world-party-960.jpg" srcset="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/mindatticcares.com/images/y2k-end-of-the-world-party-960.jpg 960w, https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/mindatticcares.com/images/y2k-end-of-the-world-party.jpg 1920w" sizes="(max-width: 520px) 100vw, 520px" width="1920" height="1200" loading="lazy" decoding="async">
     </div>
     <h1>Y2K: End of the World Party</h1>
     <p class="tagline">A complete charity-event playbook &mdash; benefiting Child&rsquo;s Play.</p>
@@ -403,7 +413,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
     <ul>
       <li>See <a href="#sec-runofshow">Section 9 &mdash; Event-Day Run of Show</a>.</li>
     </ul>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-venue" class="sec">4. Venue, Permits &amp; Insurance</h2>
     <p><strong>Target Spaces</strong> (~5,000&ndash;8,000 sq ft, ground-floor preferred, 200+ amp service):</p>
@@ -427,7 +436,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
       <span class="label">Safety Non-Negotiable</span>
       <p>The midnight blackout pulls only show-load circuits. Emergency egress lighting, exit signs, and fire systems must be on an independent, untouchable circuit. Get this in writing from the venue and the electrician of record.</p>
     </div>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-equipment" class="sec">5. Equipment &amp; Vendors</h2>
     <p><strong>Console Focus (N64-era):</strong> GoldenEye 007, Mario Kart 64, Super Smash Bros., Tony Hawk&rsquo;s Pro Skater, Perfect Dark, Wave Race 64.</p>
@@ -453,7 +461,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
       <li>Load-in/load-out windows and dock access named.</li>
       <li>On-site contact name and mobile number.</li>
     </ul>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-floor" class="sec">6. Floor Plan &amp; Power</h2>
     <p><strong>Zones &amp; Flow</strong></p>
@@ -489,7 +496,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
       <li>Food: dedicated 20 A.</li>
       <li>Label every circuit at the distro; complete a checklist before doors.</li>
     </ul>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-staffing" class="sec">7. Staffing &amp; Volunteers</h2>
     <p>Target ratio: 1 staff/volunteer per 15 guests. For 280 guests, plan ~19 staff &amp; volunteer roles on duty during peak hours.</p>
@@ -520,7 +526,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
       <li>After blackout: use issued lanterns; never shine a phone flash at guests&rsquo; eyes.</li>
       <li>If anything feels unsafe &mdash; stop the show. Tell Safety. We&rsquo;ll work it out.</li>
     </ul>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-show" class="sec">8. The Show: Countdown &amp; Blackout</h2>
     <p><strong>23:45</strong> &mdash; DJ fades to low; house lights dim slightly.<br>
@@ -535,7 +540,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
       <span class="label">Safety Controls</span>
       <p>Emergency lighting on separate, protected circuit (tested same day). Battery megaphone + flashlights/lanterns staged at every usher post. Ushers pre-positioned at exits 15 minutes before midnight. Printed notice at entry: &ldquo;Lights will go out at midnight as part of the show.&rdquo; Anyone with mobility, vision, or sensory needs is briefed at check-in and assigned a buddy.</p>
     </div>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-runofshow" class="sec">9. Event-Day Run of Show</h2>
     <p><strong>07:00</strong> Building access, radios distributed, all-hands safety brief.<br>
@@ -557,7 +561,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
     <strong>00:00</strong> Breaker throw (egress lights remain).<br>
     <strong>00:30</strong> Megaphone farewell; guide exits.<br>
     <strong>01:30</strong> Final sweep; load-out begins.</p>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-budget" class="sec">10. Budget &amp; Cost Estimates</h2>
     <p>The estimates below assume a Chicago-style urban venue, ~280 attendees, single evening. Numbers are mid-market; adjust &plusmn;25% by region and venue tier. All figures USD.</p>
@@ -717,7 +720,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
     <p><strong>Break-Even Math</strong><br>
     Break-Even Tickets = (Total Fixed Costs &minus; Confirmed Sponsorships) / Avg Ticket Price.<br>
     At $49,403 cost and $37,500 in confirmed sponsorships: ~298 tickets at a blended $40 avg.</p>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-sponsorship" class="sec">11. Sponsorship &amp; Fundraising</h2>
 
@@ -746,7 +748,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
       <li><strong>Live Ask.</strong> Two-minute moment at 21:30 from a Child&rsquo;s Play hospital partner or family.</li>
       <li><strong>Corporate Match.</strong> Promote employer matching gifts on entry signage and email confirmations.</li>
     </ul>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-marketing" class="sec">12. Marketing &amp; Comms</h2>
 
@@ -770,7 +771,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
     <div class="callout note">
       <p><strong>FOR IMMEDIATE RELEASE.</strong> MindAttic Cares revives 1999 for one night only &mdash; a Y2K-themed charity party benefiting Child&rsquo;s Play, the nonprofit that brings games to children in hospitals worldwide. Guests will play GoldenEye and Mario Kart on original N64 consoles, dance to TRL-era hits, and gather under projection screens for a midnight &ldquo;Breaking News&rdquo; bulletin that ends in a theatrical Y2K blackout. Tickets and sponsorship at [URL]. Contact: [name, email, phone].</p>
     </div>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-compliance" class="sec">13. Compliance &amp; Risk</h2>
 
@@ -821,14 +821,12 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
         <tr><td>Weather (winter storm)</td><td>Snow day / postponement clause in venue and major vendor contracts; communicate via email/socials by 14:00.</td></tr>
       </tbody>
     </table>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-decor" class="sec">14. Experience Design &amp; D&eacute;cor</h2>
     <p><strong>Look &amp; Feel:</strong> Suburban 90s basement &times; computer lab.</p>
     <p><strong>D&eacute;cor:</strong> Lava lamps, bean bags, mushroom chairs, recliners, shag/throw rugs, neon rope lights, VHS stacks, floppy disks, CRT scanline projections, Windows 98 desktop loops.</p>
     <p><strong>Props &amp; Handouts:</strong> Slap bracelets, Lisa Frank stickers, AOL CDs, &ldquo;Y2K Compliant&rdquo; stickers on gear, paper &ldquo;Tech Support Tickets.&rdquo;</p>
     <p><strong>Photo Moments:</strong> Step-and-repeat with sponsor logos in chrome Y2K type; CRT-stack photo wall; &ldquo;Breaking News&rdquo; anchor desk backdrop.</p>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-culture" class="sec">15. The World of 1999 (Cultural Brief)</h2>
     <p>Before the countdown, guests are fully immersed in the world leading up to Y2K &mdash; a mix of excitement, confusion, and techno-futurist optimism. This atmosphere guides the visuals, d&eacute;cor, trivia, music, and tone of the event.</p>
@@ -937,7 +935,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
 
     <h3>&#128172; Slang &amp; Everyday Life</h3>
     <p>&ldquo;Talk to the hand.&rdquo; &middot; &ldquo;As if!&rdquo; &middot; &ldquo;Wassup!&rdquo; &middot; &ldquo;All that and a bag of chips.&rdquo; &middot; &ldquo;You&rsquo;ve got mail!&rdquo; &middot; &ldquo;It&rsquo;s all good.&rdquo; &middot; &ldquo;Peace out.&rdquo;</p>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-assets" class="sec">16. Show Assets &amp; Scripts</h2>
 
@@ -967,7 +964,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
     <div class="callout note">
       <p>&ldquo;Tonight is a party &mdash; but it&rsquo;s also a delivery. Every dollar you spent on a ticket, every drink, every raffle ticket goes to Child&rsquo;s Play. Since 2003 they&rsquo;ve put games into the hands of kids in 190+ hospitals worldwide &mdash; comfort during the hardest weeks of those kids&rsquo; lives. If you&rsquo;ve ever lost an afternoon to GoldenEye, you know exactly what that means. The donation kiosk is by the door. Three taps. Then come back and beat me at Mario Kart.&rdquo;</p>
     </div>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-post" class="sec">17. Post-Event Wrap</h2>
     <ul>
@@ -979,7 +975,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
       <li><strong>Tax Acknowledgments.</strong> Donor receipts issued per IRS requirements (above $250 thresholds).</li>
       <li><strong>Social Recap.</strong> Highlight reel, photo carousel, thank-you graphic to every sponsor.</li>
     </ul>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-checklists" class="sec">18. Master Checklists</h2>
 
@@ -1000,7 +995,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
 
     <h3>Volunteer Day-Of Packet</h3>
     <p>Shift schedule with radio channel, supervisor name and mobile, map with role posts marked, evacuation route, parking/transit info, dress code, meal voucher, thank-you gift card.</p>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <h2 id="sec-appendix" class="sec">19. Appendices</h2>
     <p><strong>A) Contact Directory.</strong> Venue, building security, electrician of record, I Play Games, arcade vendor, furniture rental, catering, bar service, insurance broker, permits office, Child&rsquo;s Play liaison.</p>
@@ -1010,7 +1004,6 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
     <p><strong>E) Sample Waivers.</strong> Photo consent, tournament participation, liability acknowledgment for retro equipment.</p>
     <p><strong>F) Sponsor One-Sheet Outline.</strong> Mission, audience, reach, tier table, deadlines, call-to-action, contact.</p>
     <p><strong>G) Donor Tax-Receipt Template.</strong> 501(c)(3) language, EIN, no-goods-or-services statement (or fair-market-value adjustment for tickets).</p>
-    <a href="#contents" class="back-top">&uarr; Back to contents</a>
 
     <hr>
     <p style="margin-top:40px; color:#888; font-size:14px;">End of Playbook &middot; MindAttic Cares &middot; Benefiting Child&rsquo;s Play</p>

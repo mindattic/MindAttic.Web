@@ -93,3 +93,11 @@ live modes); MAC-US-A1, A3, A4, A5 and C1 now cite those tests.
 contains an in-page anchor (instead of assuming `sec-*` means the Y2K page) and scrolls it into view;
 on screens ≤ 360 px the budget tables use tighter padding so they fit without a sideways scroll.
 `id="contents"` joins the load-bearing IDs of [MAC-LAW-4](BIBLE.md#MAC-LAW-4).
+
+## MAC-A4 — Remove the per-section "Back to contents" links; add meta description and link-preview tags (refines MAC-A3) {#MAC-A4}
+Decision (user, 2026-10-03): the 17 "↑ Back to contents" links under the Y2K playbook sections and
+their `.back-top` CSS are removed. The contents list keeps `id="contents"` (still a load-bearing ID per
+[MAC-LAW-4](BIBLE.md#MAC-LAW-4), so `#contents` deep-links to it), and the MAC-A3 routing fix (any anchor
+opens the page that contains it) is unchanged. The `<head>` also gains a `meta description`, a canonical
+URL (`https://mindatticcares.com/`) and Open Graph / Twitter "summary" card tags whose image is the M-Cares
+logo served from the MindAttic.UiUx package.

@@ -135,8 +135,8 @@ The full architectural writeup lives in [BIBLE §4](docs/BIBLE.md#MAC-§4); the 
   anchor — e.g. `#sec-budget` or `#contents` — opens the page that contains it and scrolls it into
   view).
 - **In-page TOC.** The Y2K page carries a `<nav class="toc">` linking to all 19 `<h2 id="sec-*"
-  class="sec">` playbook sections; each section also has a "↑ Back to contents" link
-  (`<a href="#contents" class="back-top">`) back to that contents list (`<nav class="toc" id="contents">`).
+  class="sec">` playbook sections (`<nav class="toc" id="contents">`, so `#contents` deep-links to it).
+  The sections have no per-section "back to contents" links (removed 2026-10-03, MAC-A4).
 - **Lite-YouTube embed.** The Child's Play intro video is a `.video[data-yt="<id>"]` poster that,
   on click/Enter, swaps itself for a `youtube-nocookie.com` iframe — or, if the page is opened over
   `file://` (where the iframe would be blocked), opens the video in a new tab instead.
@@ -144,7 +144,7 @@ The full architectural writeup lives in [BIBLE §4](docs/BIBLE.md#MAC-§4); the 
   by the MindAttic.Deploy pipeline on every deploy — not by hand.
 
 Per [MAC-LAW-4](docs/BIBLE.md#MAC-LAW-4), the `id="..."` values on pages and `sec-*` headers are
-load-bearing: the router, the TOC, and every "back to contents" link key off them, so renaming one
+load-bearing: the hash router and the TOC key off them, so renaming one
 is a breaking navigation change that must update every reference.
 
 ## Tooling

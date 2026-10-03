@@ -146,7 +146,7 @@ post-event) is published verbatim on the public page. Nothing operational is kep
 
 ### MAC-LAW-4 — Stable section IDs drive navigation {#MAC-LAW-4}
 Pages use `<section class="page" id="...">` and playbook sections use `<h2 id="sec-..." class="sec">`.
-The hash router, in-page TOC, and "back to contents" links all key off these IDs; renaming an ID is
+The hash router and in-page TOC key off these IDs; renaming an ID is
 a breaking change to navigation and must update every reference.
 
 ### MAC-LAW-5 — Deployment is centralized {#MAC-LAW-5}
@@ -176,8 +176,8 @@ Evidence gathered 2026-06-07 (structure) and 2026-10-02 (assets externalised, MA
   (`specs/sites/mindatticcares.spec.mjs` + `common.spec.mjs`): first-paint requests, navigation, deep
   links, click-to-play video, image dimensions/alt/lazy, allowed hosts, no console errors, no
   horizontal scrollbar, pinned tag. 18 passed locally on 2026-10-02.
-- ✅ 2026-10-02 audit fixes: "Back to contents" now targets the contents list (`#contents`), any
-  in-page anchor opens its own page and scrolls into view, and the widest budget tables fit a 320 px
+- ✅ 2026-10-02 audit fixes: any
+  in-page anchor (including `#contents`, the TOC itself) opens its own page and scrolls into view, and the widest budget tables fit a 320 px
   phone (checked in Chrome: 0 px horizontal overflow at 300/320/390 px).
 - ⬜ No linter, no HTML validator, no link-checker is run in CI (none configured).
 
@@ -197,7 +197,7 @@ shared Playwright suite in `MindAttic.UiUx/tests` (`npm run test:local`, `TEST_M
 A change to MindAttic Cares is "done" when:
 1. `index.htm` still opens correctly from `file://` and over HTTP (the three pages switch; the TOC
    anchors jump; the lite-YT box plays).
-2. Every `sec-*` anchor referenced by the TOC or a "back to contents" link still exists
+2. Every `sec-*` anchor referenced by the TOC still exists
    (no dangling in-page links).
 3. No new external runtime dependency (beyond the pinned MindAttic.UiUx jsDelivr package and the
    click-to-load YouTube embed), build step, or CMS was introduced (MAC-LAW-1, MAC-A2). No analytics

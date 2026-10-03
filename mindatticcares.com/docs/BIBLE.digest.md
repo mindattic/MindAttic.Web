@@ -66,7 +66,7 @@ post-event) is published verbatim on the public page. Nothing operational is kep
 
 ### MAC-LAW-4 — Stable section IDs drive navigation {#MAC-LAW-4}
 Pages use `<section class="page" id="...">` and playbook sections use `<h2 id="sec-..." class="sec">`.
-The hash router, in-page TOC, and "back to contents" links all key off these IDs; renaming an ID is
+The hash router and in-page TOC key off these IDs; renaming an ID is
 a breaking change to navigation and must update every reference.
 
 ### MAC-LAW-5 — Deployment is centralized {#MAC-LAW-5}
@@ -97,5 +97,5 @@ Deployment is owned by **MindAttic.Deploy**, not by per-project scripts. The per
 - done: 5   partial: 4   planned: 2   cut: 0
 
 ## Latest amendment
-- MAC-A3 — Linked deploy, real hosting layout, automated tests, audit fixes (refines MAC-A1, MAC-LAW-4) {#MAC-A3}
+- MAC-A4 — Remove the per-section "Back to contents" links; add meta description and link-preview tags (refines MAC-A3) {#MAC-A4}
 
