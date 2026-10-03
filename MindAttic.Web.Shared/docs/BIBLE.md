@@ -49,8 +49,8 @@ GitHub Actions PR.
   import graph, no dependency resolver beyond per-component declared assets.
 - **NOT semantically versioned.** Tags are whole numbers (`V1`, `V2`, …) only — never SemVer
   ([HOUSE-LAW-1](../MindAttic.HouseRules.md#HOUSE-LAW-1)).
-- **NOT a `.idea` package builder.** The repo has no `Ideas/` packaging subtree. `build.ps1` still
-  expects one and therefore throws for every `-Output` ([§6](#MAU-§6)).
+- **NOT a package builder.** `build.ps1` only copies one component or theme folder verbatim for
+  vendoring; there is no `.idea`, Blazor RCL or bundling target ([§6](#MAU-§6)).
 
 ## 4. Architecture canon {#MAU-§4}
 
@@ -86,7 +86,8 @@ GitHub Actions PR.
   (`tests/README.md`).
 - `sync/` — PowerShell splice scripts + `sync-all.ps1` umbrella, all dot-sourcing `_subscribers.ps1`.
 - `subscribers.json` — canonical `components` registry + `subscribers` map ([§4.2](#MAU-§4)).
-- `build.ps1` — build CLI for `Ideas/` packaging projects; non-functional without that subtree ([§6](#MAU-§6)).
+- `build.ps1` — standalone vendoring build: copies `Components/<Build>/` or `Themes/<Build>/` verbatim
+  to `dist/<Build>/` (git-ignored) or `-Out` ([§6](#MAU-§6)).
 - `.github/` — `.github/PIPELINES.md` + `.github/workflows/sync-subscribers.yml`.
 
 ### 4.2 Domain model (NOUNS)
@@ -172,9 +173,8 @@ kinds to `subscribers.json`, and do not add sync scripts that render project pag
 
 ### MAU-LAW-5 — Nothing is copied twice {#MAU-LAW-5}
 Raw source under `Components/` and `Themes/` and every served asset exist in exactly one place. The
-package holds no byte-identical duplicate files (enforced by `tests/specs/assets/manifest.spec.mjs`). A
-packaging project (such as an `Ideas/*` RCL) declares the canonical assets it needs in a manifest
-(`idea.assets.json` or equivalent) and stages them at build time; it never commits copies.
+package holds no byte-identical duplicate files (enforced by `tests/specs/assets/manifest.spec.mjs`).
+`build.ps1` copies canonical files at build time into the git-ignored `dist/`; nothing commits copies.
 
 ### MAU-LAW-6 — Published CDN tags are immutable {#MAU-LAW-6}
 Never mutate a published whole-number tag (`V1`, `V2`, …). Ship the next number alongside it; consumers
@@ -206,13 +206,13 @@ Status legend: ✅ done (verified) · 🟡 partial · ⬜ planned · living.
 - 🟡 **Distribution (`sync/`, Action).** `sync-mindattic-com.ps1` run against a copy of
   `mindattic.com/index.htm` is byte-identical (idempotent); `sync-prose.ps1` and `sync-ideas.ps1` report
   their retired subscribers and exit 0. No automated sync test; the Action's last run is not captured here.
-- ⬜ **`build.ps1`.** Every output resolves an `Ideas/MindAttic.Ideas.{Plugin|Theme}.<Build>` project first
-  and throws `No Ideas/ build-projects folder` because the repo has no `Ideas/` subtree (verified
-  2026-10-03 with `-Output standalone`). `-Output blazor` is a stub warning.
+- ✅ **`build.ps1` standalone build.** `-Build <Name> [-Kind Component|Theme] [-Out <dir>]` copies the
+  folder's files and subfolders byte-for-byte; a name that is both a component and a theme (Cyberspace)
+  needs `-Kind`; an unknown name lists what exists. Verified 2026-10-03: `Invoke-Pester -Path tests/pester`
+  — 8 passed (`tests/pester/build.Tests.ps1`).
 
 ## 7. Active frontier {#MAU-§7}
 - Graduate the distribution stories to ✅ with an automated sync-idempotency check.
-- Decide `build.ps1`'s fate: make `standalone` work from `Components/` directly, or remove the script.
 - Epics and backlog: see [USER_STORIES.md](USER_STORIES.md).
 
 ## 8. Quality bar {#MAU-§8}

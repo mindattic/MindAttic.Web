@@ -33,10 +33,8 @@ window.__gmapsReady = function() {
 };
 
 // Navigation loader — small corner indicator only. C# code (MainLayout)
-// handles show/hide; loader starts display:none in Blazor. The previous
-// full-screen overlay + millisecond counter UX was retired 2026-05-09; the
-// corner spinner is unobtrusive enough that we don't need an "appear after
-// N ms" delay either.
+// calls __loaderShow(delay) / __loaderHide(); the element starts display:none
+// in Blazor. A delay > 0 defers showing it; 0 shows it at once.
 (function() {
     var timeout = null;
 

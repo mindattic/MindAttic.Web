@@ -315,8 +315,8 @@
     height: 0;
 }
 /* Predator wasps use #ff2244. ARTIFACT cells stay off that hue so the consume-and-
-   convert flash is visually unambiguous. The --red palette is no longer rotated in
-   from spawnArtifact (see ART_PALETTES in console-bg.js). */
+   convert flash is visually unambiguous: spawnArtifact picks only white, blue or
+   amber (see ART_PALETTES in console-bg.js). */
 .cyberspace-artifact--white { color: rgba(220, 225, 230, 0.37); }
 .cyberspace-artifact--blue  { color: rgba(60,  130, 255, 0.37); }
 .cyberspace-artifact--amber { color: rgba(255, 185, 60,  0.37); }
@@ -416,9 +416,8 @@
 }
 /* ── List-item neon flicker — same animation, but LOOPED so it keeps misbehaving
    until the user clicks the item. Clicking removes the class and the item
-   "fixes itself" on selection. Applied to ~25% of dictionary list items by JS.
-   DISABLED 2026-05-09: nothing applies the class right now. CSS kept here so
-   re-enabling is just uncommenting the JS call in MainLayout. */
+   "fixes itself" on selection. Nothing applies the class at present; a host
+   enables it by adding the class to list items from JS. */
 .neon-flicker-loop {
     animation: cyberspace-tab-neon-flicker 2.4s linear infinite;
 }

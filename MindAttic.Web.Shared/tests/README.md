@@ -98,6 +98,12 @@ HTTP 200, the right `content-type`, `access-control-allow-origin: *`, a year-lon
 SHA-256 identical to `assets-manifest.json`**. Also: tags are whole-number and contiguous (`V1…Vn`, via the GitHub API) and
 the expected tag is published. Expect these to fail until the tag is pushed **and** the sites are deployed — that is the point.
 
+### `pester/` — `build.ps1` (PowerShell, no browser)
+
+`build.Tests.ps1` runs the standalone vendoring build into a temp folder and checks that a component or theme is copied
+byte-for-byte (subfolders included), reruns are identical, an ambiguous name (`Cyberspace`) needs `-Kind`, an unknown name
+lists what exists, and no `Ideas/` folder is needed. Run from the repo root: `Invoke-Pester -Path tests/pester` (Pester 5+).
+
 ## Known issue encoded in the suite
 
 `ryandebraal.com` overflows horizontally by 118 px at 320 px wide and 48 px at 390 px (measured on the page as committed
@@ -131,5 +137,6 @@ after a release. Local-mode runs need no network beyond installing npm packages.
 tests/
 ├── package.json  playwright.config.mjs  baselines.json  README.md  ci.workflow.example.yml
 ├── lib/   paths.mjs budgets.mjs walk.mjs binfmt.mjs site-session.mjs static-server.mjs update-baselines.mjs font_check.py
-└── specs/ assets/*.spec.mjs   cdn/cdn.live.spec.mjs   sites/{common,mindattic,ryandebraal,mindatticcares}.spec.mjs
+├── specs/ assets/*.spec.mjs   cdn/cdn.live.spec.mjs   sites/{common,mindattic,ryandebraal,mindatticcares}.spec.mjs
+└── pester/ build.Tests.ps1
 ```

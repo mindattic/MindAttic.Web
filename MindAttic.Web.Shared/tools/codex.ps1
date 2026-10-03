@@ -221,7 +221,7 @@ function Invoke-Doctor {
         } else {
           $token = $Matches[1]
           $hit = $false
-          foreach ($src in Get-ChildItem $RepoRoot -Recurse -File -Include '*.cs', '*.razor', '*.mjs', '*.js' -ErrorAction SilentlyContinue |
+          foreach ($src in Get-ChildItem $RepoRoot -Recurse -File -Include '*.cs', '*.razor', '*.mjs', '*.js', '*.ps1' -ErrorAction SilentlyContinue |
                   Where-Object { $_.FullName -notmatch '\\node_modules\\|\\bin\\|\\obj\\' }) {
             if ((Read-Text $src.FullName) -match [regex]::Escape($token)) { $hit = $true; break }
           }

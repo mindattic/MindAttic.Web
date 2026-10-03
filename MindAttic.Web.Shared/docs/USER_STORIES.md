@@ -45,10 +45,7 @@ updated: 2026-10-03
 - **MAU-US-C4 ✅** As a visitor, each of the three sites loads with no failed requests or console errors and no horizontal scrollbar at any viewport. *(verified by `no horizontal scrollbar at common viewport sizes`.)*
 
 ## Epic D — Packaging
-- **MAU-US-D1 ⬜** As a consumer, I can run `build.ps1 -Build <Name> -Output standalone` to copy a
-  component's raw canonical files verbatim, so I can vendor without packaging. *(Today `build.ps1` throws
-  for every output because it requires an `Ideas/` subtree that does not exist.)*
+- **MAU-US-D1 ✅** As a consumer, I can run `build.ps1 -Build <Name> -Output standalone` to copy a component's (or, with `-Kind Theme`, a theme's) raw canonical files verbatim, so I can vendor without packaging. *(verified by `copies a component folder verbatim`.)*
 
 ## Priority backlog
 1. Add an in-repo sync-idempotency check so Epic B stories can graduate to ✅ with a named test.
-2. Make `build.ps1 -Output standalone` work without `Ideas/` (MAU-US-D1), or remove the script.

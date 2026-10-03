@@ -421,7 +421,10 @@ var pat = TokenStore.ForBucket("GitHub").Get("mindattic-uiux-pat");</code></pre>
 </tr>
 </tbody></table>
 <h2 id="building">Building</h2>
-<p>There is no build step for consumers. <code>build.ps1</code> targets <code>Ideas/</code> packaging projects that this repo does not contain, so it currently throws for every <code>-Output</code>; the working repo tools are the sync scripts and the asset-manifest generator.</p>
+<p>There is no build step for consumers. To vendor one component or theme without the CDN, <code>build.ps1</code> copies its folder verbatim (to <code>dist/&lt;Name&gt;/</code>, git-ignored, unless <code>-Out</code> is given):</p>
+<pre><code class="language-powershell">powershell -File build.ps1 -Build OutfitFont
+powershell -File build.ps1 -Build Cyberspace -Kind Theme -Out out/cyberspace-theme</code></pre>
+<p><code>Cyberspace</code> is both a component and a theme, so it needs <code>-Kind Component</code> or <code>-Kind Theme</code>. Tests: <code>Invoke-Pester -Path tests/pester</code> (Pester 5+).</p>
 <p>Run every splice locally, or one target:</p>
 <pre><code class="language-powershell">powershell -File sync/sync-all.ps1
 powershell -File sync/sync-mindattic-com.ps1
@@ -620,12 +623,12 @@ npm run test:assets     # package checks only, no browser</code></pre>
   ryandebraal.com/       themes/&lt;name&gt;/, images/
   archive/               kept but not served: font sources, brand masters, unused art
   assets-manifest.json   generated list of every served file
-  tests/                 Playwright suite for the package and the three sites
+  tests/                 Playwright suite for the package and the three sites; pester/ for build.ps1
   sync/                  _subscribers.ps1 helper, sync-all.ps1, one sync-*.ps1 per subscriber, sync.md
   docs/                  BIBLE, AMENDMENTS, USER_STORIES, ASSETS, data/, images/
   tools/                 codex.ps1, build-asset-manifest.ps1, build-readme.ps1
   subscribers.json       components registry and subscriber map
-  build.ps1              Ideas/ packaging build CLI (needs an Ideas/ subtree)
+  build.ps1              standalone vendoring build (copies one component/theme folder)
   .github/               PIPELINES.md and workflows/sync-subscribers.yml</code></pre>
 <h2 id="documentation">Documentation</h2>
 <ul>

@@ -23,8 +23,8 @@ GitHub Actions PR.
   import graph, no dependency resolver beyond per-component declared assets.
 - **NOT semantically versioned.** Tags are whole numbers (`V1`, `V2`, …) only — never SemVer
   ([HOUSE-LAW-1](../MindAttic.HouseRules.md#HOUSE-LAW-1)).
-- **NOT a `.idea` package builder.** The repo has no `Ideas/` packaging subtree. `build.ps1` still
-  expects one and therefore throws for every `-Output` ([§6](#MAU-§6)).
+- **NOT a package builder.** `build.ps1` only copies one component or theme folder verbatim for
+  vendoring; there is no `.idea`, Blazor RCL or bundling target ([§6](#MAU-§6)).
 
 ## 5. The Laws {#MAU-§5}
 This project **inherits the org-wide House Rules** verbatim — see
@@ -60,9 +60,8 @@ kinds to `subscribers.json`, and do not add sync scripts that render project pag
 
 ### MAU-LAW-5 — Nothing is copied twice {#MAU-LAW-5}
 Raw source under `Components/` and `Themes/` and every served asset exist in exactly one place. The
-package holds no byte-identical duplicate files (enforced by `tests/specs/assets/manifest.spec.mjs`). A
-packaging project (such as an `Ideas/*` RCL) declares the canonical assets it needs in a manifest
-(`idea.assets.json` or equivalent) and stages them at build time; it never commits copies.
+package holds no byte-identical duplicate files (enforced by `tests/specs/assets/manifest.spec.mjs`).
+`build.ps1` copies canonical files at build time into the git-ignored `dist/`; nothing commits copies.
 
 ### MAU-LAW-6 — Published CDN tags are immutable {#MAU-LAW-6}
 Never mutate a published whole-number tag (`V1`, `V2`, …). Ship the next number alongside it; consumers
@@ -94,5 +93,5 @@ commit ([ASSETS.md](ASSETS.md)).
 - **`archive/`** — kept-but-unserved files ([MAU-LAW-7](#MAU-LAW-7)).
 
 ## Status index (from USER_STORIES.md)
-- done: 8 | partial: 8 | planned: 2
+- done: 9 | partial: 8 | planned: 1
 

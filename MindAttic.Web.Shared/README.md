@@ -228,7 +228,14 @@ The next sync enrolls or unenrolls automatically, unless the component's type ha
 
 ## Building
 
-There is no build step for consumers. `build.ps1` targets `Ideas/` packaging projects that this repo does not contain, so it currently throws for every `-Output`; the working repo tools are the sync scripts and the asset-manifest generator.
+There is no build step for consumers. To vendor one component or theme without the CDN, `build.ps1` copies its folder verbatim (to `dist/<Name>/`, git-ignored, unless `-Out` is given):
+
+```powershell
+powershell -File build.ps1 -Build OutfitFont
+powershell -File build.ps1 -Build Cyberspace -Kind Theme -Out out/cyberspace-theme
+```
+
+`Cyberspace` is both a component and a theme, so it needs `-Kind Component` or `-Kind Theme`. Tests: `Invoke-Pester -Path tests/pester` (Pester 5+).
 
 Run every splice locally, or one target:
 
@@ -356,12 +363,12 @@ MindAttic.UiUx/
   ryandebraal.com/       themes/<name>/, images/
   archive/               kept but not served: font sources, brand masters, unused art
   assets-manifest.json   generated list of every served file
-  tests/                 Playwright suite for the package and the three sites
+  tests/                 Playwright suite for the package and the three sites; pester/ for build.ps1
   sync/                  _subscribers.ps1 helper, sync-all.ps1, one sync-*.ps1 per subscriber, sync.md
   docs/                  BIBLE, AMENDMENTS, USER_STORIES, ASSETS, data/, images/
   tools/                 codex.ps1, build-asset-manifest.ps1, build-readme.ps1
   subscribers.json       components registry and subscriber map
-  build.ps1              Ideas/ packaging build CLI (needs an Ideas/ subtree)
+  build.ps1              standalone vendoring build (copies one component/theme folder)
   .github/               PIPELINES.md and workflows/sync-subscribers.yml
 ```
 
