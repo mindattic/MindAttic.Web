@@ -7,7 +7,9 @@ name: Sync MindAttic.Web.Shared to subscribers
 #   - mindattic.com/index.htm (CYBERSPACE block). mindattic.com is a folder
 #     of THIS repo, so the job opens a pull request here.
 #   - MindAttic.Psst terms.htm + privacy.htm (OUTFITFONT block), a separate
-#     repo; the job opens a pull request there.
+#     repo; the job opens a pull request there. Cross-repo access needs the
+#     SUBSCRIBER_REPO_TOKEN secret (a token with write access to
+#     MindAttic.Psst); the in-repo job uses the built-in GITHUB_TOKEN.
 #
 # Tutor is synced locally only (sync-tutor.ps1); Prose.Writer, Prose.Codex
 # and Ideas are "retired" in subscribers.json.
@@ -46,6 +48,11 @@ jobs:
   sync-mindattic-com:
     name: Sync into mindattic.com (this repo)
     runs-on: ubuntu-latest
+    # The built-in token is enough for a pull request in this same repo
+    # (repo setting: "Allow GitHub Actions to create pull requests" is on).
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - name: Checkout MindAttic.Web
         uses: actions/checkout@v4
@@ -64,7 +71,7 @@ jobs:
       - name: Open or update PR if there are changes
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           add-paths: mindattic.com/index.htm
           commit-message: "chore(components): sync mindattic.com from MindAttic.Web.Shared@${{ github.sha }}"
           title: "Sync mindattic.com from MindAttic.Web.Shared"

@@ -147,15 +147,15 @@ git push origin main V<n>
 
 ### GitHub Action PAT
 
-The sync workflow needs a fine-grained personal access token, stored as the MindAttic.Web repository secret `SUBSCRIBER_REPO_TOKEN` under Settings, Secrets and variables, Actions. Generate it at [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new):
+The mindattic.com job uses the built-in `GITHUB_TOKEN`. Only the cross-repo MindAttic.Psst job needs a personal access token, stored as the MindAttic.Web repository secret `SUBSCRIBER_REPO_TOKEN` under Settings, Secrets and variables, Actions. The secret is set. To replace it with a fine-grained token, generate one at [github.com/settings/personal-access-tokens/new](https://github.com/settings/personal-access-tokens/new):
 
 | Field | Value |
 |---|---|
 | Resource owner | mindattic |
-| Repository access | All repositories owned by mindattic |
+| Repository access | Only select repositories: MindAttic.Psst |
 | Expiration | About 1 year (rotate on calendar) |
 | Permission: Metadata | Read-only (auto-included) |
-| Permission: Contents | Read and write (push the auto/sync-mindattic-com and auto/sync-components branches) |
+| Permission: Contents | Read and write (push the auto/sync-components branch) |
 | Permission: Pull requests | Read and write (open or update the sync PRs) |
 
 Leave every other permission unchecked. Never paste the token into the repo, chat or a commit message; if you do, revoke it and generate a new one.

@@ -290,7 +290,7 @@ git push origin main V&lt;n&gt;
 <h3 id="why-the-two-biggest-cyberspace-scripts-are-cdn-loaded-on-mindatticcom">Why the two biggest Cyberspace scripts are CDN-loaded on mindattic.com</h3>
 <p><code>console-bg.js</code> is about 580 KB and <code>sacred-geometry.js</code> about 60 KB. <code>sync-mindattic-com.ps1</code> keeps the small Cyberspace scripts (<code>loader.js</code>, <code>tv-static.js</code>, <code>home-bg.js</code>) and a circuit-board texture override inline, but emits those two as external jsDelivr script tags so the browser caches them across page loads. Both carry <code>defer</code>, so they download in parallel with parsing and never block first paint, and still run in document order: the inline block defines <code>window.__cyberspaceCircuitboardSrcs</code>, then <code>sacred-geometry.js</code> defines <code>window.SacredGeometry</code>, then <code>console-bg.js</code> reads both. The three parallax textures are preloaded at low priority.</p>
 <h3 id="github-action-pat">GitHub Action PAT</h3>
-<p>The sync workflow needs a fine-grained personal access token, stored as the MindAttic.Web repository secret <code>SUBSCRIBER_REPO_TOKEN</code> under Settings, Secrets and variables, Actions. Generate it at <a href="https://github.com/settings/personal-access-tokens/new">github.com/settings/personal-access-tokens/new</a>:</p>
+<p>The mindattic.com job uses the built-in <code>GITHUB_TOKEN</code>. Only the cross-repo MindAttic.Psst job needs a personal access token, stored as the MindAttic.Web repository secret <code>SUBSCRIBER_REPO_TOKEN</code> under Settings, Secrets and variables, Actions. The secret is set. To replace it with a fine-grained token, generate one at <a href="https://github.com/settings/personal-access-tokens/new">github.com/settings/personal-access-tokens/new</a>:</p>
 <table><thead><tr>
 <th>Field</th>
 <th>Value</th>
@@ -301,7 +301,7 @@ git push origin main V&lt;n&gt;
 </tr>
 <tr>
 <td>Repository access</td>
-<td>All repositories owned by mindattic</td>
+<td>Only select repositories: MindAttic.Psst</td>
 </tr>
 <tr>
 <td>Expiration</td>
@@ -313,7 +313,7 @@ git push origin main V&lt;n&gt;
 </tr>
 <tr>
 <td>Permission: Contents</td>
-<td>Read and write (push the auto/sync-mindattic-com and auto/sync-components branches)</td>
+<td>Read and write (push the auto/sync-components branch)</td>
 </tr>
 <tr>
 <td>Permission: Pull requests</td>

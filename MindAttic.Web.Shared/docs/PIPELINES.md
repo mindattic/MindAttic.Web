@@ -78,12 +78,12 @@ It has one job per splice-in-place subscriber:
 
 The workflow never re-triggers itself: the sync PR and the linked deploy's "Pin MindAttic.Web.Shared V<n>" commit change only site folders, which are outside its paths filter.
 
-## One-time setup (PAT for the sync PRs)
+## Tokens
 
-The Action needs write access to MindAttic.Web and the subscriber repos. Create a **fine-grained personal access token**:
+The `sync-mindattic-com` job uses the built-in `GITHUB_TOKEN` (job permissions `contents: write`, `pull-requests: write`; the repo setting "Allow GitHub Actions to create and approve pull requests" is on). Only `sync-mindattic-psst` needs a personal access token, because it pushes to another repo. The secret `SUBSCRIBER_REPO_TOKEN` is set. To replace it with a narrowly scoped **fine-grained personal access token**:
 
 1. Go to https://github.com/settings/personal-access-tokens/new
-2. Repository access: **All repositories owned by `mindattic`** — covers every current and future subscriber automatically
+2. Repository access: **Only select repositories → MindAttic.Psst** (add any future cross-repo subscriber)
 3. Repository permissions:
    - **Contents**: Read and write
    - **Pull requests**: Read and write

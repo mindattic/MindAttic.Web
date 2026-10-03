@@ -139,7 +139,9 @@ tag of MindAttic.Web, splice-in-place marker-block sync, and a GitHub Actions sy
   derived), runs the splice and opens or updates a PR in MindAttic.Web on branch
   `auto/sync-mindattic-com` that changes only `mindattic.com/index.htm`; `sync-mindattic-psst` checks out
   MindAttic.Web and mindattic/MindAttic.Psst and opens or updates a PR there on `auto/sync-components`.
-  Both use the `SUBSCRIBER_REPO_TOKEN` PAT. The sync PR and the deploy's pin commit touch only site
+  The in-repo job uses the built-in `GITHUB_TOKEN` (job permissions `contents: write`,
+  `pull-requests: write`; the repo allows Actions to create PRs); the Psst job needs the
+  `SUBSCRIBER_REPO_TOKEN` secret for cross-repo access. The sync PR and the deploy's pin commit touch only site
   folders, outside the paths filter, so the workflow never re-triggers itself. There is no Tutor or Prose job.
 - **CDN delivery** — implicit; jsDelivr serves any path at a pinned `@Vn` tag of MindAttic.Web (no infra
   here).
