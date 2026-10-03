@@ -1,15 +1,15 @@
 // Checks every site must pass: it loads cleanly, talks only to allowed hosts, pulls its assets from the pinned
-// MindAttic.UiUx tag, and carries no embedded base64 or "all in one file" claims.
+// MindAttic.Web.Shared tag, and carries no embedded base64 or "all in one file" claims.
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 import { SITES, SITES_ROOT, TEST_MODE, EXPECTED_TAG, ASSET_EXT, siteOrigin, siteUrl } from '../../lib/paths.mjs';
 import { MAX_SINGLE_DATA_URI_CHARS, MAX_TOTAL_DATA_URI_CHARS } from '../../lib/budgets.mjs';
 import { absOf, loadManifest } from '../../lib/walk.mjs';
-import { openSite, loadSite, uiuxUrlsIn, commentsOf } from '../../lib/site-session.mjs';
+import { openSite, loadSite, sharedUrlsIn, commentsOf } from '../../lib/site-session.mjs';
 
 // Phrases claiming "everything in one file": sites load their assets from the CDN package (BIBLE MAU-LAW-7),
-// so these must not appear in comments. Sync-managed UiUx marker blocks are excluded (they belong to the component).
+// so these must not appear in comments. Sync-managed MINDATTIC.UIUX marker blocks are excluded (they belong to the component).
 const RETIRED_CLAIMS = [
   /\bone file\b/i, /\bsingle[- ]file\b/i, /no external requests?/i, /base64[- ]inlined/i, /inlined as base64/i,
   /inlined (?:as )?base64/i, /zero (?:external )?dependenc/i, /\bno cdn\b/i, /one http request/i, /self-contained single/i,
@@ -36,7 +36,7 @@ for (const [name, site] of Object.entries(SITES)) {
       const s = await openSite(browser, site);
       try {
         await loadSite(s);
-        expect(s.rec.missingFromTree, 'BLOCKED: the page references UiUx files that are not in the working tree').toEqual([]);
+        expect(s.rec.missingFromTree, 'BLOCKED: the page references MindAttic.Web.Shared files that are not in the working tree').toEqual([]);
         expect(s.rec.failures, 'network failures').toEqual([]);
         expect(s.rec.badStatus, 'non-2xx responses').toEqual([]);
         expect(s.rec.pageErrors, 'uncaught exceptions').toEqual([]);
@@ -55,24 +55,24 @@ for (const [name, site] of Object.entries(SITES)) {
       } finally { await s.context.close(); }
     });
 
-    test(`pins the expected UiUx tag (${EXPECTED_TAG}) everywhere — never @main, no stale tag left behind`, () => {
-      const urls = uiuxUrlsIn(html);
-      expect(urls.length, 'BLOCKED/NOT CONVERTED: the page does not reference the MindAttic.UiUx package at all').toBeGreaterThan(0);
+    test(`pins the expected MindAttic.Web.Shared tag (${EXPECTED_TAG}) everywhere — never @main, no stale tag left behind`, () => {
+      const urls = sharedUrlsIn(html);
+      expect(urls.length, 'BLOCKED/NOT CONVERTED: the page does not reference the MindAttic.Web.Shared package at all').toBeGreaterThan(0);
       const tags = [...new Set(urls.map((u) => u.tag))];
       expect(tags.filter((t) => !/^V\d+$/.test(t)), 'tags must be whole-number release tags').toEqual([]);
       expect(tags, `pin exactly ${EXPECTED_TAG}`).toEqual([EXPECTED_TAG]);
-      expect(html).not.toMatch(/MindAttic\.UiUx@main/);
+      expect(html).not.toMatch(/MindAttic\.Web@main/);
     });
 
-    test('every UiUx file the HTML references exists in the package (and asset files are listed in the manifest)', () => {
-      const urls = [...new Map(uiuxUrlsIn(html).map((u) => [u.path, u])).values()];
+    test('every MindAttic.Web.Shared file the HTML references exists in the package (and asset files are listed in the manifest)', () => {
+      const urls = [...new Map(sharedUrlsIn(html).map((u) => [u.path, u])).values()];
       const missing = []; const unlisted = [];
       const listed = new Set((manifest?.files ?? []).map((f) => f.path));
       for (const u of urls) {
         if (!fs.existsSync(absOf(u.path))) { missing.push(u.path); continue; }
         if (ASSET_EXT.has(path.extname(u.path).toLowerCase()) && !listed.has(u.path)) unlisted.push(u.path);
       }
-      expect(missing, 'referenced but not in MindAttic.UiUx').toEqual([]);
+      expect(missing, 'referenced but not in MindAttic.Web.Shared').toEqual([]);
       expect(unlisted, 'asset files missing from assets-manifest.json — regenerate it').toEqual([]);
     });
 
@@ -88,8 +88,8 @@ for (const [name, site] of Object.entries(SITES)) {
       for (const k of ['twitter:card', 'twitter:image']) expect(meta('name', k), k).toBeTruthy();
       expect(meta('property', 'og:description')).toBe(desc);
       const img = meta('property', 'og:image');
-      const m = img.match(/MindAttic\.UiUx@(V\d+)\/(.+)$/);
-      expect(m, 'og:image is served from the pinned UiUx package').toBeTruthy();
+      const m = img.match(/MindAttic\.Web@(V\d+)\/MindAttic\.Web\.Shared\/(.+)$/);
+      expect(m, 'og:image is served from the pinned MindAttic.Web.Shared package').toBeTruthy();
       expect(m[1]).toBe(EXPECTED_TAG);
       const file = (manifest?.files ?? []).find((f) => f.path === m[2]);
       expect(file, `${m[2]} is in assets-manifest.json`).toBeTruthy();
@@ -106,7 +106,7 @@ for (const [name, site] of Object.entries(SITES)) {
       expect(Buffer.byteLength(html), `HTML is ${(Buffer.byteLength(html) / 1024).toFixed(0)} KB`).toBeLessThanOrEqual(site.htmlBudgetBytes);
       const uris = html.match(/data:[a-z0-9.+/-]+(?:;[a-z0-9=.-]+)*,[A-Za-z0-9+/=%._~-]{200,}/gi) ?? [];
       const big = uris.filter((u) => u.length > MAX_SINGLE_DATA_URI_CHARS).map((u) => `${u.slice(0, 40)}… (${u.length} chars)`);
-      expect(big, 'oversized data: URIs — move them to MindAttic.UiUx').toEqual([]);
+      expect(big, 'oversized data: URIs — move them to MindAttic.Web.Shared').toEqual([]);
       expect(uris.reduce((n, u) => n + u.length, 0), 'total data: URI characters').toBeLessThanOrEqual(MAX_TOTAL_DATA_URI_CHARS);
     });
 

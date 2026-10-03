@@ -1,19 +1,19 @@
 // Hyperspace component: the shape library, the Hyperspace Reader, and the Hyperspace page that builds its
 // gallery from the library.
 //
-// The page lives in the sibling Hyperspace repo (SITES_ROOT/Hyperspace) and is opened as a local file, the way
+// The page lives in the Hyperspace folder of MindAttic.Web (SITES_ROOT/Hyperspace) and is opened as a local file, the way
 // its README says it must keep working. Its pinned jsDelivr URL for hyperspace.js is answered from this working
 // tree (so the test passes before the tag is published); three.js is fetched from its CDN because the gallery
-// needs it and this repo does not carry a copy; Google Fonts are blocked (the page falls back to system fonts).
+// needs it and MindAttic.Web does not carry a copy; Google Fonts are blocked (the page falls back to system fonts).
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
-import { UIUX_ROOT, SITES_ROOT } from '../../lib/paths.mjs';
+import { SHARED_ROOT, SITES_ROOT } from '../../lib/paths.mjs';
 
 const require = createRequire(import.meta.url);
-const COMPONENT = path.join(UIUX_ROOT, 'Components', 'Hyperspace');
+const COMPONENT = path.join(SHARED_ROOT, 'Components', 'Hyperspace');
 const LIB = path.join(COMPONENT, 'hyperspace.js');
 const HARNESS = pathToFileURL(path.join(COMPONENT, 'index.htm')).href;
 const PAGE_DIR = path.join(SITES_ROOT, 'Hyperspace');
@@ -222,9 +222,9 @@ test.describe('Hyperspace page', () => {
     await ctx.route('**/*', (route) => {
       const url = new URL(route.request().url());
       if (url.protocol === 'file:' || url.protocol === 'data:' || url.protocol === 'blob:') return route.continue();
-      const m = url.pathname.match(/^\/gh\/mindattic\/MindAttic\.UiUx@V\d+\/(.+)$/);
+      const m = url.pathname.match(/^\/gh\/mindattic\/MindAttic\.Web@V\d+\/MindAttic\.Web\.Shared\/(.+)$/);
       if (url.host === 'cdn.jsdelivr.net' && m) {
-        const abs = path.join(UIUX_ROOT, decodeURIComponent(m[1]));
+        const abs = path.join(SHARED_ROOT, decodeURIComponent(m[1]));
         if (cdn && fs.existsSync(abs)) return route.fulfill({ status: 200, body: fs.readFileSync(abs), headers: { 'content-type': 'text/javascript; charset=utf-8', 'access-control-allow-origin': '*' } });
         return route.fulfill({ status: 404, body: 'not published' });
       }
@@ -239,19 +239,19 @@ test.describe('Hyperspace page', () => {
     return { ctx, page, errors };
   }
 
-  test('pins the library to a whole-number UiUx tag that exists in this tree', () => {
+  test('pins the library to a whole-number MindAttic.Web.Shared tag that exists in this tree', () => {
     const html = fs.readFileSync(PAGE, 'utf8');
-    const pins = [...html.matchAll(/cdn\.jsdelivr\.net\/gh\/mindattic\/MindAttic\.UiUx@([^/"']+)\/([^"']+)/g)];
+    const pins = [...html.matchAll(/cdn\.jsdelivr\.net\/gh\/mindattic\/MindAttic\.Web@([^/"']+)\/MindAttic\.Web\.Shared\/([^"']+)/g)];
     expect(pins.length).toBeGreaterThan(0);
     for (const [, tag, file] of pins) {
       expect(tag).toMatch(/^V\d+$/);
-      expect(fs.existsSync(path.join(UIUX_ROOT, file)), file).toBe(true);
+      expect(fs.existsSync(path.join(SHARED_ROOT, file)), file).toBe(true);
     }
     expect(html).not.toMatch(/const EXHIBITS = \[/);   // the exhibits are not copied back into the page
   });
 
   for (const cdn of [true, false]) {
-    test(`renders its explorers and gallery from the library (${cdn ? 'pinned CDN file' : 'local sibling fallback'})`, async ({ browser }) => {
+    test(`renders its explorers and gallery from the library (${cdn ? 'pinned CDN file' : 'local ../MindAttic.Web.Shared fallback'})`, async ({ browser }) => {
       test.setTimeout(120_000);
       const { ctx, page, errors } = await openPage(browser, { cdn });
       expect(await page.evaluate(() => [window.Hyperspace && window.Hyperspace.count, typeof window.HyperGallery])).toEqual([100, 'object']);

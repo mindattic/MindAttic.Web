@@ -11,13 +11,13 @@
 // Run it deliberately, after adding or replacing an asset, and commit the result with the asset.
 import fs from 'node:fs';
 import path from 'node:path';
-import { UIUX_ROOT, DOMAIN_ROOTS } from './paths.mjs';
+import { SHARED_ROOT, DOMAIN_ROOTS } from './paths.mjs';
 import { listAssets, readAsset, sha256, walk, posix } from './walk.mjs';
 import { decodeRaster } from './binfmt.mjs';
 
 const RASTER = new Set(['.png', '.jpg', '.jpeg', '.gif', '.ico']);
 const LOSSY = new Set(['.jpg', '.jpeg']);
-const out = path.join(UIUX_ROOT, 'tests', 'baselines.json');
+const out = path.join(SHARED_ROOT, 'tests', 'baselines.json');
 const images = {};
 
 function record(rel, buf) {

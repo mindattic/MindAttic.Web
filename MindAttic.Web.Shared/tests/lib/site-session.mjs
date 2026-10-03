@@ -3,7 +3,7 @@
 // that were requested but do not exist in the local tree, and navigations that left the page.
 import fs from 'node:fs';
 import path from 'node:path';
-import { UIUX_ROOT, TEST_MODE, CDN_HOST, UIUX_URL_RE, siteUrl, siteOrigin } from './paths.mjs';
+import { SHARED_ROOT, TEST_MODE, CDN_HOST, SHARED_URL_RE, siteUrl, siteOrigin } from './paths.mjs';
 
 const TYPES = {
   '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8', '.json': 'application/json',
@@ -21,10 +21,10 @@ const HTML2PDF_STUB = `
   window.__html2pdfStub = true;
 })();`;
 
-export function uiuxFile(urlPath) {
+export function sharedFile(urlPath) {
   const rel = decodeURIComponent(urlPath).replace(/^\/+/, '');
-  const abs = path.resolve(UIUX_ROOT, rel);
-  if (!abs.startsWith(UIUX_ROOT + path.sep)) return null;
+  const abs = path.resolve(SHARED_ROOT, rel);
+  if (!abs.startsWith(SHARED_ROOT + path.sep)) return null;
   return fs.existsSync(abs) && fs.statSync(abs).isFile() ? abs : null;
 }
 
@@ -41,7 +41,7 @@ export async function openSite(browser, site, opts = {}) {
     failures: [],            // network-level failures that were not our own deliberate aborts
     badStatus: [],           // responses >= 400
     disallowed: [],          // requests to hosts outside the allow-list
-    missingFromTree: [],     // UiUx files the page asked for that do not exist locally (local mode)
+    missingFromTree: [],     // MindAttic.Web.Shared files the page asked for that do not exist locally (local mode)
     navigations: [],         // external document navigations we intercepted (clicked links / popups)
     consoleErrors: [],
     pageErrors: [],
@@ -69,9 +69,9 @@ export async function openSite(browser, site, opts = {}) {
       return route.continue();
     }
     if (TEST_MODE === 'local' && host === CDN_HOST) {
-      const m = url.pathname.match(/^\/gh\/mindattic\/MindAttic\.UiUx@[^/]+\/(.+)$/);
+      const m = url.pathname.match(/^\/gh\/mindattic\/MindAttic\.Web@[^/]+\/MindAttic\.Web\.Shared\/(.+)$/);
       if (m) {
-        const abs = uiuxFile(m[1]);
+        const abs = sharedFile(m[1]);
         if (!abs) { rec.missingFromTree.push(m[1]); return route.fulfill({ status: 404, body: `not in working tree: ${m[1]}` }); }
         return route.fulfill({ status: 200, body: fs.readFileSync(abs), headers: { 'content-type': TYPES[path.extname(abs).toLowerCase()] || 'application/octet-stream', 'access-control-allow-origin': '*', 'cache-control': 'public, max-age=31536000, immutable' } });
       }
@@ -110,13 +110,13 @@ export async function loadSite(session, { settleMs = 1500 } = {}) {
   return session;
 }
 
-export function uiuxUrlsIn(source) {
-  const out = []; let m; const re = new RegExp(UIUX_URL_RE.source, 'g');
+export function sharedUrlsIn(source) {
+  const out = []; let m; const re = new RegExp(SHARED_URL_RE.source, 'g');
   while ((m = re.exec(source))) out.push({ tag: m[1], path: m[2], url: m[0] });
   return out;
 }
 
-/** HTML comments + CSS/JS block comments + whole-line // comments, with the sync-managed UiUx marker blocks removed. */
+/** HTML comments + CSS/JS block comments + whole-line // comments, with the sync-managed MINDATTIC.UIUX marker blocks removed. */
 export function commentsOf(source) {
   const stripped = source.replace(/<!-- BEGIN MINDATTIC\.UIUX:(\w+) -->[\s\S]*?<!-- END MINDATTIC\.UIUX:\1 -->/g, '');
   return [...(stripped.match(/<!--[\s\S]*?-->/g) ?? []), ...(stripped.match(/\/\*[\s\S]*?\*\//g) ?? []), ...(stripped.match(/^[ \t]*\/\/.*$/gm) ?? [])].join('\n');

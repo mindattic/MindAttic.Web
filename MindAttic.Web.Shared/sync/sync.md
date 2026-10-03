@@ -1,18 +1,18 @@
 # sync
 
-PowerShell distribution scripts. They mirror what
+PowerShell distribution scripts. They mirror what the MindAttic.Web root's
 `.github/workflows/sync-subscribers.yml` does on every push to `main`, but run
 locally against working copies — so you can iterate on content changes
 without round-tripping through GitHub.
 
 This folder only handles the **splice-in-place subscribers** that
-MindAttic.UiUx owns: `mindattic.com` (CYBERSPACE block), the
+MindAttic.Web.Shared owns: `mindattic.com` (CYBERSPACE block), the
 `MindAttic.Psst` legal pages (OUTFITFONT block) and Tutor (auth-visual trio).
 Prose.Writer, Prose.Codex and Ideas are marked `retired` in `subscribers.json`
 (their target projects do not exist); their scripts print the note and exit 0.
-`ryandebraal.com` and `mindatticcares.com` are not spliced at all — they load
-fonts and their own assets straight from jsDelivr (see `docs/ASSETS.md`), at the tag
-[`MindAttic.Deploy`](../../MindAttic.Deploy/README.md)'s linked deploy pins. There are no
+`ryandebraal.com`, `mindatticcares.com` and `Hyperspace` are not spliced at all — they load
+fonts, components and their own assets straight from jsDelivr (see `docs/ASSETS.md`), at the tag
+[`MindAttic.Deploy`](../../../MindAttic.Deploy/README.md)'s linked deploy pins. There are no
 other CDN consumers; each repo's GitHub README is its project page.
 
 Each `sync-*.ps1` targets one subscriber. Each subscriber has one or more
@@ -24,6 +24,10 @@ finds and aggregates failures.
 
 **Canonical config: [`../subscribers.json`](../subscribers.json)** declares
 the component registry and which subscribers consume which components.
+A relative `target` resolves against `MindAttic.Web.Shared/` (`Get-Subscriber` in
+`_subscribers.ps1`): `../mindattic.com/index.htm` is the site folder in the same
+MindAttic.Web checkout, `../../MindAttic.Psst` and `../../Tutor/Tutor.Blazor` are repos
+cloned next to MindAttic.Web.
 Every sync script reads this file via the shared helper `_subscribers.ps1`
 and iterates its subscriber's `subscriptions` array — no subscriber has a
 hardcoded component list. Per-subscription config (like AtticFont's
@@ -58,8 +62,8 @@ sync/
 
 | Trigger | What runs | When |
 |---|---|---|
-| **jsDelivr CDN** | Every tag is served at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<ref>/<path>` — versioned, edge-cached, no infra. Consumed by the three sites at the tag the linked deploy pins. | Continuously; cache-immutable for `@V<n>` tags. |
-| **GitHub Action** | `.github/workflows/sync-subscribers.yml` opens cross-repo PRs against `mindattic/mindattic.com` and `mindattic/MindAttic.Psst` with refreshed marker blocks. | Push to `main` touching `Components/Cyberspace/**`, `Components/OutfitFont/**`, `subscribers.json`, `sync/**` or the workflow (not when the commit says `[skip ci]`). |
+| **jsDelivr CDN** | Every tag is served at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<ref>/MindAttic.Web.Shared/<path>` — versioned, edge-cached, no infra. Consumed by the four sites at the tag the linked deploy pins. | Continuously; cache-immutable for `@V<n>` tags. |
+| **GitHub Action** | `.github/workflows/sync-subscribers.yml` (MindAttic.Web root) opens a PR in MindAttic.Web (branch `auto/sync-mindattic-com`, only `mindattic.com/index.htm`) and a PR in `mindattic/MindAttic.Psst` with refreshed marker blocks. | Push to `main` touching `MindAttic.Web.Shared/Components/Cyberspace/**`, `MindAttic.Web.Shared/Components/OutfitFont/**`, `MindAttic.Web.Shared/subscribers.json`, `MindAttic.Web.Shared/sync/**` or the workflow (not when the commit says `[skip ci]`). |
 | **`sync/*.ps1`** | Same logic as the Action, but runs locally against working copies. `sync-mindattic-com.ps1` is also invoked by `MindAttic.Deploy` as a `preDeploy` hook for `mindattic.com` (the linked deploy passes the release tag). | Manual (`powershell -File sync-all.ps1`). |
 
 ---
@@ -77,7 +81,7 @@ powershell -File sync/sync-all.ps1
 
 ### `sync-mindattic-com.ps1`
 
-Splices each subscribed MindAttic.UiUx group into `mindattic.com/index.htm`
+Splices each subscribed MindAttic.Web.Shared group into `mindattic.com/index.htm`
 between its own marker pair. Today `subscribers.json` enrolls mindattic.com in
 **Cyberspace only** (fonts and the logo load from the CDN, see `docs/ASSETS.md`);
 the script still has builders for these groups (in load order):
@@ -109,11 +113,11 @@ powershell -File sync/sync-prose.ps1    # prints the two "retired" notes and exi
 
 Inlines OutfitFont into `MindAttic.Psst/terms.htm` and `MindAttic.Psst/privacy.htm`
 between `<!-- BEGIN/END MINDATTIC.UIUX:OUTFITFONT -->` markers. The repo's
-`index.htm` is NOT touched here (it has no UiUx marker block).
+`index.htm` is NOT touched here (it has no MINDATTIC.UIUX marker block).
 
 ```powershell
 powershell -File sync/sync-mindattic-psst.ps1
-powershell -File sync/sync-mindattic-psst.ps1 -TargetRoot 'D:/path/to/MindAttic.Psst'
+powershell -File sync/sync-mindattic-psst.ps1 -TargetRoot 'D:/Projects/MindAttic/MindAttic.Psst'
 ```
 
 ---
@@ -134,7 +138,7 @@ If you do need a new splice-in-place subscriber:
 3. Use marker pairs (HTML or CSS comments) so the script only touches its
    own region of each downstream file.
 4. `sync-all.ps1` picks it up automatically (discovers `sync-*.ps1` by glob).
-5. Mirror the logic in `.github/workflows/sync-subscribers.yml`.
+5. Mirror the logic in a job of `.github/workflows/sync-subscribers.yml` at the MindAttic.Web root.
 
 ---
 
@@ -170,9 +174,9 @@ on every load and prevents the browser from caching them separately. So
 `sync-mindattic-com.ps1` keeps the small Cyberspace scripts (loader, tv-static,
 home-bg) and the circuitboard texture override (jsDelivr URLs) inline, but emits
 **both** `sacred-geometry.js` and `console-bg.js` as external
-`<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/…">`
+`<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<tag>/MindAttic.Web.Shared/…">`
 tags (the CDN set is `@('sacred-geometry.js','console-bg.js')`). The tag is the
-`-CyberspaceCdnTag` parameter (default: the latest `V*` tag in this repo, via
+`-CyberspaceCdnTag` parameter (default: the latest `V*` tag in MindAttic.Web, via
 `git describe`; the linked deploy passes the release tag explicitly).
 
 Ordering is preserved because both CDN tags carry `defer` (deferred scripts run
@@ -183,8 +187,8 @@ defines `window.__cyberspaceCircuitboardSrcs`) runs first, then
 from `window.SacredGeometry`) — both dependencies are in place before it runs.
 
 To ship a change to either externalized file: commit it and run the linked deploy
-(`MindAttic.Deploy`: `npm run deploy -- --uiux`), which tags the next whole number and
-passes it as `-CyberspaceCdnTag`. Run by hand, the script defaults `-CyberspaceCdnTag`
-to the latest `V*` tag in this repo (`git describe`), so it never pins a stale tag.
+(`MindAttic.Deploy`: `npm run deploy -- --uiux`), which picks the next whole number,
+passes it as `-CyberspaceCdnTag` and commits the spliced block in its `Pin MindAttic.Web.Shared V<n>` commit. Run by hand, the script defaults `-CyberspaceCdnTag`
+to the latest `V*` tag in MindAttic.Web (`git describe`), so it never pins a stale tag.
 Both CDN scripts carry `defer`, and the sync also emits low-priority
 `<link rel="preload">` tags for the three parallax textures.

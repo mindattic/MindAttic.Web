@@ -1,0 +1,119 @@
+name: Sync MindAttic.Web.Shared to subscribers
+
+# ====================================================================
+# Splices MindAttic.Web.Shared components into the two subscribers that
+# carry marker blocks in hand-authored files:
+#
+#   - mindattic.com/index.htm (CYBERSPACE block). mindattic.com is a folder
+#     of THIS repo, so the job opens a pull request here.
+#   - MindAttic.Psst terms.htm + privacy.htm (OUTFITFONT block), a separate
+#     repo; the job opens a pull request there.
+#
+# Tutor is synced locally only (sync-tutor.ps1); Prose.Writer, Prose.Codex
+# and Ideas are "retired" in subscribers.json.
+#
+# The four sites (mindattic.com, ryandebraal.com, mindatticcares.com,
+# Hyperspace) load fonts, logos, components and the engine from jsDelivr at
+# the tag MindAttic.Deploy's linked deploy pins; the deploy also runs the
+# mindattic.com splice with that tag, so this workflow only keeps the block
+# fresh between deploys.
+#
+# No loop: the paths filter below lists only MindAttic.Web.Shared sources and
+# this file. The in-repo pull request changes only mindattic.com/index.htm and
+# the linked deploy's "Pin MindAttic.Web.Shared V<n>" commit changes only the
+# site folders, so neither re-triggers this workflow.
+# ====================================================================
+
+on:
+  push:
+    branches: [main]
+    paths:
+      # Only components actually spliced by a job below belong here: mindattic.com
+      # splices Cyberspace (which also lists SacredGeometry and the Hyperspace scripts
+      # as CDN tags), Psst splices OutfitFont. Everything else reaches its consumers
+      # through jsDelivr; listing it would only produce empty no-change PRs.
+      - 'MindAttic.Web.Shared/Components/Cyberspace/**'
+      - 'MindAttic.Web.Shared/Components/OutfitFont/**'
+      - 'MindAttic.Web.Shared/subscribers.json'
+      - 'MindAttic.Web.Shared/sync/**'
+      - '.github/workflows/sync-subscribers.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync-mindattic-com:
+    name: Sync into mindattic.com (this repo)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MindAttic.Web
+        uses: actions/checkout@v4
+        with:
+          # Full history + tags: sync-mindattic-com.ps1 derives its default CDN tag
+          # from `git describe --tags`, which a shallow, tagless checkout cannot do.
+          fetch-depth: 0
+
+      - name: Run sync-mindattic-com.ps1
+        shell: pwsh
+        run: |
+          ./MindAttic.Web.Shared/sync/sync-mindattic-com.ps1 `
+            -ContentRoot "$PWD/MindAttic.Web.Shared" `
+            -TargetIndex "$PWD/mindattic.com/index.htm"
+
+      - name: Open or update PR if there are changes
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+          add-paths: mindattic.com/index.htm
+          commit-message: "chore(components): sync mindattic.com from MindAttic.Web.Shared@${{ github.sha }}"
+          title: "Sync mindattic.com from MindAttic.Web.Shared"
+          body: |
+            Automated sync from [MindAttic.Web@${{ github.sha }}](https://github.com/mindattic/MindAttic.Web/commit/${{ github.sha }}).
+
+            The CYBERSPACE marker block in `mindattic.com/index.htm` was regenerated from `MindAttic.Web.Shared/Components/Cyberspace`.
+          branch: auto/sync-mindattic-com
+          base: main
+          delete-branch: true
+          author: "MindAttic Components Bot <noreply@mindattic.com>"
+          committer: "MindAttic Components Bot <noreply@mindattic.com>"
+
+  sync-mindattic-psst:
+    name: Sync into MindAttic.Psst (terms.htm + privacy.htm)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout MindAttic.Web
+        uses: actions/checkout@v4
+        with:
+          path: web
+
+      - name: Checkout MindAttic.Psst
+        uses: actions/checkout@v4
+        with:
+          repository: mindattic/MindAttic.Psst
+          path: mindattic-psst
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+
+      - name: Run sync-mindattic-psst.ps1 (privacy.htm + terms.htm)
+        shell: pwsh
+        run: |
+          ./web/MindAttic.Web.Shared/sync/sync-mindattic-psst.ps1 `
+            -ContentRoot "$PWD/web/MindAttic.Web.Shared" `
+            -TargetRoot "$PWD/mindattic-psst"
+
+      - name: Open or update PR if there are changes
+        uses: peter-evans/create-pull-request@v6
+        with:
+          path: mindattic-psst
+          token: ${{ secrets.SUBSCRIBER_REPO_TOKEN }}
+          commit-message: "chore(components): sync from MindAttic.Web.Shared@${{ github.sha }}"
+          title: "Sync from MindAttic.Web.Shared"
+          body: |
+            Automated sync from [MindAttic.Web@${{ github.sha }}](https://github.com/mindattic/MindAttic.Web/commit/${{ github.sha }}).
+
+            Marker blocks in `privacy.htm` and `terms.htm` regenerated from canonical sources. The repo's `index.htm` has no MINDATTIC.UIUX marker block and is not touched by this workflow.
+          branch: auto/sync-components
+          base: main
+          delete-branch: true
+          author: "MindAttic Components Bot <noreply@mindattic.com>"
+          committer: "MindAttic Components Bot <noreply@mindattic.com>"

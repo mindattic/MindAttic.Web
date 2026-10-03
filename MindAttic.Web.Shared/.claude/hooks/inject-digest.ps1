@@ -1,5 +1,5 @@
 <#
-  SessionStart hook for MindAttic.UiUx (MAU).
+  SessionStart hook for MindAttic.Web.Shared (MAU).
   Emits Claude Code hook JSON injecting docs/BIBLE.digest.md as authoritative context.
   Windows PowerShell 5.1 / Win-1252 safe: all non-ASCII escaped to \uXXXX.
   If the digest is missing or empty, emits {}.
@@ -14,8 +14,8 @@ $digest = [IO.File]::ReadAllText($digestPath)
 if ([string]::IsNullOrWhiteSpace($digest)) { Write-Output '{}'; return }
 
 $preamble = @"
-[MindAttic Codex - AUTHORITATIVE SESSION CONTEXT for MindAttic.UiUx (MAU)]
-The following is the generated digest of docs/BIBLE.md, the single source of truth for this repo.
+[MindAttic Codex - AUTHORITATIVE SESSION CONTEXT for MindAttic.Web.Shared (MAU)]
+The following is the generated digest of docs/BIBLE.md, the single source of truth for this package.
 Treat it as authoritative. Full detail lives in docs/BIBLE.md; project laws inherit
 MindAttic.HouseRules.md. Do not duplicate facts - cite by {#id}.
 

@@ -1,11 +1,11 @@
-# MindAttic.UiUx — test suite
+# MindAttic.Web.Shared — test suite
 
 End-to-end tests that prove two things:
 
-1. **The package is complete and sound** — `MindAttic.UiUx` contains every file the sites need, laid out per
+1. **The package is complete and sound** — `MindAttic.Web.Shared` contains every file the sites need, laid out per
    [`docs/ASSETS.md`](../docs/ASSETS.md), well-formed (fonts decode, images decode, nothing downscaled or re-encoded) and
    described exactly by `assets-manifest.json`.
-2. **The three sites pull their data properly** — `mindattic.com`, `ryandebraal.com` and `mindatticcares.com` load with
+2. **The sites pull their data properly** — `mindattic.com`, `ryandebraal.com` and `mindatticcares.com` load with
    no failed requests or console errors, talk only to allowed hosts, pin the expected release tag, fetch only what they
    need (lazily, from the CDN), and keep their layout correct at every viewport.
 
@@ -16,7 +16,7 @@ Google Chrome that is already installed (`channel: 'chrome'`).
 ## Install
 
 ```powershell
-cd MindAttic.UiUx\tests
+cd MindAttic.Web.Shared\tests
 npm ci                       # installs @playwright/test + cross-env (see package-lock.json)
 ```
 
@@ -27,7 +27,7 @@ Optional: `pip install fonttools brotli` enables the deep font check (the struct
 
 | Command | What it does |
 |---|---|
-| `npm test` / `npm run test:local` | Everything, **local mode** (default). Sites come from the sibling repos; every `cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/**` request is answered from *this working tree*, so it passes before a tag exists and fails loudly if a referenced file is missing. No other network. |
+| `npm test` / `npm run test:local` | Everything, **local mode** (default). Sites come from their folders in this MindAttic.Web checkout; every `cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<tag>/MindAttic.Web.Shared/**` request is answered from *this working tree*, so it passes before a tag exists and fails loudly if a referenced file is missing. No other network. |
 | `npm run test:live` | Everything against the **real sites and real CDN** (no interception). |
 | `npm run test:assets` | Package tests only (no browser, ~2 s). |
 | `npm run test:sites` | Site tests only (needs Chrome, ~20 s). |
@@ -39,10 +39,10 @@ Optional: `pip install fonttools brotli` enables the deep font check (the struct
 Environment variables:
 
 - `TEST_MODE=live` — test the real sites and the real CDN instead of local copies.
-- `UIUX_TAG=V8` — the tag every site must pin. Default: the highest whole-number `V<n>` tag in this repo (the same
-  rule the linked deploy uses), so it follows each release automatically; falls back to `V7` only when the tags are
-  not available (a shallow CI checkout — use `fetch-depth: 0`).
-- `SITES_ROOT=<dir>` — where the sibling site repos live (default: the parent of this repo). Point it at a folder
+- `SHARED_TAG=V12` — the tag every site must pin. Default: the highest whole-number `V<n>` tag in MindAttic.Web (the
+  tag the linked deploy puts on its pin commit), so it follows each release automatically; when the repo has no `V<n>`
+  tag (or a shallow CI checkout — use `fetch-depth: 0`), the tag `mindattic.com/index.htm` pins, else `V12`.
+- `SITES_ROOT=<dir>` — where the site folders live (default: the MindAttic.Web root, the parent of this folder). Point it at a folder
   of older page copies to prove a check catches a regression.
 - `PW_CHANNEL` — `chrome` (default), `msedge` or `chromium`.
 - `PW_OUTPUT_DIR=<dir>` — where traces/screenshots go (default `test-results/`). Playwright empties this folder at
@@ -67,11 +67,11 @@ Failures keep a Playwright trace: `npx playwright show-trace test-results/<test>
 | `images.spec` | Every PNG/JPEG/ICO/GIF decodes (CRCs, no truncation); Cyberspace textures are 1080×1920 PNGs; **nothing was downscaled** (dimensions ≥ baseline); **lossy files are byte-identical to their baseline** (never re-encoded). |
 | `budgets.spec` | Per-type size ceilings and per-folder totals (`lib/budgets.mjs`). |
 
-### `specs/sites/` — the three sites (browser)
+### `specs/sites/` — the sites (browser)
 
 `common.spec` runs for every site: well-formed page; **no failed / non-2xx requests, no console errors, no uncaught
 exceptions**; requests only to the site's origin + the allow-list (`lib/paths.mjs → SITES[*].allowedHosts`); pins exactly the
-expected `@V<n>` tag (never `@main`, no stale tag); every UiUx URL in the HTML exists in the package and every asset is in
+expected `@V<n>` tag (never `@main`, no stale tag); every MindAttic.Web.Shared URL in the HTML exists in the package and every asset is in
 the manifest; `<link rel=preconnect>` to jsDelivr; HTML size budget and no oversized `data:` URIs (guards against
 re-embedding base64); fonts actually load from the CDN (Outfit latin / Attic; latin-ext stays unfetched unless needed); no
 horizontal scrollbar from 320 to 1920 px; comments make no "one file / no external requests" claims.
@@ -107,9 +107,9 @@ several times; every shape draws something onto a canvas in the browser. **Hyper
 moves the Dimensional Threshold bar, changes its readouts, scrolls and advances the details span, shows five
 readouts and the UNRESOLVED flag, draws on its scope; `close()` freezes the readouts, prints the power-down line,
 folds the window and removes its DOM; `ttl` and `closeAll()` work; reduced motion holds still; without the
-library `show()` returns null. **Hyperspace page** (the sibling `Hyperspace` repo, opened as a local file, skipped
+library `show()` returns null. **Hyperspace page** (the `Hyperspace` folder of MindAttic.Web, opened as a local file, skipped
 if absent): it pins the library to a whole-number tag whose file exists here, and its explorers draw and its
-gallery boots to Ready both from the pinned CDN URL (answered from this tree) and from the sibling-checkout
+gallery boots to Ready both from the pinned CDN URL (answered from this tree) and from the `../MindAttic.Web.Shared/`
 fallback (CDN answering 404). three.js is fetched from its real CDN for the gallery; Google Fonts are blocked.
 
 ### `specs/cdn/` — live CDN (live mode only)
@@ -123,7 +123,7 @@ the expected tag is published. Expect these to fail until the tag is pushed **an
 
 `build.Tests.ps1` runs the standalone vendoring build into a temp folder and checks that a component or theme is copied
 byte-for-byte (subfolders included), reruns are identical, an ambiguous name (`Cyberspace`) needs `-Kind`, an unknown name
-lists what exists, and no `Ideas/` folder is needed. Run from the repo root: `Invoke-Pester -Path tests/pester` (Pester 5+).
+lists what exists, and no `Ideas/` folder is needed. Run from `MindAttic.Web.Shared`: `Invoke-Pester -Path tests/pester` (Pester 5+).
 
 ## Known issue encoded in the suite
 
@@ -148,8 +148,8 @@ never change bytes, and every image is recorded. After adding or *deliberately* 
 
 ## CI
 
-`ci.workflow.example.yml` is a ready-to-copy GitHub Actions workflow (kept here, **not** under `.github/`): it checks out the
-four repos side by side, runs `assets` + `sites` in local mode on every push, and `test:live` + `test:cdn` on a schedule and
+`ci.workflow.example.yml` is a ready-to-copy GitHub Actions workflow (kept here, **not** under `.github/`; copy it to
+`.github/workflows/` at the MindAttic.Web root to enable it): it checks out MindAttic.Web once, runs `assets` + `sites` in local mode on every push, and `test:live` + `test:cdn` on a schedule and
 after a release. Local-mode runs need no network beyond installing npm packages.
 
 ## Layout of this folder

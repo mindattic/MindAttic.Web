@@ -23,13 +23,13 @@ Hyperspace/
 No build step and no CSS file: load the scripts from jsDelivr like SacredGeometry.
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V12/Components/Hyperspace/hyperspace.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V12/Components/Hyperspace/hyperspace-reader.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/Components/Hyperspace/hyperspace.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/Components/Hyperspace/hyperspace-reader.js"></script>
 ```
 
 `hyperspace.js` must load before anything that uses `window.Hyperspace`. The Reader looks the library
 up when `show()` is called and returns `null` if it is missing. The Hyperspace page loads the library
-first from the CDN, with a sibling-checkout fallback for local development.
+first from the CDN, with a fallback to `../MindAttic.Web.Shared/` (the same MindAttic.Web checkout) for local development.
 
 ---
 

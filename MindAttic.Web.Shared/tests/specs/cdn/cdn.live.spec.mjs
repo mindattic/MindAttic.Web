@@ -1,11 +1,11 @@
-// LIVE only: is what jsDelivr actually serves for the tag each site pins byte-identical to this repo, with the
+// LIVE only: is what jsDelivr actually serves for the tag each site pins byte-identical to this package, with the
 // headers a browser needs (CORS for fonts, long immutable caching)? Run: npm run test:cdn
 // Skipped in local mode (the live CDN may not have the tag yet; local mode answers CDN requests from this tree).
 import { test, expect } from '@playwright/test';
 import path from 'node:path';
 import { SITES, TEST_MODE, EXPECTED_TAG, ASSET_EXT } from '../../lib/paths.mjs';
 import { sha256, loadManifest } from '../../lib/walk.mjs';
-import { uiuxUrlsIn } from '../../lib/site-session.mjs';
+import { sharedUrlsIn } from '../../lib/site-session.mjs';
 
 test.skip(TEST_MODE !== 'live', 'live-only: run with TEST_MODE=live (npm run test:cdn)');
 
@@ -24,10 +24,10 @@ async function mapLimit(items, limit, fn) {
 }
 
 for (const [name, site] of Object.entries(SITES)) {
-  test(`${name}: every UiUx file referenced by the live page is served intact`, async ({ request }) => {
+  test(`${name}: every MindAttic.Web.Shared file referenced by the live page is served intact`, async ({ request }) => {
     expect(manifest, 'BLOCKED: assets-manifest.json missing — run tools/build-asset-manifest.ps1').not.toBeNull();
     const html = await (await request.get(site.liveUrl)).text();
-    const found = [...new Map(uiuxUrlsIn(html).map((u) => [u.url, u])).values()];
+    const found = [...new Map(sharedUrlsIn(html).map((u) => [u.url, u])).values()];
     // A URL ending in '/' is a base prefix the page appends file names to at runtime (ryandebraal.com builds its theme
     // image URLs that way), not a file: replace it by every manifest file under that prefix so those are checked too.
     const refs = [];
@@ -37,7 +37,7 @@ for (const [name, site] of Object.entries(SITES)) {
         if (f.path.startsWith(u.path)) refs.push({ ...u, path: f.path, url: u.url.slice(0, u.url.length - u.path.length) + f.path });
       }
     }
-    expect(refs.length, `${name}: the live page does not reference MindAttic.UiUx (not deployed yet?)`).toBeGreaterThan(0);
+    expect(refs.length, `${name}: the live page does not reference MindAttic.Web.Shared (not deployed yet?)`).toBeGreaterThan(0);
 
     const problems = [];
     await mapLimit(refs, 6, async (u) => {
@@ -64,20 +64,21 @@ for (const [name, site] of Object.entries(SITES)) {
 }
 
 test.describe('release tags', () => {
-  test('whole-number tags V1..Vn exist, are contiguous, and the expected tag is published', async ({ request }) => {
-    const headers = { 'user-agent': 'mindattic-uiux-tests', accept: 'application/vnd.github+json', ...(process.env.GITHUB_TOKEN ? { authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {}) };
-    const res = await request.get('https://api.github.com/repos/mindattic/MindAttic.UiUx/git/matching-refs/tags/V', { headers });
+  test('whole-number tags V12..Vn exist, are contiguous, and the expected tag is published', async ({ request }) => {
+    const headers = { 'user-agent': 'mindattic-web-shared-tests', accept: 'application/vnd.github+json', ...(process.env.GITHUB_TOKEN ? { authorization: `Bearer ${process.env.GITHUB_TOKEN}` } : {}) };
+    const res = await request.get('https://api.github.com/repos/mindattic/MindAttic.Web/git/matching-refs/tags/V', { headers });
     test.skip(res.status() === 403 || res.status() === 429, 'GitHub API rate limit hit (set GITHUB_TOKEN to raise it)');
     expect(res.status()).toBe(200);
     const tags = (await res.json()).map((r) => r.ref.replace('refs/tags/', ''));
     expect(tags.filter((t) => !/^V\d+$/.test(t)), 'non whole-number tags').toEqual([]);
     const nums = tags.map((t) => Number(t.slice(1))).sort((a, b) => a - b);
-    nums.forEach((n, i) => expect(n, `tags must be contiguous from V1; got ${tags.join(', ')}`).toBe(i + 1));
+    // MindAttic.Web's tags start at V12, continuing the whole-number series of the shared package.
+    nums.forEach((n, i) => expect(n, `tags must be contiguous from V12; got ${tags.join(', ')}`).toBe(i + 12));
     expect(tags, `expected tag ${EXPECTED_TAG} is not published yet`).toContain(EXPECTED_TAG);
   });
 
   test('a published tag is immutable: its jsDelivr response is edge-cached for a year', async ({ request }) => {
-    const res = await request.get(`https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@${EXPECTED_TAG}/fonts/attic/attic.woff2`);
+    const res = await request.get(`https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@${EXPECTED_TAG}/MindAttic.Web.Shared/fonts/attic/attic.woff2`);
     expect(res.status()).toBe(200);
     expect(res.headers()['cache-control']).toMatch(/max-age=31536000/);
   });

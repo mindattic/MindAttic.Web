@@ -10,10 +10,10 @@ updated: 2026-10-03
 # mindattic.com — User Stories
 
 > ✅ done (shipped & verified) · 🟡 partial · ⬜ planned. Every ✅ cites its evidence.
-> This repo has no automated test suite of its own (a static HTML page), so "verified" cites on-disk
+> This folder has no automated test suite of its own (a static HTML page), so "verified" cites on-disk
 > artifacts (what is present in `index.htm`), measurements reported from a headless-browser session,
 > or a passing `codex doctor` instead of a unit test name. The shared Playwright suite in
-> `MindAttic.UiUx/tests` covers the linked sites.
+> `MindAttic.Web.Shared/tests` (same MindAttic.Web repo) covers the linked sites.
 
 ## Epic A — The front-door page (visitor experience)
 
@@ -32,9 +32,9 @@ updated: 2026-10-03
 - **MAC-US-A5 ✅** As a visitor, I get a fast first paint, so the front door feels instant. *Given* a
   browser, *when* I open `index.htm`, *then* the page itself is small (~90 KB), the CDN connection is
   opened early, the first-paint fonts are preloaded, the heavy effects engine is `defer`red and fonts,
-  logo, engine and textures come from the tag-pinned `MindAttic.UiUx` jsDelivr package rather than being
+  logo, engine and textures come from the tag-pinned `MindAttic.Web.Shared` jsDelivr package rather than being
   embedded. *(verified by: `<link rel="preconnect">` / font `<link rel="preload">` in `<head>`, `defer` on
-  the engine scripts, `…/MindAttic.UiUx@V10/…` URLs and no base64 font/image data in `index.htm`; file
+  the engine scripts, `…/MindAttic.Web@V<n>/MindAttic.Web.Shared/…` URLs and no base64 font/image data in `index.htm`; file
   size 89,615 bytes on 2026-10-03. No load-time benchmark has been run.)*
 - **MAC-US-A9 ✅** As a visitor on any device, I see the motto "A distributed software development
   company specializing in interactive media." between the wordmark and the buttons, exactly as wide as
@@ -56,7 +56,7 @@ updated: 2026-10-03
   effect spawns with my tap as its origin: popups and memos centred on it, console windows opening from it,
   fragments typing out of it, traces, pulsars, cascades and predator swarms spreading from it, always kept
   on screen and out of the buffer zone. A press inside the zone, or on a link, spawns nothing.
-  *(verified by: `MindAttic.UiUx/tests` `mindattic.spec.mjs` — `a tap outside the keepout spawns an effect
+  *(verified by: `MindAttic.Web.Shared/tests` `mindattic.spec.mjs` — `a tap outside the keepout spawns an effect
   that starts at the tap point`, `every spawn function honours an origin…`, `a tap inside the keepout buffer
   zone spawns nothing…`, `tapping a link … spawns no effect and no sparks`.)*
 - **MAC-US-A10 ✅** As a visitor, every qualifying tap gives a quick power-surge of sparks at my finger,
@@ -70,7 +70,7 @@ updated: 2026-10-03
   M-monogram preview card, so links to mindattic.com look intentional. *Given* a crawler or chat app,
   *when* it reads `<head>`, *then* it finds `meta description`, a canonical `https://mindattic.com/`,
   `theme-color`, and Open Graph / Twitter "summary" tags whose image is
-  `MindAttic.UiUx@V10/mindattic.com/logos/m-monogram.png`. *(verified by: grep of `index.htm` `<head>`.)*
+  `MindAttic.Web@V<n>/MindAttic.Web.Shared/mindattic.com/logos/m-monogram.png`. *(verified by: grep of `index.htm` `<head>`.)*
 
 ## Epic D — Documentation & maintenance discipline
 
@@ -84,7 +84,7 @@ updated: 2026-10-03
   checked. *(verified by: `powershell -NoProfile -ExecutionPolicy Bypass -File tools/codex.ps1
   doctor` run 2026-10-03.)*
 - **MAC-US-D3 ⬜** As the maintainer, I want the doctor to optionally run an HTML-validity / dead
-  link check on `index.htm` (including that every `MindAttic.UiUx@V<n>` URL resolves), so regressions are
+  link check on `index.htm` (including that every `MindAttic.Web@V<n>/MindAttic.Web.Shared/` URL resolves), so regressions are
   caught. Make it opt-in so it never needs the network by default.
 - **MAC-US-D4 ✅** As the maintainer, I want a single `/commit` definition, so `/commit` behaves the same
   every time. *(verified by: `.claude/commands/` holds only `deploy.md`, `quickload.md` and

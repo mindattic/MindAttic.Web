@@ -7,7 +7,7 @@
 #   $sub = Get-Subscriber -Name 'mindattic.com' -ContentRoot $ContentRoot
 #   $sub.subscriptions | ForEach-Object { ... }
 #
-# Components and subscribers live in MindAttic.UiUx/subscribers.json.
+# Components and subscribers live in MindAttic.Web.Shared/subscribers.json.
 # Edit that file (not this helper, not the per-subscriber scripts) to add
 # or remove a subscription. The per-subscriber scripts iterate the
 # subscriptions array, so a new entry there flows through automatically
@@ -33,6 +33,13 @@ function Get-Subscriber {
     }
     $sub = $cfg.subscribers.$Name
     Add-Member -InputObject $sub -NotePropertyName 'name' -NotePropertyValue $Name -Force
+    # A relative target resolves against ContentRoot (MindAttic.Web/MindAttic.Web.Shared), so the same
+    # subscribers.json works in any checkout location: ../mindattic.com is the sibling site folder inside
+    # MindAttic.Web, ../../<Repo> is a repo next to MindAttic.Web.
+    if ($sub.PSObject.Properties.Name -contains 'target' -and $sub.target -and -not [System.IO.Path]::IsPathRooted($sub.target)) {
+        $base = (Resolve-Path -LiteralPath $ContentRoot).Path
+        $sub.target = [System.IO.Path]::GetFullPath((Join-Path $base $sub.target))
+    }
     return $sub
 }
 
@@ -102,7 +109,7 @@ function Build-FontCssBody {
 # Line-ending normalization. Splicing component sources (LF) into a host
 # file (usually CRLF) yields mixed EOLs and a huge EOL-only git diff in
 # the subscriber repo -- which buries the real content change in any
-# cross-repo sync PR. Detect the host file's dominant convention once
+# sync PR. Detect the host file's dominant convention once
 # (from its text as read, before splicing) and normalize the whole
 # written file to it, so the only diff a subscriber sees is the actual
 # content change. Idempotent: a file already uniform in its own

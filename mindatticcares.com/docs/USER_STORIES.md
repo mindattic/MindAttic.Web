@@ -11,40 +11,40 @@ updated: 2026-10-03
 
 > ✅ done (shipped & tested) · 🟡 partial · ⬜ planned. Every ✅ cites the test.
 >
-> **Note on verification:** this repo has no build step ([MAC-LAW-1](BIBLE.md#MAC-LAW-1)) and no
-> test suite of its own; the site is tested by the shared Playwright suite in `MindAttic.UiUx/tests`.
+> **Note on verification:** this folder has no build step ([MAC-LAW-1](BIBLE.md#MAC-LAW-1)) and no
+> test suite of its own; the site is tested by the shared Playwright suite in `MindAttic.Web.Shared/tests`.
 > Per [HOUSE-LAW-8], stories that cannot cite an automated test are held at 🟡 even when the behavior
-> is present and manually observed. The only automated check in-repo is `tools/codex.ps1 doctor`
+> is present and manually observed. The only automated check in this folder is `tools/codex.ps1 doctor`
 > (docs, not the site).
 
 ## Epic A — Visitor reading the site
 
-- **MAC-US-A1 ✅** (verified by `MindAttic.UiUx/tests/specs/sites/mindatticcares.spec.mjs`) As a visitor, I can switch between the MindAttic Cares, Child's Play, and Y2K
+- **MAC-US-A1 ✅** (verified by `MindAttic.Web.Shared/tests/specs/sites/mindatticcares.spec.mjs`) As a visitor, I can switch between the MindAttic Cares, Child's Play, and Y2K
   pages from the top nav, so I can find the content I want. *Given the loaded site, When I click a
   nav link, Then exactly that `.page` becomes `.active` and the URL hash updates.*
-  *(test: MindAttic.UiUx `tests/specs/sites/mindatticcares.spec.mjs` — "navigation switches pages,
+  *(test: MindAttic.Web.Shared `tests/specs/sites/mindatticcares.spec.mjs` — "navigation switches pages,
   updates the hash, and fetches that page's art on demand".)*
 - **MAC-US-A2 🟡** As a visitor on the Y2K page, I can jump to any of the 19 playbook sections via
   the in-page Table of Contents, so I can navigate the long playbook. *Given the Y2K page, When I
   click a TOC entry, Then the page scrolls to the matching `#sec-*` anchor.*
   *(19 `sec-*` anchors match the 19 TOC links — structural grep; TOC click and the `#contents`
   deep link checked by hand in Chrome; no automated test, held 🟡.)*
-- **MAC-US-A3 ✅** (verified by `MindAttic.UiUx/tests/specs/sites/mindatticcares.spec.mjs`) As a visitor, I can play the Child's Play intro video inline without it loading
+- **MAC-US-A3 ✅** (verified by `MindAttic.Web.Shared/tests/specs/sites/mindatticcares.spec.mjs`) As a visitor, I can play the Child's Play intro video inline without it loading
   on page open, so the page stays light. *Given the poster, When I click/Enter it, Then a
   `youtube-nocookie` iframe replaces it (or YouTube opens in a new tab under `file://`).*
-  *(test: MindAttic.UiUx `tests/specs/sites/mindatticcares.spec.mjs` — "the video is click-to-play: no
+  *(test: MindAttic.Web.Shared `tests/specs/sites/mindatticcares.spec.mjs` — "the video is click-to-play: no
   YouTube request until the poster is clicked".)*
-- **MAC-US-A4 ✅** (verified by `MindAttic.UiUx/tests/specs/sites/mindatticcares.spec.mjs`) As a visitor opening a shared `#sec-budget`-style link, I land on the Y2K page at
+- **MAC-US-A4 ✅** (verified by `MindAttic.Web.Shared/tests/specs/sites/mindatticcares.spec.mjs`) As a visitor opening a shared `#sec-budget`-style link, I land on the Y2K page at
   that section. *Given an in-page anchor hash, When the page loads, Then `fromHash()` selects the page
-  that contains it and the anchor is scrolled into view.* *(test: MindAttic.UiUx
+  that contains it and the anchor is scrolled into view.* *(test: MindAttic.Web.Shared
   `tests/specs/sites/mindatticcares.spec.mjs` — "deep links work: #y2k and an in-page anchor
   (#sec-budget) open the Y2K playbook". The scroll position was checked by hand in
   Chrome. A hash after the bare forwarded domain does not reach the page — see README "Where it is
   served".)*
-- **MAC-US-A5 ✅** (verified by `MindAttic.UiUx/tests/specs/sites/mindatticcares.spec.mjs`) As a visitor, I get the page text immediately while fonts and images stream in, so
+- **MAC-US-A5 ✅** (verified by `MindAttic.Web.Shared/tests/specs/sites/mindatticcares.spec.mjs`) As a visitor, I get the page text immediately while fonts and images stream in, so
   the site feels fast. *Given the page, When it loads, Then fonts/logos/photos are fetched from the
   pinned jsDelivr package ([MAC-LAW-1](BIBLE.md#MAC-LAW-1)), below-the-fold images load lazily, and
-  `index.htm` itself is ~63 KB.* *(tests: MindAttic.UiUx `tests/specs/sites/mindatticcares.spec.mjs` —
+  `index.htm` itself is ~63 KB.* *(tests: MindAttic.Web.Shared `tests/specs/sites/mindatticcares.spec.mjs` —
   "first paint (Home) fetches only the Home art, the icon, the background and the Outfit latin font";
   `common.spec.mjs` — "loads cleanly…" and "no embedded base64 blobs…"; live: `cdn.live.spec.mjs`.)*
 
@@ -55,7 +55,7 @@ updated: 2026-10-03
   browser, Then the whole site renders with no build step or database (fonts and images load from the
   pinned jsDelivr package).*
   *([MAC-LAW-1](BIBLE.md#MAC-LAW-1) holds: no build step; the only external runtime dependency
-  is the tag-pinned MindAttic.UiUx jsDelivr package, plus the click-to-load YouTube embed; no
+  is the tag-pinned MindAttic.Web.Shared jsDelivr package, plus the click-to-load YouTube embed; no
   automated test, held 🟡.)*
 - **MAC-US-B2 🟡** As a sibling charity, I can lift the 12-week timeline, budget worksheet,
   sponsorship pitch, and staffing model as templates. *Given the Y2K playbook, When I copy the
@@ -66,7 +66,7 @@ updated: 2026-10-03
 
 - **MAC-US-C1 ✅** (verified by `MindAttic.Deploy/test/linked.test.js`) As a maintainer, I can deploy the site with one command via MindAttic.Deploy, so
   the live site updates and gets a fresh Last-Updated stamp. *Given a change, When I run
-  `npm run deploy -- --site mindatticcares.com`, Then the whole linked group deploys: the UiUx asset
+  `npm run deploy -- --site mindatticcares.com`, Then the whole linked group deploys: the MindAttic.Web.Shared asset
   tag is published and verified on the CDN, and `index.htm` is stamped and FTPS-uploaded.*
   *(tests: MindAttic.Deploy `test/linked.test.js`; exercised by real linked deploys. See
   [MAC-LAW-5](BIBLE.md#MAC-LAW-5).)*

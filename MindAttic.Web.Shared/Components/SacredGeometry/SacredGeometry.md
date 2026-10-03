@@ -68,11 +68,11 @@ function frame() {
 ### Mounting from the CDN
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@v1.0.x/Components/SacredGeometry/sacred-geometry.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/Components/SacredGeometry/sacred-geometry.js"></script>
 ```
 
 Static posters are reachable the same way:
-`…@v1.0.x/Components/SacredGeometry/previews/shape-0000.svg`.
+`…@V12/MindAttic.Web.Shared/Components/SacredGeometry/previews/shape-0000.svg`.
 
 ---
 
@@ -117,6 +117,6 @@ A non-zero exit means the catalog regressed. Re-run `build:previews` and commit 
 
 ## Editing
 
-Edit `sacred-geometry.js` here, regenerate `previews/`, push to `main`, and tag a new `v1.0.x` to
-ship via jsDelivr (Cyberspace and the Legion persona gallery both pull the tagged file). Downstream
+Edit `sacred-geometry.js` here, regenerate `previews/`, push to `main`, and run MindAttic.Deploy's linked
+deploy, which tags the next whole-number `V<n>` of MindAttic.Web, to ship via jsDelivr (Cyberspace and the Legion persona gallery both pull the tagged file). Downstream
 copies are derived artifacts — never edit them directly.

@@ -1,7 +1,7 @@
 {
-  "$comment": "L5 canon-as-data: the MindAttic.UiUx component catalog. codex front-matter equivalent: { codex:1, project:MindAttic.UiUx, code:MAU, layer:data, status:living, updated:2026-10-03 }. Schema: _schema/component.schema.json. Prose (BIBLE/README) cites these by id; do not restate fields. Folders verified on disk 2026-10-03 (14 components).",
+  "$comment": "L5 canon-as-data: the MindAttic.Web.Shared component catalog. codex front-matter equivalent: { codex:1, project:MindAttic.Web.Shared, code:MAU, layer:data, status:living, updated:2026-10-03 }. Schema: _schema/component.schema.json. Prose (BIBLE/README) cites these by id; do not restate fields. Folders verified on disk 2026-10-03 (14 components).",
   "codex": 1,
-  "project": "MindAttic.UiUx",
+  "project": "MindAttic.Web.Shared",
   "code": "MAU",
   "layer": "data",
   "status": "living",

@@ -1,5 +1,5 @@
 # ====================================================================
-# MindAttic.UiUx -> all splice-in-place subscribers (local dev delivery)
+# MindAttic.Web.Shared -> all splice-in-place subscribers (local dev delivery)
 # Runs every downstream sync script in sync/ that matches sync-*.ps1
 # (except this file). Discovery is glob-based, so the subscriber set is
 # whatever is wired up in sync/*.ps1 and subscribers.json. Currently:
@@ -9,12 +9,12 @@
 #   - sync-prose.ps1           → retired (Prose.Writer / Prose.Codex do not exist)
 #   - sync-ideas.ps1           → retired (MindAttic.Ideas.Web does not exist)
 #
-# The three sites load fonts, logos and the engine from the jsDelivr CDN
+# The four sites load fonts, logos and the engine from the jsDelivr CDN
 # at the tag pinned by MindAttic.Deploy's linked deploy; only mindattic.com's
 # CYBERSPACE block is spliced. There are no other CDN consumers.
 #
 # Production delivery happens via .github/workflows/sync-subscribers.yml
-# (push-triggered cross-repo PRs). This script is the local equivalent
+# (push-triggered sync PRs, workflow at the MindAttic.Web root). This script is the local equivalent
 # for fast iteration without round-tripping through GitHub; it is also
 # invoked piecewise by MindAttic.Deploy (sync-mindattic-com.ps1 as the
 # mindattic.com preDeploy hook).

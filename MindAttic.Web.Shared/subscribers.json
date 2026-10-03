@@ -1,5 +1,5 @@
 {
-  "$comment": "Canonical map of which MindAttic.UiUx components flow to each downstream subscriber, with per-subscriber configuration. Sync scripts read this file to drive their splicing -- edit THIS file (not the sync scripts) when adding or removing subscriptions. Marker names are base names: the html-inline kinds (mindattic.com, MindAttic.Psst legal pages) splice on the bare marker, while the blazor-wwwroot kind (Prose) appends a .CSS suffix. NOTE: the three sites (mindattic.com, ryandebraal.com, mindatticcares.com) load fonts, logos and the engine from jsDelivr at the tag the MindAttic.Deploy linked deploy pins; only mindattic.com's CYBERSPACE block is spliced. There are no other CDN consumers; each repo's GitHub README is its project page.",
+  "$comment": "Canonical map of which MindAttic.Web.Shared components flow to each downstream subscriber, with per-subscriber configuration. Sync scripts read this file to drive their splicing -- edit THIS file (not the sync scripts) when adding or removing subscriptions. A relative target resolves against this folder (MindAttic.Web/MindAttic.Web.Shared): mindattic.com is a sibling folder in MindAttic.Web (../mindattic.com), every other subscriber is a sibling repo of MindAttic.Web (../../<Repo>). Marker names are base names: the html-inline kinds (mindattic.com, MindAttic.Psst legal pages) splice on the bare marker, while the blazor-wwwroot kind (Prose) appends a .CSS suffix. NOTE: the four sites (mindattic.com, ryandebraal.com, mindatticcares.com, Hyperspace) load fonts, logos, components and the engine from jsDelivr at the tag the MindAttic.Deploy linked deploy pins; only mindattic.com's CYBERSPACE block is spliced. There are no other CDN consumers; each repo's GitHub README is its project page.",
 
   "components": {
     "OutfitFont":  { "type": "font-css",    "marker": "OUTFITFONT",  "cssFile": "Components/OutfitFont/outfit-font.css",   "jsonFile": "Components/OutfitFont/outfit-font.json", "htmlFile": "Components/OutfitFont/outfit-font.html" },
@@ -16,7 +16,7 @@
   "subscribers": {
     "mindattic.com": {
       "kind":       "html-inline",
-      "target":     "D:/Projects/MindAttic/mindattic.com/index.htm",
+      "target":     "../mindattic.com/index.htm",
       "syncScript": "sync-mindattic-com.ps1",
       "subscriptions": [
         { "component": "Cyberspace"  }
@@ -24,9 +24,9 @@
     },
 
     "Prose.Writer": {
-      "retired":   "2026-10-02: Prose was restructured; no v3/Prose.Writer Blazor wwwroot with UiUx marker blocks exists any more. Point target at the new project, add the marker pairs, and delete this field to re-enroll.",
+      "retired":   "2026-10-02: Prose was restructured; no v3/Prose.Writer Blazor wwwroot with MINDATTIC.UIUX marker blocks exists any more. Point target at the new project, add the marker pairs, and delete this field to re-enroll.",
       "kind":       "blazor-wwwroot",
-      "target":     "D:/Projects/MindAttic/Prose/v3/Prose.Writer",
+      "target":     "../../Prose/v3/Prose.Writer",
       "syncScript": "sync-prose.ps1",
       "subscriptions": [
         { "component": "OutfitFont" },
@@ -40,9 +40,9 @@
     },
 
     "Prose.Codex": {
-      "retired":   "2026-10-02: Prose was restructured; no v3/Prose.Codex Blazor wwwroot with UiUx marker blocks exists any more. Point target at the new project, add the marker pairs, and delete this field to re-enroll.",
+      "retired":   "2026-10-02: Prose was restructured; no v3/Prose.Codex Blazor wwwroot with MINDATTIC.UIUX marker blocks exists any more. Point target at the new project, add the marker pairs, and delete this field to re-enroll.",
       "kind":       "blazor-wwwroot",
-      "target":     "D:/Projects/MindAttic/Prose/v3/Prose.Codex",
+      "target":     "../../Prose/v3/Prose.Codex",
       "syncScript": "sync-prose.ps1",
       "subscriptions": [
         { "component": "OutfitFont" },
@@ -57,7 +57,7 @@
 
     "MindAttic.Psst.Legal": {
       "kind":       "html-inline-multi",
-      "target":     "D:/Projects/MindAttic/MindAttic.Psst",
+      "target":     "../../MindAttic.Psst",
       "targets":    ["privacy.htm", "terms.htm"],
       "syncScript": "sync-mindattic-psst.ps1",
       "subscriptions": [
@@ -69,7 +69,7 @@
       "$comment":   "MindAttic.Ideas Blazor CMS. Splice-in-place like Tutor. Retired: the MindAttic.Ideas.Web project no longer exists (see retired).",
       "retired":   "2026-10-02: the MindAttic.Ideas.Web project no longer exists. Point target at its successor, add the marker pairs, and delete this field to re-enroll.",
       "kind":       "blazor-wwwroot",
-      "target":     "D:/Projects/MindAttic/MindAttic.Ideas/src/MindAttic.Ideas.Web",
+      "target":     "../../MindAttic.Ideas/src/MindAttic.Ideas.Web",
       "syncScript": "sync-ideas.ps1",
       "subscriptions": [
         { "component": "UserLogin" },
@@ -81,7 +81,7 @@
     "Tutor": {
       "$comment":   "Tutor Blazor study app. Splice-in-place (CSS marker blocks in wwwroot/app.css, JS copied to wwwroot/js). Enrolled in the auth-visual trio (UserLogin, UserCircle, UserTimeout); local sync only (sync-tutor.ps1) -- the GitHub workflow has no Tutor job.",
       "kind":       "blazor-wwwroot",
-      "target":     "D:/Projects/MindAttic/Tutor/Tutor.Blazor",
+      "target":     "../../Tutor/Tutor.Blazor",
       "syncScript": "sync-tutor.ps1",
       "subscriptions": [
         { "component": "UserLogin" },

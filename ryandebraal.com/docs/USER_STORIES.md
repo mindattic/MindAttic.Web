@@ -23,13 +23,13 @@ updated: 2026-10-03
 - **RDC-US-A1 🟡** As a reader, I can open the resume from a single small `index.htm` (~0.47 MB)
   with no install or build, and the fonts and art load from the CDN as needed. *Given a modern
   browser, When I open `index.htm`, Then the resume renders and fonts/images arrive from jsDelivr.*
-  *(checked locally and live against `@V10` by the MindAttic.UiUx Playwright suite —
-  `MindAttic.UiUx/tests/specs/sites/ryandebraal.spec.mjs`; [RDC-LAW-1](BIBLE.md#RDC-LAW-1).)*
+  *(checked locally and live against the pinned tag by the MindAttic.Web.Shared Playwright suite —
+  `MindAttic.Web.Shared/tests/specs/sites/ryandebraal.spec.mjs`; [RDC-LAW-1](BIBLE.md#RDC-LAW-1).)*
 - **RDC-US-A2 🟡** As a skeptical engineer, I can open DevTools and confirm there is no analytics,
   tracking, or third-party font, and that the only external hosts are the jsDelivr paths allowed by
   [RDC-LAW-3](BIBLE.md#RDC-LAW-3). *Given DevTools open, When I view Network, Then every request goes to
-  the page itself or to `cdn.jsdelivr.net`.* *(the host allow-list is asserted by the MindAttic.UiUx Playwright suite —
-  `MindAttic.UiUx/tests/specs/sites/common.spec.mjs`.)*
+  the page itself or to `cdn.jsdelivr.net`.* *(the host allow-list is asserted by the MindAttic.Web.Shared Playwright suite —
+  `MindAttic.Web.Shared/tests/specs/sites/common.spec.mjs`.)*
 
 ## Epic B — Themes & animation
 
@@ -79,5 +79,5 @@ updated: 2026-10-03
    regression turns a 🟡 into a real `✅`. *(blocked on [RFC 0001](rfc/0001-in-browser-smoke-harness.md).)*
 2. **RDC-US-F2 🟡** As a maintainer, I can assert that no runtime network request goes to a host
    outside the [RDC-LAW-3](BIBLE.md#RDC-LAW-3) allow-list. *(page-load requests are asserted by the
-   out-of-repo MindAttic.UiUx Playwright suite — `specs/sites/common.spec.mjs`; requests made after
+   MindAttic.Web.Shared Playwright suite (same MindAttic.Web repo) — `specs/sites/common.spec.mjs`; requests made after
    theme changes and exports are not yet covered.)*

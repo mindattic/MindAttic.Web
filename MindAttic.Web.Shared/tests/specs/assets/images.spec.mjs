@@ -3,11 +3,11 @@
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
-import { UIUX_ROOT } from '../../lib/paths.mjs';
+import { SHARED_ROOT } from '../../lib/paths.mjs';
 import { listAssets, readAsset, sha256 } from '../../lib/walk.mjs';
 import { decodeRaster } from '../../lib/binfmt.mjs';
 
-const baselinePath = path.join(UIUX_ROOT, 'tests', 'baselines.json');
+const baselinePath = path.join(SHARED_ROOT, 'tests', 'baselines.json');
 const baselines = fs.existsSync(baselinePath) ? JSON.parse(fs.readFileSync(baselinePath, 'utf8')).images : {};
 const raster = listAssets().filter((p) => /\.(png|jpe?g|gif|ico)$/i.test(p));
 

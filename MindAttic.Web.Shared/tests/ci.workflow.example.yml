@@ -1,12 +1,13 @@
-# Example GitHub Actions workflow for the MindAttic.UiUx test suite.
+# Example GitHub Actions workflow for the MindAttic.Web.Shared test suite.
 #
-# NOT active: it lives under tests/ on purpose. Copy it to <repo>/.github/workflows/uiux-tests.yml in the repo that
-# should run it (MindAttic.UiUx is the natural home) after reviewing the secrets/permissions below.
+# NOT active: it lives under MindAttic.Web.Shared/tests/ on purpose. To enable it, copy it to
+# .github/workflows/web-shared-tests.yml at the MindAttic.Web root after reviewing the secrets/permissions below.
 #
-#  * push / pull_request  -> LOCAL mode: assets + sites. Sites come from checked-out sibling repos, and the CDN is
-#                            answered from the UiUx working tree, so no tag has to exist and no live site is touched.
+#  * push / pull_request  -> LOCAL mode: assets + sites. The sites come from their folders in the same MindAttic.Web
+#                            checkout, and the CDN is answered from the MindAttic.Web.Shared working tree, so no tag has
+#                            to exist and no live site is touched.
 #  * schedule / release   -> LIVE mode: the real sites + the real jsDelivr tag (cdn + sites + assets).
-name: uiux-tests
+name: web-shared-tests
 
 on:
   push:
@@ -26,30 +27,25 @@ jobs:
     name: Local (assets + sites)
     runs-on: ubuntu-latest
     steps:
-      # The suite expects the four repos side by side:  <root>/MindAttic.UiUx, <root>/mindattic.com, ...
+      # One checkout holds the package and every site: MindAttic.Web.Shared/, mindattic.com/, ryandebraal.com/, ...
+      # Full history + tags so the expected tag is the highest V<n> tag of MindAttic.Web.
       - uses: actions/checkout@v4
-        with: { path: MindAttic.UiUx }
-      - uses: actions/checkout@v4
-        with: { repository: mindattic/mindattic.com, path: mindattic.com }
-      - uses: actions/checkout@v4
-        with: { repository: mindattic/ryandebraal.com, path: ryandebraal.com }
-      - uses: actions/checkout@v4
-        with: { repository: mindattic/mindatticcares.com, path: mindatticcares.com }
+        with: { fetch-depth: 0 }
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: MindAttic.UiUx/tests/package-lock.json
+          cache-dependency-path: MindAttic.Web.Shared/tests/package-lock.json
       - name: Install
-        working-directory: MindAttic.UiUx/tests
+        working-directory: MindAttic.Web.Shared/tests
         run: |
           npm ci
           npx playwright install --with-deps chromium
       - name: Assets
-        working-directory: MindAttic.UiUx/tests
+        working-directory: MindAttic.Web.Shared/tests
         run: npm run test:assets
       - name: Sites (local)
-        working-directory: MindAttic.UiUx/tests
+        working-directory: MindAttic.Web.Shared/tests
         env: { TEST_MODE: local, PW_CHANNEL: chromium, CI: 'true' }
         run: npm run test:sites
       - uses: actions/upload-artifact@v4
@@ -57,8 +53,8 @@ jobs:
         with:
           name: playwright-report-local
           path: |
-            MindAttic.UiUx/tests/playwright-report
-            MindAttic.UiUx/tests/test-results
+            MindAttic.Web.Shared/tests/playwright-report
+            MindAttic.Web.Shared/tests/test-results
           if-no-files-found: ignore
 
   live:
@@ -67,31 +63,31 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with: { path: MindAttic.UiUx }
+        with: { fetch-depth: 0 }
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
-          cache-dependency-path: MindAttic.UiUx/tests/package-lock.json
+          cache-dependency-path: MindAttic.Web.Shared/tests/package-lock.json
       - name: Install
-        working-directory: MindAttic.UiUx/tests
+        working-directory: MindAttic.Web.Shared/tests
         run: |
           npm ci
           npx playwright install --with-deps chromium
       - name: Live (assets + cdn + sites)
-        working-directory: MindAttic.UiUx/tests
+        working-directory: MindAttic.Web.Shared/tests
         env:
           TEST_MODE: live
           PW_CHANNEL: chromium
           CI: 'true'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}   # only raises the GitHub API rate limit for the tag test
-          # UIUX_TAG: V8                                # set when the sites should be pinned to a newer tag
+          # SHARED_TAG: V12                             # set to override the expected tag
         run: npx playwright test
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: playwright-report-live
           path: |
-            MindAttic.UiUx/tests/playwright-report
-            MindAttic.UiUx/tests/test-results
+            MindAttic.Web.Shared/tests/playwright-report
+            MindAttic.Web.Shared/tests/test-results
           if-no-files-found: ignore

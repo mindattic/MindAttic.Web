@@ -27,7 +27,7 @@ in full public detail so any sibling charity can fork and reuse them.
   ([childsplaycharity.org](https://childsplaycharity.org)); MindAttic LLC covers operations so
   donors do not pay overhead.
 - **One page, no CMS.** The whole site is `index.htm` — inline CSS and JS. Fonts and images are
-  static files served from the shared MindAttic.UiUx package on jsDelivr, pinned to a release tag
+  static files served from the shared MindAttic.Web.Shared package on jsDelivr, pinned to a release tag
   ([MAC-LAW-1](#MAC-LAW-1)). No database, no static-site generator, no analytics. Fork it,
   edit in a text editor, host your own copy.
 - **Reusable templates.** The 12-week timeline, budget worksheet, sponsorship pitch, and
@@ -38,7 +38,7 @@ in full public detail so any sibling charity can fork and reuse them.
 - **NOT a web application.** No accounts, no server-side code, no database, no API. It is a static
   document with a thin client-side navigation/lightbox script.
 - **NOT a build pipeline.** No `npm install`, no bundler, no SSG. There is no build step; the
-  deliverable file IS the source. (Its assets are separate static files in MindAttic.UiUx — they
+  deliverable file IS the source. (Its assets are separate static files in MindAttic.Web.Shared — they
   are served, not built.)
 - **NOT a donation processor.** It links out to the partner charity; it does not collect money.
 - **NOT self-deploying.** Deployment is owned by the central **MindAttic.Deploy** pipeline (sibling
@@ -73,7 +73,7 @@ in full public detail so any sibling charity can fork and reuse them.
                                          │ at runtime, the browser fetches
                                          ▼ fonts / logos / photos
                  ┌─────────────────────────────────────────────┐
-                 │ jsDelivr CDN → MindAttic.UiUx @V10 (pinned) │
+                 │ jsDelivr CDN → MindAttic.Web@V<n>/MindAttic.Web.Shared │
                  │ fonts/outfit · mindatticcares.com/...       │
                  └─────────────────────────────────────────────┘
 ```
@@ -81,19 +81,19 @@ in full public detail so any sibling charity can fork and reuse them.
 ### 4.1 Projects / files
 - **`index.htm`** — the entire deliverable: `<head>` (meta description, canonical URL
   `https://mindatticcares.com/`, Open Graph / Twitter "summary" card tags whose image is the M-Cares
-  logo from the UiUx package, resource hints, `@font-face` rules pointing at CDN woff2 files,
+  logo from the MindAttic.Web.Shared package, resource hints, `@font-face` rules pointing at CDN woff2 files,
   `<style>`), `<header class="topbar">` nav, `<main>` with three
   `<section class="page">` blocks, and a single trailing `<script>`. (~60 KB; fonts and images are
   referenced by URL, not embedded.)
-- **Assets (external, not in this repo)** — `MindAttic.UiUx/fonts/outfit/` and
-  `MindAttic.UiUx/mindatticcares.com/{logos,icons,images}/`, served by jsDelivr at
-  `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/…` ([MAC-LAW-1](#MAC-LAW-1)); the
-  page currently pins `@V10`.
+- **Assets (external, not in this folder)** — `MindAttic.Web.Shared/fonts/outfit/` and
+  `MindAttic.Web.Shared/mindatticcares.com/{logos,icons,images}/`, served by jsDelivr at
+  `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<tag>/MindAttic.Web.Shared/…` ([MAC-LAW-1](#MAC-LAW-1)); the
+  page pins the release tag the linked deploy sets.
 - **`README.md`** — how to build/run/deploy and edit.
 - **`docs/`** — this Codex canon (BIBLE, AMENDMENTS, USER_STORIES, rfc).
 - **`tools/codex.ps1`** — the doctor + digest CLI.
 - **`.claude/`** — the deploy command, project skills, and the SessionStart digest hook.
-- There is no deploy script or FTP settings file in this repo; the FTP pipeline lives in
+- There is no deploy script or FTP settings file in this folder; the FTP pipeline lives in
   **MindAttic.Deploy** (see [`.claude/commands/deploy.md`](../.claude/commands/deploy.md),
   [MAC-LAW-5](#MAC-LAW-5)).
 
@@ -115,15 +115,15 @@ in full public detail so any sibling charity can fork and reuse them.
   anchor (`#sec-budget`, `#contents`) opens the page that contains it and scrolls it into view.
 - **lite-YT `play()`** — replaces the poster with a `youtube-nocookie` iframe (or opens YouTube in a
   new tab under the `file:` protocol).
-- **deploy** (external) — MindAttic.Deploy's permanently linked group `mindattic-web` (UiUx +
-  ryandebraal.com + this site + mindattic.com): deploying any one deploys all four — publish the UiUx
-  tag, pin it in every site, verify every asset on jsDelivr byte-exact, then stamp the Last-Updated
-  comment and FTPS-upload `index.htm` to `/mindatticcares.com/`. `--no-link` deploys this site alone.
+- **deploy** (external) — MindAttic.Deploy's permanently linked group `mindattic-web` (MindAttic.Web.Shared +
+  ryandebraal.com + this site + Hyperspace + mindattic.com, one git repo): deploying any one deploys every
+  site — pin the next MindAttic.Web tag in every site page, stamp the Last-Updated comments, commit, tag and
+  push, verify every asset on jsDelivr byte-exact, then FTPS-upload `index.htm` to `/mindatticcares.com/`. `--no-link` deploys this site alone.
 
 ## 5. The Laws {#MAC-§5}
 
 This project **inherits the org-wide House Rules** in
-[`MindAttic.HouseRules.md`](../../MindAttic.HouseRules.md) by reference — they are not restated here.
+[`MindAttic.HouseRules.md`](../../../MindAttic.HouseRules.md) by reference — they are not restated here.
 Relevant inherited laws:
 - **[HOUSE-LAW-1]** — whole-number versioning.
 - **[HOUSE-LAW-3]** — credentials never committed (FTP secrets live in `MindAttic.Deploy/secrets/`).
@@ -132,16 +132,16 @@ Relevant inherited laws:
 
 Project-specific laws:
 
-### MAC-LAW-1 — One file, no build step; assets from the pinned UiUx package {#MAC-LAW-1}
+### MAC-LAW-1 — One file, no build step; assets from the pinned MindAttic.Web.Shared package {#MAC-LAW-1}
 The entire site ships as a single `index.htm` with inline CSS and JS. No database, no bundler, no SSG,
 no framework, no `npm install`. The file you edit is the file you deploy.
 
-Fonts and images are not embedded: they are static files in the shared **MindAttic.UiUx** repo,
+Fonts and images are not embedded: they are static files in the shared **MindAttic.Web.Shared** package (a folder of the MindAttic.Web repo),
 loaded at runtime from jsDelivr pinned to a whole-number release tag:
 
 ```
-https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/mindatticcares.com/<category>/<file>
-https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/fonts/outfit/<file>
+https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/mindatticcares.com/<category>/<file>
+https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/fonts/outfit/<file>
 ```
 
 `<category>` is `logos`, `icons` or `images`; file names are lowercase kebab-case (pixel-width suffix
@@ -151,7 +151,7 @@ resolution; PNGs may only be recompressed losslessly. The page uses `preconnect`
 lazy-loads below-the-fold images.
 
 **Allowed external hosts (the full list):**
-- `cdn.jsdelivr.net` — static assets from MindAttic.UiUx only, pinned to a tag.
+- `cdn.jsdelivr.net` — static assets from MindAttic.Web.Shared only, pinned to a tag.
 - `www.youtube-nocookie.com` — only after the visitor clicks the Child's Play video poster
   (`www.youtube.com` is used only for the `file://` open-in-new-tab fallback).
 - Plain outbound links (e.g. childsplaycharity.org) are navigation, not dependencies.
@@ -182,7 +182,7 @@ lives in `MindAttic.Deploy/projects.json` under `sites[]`; FTP credentials live 
 ## 6. Verified state {#MAC-§6}
 
 Domain class: **website** (static single-page site). There is **no automated test or build suite**
-in this repo — by design (MAC-LAW-1, no build step). Verification is manual/structural.
+in this folder — by design (MAC-LAW-1, no build step). Verification is manual/structural.
 
 Evidence:
 - ✅ `index.htm` is well-formed: one `<head>`/`<style>`, three `<section class="page">` (`home`,
@@ -191,10 +191,10 @@ Evidence:
 - ✅ 19 playbook `sec-*` anchors exist and match the 19 TOC links.
 - ✅ Centralized deploy wired: `.claude/commands/deploy.md` targets `MindAttic.Deploy --site
   mindatticcares.com`.
-- ✅ `index.htm` is ~63 KB with no embedded base64 assets (MindAttic.UiUx `tests/specs/sites/common.spec.mjs`).
-- ✅ Every UiUx file the live page at `https://ryandebraal.com/mindatticcares.com/` references is
-  served byte-exact at the pinned tag (MindAttic.UiUx `tests/specs/cdn/cdn.live.spec.mjs`, live mode).
-- ✅ Automated browser tests for this site live in the shared suite `MindAttic.UiUx/tests`
+- ✅ `index.htm` is ~63 KB with no embedded base64 assets (MindAttic.Web.Shared `tests/specs/sites/common.spec.mjs`).
+- ✅ Every MindAttic.Web.Shared file the live page at `https://ryandebraal.com/mindatticcares.com/` references is
+  served byte-exact at the pinned tag (MindAttic.Web.Shared `tests/specs/cdn/cdn.live.spec.mjs`, live mode).
+- ✅ Automated browser tests for this site live in the shared suite `MindAttic.Web.Shared/tests`
   (`specs/sites/mindatticcares.spec.mjs` + `common.spec.mjs`): first-paint requests, navigation, deep
   links, click-to-play video, image dimensions/alt/lazy, allowed hosts, no console errors, no
   horizontal scrollbar, pinned tag.
@@ -203,9 +203,9 @@ Evidence:
   Chrome: 0 px horizontal overflow at 300/320/390 px).
 - ⬜ No linter, no HTML validator, no link-checker is run in CI (none configured).
 
-Build command: **none** (`MAC-LAW-1`). This repo carries one automated check of its own,
+Build command: **none** (`MAC-LAW-1`). This folder carries one automated check of its own,
 `tools/codex.ps1 doctor` (it validates the Codex docs, not the site); the site itself is tested by the
-shared Playwright suite in `MindAttic.UiUx/tests` (`npm run test:local`, `TEST_MODE=live npx playwright test`).
+shared Playwright suite in `MindAttic.Web.Shared/tests` (`npm run test:local`, `TEST_MODE=live npx playwright test`).
 
 ## 7. Active frontier {#MAC-§7}
 
@@ -221,7 +221,7 @@ A change to MindAttic Cares is "done" when:
    anchors jump; the lite-YT box plays).
 2. Every `sec-*` anchor referenced by the TOC still exists
    (no dangling in-page links).
-3. No new external runtime dependency (beyond the pinned MindAttic.UiUx jsDelivr package and the
+3. No new external runtime dependency (beyond the pinned MindAttic.Web.Shared jsDelivr package and the
    click-to-load YouTube embed), build step, or CMS was introduced ([MAC-LAW-1](#MAC-LAW-1)). No analytics
    or third-party fonts.
 4. New events follow the existing section template and update the in-page TOC.
@@ -241,7 +241,7 @@ A change to MindAttic Cares is "done" when:
   receiving Y2K proceeds.
 - **MindAttic.Deploy** — the central sibling repo that owns the FTPS deploy pipeline (MAC-LAW-5).
 - **Pass-through giving** — donations route entirely to the partner charity (MAC-LAW-2).
-- **MindAttic.UiUx package** — the shared repo that holds MindAttic's runtime assets (fonts, logos,
+- **MindAttic.Web.Shared package** — the shared folder of the MindAttic.Web repo that holds MindAttic's runtime assets (fonts, logos,
   photos, effects) organised by domain and served by jsDelivr; sites load from it at runtime (MAC-LAW-1).
-- **Asset URL** — `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/mindatticcares.com/<category>/<file>`;
-  `<tag>` is a whole-number release tag (currently `V10`), lowercase kebab-case file names.
+- **Asset URL** — `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<tag>/MindAttic.Web.Shared/mindatticcares.com/<category>/<file>`;
+  `<tag>` is a whole-number release tag of MindAttic.Web, lowercase kebab-case file names.

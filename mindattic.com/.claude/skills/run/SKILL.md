@@ -9,7 +9,7 @@ preview path (matches the `mindattic.com` entry in `.claude/launch.json`):
 
 When invoked:
 
-1. Run (from the repo root): `python -m http.server 3457`
+1. Run (from the `mindattic.com` folder of the MindAttic.Web checkout): `python -m http.server 3457`
 2. Run: `start http://localhost:3457/index.htm`
 3. Inform the user the page has been opened in their browser, served from
    `http://localhost:3457/`

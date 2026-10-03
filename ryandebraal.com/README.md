@@ -50,7 +50,7 @@ Try it: [ryandebraal.com](https://ryandebraal.com)
 
 ### Everything else
 
-- The Outfit typeface from the CDN: weights 100 to 900 as two woff2 subsets (latin and latin-ext) hosted in MindAttic.UiUx and served by jsDelivr at a pinned tag. The latin file is preloaded. No Google Fonts request.
+- The Outfit typeface from the CDN: weights 100 to 900 as two woff2 subsets (latin and latin-ext) hosted in MindAttic.Web.Shared and served by jsDelivr at a pinned tag. The latin file is preloaded. No Google Fonts request.
 - Preferences persist in `localStorage`: theme, profile, font choice, theme timeout and transition, and per-skill familiarity.
 - A mobile-first toolbar that adapts between desktop and portrait orientations.
 - A DevTools easter egg: an ASCII banner printed to the console.
@@ -60,8 +60,8 @@ Try it: [ryandebraal.com](https://ryandebraal.com)
 You need a modern browser and a network connection (fonts, portrait and theme art load from jsDelivr).
 
 ```powershell
-git clone https://github.com/mindattic/ryandebraal.com
-cd ryandebraal.com
+git clone https://github.com/mindattic/MindAttic.Web
+cd MindAttic.Web\ryandebraal.com
 start index.htm
 ```
 
@@ -69,7 +69,7 @@ That's it. There is no dev server, because there is nothing to compile. You shou
 
 ## How it works
 
-`index.htm` is a single hand-authored page (about 7,000 lines, about 0.47 MB on disk). Fonts, the portrait, the theme backgrounds and the PDF library are not embedded; they load from jsDelivr at a pinned MindAttic.UiUx tag ([RDC-LAW-1](docs/BIBLE.md#RDC-LAW-1)).
+`index.htm` is a single hand-authored page (about 7,000 lines, about 0.47 MB on disk). Fonts, the portrait, the theme backgrounds and the PDF library are not embedded; they load from jsDelivr at a pinned MindAttic.Web.Shared tag ([RDC-LAW-1](docs/BIBLE.md#RDC-LAW-1)).
 
 ```text
 index.htm  (one page)
@@ -124,21 +124,21 @@ A sibling object, `tooltips` (`index.htm`, lines 977 to 1463), maps 447 technolo
 
 ## Assets and CDN
 
-Static assets live in the sibling MindAttic.UiUx repo and are served by jsDelivr at a whole-number tag. The page currently pins `V10`.
+Static assets live in `MindAttic.Web.Shared`, the shared package folder next to this one in the [MindAttic.Web](https://github.com/mindattic/MindAttic.Web) monorepo, and are served by jsDelivr at a whole-number tag of MindAttic.Web. The page pins the release tag the linked deploy sets.
 
-- Page art: `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/ryandebraal.com/<category>/<file>` (`themes/<name>/<name>-NN.jpg`, `images/`, `icons/`).
-- Shared fonts: `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/fonts/outfit/outfit-latin.woff2` (and `outfit-latin-ext.woff2`).
+- Page art: `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/ryandebraal.com/<category>/<file>` (`themes/<name>/<name>-NN.jpg`, `images/`, `icons/`).
+- Shared fonts: `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/fonts/outfit/outfit-latin.woff2` (and `outfit-latin-ext.woff2`).
 - PDF export: html2pdf.js 0.10.2 from jsDelivr npm, loaded on first export.
 
 Names are lowercase kebab-case; JPEGs are never re-encoded. To add or change an asset:
 
-1. Put it in MindAttic.UiUx under `ryandebraal.com/<category>/`.
-2. Regenerate its `assets-manifest.json` with `tools\build-asset-manifest.ps1` in that repo, and commit.
-3. Run the linked `/deploy`: it tags the next whole-number release, pushes it, rewrites the `@V<n>` pins in `index.htm` and checks the CDN before uploading.
+1. Put it in MindAttic.Web.Shared under `ryandebraal.com/<category>/`.
+2. Regenerate `MindAttic.Web.Shared/assets-manifest.json` with `MindAttic.Web.Shared\tools\build-asset-manifest.ps1`, and commit.
+3. Run the linked `/deploy`: it rewrites the `@V<n>` pins in `index.htm` to the next whole-number release, commits and tags that, pushes it and checks the CDN before uploading.
 
 Full conventions: [docs/BIBLE.md §10](docs/BIBLE.md#RDC-§10).
 
-## Not in this repo
+## Not in this folder
 
 No `node_modules`. No `package.json`. No `webpack.config.js`. No `tsconfig.json`. No `.eslintrc`. No CI matrix. No Tailwind. No React. No Vite. No analytics SDK. No tracking pixels. No service worker. No polyfills. No minifier. No transpiler. No third-party fonts. Assets come only from the pinned jsDelivr paths allowed by [RDC-LAW-3](docs/BIBLE.md#RDC-LAW-3). No test suite, no compiler, no build command (see [docs/BIBLE.md §3](docs/BIBLE.md#RDC-§3)).
 
@@ -148,7 +148,7 @@ No per-project `deploy.ps1`, `deploy.bat` or `settings.json`: deploy is centrali
 
 ```text
 ryandebraal.com/
-├── index.htm              The entire hand-authored page (assets are hosted in MindAttic.UiUx)
+├── index.htm              The entire hand-authored page (assets are hosted in MindAttic.Web.Shared)
 ├── README.md              This file
 ├── README.htm             Generated from README.md by tools/build-readme.ps1
 ├── AGENTS.md              Project agent entrypoint
@@ -175,8 +175,8 @@ ryandebraal.com/
 
 | Script | Purpose |
 |---|---|
-| `tools/codex.ps1` | Codex CLI for this repo. `doctor` validates the `docs/` canon (front-matter, IDs, cross-references, cited tests and paths, digest freshness) and exits non-zero on any hard error. `digest` regenerates `docs/BIBLE.digest.md` from BIBLE §1, §3, §5 and §9 plus a status index and any pending decisions. Pure Windows PowerShell 5.1, no external modules. |
-| `tools/build-readme.ps1` | Thin wrapper that regenerates `README.htm` from `README.md` by delegating to the shared engine at `../codex-standard/build-readme.ps1` (workspace root, outside this repo). Every MindAttic repo carries an identical wrapper, so all `README.htm` files share one engine. |
+| `tools/codex.ps1` | Codex CLI for this site. `doctor` validates the `docs/` canon (front-matter, IDs, cross-references, cited tests and paths, digest freshness) and exits non-zero on any hard error. `digest` regenerates `docs/BIBLE.digest.md` from BIBLE §1, §3, §5 and §9 plus a status index and any pending decisions. Pure Windows PowerShell 5.1, no external modules. |
+| `tools/build-readme.ps1` | Thin wrapper that regenerates `README.htm` from `README.md` by delegating to the shared engine at `../../codex-standard/build-readme.ps1` (workspace root, outside the MindAttic.Web repo). Every MindAttic repo carries an identical wrapper, so all `README.htm` files share one engine. |
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\codex.ps1 doctor
@@ -188,7 +188,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1
 
 ## Deployment
 
-Deploy with the `/deploy` command (`.claude/commands/deploy.md`), which shells out to the sibling MindAttic.Deploy repo. This site is part of the permanently linked group `mindattic-web` (MindAttic.UiUx, ryandebraal.com, mindatticcares.com and mindattic.com): deploying any one of them deploys all four, in one run.
+Deploy with the `/deploy` command (`.claude/commands/deploy.md`), which shells out to the sibling MindAttic.Deploy repo. This site is part of the permanently linked group `mindattic-web` (MindAttic.Web.Shared, ryandebraal.com, mindatticcares.com, Hyperspace and mindattic.com, all in the one MindAttic.Web repo): deploying any one of them deploys every site, in one run.
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -Command "cd D:\Projects\MindAttic\MindAttic.Deploy; npm run deploy -- --site ryandebraal.com"
@@ -196,34 +196,37 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "cd D:\Projects\MindAttic
 
 The run:
 
-1. Publishes the MindAttic.UiUx package first (tags the next `V<n>` if it has unreleased commits and pushes the tag).
-2. Pins that tag in every site's `index.htm`.
-3. Verifies every asset is live on jsDelivr, byte for byte.
-4. Only then stamps the `Last Updated` comment and FTPS-uploads `index.htm` to the site root, followed by mindatticcares.com and mindattic.com.
+1. Checks MindAttic.Web is clean, on `main`, not behind origin, with a current asset manifest, and works out the next tag `V<n>`.
+2. Pins that tag in every site page, runs the sites' hooks and stamps each page's `Last Updated` comment.
+3. Commits that as `Pin MindAttic.Web.Shared V<n>`, tags the commit and pushes `main` and the tag.
+4. Verifies every asset is live on jsDelivr at that tag, byte for byte.
+5. Only then FTPS-uploads `index.htm` to the site root, followed by mindatticcares.com, Hyperspace and mindattic.com.
 
-`--dry-run` previews the whole run without changing anything; `--no-link` deploys this site alone. The deploy never commits or pushes this repo. This site's profile lives in `MindAttic.Deploy/projects.json` under `sites[]`; FTP credentials are centralised in MindAttic.Deploy.
+If `HEAD` already carries the latest tag and the pins match, that tag is reused and nothing is committed.
+
+`--dry-run` previews the whole run without changing anything; `--no-link` deploys this site alone. This site's profile lives in `MindAttic.Deploy/projects.json` under `sites[]`; FTP credentials are centralised in MindAttic.Deploy.
 
 ## Limitations
 
-- No automated test suite yet. Every user story is held at "shipped, manually verified" because this project has no build step by design ([RDC-LAW-2](docs/BIBLE.md#RDC-LAW-2)).
-- [RFC 0001](docs/rfc/0001-in-browser-smoke-harness.md) proposes a dependency-free in-browser smoke harness covering every theme, profile and export (extending the MindAttic.UiUx Playwright suite, or an in-page `?selftest=1` block). It is planned, not built.
+- No automated test suite in this folder; the shared `MindAttic.Web.Shared/tests` Playwright suite covers the page's asset loading, themes, lightbox and PDF loading. Other user stories are held at "shipped, manually verified" because this project has no build step by design ([RDC-LAW-2](docs/BIBLE.md#RDC-LAW-2)).
+- [RFC 0001](docs/rfc/0001-in-browser-smoke-harness.md) proposes a dependency-free in-browser smoke harness covering every theme, profile and export (extending the MindAttic.Web.Shared Playwright suite, or an in-page `?selftest=1` block). It is planned, not built.
 
 ## Documentation
 
-This repo follows the MindAttic Codex documentation standard (project code RDC). A fact lives in exactly one layer; deeper detail is linked by stable ID, never duplicated here.
+This folder follows the MindAttic Codex documentation standard (project code RDC). A fact lives in exactly one layer; deeper detail is linked by stable ID, never duplicated here.
 
 - [docs/BIBLE.md](docs/BIBLE.md) (L0): what the site is and is not, the architecture (§4) and the project Laws `RDC-LAW-1` to `RDC-LAW-6`.
 - [docs/AMENDMENTS.md](docs/AMENDMENTS.md) (L1): decisions not yet folded into the bible; normally empty. Git history is the change record.
 - [`docs/USER_STORIES.md`](docs/USER_STORIES.md) (L2): capabilities by epic, each with its verification status.
 - [docs/rfc](docs/rfc/): open design notes; once decided they are folded into the bible and stories and deleted.
 - [docs/BIBLE.digest.md](docs/BIBLE.digest.md): generated by `tools/codex.ps1 digest`. Never hand-edit it.
-- Org-wide laws: [MindAttic.HouseRules.md](../MindAttic.HouseRules.md), inherited by reference from BIBLE §5 (whole-number versioning, credentials never in code or commits, "done is verified, not asserted").
+- Org-wide laws: [MindAttic.HouseRules.md](../../MindAttic.HouseRules.md), inherited by reference from BIBLE §5 (whole-number versioning, credentials never in code or commits, "done is verified, not asserted").
 - Agent instructions: [AGENTS.md](AGENTS.md) is the project's agent entrypoint. `CLAUDE.md` is a provider forwarder to the workspace-wide `MINDATTIC_AGENT.md` and `mindattic-agent-standard/AGENTS.md`; neither duplicates workflow. The `.claude/` folder holds the Claude Code commands, hooks, skills and status line listed in [Project layout](#project-layout).
 
 ## License
 
-This repo has no LICENSE file. All rights reserved. Built and maintained by [Ryan DeBraal](https://ryandebraal.com).
+This folder has no LICENSE file. All rights reserved. Built and maintained by [Ryan DeBraal](https://ryandebraal.com).
 
 ---
 
-Part of [MindAttic](https://mindattic.com) — see more projects at [github.com/mindattic](https://github.com/mindattic). Related: [mindattic.com](https://github.com/mindattic/mindattic.com), [mindatticcares.com](https://github.com/mindattic/mindatticcares.com), [MindAttic.UiUx](https://github.com/mindattic/MindAttic.UiUx), [MindAttic.Deploy](https://github.com/mindattic/MindAttic.Deploy).
+Part of [MindAttic](https://mindattic.com) — see more projects at [github.com/mindattic](https://github.com/mindattic). Lives in [MindAttic.Web](https://github.com/mindattic/MindAttic.Web) with [mindattic.com](https://github.com/mindattic/MindAttic.Web/tree/main/mindattic.com), [mindatticcares.com](https://github.com/mindattic/MindAttic.Web/tree/main/mindatticcares.com), [Hyperspace](https://github.com/mindattic/MindAttic.Web/tree/main/Hyperspace) and [MindAttic.Web.Shared](https://github.com/mindattic/MindAttic.Web/tree/main/MindAttic.Web.Shared). Deployed by [MindAttic.Deploy](https://github.com/mindattic/MindAttic.Deploy).

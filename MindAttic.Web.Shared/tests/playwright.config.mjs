@@ -1,7 +1,7 @@
-// Playwright configuration for the MindAttic.UiUx package + the three sites that consume it.
+// Playwright configuration for the MindAttic.Web.Shared package + the sites that consume it.
 //
-//   TEST_MODE=local (default)  sites are served from the sibling repos by lib/static-server.mjs, and every
-//                              https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/** request is answered
+//   TEST_MODE=local (default)  sites are served from their MindAttic.Web folders by lib/static-server.mjs, and every
+//                              https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<tag>/MindAttic.Web.Shared/** request is answered
 //                              from THIS working tree (so tests pass before a tag is published, and fail loudly
 //                              when a referenced file does not exist locally). No other network is allowed.
 //   TEST_MODE=live             real sites, real CDN, no interception (external link navigations are still

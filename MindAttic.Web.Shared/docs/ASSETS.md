@@ -1,6 +1,6 @@
 # Runtime assets — the shared jsDelivr package
 
-`MindAttic.UiUx` is also the **shared runtime asset package** for every MindAttic site. Fonts,
+`MindAttic.Web.Shared`, a folder of the MindAttic.Web repo, is also the **shared runtime asset package** for every MindAttic site. Fonts,
 images, brand art, theme art and the Cyberspace effect textures live here once, as plain static
 files, and every site loads them over jsDelivr instead of embedding them in its HTML
 ([BIBLE §2](BIBLE.md#MAU-§2), [MAU-LAW-7](BIBLE.md#MAU-LAW-7)).
@@ -8,19 +8,19 @@ files, and every site loads them over jsDelivr instead of embedding them in its 
 ## URL pattern
 
 ```
-https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/<path>
+https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<tag>/MindAttic.Web.Shared/<path>
 ```
 
-`<tag>` is a whole-number release tag (`V10`, …) and **tags are immutable** ([MAU-LAW-6](BIBLE.md#MAU-LAW-6)),
+`<tag>` is a whole-number release tag of MindAttic.Web (`V12`, `V13`, …) and **tags are immutable** ([MAU-LAW-6](BIBLE.md#MAU-LAW-6)),
 so a pinned URL returns the same bytes forever and is cached by browsers and by the CDN edge
-indefinitely. Never point a production page at `@main`.
+indefinitely. Never point a production page at `@main`. Apps that still load `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V<n>/<path>` (tags `V1` to `V11` of the older MindAttic.UiUx repo) keep working, because those tags stay served.
 
 ## Layout
 
-Global assets live at the repo root; a site's own assets live in a folder named for its domain.
+Global assets live at the root of this package folder; a site's own assets live in a folder named for its domain.
 
 ```
-MindAttic.UiUx/
+MindAttic.Web.Shared/
 ├── fonts/                         global: web fonts used by more than one site
 │   ├── outfit/                    outfit-latin.woff2, outfit-latin-ext.woff2
 │   └── attic/                     attic.woff2
@@ -63,8 +63,9 @@ not in this layout and not part of the supported URLs; a test fails if a site li
 1. Put the file in the right domain folder (or `fonts/`), using the naming rules above.
 2. `powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-asset-manifest.ps1`
 3. Commit the asset(s) and `assets-manifest.json` together.
-4. Run `MindAttic.Deploy`'s linked deploy (`npm run deploy -- --uiux`): it tags the next whole-number
-   release, pins it in all three sites, checks every asset on the CDN and uploads the sites.
+4. Run `MindAttic.Deploy`'s linked deploy (`npm run deploy -- --uiux`): it pins the next whole-number tag in all
+   four sites, commits and tags that as `Pin MindAttic.Web.Shared V<n>`, pushes, checks every asset on
+   the CDN and uploads the sites.
    **Never move or reuse a tag.**
 
 `tools\build-asset-manifest.ps1 -Verify` fails if the manifest is stale — use it in CI.
@@ -75,11 +76,11 @@ not in this layout and not part of the supported URLs; a test fails if a site li
 <!-- in <head>: open the connection early, start the fonts the first paint needs -->
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="preload" as="font" type="font/woff2" crossorigin
-      href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/fonts/outfit/outfit-latin.woff2">
+      href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/fonts/outfit/outfit-latin.woff2">
 
 <style>
 @font-face { font-family: 'Outfit'; font-weight: 100 900; font-display: swap;
-  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/fonts/outfit/outfit-latin.woff2') format('woff2');
+  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/fonts/outfit/outfit-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+20AC, U+2122; }
 </style>
 ```
@@ -94,18 +95,18 @@ not in this layout and not part of the supported URLs; a test fails if a site li
 After pushing a tag, check that jsDelivr serves every file at its committed size, for example:
 
 ```
-curl -sI https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/fonts/attic/attic.woff2
+curl -sI https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/fonts/attic/attic.woff2
 ```
 
 and compare against `assets-manifest.json` (`bytes` / `sha256`). If a brand-new tag 404s for a
-minute, retry; `https://purge.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/<path>` forces a refresh.
+minute, retry; `https://purge.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/<path>` forces a refresh.
 
 ## Testing
 
-`tests/` holds a Playwright suite that validates this package and the three sites that consume it (see
+`tests/` holds a Playwright suite that validates this package and the sites that consume it (see
 [`tests/README.md`](../tests/README.md)): the manifest matches the tree, fonts and images decode, lossy files keep their
-full resolution and bytes, size budgets hold, every UiUx URL a site references exists, and each site loads with no failed
+full resolution and bytes, size budgets hold, every MindAttic.Web.Shared URL a site references exists, and each site loads with no failed
 requests, no console errors and the right layout at every viewport — in every view a visitor can reach (hash pages,
 themes), with desktop-style scrollbars so overflow a Windows visitor would see is caught. The expected tag follows the
-highest `V<n>` tag automatically (override with `UIUX_TAG`). `npm run test:local` (in `tests/`) runs it against the
+highest `V<n>` tag of MindAttic.Web automatically (override with `SHARED_TAG`). `npm run test:local` (in `MindAttic.Web.Shared/tests/`) runs it against the
 working tree before a tag is published; `npm run test:live` / `npm run test:cdn` verify what jsDelivr actually serves.

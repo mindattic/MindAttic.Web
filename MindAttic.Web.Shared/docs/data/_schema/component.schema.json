@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://mindattic.dev/uiux/schema/component.schema.json",
-  "title": "MindAttic.UiUx component catalog entry",
+  "title": "MindAttic.Web.Shared component catalog entry",
   "type": "object",
   "required": ["id", "name", "type", "folder", "doc", "summary"],
   "additionalProperties": false,

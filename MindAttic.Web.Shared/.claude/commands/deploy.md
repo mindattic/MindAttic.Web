@@ -1,6 +1,6 @@
-Publish **MindAttic.UiUx** and deploy everything linked to it, via **MindAttic.Deploy** (sibling repo at `D:\Projects\MindAttic\MindAttic.Deploy`).
+Publish **MindAttic.Web.Shared** and deploy everything linked to it, via **MindAttic.Deploy** (sibling repo of MindAttic.Web at `D:\Projects\MindAttic\MindAttic.Deploy`).
 
-MindAttic.UiUx is the shared jsDelivr asset package for ryandebraal.com, mindatticcares.com and mindattic.com. They are **permanently linked**: deploying the package deploys all four, and deploying any one of the sites does exactly the same thing.
+MindAttic.Web.Shared is the shared jsDelivr asset package for ryandebraal.com, mindatticcares.com, Hyperspace and mindattic.com, all folders of the one MindAttic.Web repo. They are **permanently linked**: deploying the package deploys all of them, and deploying any one of the sites does exactly the same thing.
 
 Run this command and report the result:
 
@@ -8,18 +8,20 @@ Run this command and report the result:
 powershell -NoProfile -ExecutionPolicy Bypass -Command "cd D:\Projects\MindAttic\MindAttic.Deploy; npm run deploy -- --uiux"
 ```
 
-Add `--dry-run` to preview (nothing is tagged, pushed, written or uploaded) and `--with-tests` to also run `tests\` (`npm run test:local`) as a gate. The same flow in one picture:
+Add `--dry-run` to preview (nothing is committed, tagged, pushed, written or uploaded) and `--with-tests` to also run `MindAttic.Web.Shared\tests\` (`npm run test:local`) as a gate. The flow:
 
-1. **Preflight** — this repo must be a git repo on `main`, with a **clean working tree** (the deploy never auto-commits: commit your changes first), not behind `origin/main`, with `assets-manifest.json` current (`tools\build-asset-manifest.ps1 -Verify`).
-2. **Publish** — if `HEAD` is ahead of the latest whole-number tag, tag `V<n+1>` (message lists the commits) and `git push origin main` + the tag. Tags are immutable: a tag that already exists on origin pointing elsewhere aborts the run. If `HEAD` already carries the latest tag, it is reused.
-3. **Pin** — every `MindAttic.UiUx@V<n>` in the three sites' `index.htm` is rewritten to the release tag.
-4. **Prepare** — the sites' preDeploy hooks run (mindattic.com's sync splices the CYBERSPACE block at the same tag).
-5. **CDN gate** — every asset the sites use (literal URLs plus every file in `assets-manifest.json` under each site's domain folder) must be live on jsDelivr at that tag with the exact bytes. Anything missing aborts the run **before any FTP upload**.
-6. **FTP** — ryandebraal.com -> mindatticcares.com -> mindattic.com. A failing site does not stop the others; the exit code is non-zero if any failed.
+1. **Preflight** — MindAttic.Web must be on `main`, with a **clean working tree** (commit your own changes first), not behind `origin/main`, with `assets-manifest.json` current (`tools\build-asset-manifest.ps1 -Verify`).
+2. **Next tag** — the next whole-number tag of MindAttic.Web (`V12` is the first). If `HEAD` already carries the latest tag and every site pins it, that tag is reused and steps 3 to 5 are skipped.
+3. **Pin and prepare** — every `MindAttic.Web@V<n>/MindAttic.Web.Shared/` pin in the four sites' `index.htm` is rewritten to the release tag, the sites' preDeploy hooks run (mindattic.com's sync splices the CYBERSPACE block at the same tag) and each page's Last Updated stamp is written.
+4. **Commit** — those changes are committed as "Pin MindAttic.Web.Shared V<n>".
+5. **Tag** — that commit is tagged (message lists the commits). Tags are immutable: a tag that already exists on origin pointing elsewhere aborts the run.
+6. **Push** — `main` and the tag.
+7. **CDN gate** — every asset the sites use (literal URLs plus every file in `assets-manifest.json` under each site's domain folder) must be live on jsDelivr at that tag with the exact bytes. Anything missing aborts the run **before any FTP upload**.
+8. **FTP** — ryandebraal.com -> mindatticcares.com -> Hyperspace (`/mindattic.com/hyperspace`) -> mindattic.com. A failing site does not stop the others; the exit code is non-zero if any failed.
 
-After running, summarize: the release tag, which pins changed, the CDN gate result, and the per-site upload table. Flag any failure. The site repos' own changes (pins, stamps) are **not** committed or pushed by the deploy — mention if `git status` shows them.
+After running, summarize: the release tag, which pins changed, the pin commit, the CDN gate result, and the per-site upload table. Flag any failure. The repo is clean and in sync with origin after a successful deploy.
 
 Notes:
 - FTP credentials are centralized in `MindAttic.Deploy/secrets/ftp.json` (gitignored).
-- Pushing `main` triggers this repo's `.github/workflows/sync-subscribers.yml` when the push touches the paths it watches; it opens review PRs in the subscriber repos (it does not merge anything).
+- Pushing `main` triggers `.github/workflows/sync-subscribers.yml` (MindAttic.Web root) when the push touches the paths it watches; it opens review PRs (in MindAttic.Web for mindattic.com, and in MindAttic.Psst) and never merges anything.
 - Design and rules: `MindAttic.Deploy/docs/BIBLE.md` and `MindAttic.Deploy/src/linked.js`.

@@ -1,13 +1,23 @@
 # Changelog
 
-Whole-number release tags (`V1`, `V2`, …). A published tag is immutable ([MAU-LAW-6](docs/BIBLE.md#MAU-LAW-6));
-jsDelivr serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/<path>`.
+Whole-number release tags (`V1`, `V2`, …; on MindAttic.Web from `V12`). A published tag is immutable ([MAU-LAW-6](docs/BIBLE.md#MAU-LAW-6));
+jsDelivr serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<tag>/MindAttic.Web.Shared/<path>`.
 
 ## Next tag (V12, not yet published)
 - **Hyperspace component** (`Components/Hyperspace/`): `hyperspace.js`, the standard library of the 100
   Hyperspace exhibits (stable ids, plaque metadata, geometry, pure projection for Three.js and 2D canvas),
   and `hyperspace-reader.js`, the Hyperspace Reader scanner window. The Hyperspace page pins this tag.
 - Tests: new `components` project (`tests/specs/components/hyperspace.spec.mjs`).
+- **MindAttic.Web monorepo**: the package is the `MindAttic.Web.Shared/` folder of the MindAttic.Web repo, next to
+  mindattic.com, ryandebraal.com, mindatticcares.com and Hyperspace, and loads from
+  `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/<path>`. Whole-number tags continue
+  at V12 on MindAttic.Web; tags V1 to V11 stay served from the MindAttic.UiUx repo URL.
+- Subscriber targets in `subscribers.json` are relative to this folder (`../mindattic.com/index.htm`,
+  `../../MindAttic.Psst`, `../../Tutor/Tutor.Blazor`, ...). The sync workflow lives at the MindAttic.Web root and
+  opens the mindattic.com PR in MindAttic.Web itself.
+- The Hyperspace site joins the linked group: the linked deploy pins, CDN-checks and uploads it with the other three.
+- Tests: `SHARED_ROOT` / `SITES_ROOT` (MindAttic.Web root) and the `SHARED_TAG` override; the live tag check expects
+  V12..Vn; package name `mindattic-web-shared-tests`.
 
 ## V10
 - README rewritten as full documentation and project page.

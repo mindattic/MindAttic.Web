@@ -33,8 +33,8 @@ PageScrollbar/
 That's it — the script self-mounts. Via jsDelivr:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/Components/PageScrollbar/page-scrollbar.css">
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/Components/PageScrollbar/page-scrollbar.js" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<tag>/MindAttic.Web.Shared/Components/PageScrollbar/page-scrollbar.css">
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<tag>/MindAttic.Web.Shared/Components/PageScrollbar/page-scrollbar.js" defer></script>
 ```
 
 ---

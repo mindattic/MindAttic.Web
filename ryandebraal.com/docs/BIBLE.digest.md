@@ -9,7 +9,7 @@
 ryandebraal.com is a single hand-authored `index.htm` — pure HTML, CSS, and vanilla
 JavaScript with **no build step and no framework** — that renders Ryan DeBraal's fully
 interactive, themeable, animated resume in any modern browser. Its static assets (fonts, images,
-theme art) are served from the jsDelivr CDN at a pinned MindAttic.UiUx tag ([RDC-LAW-1](#RDC-LAW-1)).
+theme art) are served from the jsDelivr CDN at a pinned MindAttic.Web.Shared tag ([RDC-LAW-1](#RDC-LAW-1)).
 
 ## 3. What it is NOT {#RDC-§3}
 
@@ -17,7 +17,7 @@ theme art) are served from the jsDelivr CDN at a pinned MindAttic.UiUx tag ([RDC
   no webpack/vite/rollup, no TypeScript, no transpiler, no minifier, no polyfills.
 - **NOT a multi-page site.** One hand-authored `index.htm`: no separate `.css`/`.js` source files,
   no service worker, no SPA router. Static assets (fonts, images, one library) are files hosted in
-  MindAttic.UiUx and loaded by URL ([RDC-LAW-1](#RDC-LAW-1)).
+  MindAttic.Web.Shared and loaded by URL ([RDC-LAW-1](#RDC-LAW-1)).
 - **NOT instrumented.** No analytics SDK, no tracking pixels, no telemetry, no third-party fonts.
   The only external hosts are the two jsDelivr paths listed in [RDC-LAW-3](#RDC-LAW-3).
 - **NOT a CMS / not data-driven from a backend.** Resume content is an in-file JS object literal
@@ -28,22 +28,23 @@ theme art) are served from the jsDelivr CDN at a pinned MindAttic.UiUx tag ([RDC
 ## 5. The Laws {#RDC-§5}
 
 This project **inherits the org-wide house rules** in
-[MindAttic.HouseRules.md](../../MindAttic.HouseRules.md) by reference — do not restate them here.
+[MindAttic.HouseRules.md](../../../MindAttic.HouseRules.md) by reference — do not restate them here.
 Most relevant inherited laws: whole-number versioning [see HOUSE-LAW-1], credentials never in
 code/commits [see HOUSE-LAW-3], and "done is verified, not asserted" [see HOUSE-LAW-8].
 Project-specific laws below.
 
 ### {#RDC-LAW-1} One hand-authored page; static assets by pinned CDN URL
 `index.htm` is the only hand-authored page. Static assets (fonts, images, theme art, large libraries)
-are real files hosted in **MindAttic.UiUx** and served by **jsDelivr** at an immutable whole-number tag
-(currently `@V10`), referenced by URL. Do not inline large assets. Tiny assets stay inline on purpose:
+are real files hosted in **MindAttic.Web.Shared** (the shared package folder of the MindAttic.Web repo) and
+served by **jsDelivr** at an immutable whole-number tag of MindAttic.Web (the release tag the linked deploy
+pins), referenced by URL. Do not inline large assets. Tiny assets stay inline on purpose:
 the 32 Neko sprite frames (~1 KB each) and the 864-byte link icon. `<link rel="preconnect|preload">`,
 `loading="lazy"` and `decoding="async"` are allowed and used. Trade-offs accepted: without the CDN the
 page falls back to system fonts and plain backgrounds; `exportHTML()` output references CDN URLs; PDF
 export needs a network connection the first time.
 
 ### {#RDC-LAW-2} Zero dependencies, zero build step
-No `package.json`, bundler, transpiler, minifier, framework, or polyfill enters the repo. The source
+No `package.json`, bundler, transpiler, minifier, framework, or polyfill enters this site. The source
 the author writes is byte-for-byte the source the browser runs. "Open it" is the only build.
 Loading a pinned third-party file by URL from an allowed host ([RDC-LAW-3](#RDC-LAW-3)) is allowed;
 installing or building one is not.
@@ -51,7 +52,7 @@ installing or building one is not.
 ### {#RDC-LAW-3} No tracking; external hosts are an allow-list
 No analytics, tracking pixels, telemetry, third-party fonts (Google Fonts etc.), or phoning-home
 scripts — ever. The page may request static assets only from this exhaustive list:
-- `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/...` — our own assets (Outfit fonts at
+- `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/...` — our own assets (Outfit fonts at
   `fonts/outfit/`; page art at `ryandebraal.com/`).
 - `https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js` — the PDF export
   library, loaded on demand the first time a PDF is exported.
@@ -67,7 +68,7 @@ Resume facts live once in the `D` object literal. The three profiles (classic/pi
 both export formats (Markdown/PDF) are pure projections of `D` — never a second copy of the content.
 
 ### {#RDC-LAW-6} Deploy is owned by MindAttic.Deploy
-Publishing is centralized in the sibling **MindAttic.Deploy** repo (stamp + FTPS-upload). This repo
+Publishing is centralized in the sibling **MindAttic.Deploy** repo (pin, stamp, commit, tag, FTPS-upload). This folder
 carries no deploy script or FTP settings of its own (no `deploy.ps1`/`deploy.bat`/`settings.json`).
 
 ## 9. Glossary {#RDC-§9}
@@ -80,8 +81,8 @@ carries no deploy script or FTP settings of its own (no `deploy.ps1`/`deploy.bat
   `requestAnimationFrame`.
 - **Tooltip map** — the `tooltips` object mapping a technology name to its hover description.
 - **Profile / render projection** — read-only views derived from `D`; never a second content copy.
-- **MindAttic.Deploy** — the sibling repo that stamps and FTPS-uploads `index.htm`.
-- **MindAttic.UiUx** — the sibling repo that hosts this site's static assets (and the shared Outfit/Attic fonts); served by jsDelivr at whole-number tags (currently `V10`).
+- **MindAttic.Deploy** — the sibling repo that pins, stamps and FTPS-uploads `index.htm` (linked deploy of MindAttic.Web).
+- **MindAttic.Web.Shared** — the shared package folder of the MindAttic.Web repo that hosts this site's static assets (and the shared Outfit/Attic fonts); served by jsDelivr at whole-number tags of MindAttic.Web.
 - **Skill familiarity** — per-tag familiarity level the reader can cycle; persisted in
   `localStorage` (`tag-familiarity`).
 

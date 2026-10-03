@@ -1,5 +1,5 @@
 # ====================================================================
-# MindAttic.UiUx - standalone vendoring build
+# MindAttic.Web.Shared - standalone vendoring build
 # --------------------------------------------------------------------
 # Copies one component (Components/<Build>/) or theme (Themes/<Build>/) verbatim, every file and
 # subfolder, into an output folder so it can be vendored without the CDN or a sync script:

@@ -35,8 +35,8 @@ Tooltip/
 Via jsDelivr:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/Components/Tooltip/tooltip.css">
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/Components/Tooltip/tooltip.js" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<tag>/MindAttic.Web.Shared/Components/Tooltip/tooltip.css">
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<tag>/MindAttic.Web.Shared/Components/Tooltip/tooltip.js" defer></script>
 ```
 
 ### Trigger attributes
@@ -52,7 +52,7 @@ Via jsDelivr:
 
 ## Usage (Blazor)
 
-Sync `Tooltip.razor` into your app's components (this repo has no build step),
+Sync `Tooltip.razor` into your app's components (the package has no build step),
 load the CSS/JS once at the app root, then either use the wrapper:
 
 ```razor

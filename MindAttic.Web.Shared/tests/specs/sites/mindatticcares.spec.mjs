@@ -1,5 +1,5 @@
 // mindatticcares.com: a three-page single-page site (Home / Child's Play / Y2K playbook). Logos, photos and the
-// Outfit font come from the MindAttic.UiUx package; art for the pages the visitor has not opened yet is lazy,
+// Outfit font come from the MindAttic.Web.Shared package; art for the pages the visitor has not opened yet is lazy,
 // and the YouTube player is click-to-play (no third-party request until then).
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
@@ -9,8 +9,8 @@ import { openSite, loadSite } from '../../lib/site-session.mjs';
 
 const site = SITES['mindatticcares.com'];
 const html = TEST_MODE === 'live' ? null : fs.readFileSync(path.join(SITES_ROOT, site.dir, 'index.htm'), 'utf8');
-const uiuxReqs = (s) => s.rec.requests.filter((r) => r.url.startsWith('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@'));
-const relOf = (url) => url.replace(/^.*MindAttic\.UiUx@[^/]+\//, '');
+const sharedReqs = (s) => s.rec.requests.filter((r) => r.url.startsWith('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@'));
+const relOf = (url) => url.replace(/^.*MindAttic\.Web@[^/]+\/MindAttic\.Web\.Shared\//, '');
 
 test.describe('mindatticcares.com — static analysis', () => {
   test.skip(!html, 'reads the HTML from the working tree (local mode)');
@@ -31,8 +31,8 @@ test.describe('mindatticcares.com — static analysis', () => {
 
   test('the hero logo is fetched with high priority and the browser/touch icons come from the package', () => {
     expect(html).toMatch(/<img[^>]+m-cares-black-red-transparent-720\.png[^>]+fetchpriority="high"/);
-    expect(html).toMatch(/<link rel="icon"[^>]+UiUx@V\d+\/mindatticcares\.com\/icons\/m-cares-icon-96\.png/);
-    expect(html).toMatch(/<link rel="apple-touch-icon"[^>]+UiUx@V\d+\/mindatticcares\.com\/icons\//);
+    expect(html).toMatch(/<link rel="icon"[^>]+Web@V\d+\/MindAttic\.Web\.Shared\/mindatticcares\.com\/icons\/m-cares-icon-96\.png/);
+    expect(html).toMatch(/<link rel="apple-touch-icon"[^>]+Web@V\d+\/MindAttic\.Web\.Shared\/mindatticcares\.com\/icons\//);
   });
 
   test('external links open safely (target=_blank + rel=noopener)', () => {
@@ -47,7 +47,7 @@ test.describe('mindatticcares.com — runtime asset loading', () => {
     const s = await openSite(browser, site);
     try {
       await loadSite(s, { settleMs: 800 });
-      const files = new Set(uiuxReqs(s).map((r) => relOf(r.url)));
+      const files = new Set(sharedReqs(s).map((r) => relOf(r.url)));
       const allowedAtLoad = new Set([
         'fonts/outfit/outfit-latin.woff2',
         'mindatticcares.com/icons/m-cares-icon-96.png',
@@ -57,7 +57,7 @@ test.describe('mindatticcares.com — runtime asset loading', () => {
       ]);
       expect([...files].filter((f) => !allowedAtLoad.has(f)), 'art for pages the visitor has not opened must stay lazy').toEqual([]);
       for (const need of ['fonts/outfit/outfit-latin.woff2', 'mindatticcares.com/logos/m-cares-black-red-transparent-720.png']) expect(files.has(need), `${need} should load on first paint`).toBe(true);
-      expect(uiuxReqs(s).every((r) => r.status === 200)).toBe(true);
+      expect(sharedReqs(s).every((r) => r.status === 200)).toBe(true);
     } finally { await s.context.close(); }
   });
 
@@ -67,17 +67,17 @@ test.describe('mindatticcares.com — runtime asset loading', () => {
       await loadSite(s, { settleMs: 500 });
       await expect(s.page.locator('#home')).toHaveClass(/active/);
 
-      const before = uiuxReqs(s).length;
+      const before = sharedReqs(s).length;
       await s.page.locator('header nav a[data-page="childs-play"]').click();
       await expect(s.page.locator('#childs-play')).toHaveClass(/active/);
       expect(new URL(s.page.url()).hash).toBe('#childs-play');
-      await expect.poll(() => uiuxReqs(s).slice(before).map((r) => relOf(r.url)), { timeout: 10_000 })
+      await expect.poll(() => sharedReqs(s).slice(before).map((r) => relOf(r.url)), { timeout: 10_000 })
         .toEqual(expect.arrayContaining(['mindatticcares.com/logos/childs-play-logo.png', 'mindatticcares.com/images/childs-play-video-poster.jpg']));
 
-      const before2 = uiuxReqs(s).length;
+      const before2 = sharedReqs(s).length;
       await s.page.locator('header nav a[data-page="y2k"]').click();
       await expect(s.page.locator('#y2k')).toHaveClass(/active/);
-      await expect.poll(() => uiuxReqs(s).slice(before2).some((r) => /y2k-end-of-the-world-party(-960)?\.jpg$/.test(r.url) && r.status === 200), { timeout: 10_000 }).toBe(true);
+      await expect.poll(() => sharedReqs(s).slice(before2).some((r) => /y2k-end-of-the-world-party(-960)?\.jpg$/.test(r.url) && r.status === 200), { timeout: 10_000 }).toBe(true);
 
       await s.page.locator('header nav a[data-page="home"]').click();
       await expect(s.page.locator('#home')).toHaveClass(/active/);

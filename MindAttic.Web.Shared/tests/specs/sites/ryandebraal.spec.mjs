@@ -1,5 +1,5 @@
 // ryandebraal.com: a large résumé page whose heavy art (theme backgrounds, portrait, moon) and fonts come from
-// the MindAttic.UiUx package on jsDelivr — fetched lazily, only when a theme/lightbox actually needs them.
+// the MindAttic.Web.Shared package on jsDelivr — fetched lazily, only when a theme/lightbox actually needs them.
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -10,8 +10,8 @@ import { openSite, loadSite } from '../../lib/site-session.mjs';
 const site = SITES['ryandebraal.com'];
 const html = TEST_MODE === 'live' ? null : fs.readFileSync(path.join(SITES_ROOT, site.dir, 'index.htm'), 'utf8');
 const BASE = CDN_BASE(EXPECTED_TAG) + 'ryandebraal.com/';
-const uiuxReqs = (s) => s.rec.requests.filter((r) => r.url.startsWith('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@'));
-const relOf = (url) => url.replace(/^.*MindAttic\.UiUx@[^/]+\//, '');
+const sharedReqs = (s) => s.rec.requests.filter((r) => r.url.startsWith('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@'));
+const relOf = (url) => url.replace(/^.*MindAttic\.Web@[^/]+\/MindAttic\.Web\.Shared\//, '');
 
 test.describe('ryandebraal.com — static analysis', () => {
   test.skip(!html, 'reads the HTML from the working tree (local mode)');
@@ -51,9 +51,9 @@ test.describe('ryandebraal.com — runtime asset loading', () => {
     const s = await openSite(browser, site);
     try {
       await loadSite(s, { settleMs: 800 });
-      const files = new Set(uiuxReqs(s).map((r) => relOf(r.url)));
+      const files = new Set(sharedReqs(s).map((r) => relOf(r.url)));
       expect([...files].sort()).toEqual(['fonts/outfit/outfit-latin.woff2', 'ryandebraal.com/images/ryan-avatar.png']);
-      expect(uiuxReqs(s).every((r) => r.status === 200)).toBe(true);
+      expect(sharedReqs(s).every((r) => r.status === 200)).toBe(true);
     } finally { await s.context.close(); }
   });
 
@@ -63,9 +63,9 @@ test.describe('ryandebraal.com — runtime asset loading', () => {
       try {
         await loadSite(s, { settleMs: 500 });
         await s.page.evaluate(() => { if (typeof stopThemeRotation === 'function') stopThemeRotation(); }); // stop auto-rotation so only this theme loads
-        const before = uiuxReqs(s).length;
+        const before = sharedReqs(s).length;
         await s.page.evaluate((t) => setTheme(t), theme);
-        await expect.poll(() => uiuxReqs(s).slice(before).filter((r) => expectPattern.test(r.url) && r.status === 200).length, { timeout: 15_000, message: `no ${theme} artwork request succeeded` }).toBeGreaterThan(0);
+        await expect.poll(() => sharedReqs(s).slice(before).filter((r) => expectPattern.test(r.url) && r.status === 200).length, { timeout: 15_000, message: `no ${theme} artwork request succeeded` }).toBeGreaterThan(0);
         expect(await s.page.evaluate(() => document.documentElement.getAttribute('data-theme'))).toBe(theme);
         expect(s.rec.badStatus).toEqual([]);
         expect(s.rec.pageErrors).toEqual([]);
@@ -77,10 +77,10 @@ test.describe('ryandebraal.com — runtime asset loading', () => {
     const s = await openSite(browser, site);
     try {
       await loadSite(s, { settleMs: 500 });
-      expect(uiuxReqs(s).some((r) => /ryan-portrait\.png$/.test(r.url)), 'portrait must not be fetched before the lightbox opens').toBe(false);
+      expect(sharedReqs(s).some((r) => /ryan-portrait\.png$/.test(r.url)), 'portrait must not be fetched before the lightbox opens').toBe(false);
       await s.page.locator('img[alt*="open profile photo"]').click();
       await expect(s.page.locator('#avatar-lightbox')).toHaveClass(/active/);
-      await expect.poll(() => uiuxReqs(s).filter((r) => /ryan-portrait\.png$/.test(r.url) && r.status === 200).length, { timeout: 10_000 }).toBeGreaterThan(0);
+      await expect.poll(() => sharedReqs(s).filter((r) => /ryan-portrait\.png$/.test(r.url) && r.status === 200).length, { timeout: 10_000 }).toBeGreaterThan(0);
       const box = await s.page.locator('#avatar-lightbox .lb-img').boundingBox();
       expect(box.width).toBeGreaterThan(100);
       await s.page.locator('#avatar-lightbox').click({ position: { x: 5, y: 5 } });

@@ -1,8 +1,8 @@
 {
-  "name": "mindattic-uiux-tests",
+  "name": "mindattic-web-shared-tests",
   "version": "1.0.0",
   "private": true,
-  "description": "Test suite for the MindAttic.UiUx jsDelivr asset package and the three sites that consume it (mindattic.com, ryandebraal.com, mindatticcares.com).",
+  "description": "Test suite for the MindAttic.Web.Shared jsDelivr asset package and the sites that consume it (mindattic.com, ryandebraal.com, mindatticcares.com, Hyperspace).",
   "type": "module",
   "scripts": {
     "test": "playwright test",

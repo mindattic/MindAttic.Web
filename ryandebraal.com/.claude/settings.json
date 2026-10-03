@@ -9,7 +9,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"D:/Projects/MindAttic/ryandebraal.com/.claude/hooks/inject-digest.ps1\"",
+                        "command": "powershell -NoProfile -ExecutionPolicy Bypass -File \"D:/Projects/MindAttic/MindAttic.Web/ryandebraal.com/.claude/hooks/inject-digest.ps1\"",
                         "timeout": 10000
                     }
                 ]

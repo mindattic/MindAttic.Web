@@ -10,7 +10,7 @@
     {
       "name": "mindattic.com",
       "runtimeExecutable": "python",
-      "runtimeArgs": ["-m", "http.server", "3457", "-d", "D:/Projects/MindAttic/mindattic.com"],
+      "runtimeArgs": ["-m", "http.server", "3457", "-d", "D:/Projects/MindAttic/MindAttic.Web/mindattic.com"],
       "port": 3457
     }
   ]

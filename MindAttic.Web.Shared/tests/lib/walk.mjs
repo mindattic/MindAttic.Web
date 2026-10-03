@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import { UIUX_ROOT, ASSET_ROOTS, ASSET_EXT } from './paths.mjs';
+import { SHARED_ROOT, ASSET_ROOTS, ASSET_EXT } from './paths.mjs';
 
 const SKIP_DIRS = new Set(['node_modules', '.git', 'test-results', 'playwright-report']);
 
@@ -24,14 +24,14 @@ export function walk(absDir) {
 export function listAssets() {
   const rels = [];
   for (const root of ASSET_ROOTS) {
-    for (const abs of walk(path.join(UIUX_ROOT, root))) {
-      if (ASSET_EXT.has(path.extname(abs).toLowerCase())) rels.push(posix(path.relative(UIUX_ROOT, abs)));
+    for (const abs of walk(path.join(SHARED_ROOT, root))) {
+      if (ASSET_EXT.has(path.extname(abs).toLowerCase())) rels.push(posix(path.relative(SHARED_ROOT, abs)));
     }
   }
   return rels.sort();
 }
 
-export const absOf = (rel) => path.join(UIUX_ROOT, ...rel.split('/'));
+export const absOf = (rel) => path.join(SHARED_ROOT, ...rel.split('/'));
 export const readAsset = (rel) => fs.readFileSync(absOf(rel));
 export const sha256 = (buf) => crypto.createHash('sha256').update(buf).digest('hex');
 
@@ -40,7 +40,7 @@ export const rootOf = (rel) =>
   ASSET_ROOTS.filter((r) => rel === r || rel.startsWith(r + '/')).sort((a, b) => b.length - a.length)[0] ?? null;
 
 export function loadManifest() {
-  const p = path.join(UIUX_ROOT, 'assets-manifest.json');
+  const p = path.join(SHARED_ROOT, 'assets-manifest.json');
   if (!fs.existsSync(p)) return null;
   return JSON.parse(fs.readFileSync(p, 'utf8').replace(/^﻿/, ''));
 }

@@ -14,7 +14,7 @@ BeforeAll {
 
 Describe 'build.ps1 -Output standalone' {
     BeforeEach {
-        $script:out = Join-Path ([IO.Path]::GetTempPath()) ("uiux-build-" + [guid]::NewGuid().ToString('N'))
+        $script:out = Join-Path ([IO.Path]::GetTempPath()) ("web-shared-build-" + [guid]::NewGuid().ToString('N'))
     }
     AfterEach {
         if (Test-Path $script:out) { Remove-Item -Recurse -Force $script:out }

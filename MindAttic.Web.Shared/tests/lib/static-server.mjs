@@ -1,4 +1,4 @@
-// Tiny static file server used in LOCAL mode. Serves each sibling site repo under /<domain>/ so that
+// Tiny static file server used in LOCAL mode. Serves each MindAttic.Web site folder under /<domain>/ so that
 // http://127.0.0.1:4173/mindattic.com/index.htm is the working-tree page. Read-only, no dependencies.
 import http from 'node:http';
 import fs from 'node:fs';

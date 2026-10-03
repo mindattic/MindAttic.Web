@@ -55,9 +55,9 @@ absent, schematic windows simply don't spawn — everything else is unaffected.
 Production hosts pull the same files from jsDelivr instead of inlining:
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/Components/SacredGeometry/sacred-geometry.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/Components/Cyberspace/console-bg.js"></script>
-<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/Components/Cyberspace/frontpage.css">
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/Components/SacredGeometry/sacred-geometry.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/Components/Cyberspace/console-bg.js"></script>
+<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/Components/Cyberspace/frontpage.css">
 ```
 
 ---
@@ -155,7 +155,7 @@ Canonical names + definitions live in the registry header of
 near the top of the file — flip any `FX_*` to `false` to kill that effect
 entirely.
 
-See the top-level [`../README.md`](../README.md) for the full effect table
+See the package [`README.md`](../../README.md) for the full effect table
 (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT — including its
 7 behavior variants — FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR).
 

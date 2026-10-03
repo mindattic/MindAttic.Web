@@ -11,5 +11,5 @@
     powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1
 #>
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
-$engine   = Join-Path $PSScriptRoot '..\..\codex-standard\build-readme.ps1'
+$engine   = Join-Path $PSScriptRoot '..\..\..\codex-standard\build-readme.ps1'
 & $engine -Root $repoRoot

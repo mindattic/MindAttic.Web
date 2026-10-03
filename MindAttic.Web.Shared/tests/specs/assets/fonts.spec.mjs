@@ -3,7 +3,7 @@
 import { test, expect } from '@playwright/test';
 import { spawnSync } from 'node:child_process';
 import path from 'node:path';
-import { UIUX_ROOT } from '../../lib/paths.mjs';
+import { SHARED_ROOT } from '../../lib/paths.mjs';
 import { listAssets, readAsset, absOf } from '../../lib/walk.mjs';
 import { validateWoff2, validateSfnt } from '../../lib/binfmt.mjs';
 
@@ -34,7 +34,7 @@ test.describe('web fonts', () => {
   }
 
   test('deep check with fontTools: every woff2 decodes, has the expected family name and a sane glyph count', () => {
-    const py = spawnSync('python', [path.join(UIUX_ROOT, 'tests', 'lib', 'font_check.py'), ...woff2.map(absOf)], { encoding: 'utf8' });
+    const py = spawnSync('python', [path.join(SHARED_ROOT, 'tests', 'lib', 'font_check.py'), ...woff2.map(absOf)], { encoding: 'utf8' });
     test.skip(py.error != null || py.status !== 0, 'python not available');
     const out = JSON.parse(py.stdout);
     test.skip(Boolean(out.__unavailable__), `fontTools not installed (${out.__unavailable__})`);

@@ -1,0 +1,28 @@
+# MindAttic.Web: one .gitignore for every member folder.
+
+# OS and editor state
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak
+*.user
+.vs/
+
+# Agent session transcripts (/quicksave)
+.claude/quicksave.md*
+
+# FTP deploy credentials: never commit. Deploys read them from MindAttic.Deploy.
+/*/settings.json
+
+# Node and Playwright output (MindAttic.Web.Shared/tests, Hyperspace)
+node_modules/
+test-results/
+playwright-report/
+blob-report/
+
+# MindAttic.Web.Shared standalone vendoring build output (build.ps1)
+/MindAttic.Web.Shared/dist/
+
+# Generated IdiotProof replay archive: written by IdiotProof's Monitor, published by
+# MindAttic.Deploy's idiotproof-replays site, never committed
+/mindattic.com/idiotproof/replays/

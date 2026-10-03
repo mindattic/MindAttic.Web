@@ -9,7 +9,7 @@
                                            "hooks":  [
                                                          {
                                                              "type":  "command",
-                                                             "command":  "powershell -NoProfile -ExecutionPolicy Bypass -File \"D:/Projects/MindAttic/mindattic.com/.claude/hooks/inject-digest.ps1\"",
+                                                             "command":  "powershell -NoProfile -ExecutionPolicy Bypass -File \"D:/Projects/MindAttic/MindAttic.Web/mindattic.com/.claude/hooks/inject-digest.ps1\"",
                                                              "shell":  "powershell"
                                                          }
                                                      ]
@@ -22,14 +22,14 @@
                                                         {
                                                             "type":  "command",
                                                             "if":  "Edit(*index.htm*)",
-                                                            "command":  "$f=\u0027D:/Projects/MindAttic/mindattic.com/index.htm\u0027; if (Test-Path $f) { $d=(Get-Date).ToUniversalTime().ToString(\u0027yyyy-MM-ddTHH:mm:ssZ\u0027); $s=\"\u003c!-- Last Updated: $d --\u003e\"; $c=[System.IO.File]::ReadAllText($f,[System.Text.UTF8Encoding]::new($false)); if ($c -match \u0027(?s)^\u003c!--\\s*Last Updated:.*?--\u003e(\\r?\\n)\u0027) { $c=$c -replace \u0027(?s)^\u003c!--\\s*Last Updated:.*?--\u003e(\\r?\\n)\u0027,\"$s`$1\" } else { $c=\"$s`r`n$c\" }; [System.IO.File]::WriteAllText($f,$c,[System.Text.UTF8Encoding]::new($false)) }",
+                                                            "command":  "$f=\u0027D:/Projects/MindAttic/MindAttic.Web/mindattic.com/index.htm\u0027; if (Test-Path $f) { $d=(Get-Date).ToUniversalTime().ToString(\u0027yyyy-MM-ddTHH:mm:ssZ\u0027); $s=\"\u003c!-- Last Updated: $d --\u003e\"; $c=[System.IO.File]::ReadAllText($f,[System.Text.UTF8Encoding]::new($false)); if ($c -match \u0027(?s)^\u003c!--\\s*Last Updated:.*?--\u003e(\\r?\\n)\u0027) { $c=$c -replace \u0027(?s)^\u003c!--\\s*Last Updated:.*?--\u003e(\\r?\\n)\u0027,\"$s`$1\" } else { $c=\"$s`r`n$c\" }; [System.IO.File]::WriteAllText($f,$c,[System.Text.UTF8Encoding]::new($false)) }",
                                                             "shell":  "powershell",
                                                             "statusMessage":  "Updating last-updated timestamp..."
                                                         },
                                                         {
                                                             "type":  "command",
                                                             "if":  "Write(*index.htm*)",
-                                                            "command":  "$f=\u0027D:/Projects/MindAttic/mindattic.com/index.htm\u0027; if (Test-Path $f) { $d=(Get-Date).ToUniversalTime().ToString(\u0027yyyy-MM-ddTHH:mm:ssZ\u0027); $s=\"\u003c!-- Last Updated: $d --\u003e\"; $c=[System.IO.File]::ReadAllText($f,[System.Text.UTF8Encoding]::new($false)); if ($c -match \u0027(?s)^\u003c!--\\s*Last Updated:.*?--\u003e(\\r?\\n)\u0027) { $c=$c -replace \u0027(?s)^\u003c!--\\s*Last Updated:.*?--\u003e(\\r?\\n)\u0027,\"$s`$1\" } else { $c=\"$s`r`n$c\" }; [System.IO.File]::WriteAllText($f,$c,[System.Text.UTF8Encoding]::new($false)) }",
+                                                            "command":  "$f=\u0027D:/Projects/MindAttic/MindAttic.Web/mindattic.com/index.htm\u0027; if (Test-Path $f) { $d=(Get-Date).ToUniversalTime().ToString(\u0027yyyy-MM-ddTHH:mm:ssZ\u0027); $s=\"\u003c!-- Last Updated: $d --\u003e\"; $c=[System.IO.File]::ReadAllText($f,[System.Text.UTF8Encoding]::new($false)); if ($c -match \u0027(?s)^\u003c!--\\s*Last Updated:.*?--\u003e(\\r?\\n)\u0027) { $c=$c -replace \u0027(?s)^\u003c!--\\s*Last Updated:.*?--\u003e(\\r?\\n)\u0027,\"$s`$1\" } else { $c=\"$s`r`n$c\" }; [System.IO.File]::WriteAllText($f,$c,[System.Text.UTF8Encoding]::new($false)) }",
                                                             "shell":  "powershell",
                                                             "statusMessage":  "Updating last-updated timestamp..."
                                                         }

@@ -1,4 +1,4 @@
-/* MindAttic.UiUx — PageScrollbar
+/* MindAttic.Web.Shared — PageScrollbar
  *
  * Replaces the browser's native page scrollbar with a draggable themed overlay.
  * Zero config: include the CSS + this script (defer) and it self-mounts. If a

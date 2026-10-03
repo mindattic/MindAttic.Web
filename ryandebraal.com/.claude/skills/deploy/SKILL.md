@@ -1,6 +1,6 @@
 ---
 name: deploy
-description: Deploy ryandebraal.com via MindAttic.Deploy (sibling repo). Stamps index.htm and FTPS-uploads it to the site root. Deploying it deploys the whole linked mindattic-web group.
+description: Deploy ryandebraal.com via MindAttic.Deploy (sibling repo). Pins and stamps index.htm, commits and tags MindAttic.Web, then FTPS-uploads it to the site root. Deploying it deploys the whole linked mindattic-web group.
 ---
 
 When invoked, run:

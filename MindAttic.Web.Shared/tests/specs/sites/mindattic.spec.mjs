@@ -276,9 +276,12 @@ test.describe('mindattic.com — Cyberspace', () => {
       for (const fn of FNS) {
         const [x, y] = CLEAR_TAPS[FNS.indexOf(fn) % CLEAR_TAPS.length];
         // A TRACE declines (returns false) when its route planner finds no path for the random destination it
-        // rolled; that is a legitimate "nothing to do", so give it a few rolls.
+        // rolled, or while another trace is still running (one at a time; an ambient trace started before the
+        // auto-spawner was switched off can outlive untilQuiet). Both are a legitimate "nothing to do", so give
+        // it several rolls, spaced out so a running trace can finish.
         let r;
-        for (let attempt = 0; attempt < (fn === 'spawnNetConnect' ? 5 : 1); attempt++) {
+        for (let attempt = 0; attempt < (fn === 'spawnNetConnect' ? 20 : 1); attempt++) {
+          if (attempt) await s.page.waitForTimeout(400);
           r = await s.page.evaluate(async ([name, px, py]) => {
             const host = document.querySelector('.console-bg-host');
             const before = new Set(host.children);

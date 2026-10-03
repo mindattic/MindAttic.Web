@@ -23,9 +23,9 @@ tag-pinned jsDelivr package instead of being embedded in the page.
 - **NOT a light/dark toggle site.** The site is locked to the dark Cyberspace palette
   ([LAW-5](#MAC-LAW-5)).
 - **NOT the home of its own assets.** Fonts, logos, textures and the effects engine live in the
-  `MindAttic.UiUx` repo (`MindAttic.UiUx/fonts/`, `MindAttic.UiUx/mindattic.com/`, `MindAttic.UiUx/Components/Cyberspace/`) and are loaded
-  from jsDelivr. Edit them there and take a new tag; do not paste binaries back into `index.htm`.
-- **NOT self-deploying.** Deployment is owned by the sibling `MindAttic.Deploy` repo; this repo has no
+  `MindAttic.Web.Shared` package folder of the MindAttic.Web monorepo (`MindAttic.Web.Shared/fonts/`, `MindAttic.Web.Shared/mindattic.com/`, `MindAttic.Web.Shared/Components/Cyberspace/`) and are loaded
+  from jsDelivr. Edit them there and ship them with the next linked deploy; do not paste binaries back into `index.htm`.
+- **NOT self-deploying.** Deployment is owned by the sibling `MindAttic.Deploy` repo; this folder has no
   deploy script or FTP settings. (See [LAW-4](#MAC-LAW-4).)
 - **NOT a CMS or server app.** The server docroot holds static files only, plus a hand-placed
   `.htaccess` ([§4.4](#MAC-§4.4)).
@@ -34,26 +34,26 @@ tag-pinned jsDelivr package instead of being embedded in the page.
 These project-specific laws are in addition to — and never override — the shared MindAttic house
 rules, which are **inherited** here, not restated:
 
-> **Inherited:** [`MindAttic.HouseRules.md`](../../MindAttic.HouseRules.md) (shared across all
+> **Inherited:** [`MindAttic.HouseRules.md`](../../../MindAttic.HouseRules.md) (shared across all
 > MindAttic projects: whole-number versioning, tooling etiquette, etc.). When a house rule and a
 > project law conflict, the house rule wins.
 
 - **{#MAC-LAW-1} One authored page, no build step, no framework.** `index.htm` is the only
   hand-authored page, with no bundler, no transpiler and no framework. Heavy static assets are served
-  from the tag-pinned `MindAttic.UiUx` jsDelivr package, never embedded; `<link rel=…>`, `preconnect`,
+  from the tag-pinned `MindAttic.Web.Shared` jsDelivr package, never embedded; `<link rel=…>`, `preconnect`,
   `preload` and `defer` are allowed. A build pipeline would need an RFC and a bible change first.
 - **{#MAC-LAW-2} Generated regions are not hand-edited.** The only generated region in `index.htm` is
   the `BEGIN/END MINDATTIC.UIUX:CYBERSPACE` block, owned by
-  `MindAttic.UiUx/sync/sync-mindattic-com.ps1`; edit the source in `MindAttic.UiUx` and re-run the
+  `MindAttic.Web.Shared/sync/sync-mindattic-com.ps1`; edit the source in `MindAttic.Web.Shared` and re-run the
   sync.
 - **{#MAC-LAW-4} Deployment is centralized.** Deploys go through the sibling `MindAttic.Deploy`
-  pipeline (`npm run deploy -- --site mindattic.com`). This repo keeps no deploy script and no FTP
+  pipeline (`npm run deploy -- --site mindattic.com`). This folder keeps no deploy script and no FTP
   credentials (a stray `settings.json` is gitignored).
 - **{#MAC-LAW-5} Dark palette only.** The dark Cyberspace palette is the only palette — no light mode,
   no theme toggle, no theme picker.
 - **{#MAC-LAW-6} Privacy by default.** No analytics, tracking pixels, third-party fonts, or third-party
   network requests may be added to `index.htm`. The one allowed external host is the jsDelivr CDN
-  (cdn.jsdelivr.net), serving the `MindAttic.UiUx` repo at a pinned tag.
+  (cdn.jsdelivr.net), serving the `MindAttic.Web.Shared` package at a pinned tag.
 - **{#MAC-LAW-7} View-source stays welcoming.** Preserve the opening banner, the section table of
   contents, and explanatory comments, and keep them accurate. Code here is documentation for the
   curious reader.
@@ -63,17 +63,18 @@ rules, which are **inherited** here, not restated:
   shrink-wrapped to the wordmark's width. The only Cyberspace keepout.
 - **Unit (`--u`)** — 1% of the smaller visible viewport side (`dvmin`), capped at 0.7273 rem; every
   size on the page is a multiple of it.
-- **Asset package** — the `MindAttic.UiUx` repo served over jsDelivr at `…@V<n>/<path>`; tags are
+- **Asset package** — the `MindAttic.Web.Shared` folder of MindAttic.Web served over jsDelivr at `…@V<n>/MindAttic.Web.Shared/<path>`; tags are
   immutable whole numbers.
 - **Generated region** — a block owned by a generator and never hand-edited; on the page, only the
   `CYBERSPACE` marker block. See [LAW-2](#MAC-LAW-2).
-- **Cyberspace** — the shared MindAttic.UiUx visual bundle (circuit-board backdrop, scanlines, console
+- **Cyberspace** — the shared MindAttic.Web.Shared visual bundle (circuit-board backdrop, scanlines, console
   windows). Its CSS and small scripts are spliced inline; its engine and textures load from the CDN.
-- **Sync** — splicing the subscribed UiUx component (Cyberspace) into `index.htm` during deploy.
+- **Sync** — splicing the subscribed MindAttic.Web.Shared component (Cyberspace) into `index.htm` during deploy.
 - **Stamp** — the automated `<!-- Last Updated: ... -->` UTC comment.
-- **Linked deploy** — `MindAttic.Deploy`'s 4-in-1 flow: deploying any of `MindAttic.UiUx`,
-  mindattic.com, ryandebraal.com or mindatticcares.com publishes the package and deploys all three sites.
-- **House rules** — the shared [`MindAttic.HouseRules.md`](../../MindAttic.HouseRules.md), inherited
+- **Linked deploy** — `MindAttic.Deploy`'s flow for the MindAttic.Web repo: deploying any of
+  `MindAttic.Web.Shared`, mindattic.com, ryandebraal.com, mindatticcares.com or Hyperspace tags the repo, pins
+  the tag and deploys all four sites.
+- **House rules** — the shared [`MindAttic.HouseRules.md`](../../../MindAttic.HouseRules.md), inherited
   by [§5](#MAC-§5).
 
 ## Status index (user stories)

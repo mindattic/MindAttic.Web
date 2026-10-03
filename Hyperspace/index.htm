@@ -539,12 +539,12 @@
   </div>
 </footer>
 
-<!-- The shapes come from the MindAttic.UiUx Hyperspace component (window.Hyperspace), pinned to a release
+<!-- The shapes come from the MindAttic.Web.Shared Hyperspace component (window.Hyperspace), pinned to a release
      tag. The second script is the development fallback: when the pinned file cannot be fetched (for example
-     the page is opened as a local file before that tag is published), load it from a sibling
-     MindAttic.UiUx checkout. -->
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V12/Components/Hyperspace/hyperspace.js"></script>
-<script>window.Hyperspace || document.write('<script src="../MindAttic.UiUx/Components/Hyperspace/hyperspace.js"><\/script>');</script>
+     the page is opened as a local file before that tag is published), load it from the MindAttic.Web.Shared
+     folder next to this one in the MindAttic.Web checkout. -->
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V12/MindAttic.Web.Shared/Components/Hyperspace/hyperspace.js"></script>
+<script>window.Hyperspace || document.write('<script src="../MindAttic.Web.Shared/Components/Hyperspace/hyperspace.js"><\/script>');</script>
 
 <script>
 "use strict";
@@ -1225,7 +1225,7 @@ function onPointerlockError() {
 window.PointerLockControls = PointerLockControls;
 </script>
 <script defer>
-/* The exhibits are the MindAttic.UiUx Hyperspace shape library (window.Hyperspace): geometry, rotation
+/* The exhibits are the MindAttic.Web.Shared Hyperspace shape library (window.Hyperspace): geometry, rotation
    planes, plaque facts, articles and references. This block is the gallery engine. Each exhibit is a
    copy of its library record (row and col place it in the 10 x 10 hall) with gen() returning its
    cached geometry. */

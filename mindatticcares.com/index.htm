@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MindAttic Cares</title>
 <!-- Search-result snippet and link-preview card (Open Graph / Twitter). The image is served
-     from the MindAttic.UiUx CDN package like every other asset on this page. -->
+     from the MindAttic.Web.Shared CDN package like every other asset on this page. -->
 <meta name="description" content="MindAttic Cares is a 501(c)(3) nonprofit that provides digital access, support and educational assistance. This year it supports Child’s Play, which brings games to children in hospitals.">
 <link rel="canonical" href="https://mindatticcares.com/">
 <meta name="theme-color" content="#0d1117">
@@ -15,22 +15,22 @@
 <meta property="og:title" content="MindAttic Cares">
 <meta property="og:description" content="MindAttic Cares is a 501(c)(3) nonprofit that provides digital access, support and educational assistance. This year it supports Child’s Play, which brings games to children in hospitals.">
 <meta property="og:url" content="https://mindatticcares.com/">
-<meta property="og:image" content="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/logos/m-cares-black-red-transparent-720.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/mindatticcares.com/logos/m-cares-black-red-transparent-720.png">
 <meta property="og:image:width" content="720">
 <meta property="og:image:height" content="720">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MindAttic Cares">
 <meta name="twitter:description" content="MindAttic Cares is a 501(c)(3) nonprofit that provides digital access, support and educational assistance. This year it supports Child’s Play, which brings games to children in hospitals.">
-<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/logos/m-cares-black-red-transparent-720.png">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/mindatticcares.com/logos/m-cares-black-red-transparent-720.png">
 <!-- Resource hints.  Binary assets (fonts, logos, photos) are served from the
-     MindAttic.UiUx package on jsDelivr, pinned to a release tag.  Open that
+     MindAttic.Web.Shared package on jsDelivr, pinned to a release tag.  Open that
      connection immediately and start the body font before the CSS is parsed.
      Fonts need `crossorigin` even though they are same-page requests -- that
      is how the font fetch is made; without it the preload is fetched twice. -->
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/fonts/outfit/outfit-latin.woff2">
-<link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/icons/m-cares-icon-96.png">
-<link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/icons/m-cares-icon-96.png">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/fonts/outfit/outfit-latin.woff2">
+<link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/mindatticcares.com/icons/m-cares-icon-96.png">
+<link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/mindatticcares.com/icons/m-cares-icon-96.png">
 <style>
 /* latin-ext */
 @font-face {
@@ -38,7 +38,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/fonts/outfit/outfit-latin-ext.woff2') format('woff2');
+  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/fonts/outfit/outfit-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 /* latin */
@@ -47,7 +47,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/fonts/outfit/outfit-latin.woff2') format('woff2');
+  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/fonts/outfit/outfit-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
@@ -55,7 +55,7 @@
 html { overflow-y: scroll; scroll-behavior: smooth; }
 html,body { margin:0; padding:0; }
 body {
-  background:#fff url("https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/images/background-abstract-light-1500x500.png") 0 100% / contain no-repeat fixed;
+  background:#fff url("https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/mindatticcares.com/images/background-abstract-light-1500x500.png") 0 100% / contain no-repeat fixed;
   color:#111;
   font-family: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   font-weight:300;
@@ -253,7 +253,7 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
 
 <header class="topbar">
   <a class="brand" href="#" data-page="home" aria-label="MindAttic Cares home">
-    <img alt="MindAttic Cares" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/logos/m-cares-black-red-transparent-300.png" width="300" height="300" decoding="async">
+    <img alt="MindAttic Cares" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/mindatticcares.com/logos/m-cares-black-red-transparent-300.png" width="300" height="300" decoding="async">
   </a>
   <nav>
     <a href="#" data-page="home">MindAttic Cares</a>
@@ -267,7 +267,7 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
   <!-- HOME -->
   <section class="page" id="home">
     <div class="hero">
-      <img alt="MindAttic Cares" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/logos/m-cares-black-red-transparent-720.png" width="720" height="720" fetchpriority="high" decoding="async">
+      <img alt="MindAttic Cares" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/mindatticcares.com/logos/m-cares-black-red-transparent-720.png" width="720" height="720" fetchpriority="high" decoding="async">
     </div>
     <h1>MindAttic Cares</h1>
     <p>MindAttic Cares is a 501(c)(3) nonprofit organization dedicated to serving charitable, educational, and social missions that benefit the public. The organization provides digital access, support, and educational assistance. Its goal is to help individuals who lack the means to access education, entertainment, and resources in the digital space.</p>
@@ -276,12 +276,12 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
   <!-- CHILD'S PLAY -->
   <section class="page" id="childs-play">
     <div class="hero">
-      <img alt="Child&rsquo;s Play &mdash; Play Games. Feel Better." src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/logos/childs-play-logo.png" width="768" height="518" loading="lazy" decoding="async">
+      <img alt="Child&rsquo;s Play &mdash; Play Games. Feel Better." src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/mindatticcares.com/logos/childs-play-logo.png" width="768" height="518" loading="lazy" decoding="async">
     </div>
     <h1>Child&rsquo;s Play</h1>
     <p>This year, we are proud to focus our giving efforts on Child&rsquo;s Play, a nonprofit that uses the power of gaming to improve the lives of children in hospitals.</p>
     <div class="video" data-yt="NG4IISU4-iQ" role="button" tabindex="0" aria-label="Play: Hi! We&rsquo;re Child&rsquo;s Play Charity">
-      <img alt="" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/images/childs-play-video-poster.jpg" width="800" height="450" loading="lazy" decoding="async">
+      <img alt="" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/mindatticcares.com/images/childs-play-video-poster.jpg" width="800" height="450" loading="lazy" decoding="async">
       <span class="play" aria-hidden="true"></span>
     </div>
     <p>Founded in 2003 by Mike Krahulik and Jerry Holkins of Penny Arcade, Child&rsquo;s Play now supports 190+ hospitals and domestic violence shelters worldwide, reaching countless children. Their initiatives go far beyond providing games; they create meaningful therapeutic opportunities.</p>
@@ -292,7 +292,7 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
   <!-- Y2K -->
   <section class="page" id="y2k">
     <div class="hero">
-      <img alt="Y2K" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/images/y2k-end-of-the-world-party-960.jpg" srcset="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/images/y2k-end-of-the-world-party-960.jpg 960w, https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/images/y2k-end-of-the-world-party.jpg 1920w" sizes="(max-width: 520px) 100vw, 520px" width="1920" height="1200" loading="lazy" decoding="async">
+      <img alt="Y2K" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/mindatticcares.com/images/y2k-end-of-the-world-party-960.jpg" srcset="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/mindatticcares.com/images/y2k-end-of-the-world-party-960.jpg 960w, https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V11/MindAttic.Web.Shared/mindatticcares.com/images/y2k-end-of-the-world-party.jpg 1920w" sizes="(max-width: 520px) 100vw, 520px" width="1920" height="1200" loading="lazy" decoding="async">
     </div>
     <h1>Y2K: End of the World Party</h1>
     <p class="tagline">A complete charity-event playbook &mdash; benefiting Child&rsquo;s Play.</p>
