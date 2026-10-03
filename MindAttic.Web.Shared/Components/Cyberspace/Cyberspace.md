@@ -7,7 +7,7 @@ pulsars blink in code, folder-rip heists exfiltrate files in real time, and
 a parallax circuit-board hums behind everything under static scan-lines.
 
 12 named effects, content-aware spawning that stays out of your layout,
-zero build step. Drops into any page with three `<div>`s, one `<link>`, and
+spawn-at-a-point origins for tap handlers, a tap spark surge, and no build step. Drops into any page with three `<div>`s, one `<link>`, and
 one `<script>`.
 
 ---
@@ -18,7 +18,7 @@ one `<script>`.
 Cyberspace/
 ├── frontpage.html   # DOM scaffolding — three fixed-position layer divs
 ├── frontpage.css    # CYBERSPACE rules, scan-lines, neon-flicker keyframes
-├── console-bg.js    # the engine (12 effects, keepout system, parallax)
+├── console-bg.js    # the engine (12 effects, origins, spark surge, keepout system, parallax)
 ├── home-bg.js       # torn-edge portrait compositor — exposes window.homeBg
 ├── tv-static.js     # navigation-transition TV-static overlay
 ├── loader.js        # tiny global loader show/hide helpers
@@ -81,6 +81,49 @@ Add more at runtime:
 ```js
 window.__cyberspaceKeepoutSelectors = '.foo, .bar';
 ```
+
+The **buffer zone** is each keepout rect grown by `KEEPOUT_BUFFER` (16px).
+`consoleBg.inKeepout(x, y)` (viewport %) says whether a point is inside it.
+
+---
+
+## Spawning at a point (origins)
+
+Every spawn function on `consoleBg._demo` takes an optional origin `{ x, y }` in
+viewport percent as its last (or only) argument, and then starts the effect
+there:
+
+```js
+consoleBg._demo.spawnError({ x: 20, y: 30 });          // popup centred on 20%,30%
+consoleBg._demo.spawnArtifact('SPIDER', { x: 80, y: 70 });
+consoleBg._demo.spawnWindow({ x: 10, y: 15 });           // title bar opens on the point
+```
+
+Popups and memos are centred on it. Console windows (TERMINAL, SCHEMATIC, HEIST,
+CASCADE) open their title bar on it. Fragments type out of it, artifacts are
+centred on it, and TRACE, PULSAR and PREDATOR start from it. With an origin,
+PREDATOR first releases a LATTICE to hunt when there is no prey. The box is
+clamped on screen and pushed out of the buffer zone, and its transform origin
+is set to the point so it grows out of it. Without an origin nothing changes.
+Each function returns `true` when it spawned and `false` when it declined.
+
+---
+
+## Tap spark surge
+
+```js
+consoleBg.spawnSparkBurst(x, y);   // viewport %, or spawnSparkBurst({ x, y })
+```
+
+SURGE is a momentary power surge for tap feedback. A white-hot flash and glow
+ring appear, then 26 to 40 sparks fly outward with random velocities and fall
+under gravity, with short trails and a hot core. They cool from white through
+cyan and blue to orange-red and dark, and burn out in 300 to 700ms. One pooled
+`canvas.cyberspace-surge` is appended to `<body>` (`position: fixed`,
+`pointer-events: none`, `z-index: 1`, `data-state="running|idle"`). Its
+`requestAnimationFrame` loop stops and clears when idle. With
+`prefers-reduced-motion: reduce` it draws only a brief stationary flash.
+`consoleBg._demo.sparkStats()` returns live counters.
 
 ---
 

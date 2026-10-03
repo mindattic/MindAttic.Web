@@ -25,7 +25,7 @@ Thirteen components live under `Components/`, each with its source files, a usag
 
 | Component | Type | What it does |
 |---|---|---|
-| [Cyberspace](Components/Cyberspace/Cyberspace.md) | HTML + CSS + JS bundle | Cyberpunk console-background engine: 12 named effects (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT with 24 variants, FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR), scan-line overlay, parallax circuit-board, keepout zones around content. SCHEMATIC draws its shapes from SacredGeometry. |
+| [Cyberspace](Components/Cyberspace/Cyberspace.md) | HTML + CSS + JS bundle | Cyberpunk console-background engine: 12 named effects (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT with 24 variants, FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR), scan-line overlay, parallax circuit-board, keepout zones around content, spawn-at-a-point origins and a tap spark surge. SCHEMATIC draws its shapes from SacredGeometry. |
 | [SacredGeometry](Components/SacredGeometry/SacredGeometry.md) | JS (UMD) + SVG | 1024 unique, animatable line-art shapes (polyhedra, parametric curves, knots, fractals). One renderer targets a live canvas or a static SVG string; `build-previews.mjs` emits a poster per shape and doubles as a smoke test. |
 | [OutfitFont](Components/OutfitFont/OutfitFont.md) | font + CSS | Outfit variable font (weights 100 to 900) inlined as base64 woff2, Latin and Latin-Extended, plus a `--font-outfit` token. |
 | [AtticFont](Components/AtticFont/AtticFont.md) | font + CSS | Attic display face inlined as base64 woff2 with a `--font-attic` token. Per-subscriber `applyToSelector` controls where it is auto-applied. |
@@ -293,7 +293,7 @@ Add a splice-in-place subscriber only when it has hand-authored content interlea
 
 ## Keepout zones
 
-`console-bg.js` keeps effects from spawning behind page content. The placer weights overlap with keepout rects four times a normal window overlap, so it strongly prefers the margins. Built-in selectors:
+`console-bg.js` keeps effects from spawning behind page content. The placer weights overlap with keepout rects four times a normal window overlap, so it strongly prefers the margins. An effect spawned at an origin is kept out of each rect plus a 16px buffer (see [Spawning at a point](#spawning-at-a-point-and-the-tap-spark-surge)). Built-in selectors:
 
 - `.cyberspace-keepout`, an opt-in marker for any container.
 - `main`.
@@ -345,6 +345,29 @@ The registry header in `console-bg.js` describes the other seventeen.
 | TRACE | ARC (spark burst at about 30% of sharp turns); ACK (three-blink success then synced fade); SEVER (direction-aligned CONNECTION-LOST message on failure) |
 | HEIST | HIGHLIGHT (cyan glow on a run of files); EXTRACT (slide-right exit with shimmer and per-file stagger); DISSOLVE (window fades when extraction completes) |
 | PREDATOR | STALK (off-screen swarm homes on prey); SCAN (prey detection cone); FLEE (prey redirects away); DEVOUR (cell adopts a wasp glyph then dissolves); DISPERSE (wasps scatter and fade) |
+
+### Spawning at a point, and the tap spark surge
+
+`window.consoleBg` exposes `start()`, `spawnSparkBurst(x, y)` and `inKeepout(x, y)`, plus the spawn functions on the `_demo` dev handle. Points are viewport percentages (0 to 100), the same unit as the existing `posX`/`posY` arguments.
+
+Every spawn function takes an optional origin `{ x, y }` as its last (or only) argument, for example `consoleBg._demo.spawnMemo({ x: 20, y: 30 })`. With an origin the effect starts at that point; without one it places itself as usual.
+
+| Effect | With an origin |
+|---|---|
+| CRASH, TREMOR, LEAK | Centred on it |
+| TERMINAL, SCHEMATIC, HEIST | The title bar opens on it and the window unfolds from it |
+| CASCADE | The first window opens on it; the rest step away from the screen centre |
+| FRAGMENT | Types out of it, from whichever corner of the text fits there |
+| ARTIFACT | The glyph body is centred on it |
+| TRACE | The source node sits on it and the wire runs to a random destination |
+| PULSAR | The dot starts on it |
+| PREDATOR | The swarm launches from it. If no artifact is big enough to hunt, it releases a LATTICE first |
+
+Every placement is clamped fully on screen and pushed out of the **buffer zone**: each keepout rect grown by `KEEPOUT_BUFFER` (16px). The transform origin moves to the point, so scale-in animations grow out of it. `inKeepout(x, y)` tells a host whether a point is in the zone, for example to ignore taps there. Each spawn function returns `true` when it spawned and `false` when it had nothing to do (a TRACE already running, no route, no prey without an origin), so a tap handler can try another.
+
+`spawnSparkBurst(x, y)` (SURGE) is a momentary power surge for tap feedback: a white-hot flash with an expanding glow ring, and 26 to 40 sparks that fly out with random velocities, fall under gravity, trail short streaks with a hot core, and cool from white through cyan and blue to orange-red and dark, burning out in 300 to 700ms. It draws on one pooled canvas (`canvas.cyberspace-surge`, appended to `<body>`, `position: fixed`, `pointer-events: none`, `z-index: 1`). The canvas sits above the z-index 0 backdrop, below positioned page content with a higher z-index, and never takes a click. Its `requestAnimationFrame` loop stops and clears when nothing is alive (`data-state` reads `running` or `idle`), so it costs nothing at rest. Under `prefers-reduced-motion: reduce` it draws only a brief stationary flash. `_demo.sparkStats()` reports live counters for tests.
+
+mindattic.com's tap script uses both: outside the zone and off a link, it fires the surge at the tap, then tries the effects in random order with the tap as origin until one spawns.
 
 ## Project layout
 

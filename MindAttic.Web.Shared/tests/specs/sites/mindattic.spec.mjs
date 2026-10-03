@@ -132,8 +132,52 @@ async function untilQuiet(page) {
     await page.waitForTimeout(1000);
     if ((await page.evaluate(() => window.__added)) === n0) break;
   }
-  await page.evaluate(() => { window.__added = 0; });
+  await page.evaluate(() => { window.__added = 0; window.__anchors = []; });
 }
+
+// Switch the auto-spawner off and watch the Cyberspace host's direct children (one per spawned effect; lines
+// typed inside an existing window do not count). For each added node the observer also records, at the moment
+// it lands (before any animation frame moves it), how far its box is from the last pointerdown point:
+// `window.__anchors = [{ cls, d }]`. A 0×0 container (ARTIFACT, PULSAR) is measured by its glyphs; full-screen
+// canvases (a TRACE wire) are skipped because they contain every point.
+async function watchHost(page) {
+  await page.evaluate(() => {
+    window.consoleBg._demo.setAutoSpawn(false);
+    window.__added = 0; window.__anchors = []; window.__tap = null;
+    document.addEventListener('pointerdown', (e) => { window.__tap = { x: e.clientX, y: e.clientY }; }, true);
+    const boxOf = (n) => {
+      const r = n.getBoundingClientRect();
+      if (r.width * r.height > 0) return r;
+      let l = Infinity, t = Infinity, rr = -Infinity, b = -Infinity;
+      for (const c of n.querySelectorAll('*')) {
+        const q = c.getBoundingClientRect();
+        if (!q.width && !q.height) continue;
+        l = Math.min(l, q.left); t = Math.min(t, q.top); rr = Math.max(rr, q.right); b = Math.max(b, q.bottom);
+      }
+      return rr > l ? { left: l, top: t, right: rr, bottom: b } : r;
+    };
+    window.__distTo = (n, p) => {
+      const r = boxOf(n);
+      return Math.hypot(Math.max(r.left - p.x, 0, p.x - r.right), Math.max(r.top - p.y, 0, p.y - r.bottom));
+    };
+    new MutationObserver((ml) => {
+      for (const m of ml) {
+        for (const n of m.addedNodes) {
+          window.__added++;
+          if (n.nodeType !== 1 || n.tagName === 'CANVAS' || !window.__tap) continue;
+          window.__anchors.push({ cls: String(n.className), d: window.__distTo(n, window.__tap) });
+        }
+      }
+    }).observe(document.querySelector('.console-bg-host'), { childList: true });
+  });
+}
+
+// At 1600×1000 the lockup (~580×210px) sits in the middle, leaving ~490px either side and ~380px above and
+// below. These tap points are clear of the keepout buffer zone (each test asserts that) and have room for the
+// largest effect (a ~220×260px HEIST window) to start on them without being pushed off the tap by the zone.
+// (Near the zone or an edge an effect is clamped/pushed instead; the "origin" test covers that separately.)
+const ROOMY = { width: 1600, height: 1000 };
+const CLEAR_TAPS = [[150, 120], [1450, 120], [150, 880], [1450, 880], [300, 200], [1300, 200], [300, 800], [1300, 800]];
 
 test.describe('mindattic.com — Cyberspace', () => {
   test('the engine exposes every effect the tap handler uses', async ({ browser }) => {
@@ -155,11 +199,7 @@ test.describe('mindattic.com — Cyberspace', () => {
     const s = await openSite(browser, site, { viewport: { width: 1000, height: 700 } });
     try {
       await loadSite(s);
-      await s.page.evaluate(() => {
-        window.consoleBg._demo.setAutoSpawn(false);
-        window.__added = 0;
-        new MutationObserver((ml) => { for (const m of ml) window.__added += m.addedNodes.length; }).observe(document.querySelector('.console-bg-host'), { childList: true }); // direct children only: one per spawned effect (lines typed inside an existing window do not count)
-      });
+      await watchHost(s.page);
       await untilQuiet(s.page); // effects scheduled before the auto-spawner was switched off must land first
       const lock = await s.page.evaluate(() => { const r = document.querySelector('.lockup').getBoundingClientRect(); return { l: r.left, r: r.right, t: r.top, b: r.bottom }; });
       const taps = [];
@@ -183,15 +223,11 @@ test.describe('mindattic.com — Cyberspace', () => {
     } finally { await s.context.close(); }
   });
 
-  test('tapping a link opens that site in a new window and spawns no effect', async ({ browser }) => {
+  test('tapping a link opens that site in a new window and spawns no effect and no sparks', async ({ browser }) => {
     const s = await openSite(browser, site, { viewport: { width: 1000, height: 700 } });
     try {
       await loadSite(s);
-      await s.page.evaluate(() => {
-        window.consoleBg._demo.setAutoSpawn(false);
-        window.__added = 0;
-        new MutationObserver((ml) => { for (const m of ml) window.__added += m.addedNodes.length; }).observe(document.querySelector('.console-bg-host'), { childList: true }); // direct children only: one per spawned effect (lines typed inside an existing window do not count)
-      });
+      await watchHost(s.page);
       await untilQuiet(s.page);
       for (let i = 0; i < LINKS.length; i++) {
         const [popup] = await Promise.all([s.context.waitForEvent('page'), s.page.locator('.link-btn').nth(i).click()]);
@@ -201,7 +237,196 @@ test.describe('mindattic.com — Cyberspace', () => {
       }
       await s.page.waitForTimeout(500);
       expect(await s.page.evaluate(() => window.__added), 'link taps must not spawn effects').toBe(0);
+      expect(await s.page.evaluate(() => window.consoleBg._demo.sparkStats().frames), 'link taps must not spark').toBe(0);
       expect(s.rec.navigations.map((u) => u.replace(/\/$/, '')).sort(), 'every external navigation was intercepted').toEqual(LINKS.map((l) => l.href).sort());
+    } finally { await s.context.close(); }
+  });
+
+  test('a tap outside the keepout spawns an effect that starts at the tap point', async ({ browser }) => {
+    const s = await openSite(browser, site, { viewport: ROOMY });
+    try {
+      await loadSite(s);
+      await watchHost(s.page);
+      await untilQuiet(s.page);
+      const misses = [];
+      for (const [x, y] of CLEAR_TAPS) {
+        expect(await s.page.evaluate(([px, py]) => window.consoleBg.inKeepout(px / innerWidth * 100, py / innerHeight * 100), [x, y]), `(${x},${y}) is clear of the buffer zone`).toBe(false);
+        await s.page.evaluate(() => { window.__anchors = []; });
+        await s.page.mouse.click(x, y);
+        await s.page.waitForTimeout(150); // CASCADE/TERMINAL attach their first window on the next timer tick
+        const a = await s.page.evaluate(() => window.__anchors);
+        const best = a.length ? Math.min(...a.map((e) => e.d)) : Infinity;
+        if (!(best <= 30)) misses.push(`(${x},${y}): ${a.length ? a.map((e) => `${e.cls}@${e.d.toFixed(0)}px`).join(', ') : 'nothing spawned'}`);
+        await s.page.waitForTimeout(250);
+      }
+      expect(misses, 'every tap spawns an effect within 30px of the tap point').toEqual([]);
+      expect(s.rec.pageErrors).toEqual([]);
+    } finally { await s.context.close(); }
+  });
+
+  test('every spawn function honours an origin: starts there, stays on screen, stays out of the keepout', async ({ browser }) => {
+    const s = await openSite(browser, site, { viewport: ROOMY });
+    try {
+      await loadSite(s);
+      await watchHost(s.page);
+      await untilQuiet(s.page);
+      const FNS = ['spawnError', 'spawnWarning', 'spawnWindow', 'spawnMemo', 'spawnFrag', 'spawnArtifact', 'spawnGeoWindow',
+        'spawnNetConnect', 'spawnMorseDot', 'spawnFolderRip', 'spawnCascade', 'spawnArtifactPredator'];
+      const out = [];
+      for (const fn of FNS) {
+        const [x, y] = CLEAR_TAPS[FNS.indexOf(fn) % CLEAR_TAPS.length];
+        // A TRACE declines (returns false) when its route planner finds no path for the random destination it
+        // rolled; that is a legitimate "nothing to do", so give it a few rolls.
+        let r;
+        for (let attempt = 0; attempt < (fn === 'spawnNetConnect' ? 5 : 1); attempt++) {
+          r = await s.page.evaluate(async ([name, px, py]) => {
+            const host = document.querySelector('.console-bg-host');
+            const before = new Set(host.children);
+            const ret = window.consoleBg._demo[name]({ x: px / innerWidth * 100, y: py / innerHeight * 100 });
+            await new Promise((res) => setTimeout(res, 30)); // CASCADE/TERMINAL attach on the next timer tick
+            const added = [...host.children].filter((n) => !before.has(n) && n.tagName !== 'CANVAS');
+            return { ret, n: added.length, d: added.length ? Math.min(...added.map((n) => window.__distTo(n, { x: px, y: py }))) : null };
+          }, [fn, x, y]);
+          if (r.ret) break;
+        }
+        out.push({ fn, ...r });
+      }
+      for (const r of out) {
+        expect(r.ret, `${r.fn} returns true`).toBe(true);
+        expect(r.n, `${r.fn} added an element`).toBeGreaterThan(0);
+        expect(r.d, `${r.fn} starts at the origin`).toBeLessThanOrEqual(30);
+      }
+
+      // Clamped: an origin in a corner keeps a popup fully on screen.
+      const corner = await s.page.evaluate(() => {
+        const host = document.querySelector('.console-bg-host'); const before = new Set(host.children);
+        window.consoleBg._demo.spawnError({ x: 99.5, y: 99.5 });
+        const el = [...host.children].find((n) => !before.has(n)); const r = el.getBoundingClientRect();
+        return { l: r.left, t: r.top, r: r.right, b: r.bottom, w: innerWidth, h: innerHeight };
+      });
+      expect(corner.l).toBeGreaterThanOrEqual(-0.5); expect(corner.t).toBeGreaterThanOrEqual(-0.5);
+      expect(corner.r).toBeLessThanOrEqual(corner.w + 0.5); expect(corner.b).toBeLessThanOrEqual(corner.h + 0.5);
+
+      // Pushed out: an origin just outside the buffer zone, beside the lockup, never lets a window overlap it.
+      const beside = await s.page.evaluate(() => {
+        const lock = document.querySelector('.lockup').getBoundingClientRect();
+        const pad = window.consoleBg._demo.KEEPOUT_BUFFER;
+        const res = [];
+        for (const name of ['spawnError', 'spawnWarning', 'spawnMemo', 'spawnFolderRip', 'spawnGeoWindow']) {
+          for (const [px, py] of [[lock.left - pad - 2, (lock.top + lock.bottom) / 2], [(lock.left + lock.right) / 2, lock.bottom + pad + 2]]) {
+            const host = document.querySelector('.console-bg-host'); const before = new Set(host.children);
+            window.consoleBg._demo[name]({ x: px / innerWidth * 100, y: py / innerHeight * 100 });
+            const el = [...host.children].find((n) => !before.has(n)); const r = el.getBoundingClientRect();
+            const ov = Math.max(0, Math.min(r.right, lock.right) - Math.max(r.left, lock.left)) * Math.max(0, Math.min(r.bottom, lock.bottom) - Math.max(r.top, lock.top));
+            res.push({ name, ov, on: r.left >= -0.5 && r.top >= -0.5 && r.right <= innerWidth + 0.5 && r.bottom <= innerHeight + 0.5 });
+          }
+        }
+        return res;
+      });
+      for (const b of beside) {
+        expect(b.ov, `${b.name} beside the lockup must not overlap it`).toBe(0);
+        expect(b.on, `${b.name} stays on screen`).toBe(true);
+      }
+      expect(s.rec.pageErrors).toEqual([]);
+    } finally { await s.context.close(); }
+  });
+
+  test('a tap inside the keepout buffer zone spawns nothing (no effect, no sparks)', async ({ browser }) => {
+    const s = await openSite(browser, site, { viewport: { width: 1000, height: 700 } });
+    try {
+      await loadSite(s);
+      await watchHost(s.page);
+      await untilQuiet(s.page);
+      const pts = await s.page.evaluate(() => {
+        const lock = document.querySelector('.lockup').getBoundingClientRect();
+        const word = document.getElementById('site-name').getBoundingClientRect();
+        const motto = document.getElementById('site-motto').getBoundingClientRect();
+        const pad = window.consoleBg._demo.KEEPOUT_BUFFER;
+        return [
+          [(word.left + word.right) / 2, (word.top + word.bottom) / 2],     // on the wordmark
+          [(motto.left + motto.right) / 2, (motto.top + motto.bottom) / 2], // on the motto
+          [lock.left - pad / 2, (lock.top + lock.bottom) / 2],             // in the margin, left of the lockup
+          [(lock.left + lock.right) / 2, lock.top - pad / 2],              // in the margin, above it
+          [lock.right + pad / 2, lock.bottom + pad / 2],                   // in the margin, bottom-right corner
+        ];
+      });
+      for (const [x, y] of pts) {
+        expect(await s.page.evaluate(([px, py]) => window.consoleBg.inKeepout(px / innerWidth * 100, py / innerHeight * 100), [x, y]), `(${x.toFixed(0)},${y.toFixed(0)}) is in the zone`).toBe(true);
+        await s.page.mouse.click(x, y);
+      }
+      await s.page.waitForTimeout(600);
+      expect(await s.page.evaluate(() => window.__added), 'taps in the buffer zone must not spawn effects').toBe(0);
+      expect(await s.page.evaluate(() => window.consoleBg._demo.sparkStats().frames), 'taps in the buffer zone must not spark').toBe(0);
+      expect(await s.page.locator('canvas.cyberspace-surge').count(), 'no spark canvas created').toBe(0);
+    } finally { await s.context.close(); }
+  });
+
+  test('the tap spark burst draws on one pooled click-through canvas, animates, then goes idle', async ({ browser }) => {
+    const s = await openSite(browser, site, { viewport: { width: 1000, height: 700 } });
+    try {
+      await loadSite(s);
+      await watchHost(s.page);
+      await untilQuiet(s.page);
+      await s.page.mouse.click(150, 120);
+      const live = await s.page.evaluate(async () => {
+        await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+        const cv = document.querySelector('canvas.cyberspace-surge');
+        const cs = getComputedStyle(cv);
+        const px = cv.getContext('2d').getImageData(0, 0, cv.width, cv.height).data;
+        let lit = 0; for (let i = 3; i < px.length; i += 4) if (px[i]) lit++;
+        return { stats: window.consoleBg._demo.sparkStats(), state: cv.dataset.state, lit, pe: cs.pointerEvents, pos: cs.position, z: cs.zIndex, parent: cv.parentElement.tagName };
+      });
+      expect(live.stats.running).toBe(true);
+      expect(live.stats.sparks, 'sparks in flight').toBeGreaterThan(10);
+      expect(live.state).toBe('running');
+      expect(live.lit, 'pixels drawn').toBeGreaterThan(50);
+      expect({ pe: live.pe, pos: live.pos, z: live.z, parent: live.parent }).toEqual({ pe: 'none', pos: 'fixed', z: '1', parent: 'BODY' });
+
+      await s.page.mouse.click(860, 560); // a second tap reuses the same canvas
+      expect(await s.page.locator('canvas.cyberspace-surge').count(), 'one pooled canvas').toBe(1);
+
+      // Every spark burns out within ~700ms; then the loop stops and the canvas is cleared.
+      await s.page.waitForFunction(() => !window.consoleBg._demo.sparkStats().running, null, { timeout: 1500 });
+      const idle = await s.page.evaluate(async () => {
+        const cv = document.querySelector('canvas.cyberspace-surge');
+        const f0 = window.consoleBg._demo.sparkStats().frames;
+        await new Promise((r) => setTimeout(r, 300));
+        const px = cv.getContext('2d').getImageData(0, 0, cv.width, cv.height).data;
+        let lit = 0; for (let i = 3; i < px.length; i += 4) if (px[i]) lit++;
+        return { s: window.consoleBg._demo.sparkStats(), f0, state: cv.dataset.state, lit };
+      });
+      expect(idle.s.sparks + idle.s.flashes, 'nothing left alive').toBe(0);
+      expect(idle.s.frames, 'no frames drawn while idle').toBe(idle.f0);
+      expect(idle.state).toBe('idle');
+      expect(idle.lit, 'canvas cleared').toBe(0);
+
+      // The canvas never blocks the page: the link under it still takes the click.
+      const hit = await s.page.evaluate(() => { const b = document.querySelector('.link-btn').getBoundingClientRect(); return document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2).className; });
+      expect(hit).toMatch(/link-btn/);
+      expect(s.rec.pageErrors).toEqual([]);
+    } finally { await s.context.close(); }
+  });
+
+  test('prefers-reduced-motion: a tap gives only a brief flash (no sparks), and the effect still spawns', async ({ browser }) => {
+    const s = await openSite(browser, site, { viewport: { width: 1000, height: 700 } });
+    try {
+      await s.page.emulateMedia({ reducedMotion: 'reduce' });
+      await loadSite(s);
+      await watchHost(s.page);
+      await untilQuiet(s.page);
+      // Straight from the engine: one stationary flash, no particles, and it is over within ~200ms.
+      const st = await s.page.evaluate(() => { window.consoleBg.spawnSparkBurst(20, 20); return window.consoleBg._demo.sparkStats(); });
+      expect(st.reducedMotion).toBe(true);
+      expect(st.sparks, 'no particles').toBe(0);
+      expect(st.flashes, 'one flash').toBe(1);
+      await s.page.waitForFunction(() => !window.consoleBg._demo.sparkStats().running, null, { timeout: 600 });
+      // Through a real tap: the flash draws (frames advance), still no particles, the effect still spawns.
+      const f0 = await s.page.evaluate(() => window.consoleBg._demo.sparkStats().frames);
+      await s.page.mouse.click(150, 120);
+      expect(await s.page.evaluate(() => window.consoleBg._demo.sparkStats().sparks), 'no particles on a tap').toBe(0);
+      await s.page.waitForFunction(() => !window.consoleBg._demo.sparkStats().running, null, { timeout: 600 });
+      expect(await s.page.evaluate(() => window.consoleBg._demo.sparkStats().frames), 'the flash drew').toBeGreaterThan(f0);
+      expect(await s.page.evaluate(() => window.__added), 'the effect itself still spawns').toBeGreaterThan(0);
     } finally { await s.context.close(); }
   });
 });

@@ -199,7 +199,13 @@ Status legend: ✅ done (verified) · 🟡 partial · ⬜ planned · living.
 - ✅ **Sites consume the package at the pinned tag.** `tests/specs/sites/*.spec.mjs` checks each of the
   three sites for clean loads, allowed hosts, the expected tag (highest `V<n>`, override `UIUX_TAG`), no
   overflow at every viewport and view, and CDN-loaded fonts. Verified 2026-10-03: `npx playwright test`
-  in `tests/` (local mode) — 162 passed, 5 skipped (the live-only CDN specs).
+  in `tests/` (local mode) — assets and sites projects: 167 passed, 5 skipped (the live-only CDN specs).
+- ✅ **Cyberspace origins and the tap spark surge.** Every spawn function takes an optional origin
+  `{ x, y }` (viewport %) and starts the effect there, clamped on screen and kept out of the keepout
+  buffer zone (keepout rects + `KEEPOUT_BUFFER` 16px); `consoleBg.inKeepout` tests a point against the
+  zone; `consoleBg.spawnSparkBurst` draws a gravity spark burst on one pooled, click-through canvas
+  whose loop stops at idle (flash only under reduced motion). Verified 2026-10-03:
+  `tests/specs/sites/mindattic.spec.mjs` (stories MAU-US-E1 to E4) in `npm run test:local`.
 - 🟡 **Component catalog (`Components/`).** Thirteen self-contained components present with source + docs.
   No component-level tests; correctness is verified manually (harnesses `Components/Cyberspace/index.htm`,
   `Components/SacredGeometry/index.htm`) and through the sites suite (Cyberspace on mindattic.com).

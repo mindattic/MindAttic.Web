@@ -81,8 +81,15 @@ Site-specific:
   combined width equals the wordmark width (±0.5 px), lockup fully on-screen and centered (±1 px), no scrollbars, footer
   fixed to the bottom; fonts/colours (Attic wordmark, Outfit buttons, white text at rest and hover); links have the right
   `href`/`target`/`rel`; engine scripts are `defer`red, textures + fonts preloaded; the engine exposes every effect the tap
-  handler uses; **tap-anywhere spawns an effect** (≥ 12 of 15 taps, auto-spawner off), tapping a link spawns nothing and opens
-  the right site in a new window (external navigations are stubbed, so the test never leaves the sandbox).
+  handler uses; **tap-anywhere spawns an effect** (≥ 12 of 15 taps, auto-spawner off), tapping a link spawns nothing (no
+  effect, no sparks) and opens the right site in a new window (external navigations are stubbed, so the test never leaves
+  the sandbox). **Origins**: at 1600×1000 a tap clear of the keepout buffer zone starts an effect within 30px of the tap
+  (measured the moment it lands); each of the 12 spawn functions called with an origin returns `true` and starts there;
+  an origin in a corner stays on screen and one beside the lockup never overlaps it; taps on the wordmark, the motto
+  or in the 16px buffer margin spawn nothing. **Spark surge**: one pooled `canvas.cyberspace-surge` (fixed,
+  `pointer-events: none`, z-index 1, in `<body>`) draws pixels, then within 1.5s its loop stops, frames stop advancing
+  and the canvas is cleared; with `prefers-reduced-motion: reduce` there is only a flash (no particles) and the effect
+  still spawns.
 * **`ryandebraal.spec`** — no base64 JPEG/PNG/WOFF2 payloads left; every image of the sunset/sakura series exists in the
   package + manifest; first paint requests *only* the Outfit latin font and the avatar; switching to the sakura / sunset / noir
   themes fetches that theme's artwork from the CDN with 200; the avatar lightbox opens and lazily loads the portrait; PDF

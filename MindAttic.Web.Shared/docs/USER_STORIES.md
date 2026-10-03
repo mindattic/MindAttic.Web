@@ -47,5 +47,11 @@ updated: 2026-10-03
 ## Epic D — Packaging
 - **MAU-US-D1 ✅** As a consumer, I can run `build.ps1 -Build <Name> -Output standalone` to copy a component's (or, with `-Kind Theme`, a theme's) raw canonical files verbatim, so I can vendor without packaging. *(verified by `copies a component folder verbatim`.)*
 
+## Epic E — Cyberspace interaction
+- **MAU-US-E1 ✅** As a host page, I can pass an origin `{ x, y }` (viewport %) to any Cyberspace spawn function so the effect starts at that point, clamped on screen and kept out of the keepout buffer zone (keepout rects + 16px), while a call without an origin places itself as before. *Given* an origin clear of the zone, *when* I spawn any of the 12 effects, *then* it starts within 30px of the point, and near the zone or a corner it is pushed or clamped so it neither overlaps the keepout nor leaves the screen. *(verified by `every spawn function honours an origin: starts there, stays on screen, stays out of the keepout` and `a tap outside the keepout spawns an effect that starts at the tap point`.)*
+- **MAU-US-E2 ✅** As a host page, I can call `consoleBg.spawnSparkBurst(x, y)` for a momentary spark surge (gravity-bound sparks with trails that cool white → cyan/blue → orange-red → dark within ~0.3–0.7s, and a flash ring), drawn on one pooled click-through canvas whose animation loop stops at idle. *(verified by `the tap spark burst draws on one pooled click-through canvas, animates, then goes idle`.)*
+- **MAU-US-E3 ✅** As a visitor who prefers reduced motion, a spark surge is only a brief stationary flash. *(verified by `prefers-reduced-motion: a tap gives only a brief flash (no sparks), and the effect still spawns`.)*
+- **MAU-US-E4 ✅** As a host page, I can ask `consoleBg.inKeepout(x, y)` whether a point is in the buffer zone, so taps there (and on links) spawn nothing. *(verified by `a tap inside the keepout buffer zone spawns nothing (no effect, no sparks)` and `tapping a link opens that site in a new window and spawns no effect and no sparks`.)*
+
 ## Priority backlog
 1. Add an in-repo sync-idempotency check so Epic B stories can graduate to ✅ with a named test.

@@ -135,7 +135,7 @@ pre:hover .cpbtn{opacity:1}
 <tr>
 <td><a href="Components/Cyberspace/Cyberspace.md">Cyberspace</a></td>
 <td>HTML + CSS + JS bundle</td>
-<td>Cyberpunk console-background engine: 12 named effects (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT with 24 variants, FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR), scan-line overlay, parallax circuit-board, keepout zones around content. SCHEMATIC draws its shapes from SacredGeometry.</td>
+<td>Cyberpunk console-background engine: 12 named effects (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT with 24 variants, FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR), scan-line overlay, parallax circuit-board, keepout zones around content, spawn-at-a-point origins and a tap spark surge. SCHEMATIC draws its shapes from SacredGeometry.</td>
 </tr>
 <tr>
 <td><a href="Components/SacredGeometry/SacredGeometry.md">SacredGeometry</a></td>
@@ -462,7 +462,7 @@ npm run test:assets     # package checks only, no browser</code></pre>
 <li>For GitHub Action delivery, add a job following <code>.github/workflows/sync-subscribers.yml</code>.</li>
 </ol>
 <h2 id="keepout-zones">Keepout zones</h2>
-<p><code>console-bg.js</code> keeps effects from spawning behind page content. The placer weights overlap with keepout rects four times a normal window overlap, so it strongly prefers the margins. Built-in selectors:</p>
+<p><code>console-bg.js</code> keeps effects from spawning behind page content. The placer weights overlap with keepout rects four times a normal window overlap, so it strongly prefers the margins. An effect spawned at an origin is kept out of each rect plus a 16px buffer (see <a href="#spawning-at-a-point-and-the-tap-spark-surge">Spawning at a point</a>). Built-in selectors:</p>
 <ul>
 <li><code>.cyberspace-keepout</code>, an opt-in marker for any container.</li>
 <li><code>main</code>.</li>
@@ -608,6 +608,49 @@ npm run test:assets     # package checks only, no browser</code></pre>
 <td>STALK (off-screen swarm homes on prey); SCAN (prey detection cone); FLEE (prey redirects away); DEVOUR (cell adopts a wasp glyph then dissolves); DISPERSE (wasps scatter and fade)</td>
 </tr>
 </tbody></table>
+<h3 id="spawning-at-a-point-and-the-tap-spark-surge">Spawning at a point, and the tap spark surge</h3>
+<p><code>window.consoleBg</code> exposes <code>start()</code>, <code>spawnSparkBurst(x, y)</code> and <code>inKeepout(x, y)</code>, plus the spawn functions on the <code>_demo</code> dev handle. Points are viewport percentages (0 to 100), the same unit as the existing <code>posX</code>/<code>posY</code> arguments.</p>
+<p>Every spawn function takes an optional origin <code>{ x, y }</code> as its last (or only) argument, for example <code>consoleBg._demo.spawnMemo({ x: 20, y: 30 })</code>. With an origin the effect starts at that point; without one it places itself as usual.</p>
+<table><thead><tr>
+<th>Effect</th>
+<th>With an origin</th>
+</tr></thead><tbody>
+<tr>
+<td>CRASH, TREMOR, LEAK</td>
+<td>Centred on it</td>
+</tr>
+<tr>
+<td>TERMINAL, SCHEMATIC, HEIST</td>
+<td>The title bar opens on it and the window unfolds from it</td>
+</tr>
+<tr>
+<td>CASCADE</td>
+<td>The first window opens on it; the rest step away from the screen centre</td>
+</tr>
+<tr>
+<td>FRAGMENT</td>
+<td>Types out of it, from whichever corner of the text fits there</td>
+</tr>
+<tr>
+<td>ARTIFACT</td>
+<td>The glyph body is centred on it</td>
+</tr>
+<tr>
+<td>TRACE</td>
+<td>The source node sits on it and the wire runs to a random destination</td>
+</tr>
+<tr>
+<td>PULSAR</td>
+<td>The dot starts on it</td>
+</tr>
+<tr>
+<td>PREDATOR</td>
+<td>The swarm launches from it. If no artifact is big enough to hunt, it releases a LATTICE first</td>
+</tr>
+</tbody></table>
+<p>Every placement is clamped fully on screen and pushed out of the <strong>buffer zone</strong>: each keepout rect grown by <code>KEEPOUT_BUFFER</code> (16px). The transform origin moves to the point, so scale-in animations grow out of it. <code>inKeepout(x, y)</code> tells a host whether a point is in the zone, for example to ignore taps there. Each spawn function returns <code>true</code> when it spawned and <code>false</code> when it had nothing to do (a TRACE already running, no route, no prey without an origin), so a tap handler can try another.</p>
+<p><code>spawnSparkBurst(x, y)</code> (SURGE) is a momentary power surge for tap feedback: a white-hot flash with an expanding glow ring, and 26 to 40 sparks that fly out with random velocities, fall under gravity, trail short streaks with a hot core, and cool from white through cyan and blue to orange-red and dark, burning out in 300 to 700ms. It draws on one pooled canvas (<code>canvas.cyberspace-surge</code>, appended to <code>&lt;body&gt;</code>, <code>position: fixed</code>, <code>pointer-events: none</code>, <code>z-index: 1</code>). The canvas sits above the z-index 0 backdrop, below positioned page content with a higher z-index, and never takes a click. Its <code>requestAnimationFrame</code> loop stops and clears when nothing is alive (<code>data-state</code> reads <code>running</code> or <code>idle</code>), so it costs nothing at rest. Under <code>prefers-reduced-motion: reduce</code> it draws only a brief stationary flash. <code>_demo.sparkStats()</code> reports live counters for tests.</p>
+<p>mindattic.com's tap script uses both: outside the zone and off a link, it fires the surge at the tap, then tries the effects in random order with the tap as origin until one spawns.</p>
 <h2 id="project-layout">Project layout</h2>
 <pre><code class="language-text">MindAttic.UiUx/
   Components/            13 self-contained components (table above)

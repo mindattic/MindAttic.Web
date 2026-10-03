@@ -20,6 +20,12 @@ window.consoleBg = (function () {
     //   PREDATOR   — artifact-hunting swarm      (spawnArtifactPredator)
     //   TERMINAL   — generic console window      (spawnWindow)
     //
+    // Every top-level effect takes an optional origin { x, y } (viewport %) and then starts at
+    // that point — see "Origins" below.
+    //
+    // INPUT RESPONSE (not in the tick dispatcher; a host calls it on a tap):
+    //   SURGE      — spark burst + flash ring    (spawnSparkBurst)
+    //
     // ARTIFACT BEHAVIOR VARIANTS (rolled per spawn — see ART_VARIANTS):
     //   SCATTER    — random blob, all glyphs drift one direction (original)
     //   LATTICE    — Fibonacci grid, whole lattice drifts with corner-wave delay
@@ -3424,9 +3430,139 @@ window.consoleBg = (function () {
         return [bx, by];
     }
 
+    // ── Origins — spawning an effect at a chosen point ──────────────────────────
+    // Every spawn function accepts an optional ORIGIN: an object { x, y } in viewport percent
+    // (0–100, the same unit as the posX/posY arguments of spawnError/spawnWarning/spawnWindow).
+    // It is the last argument, or the only one. With an origin the effect starts there: popups
+    // and memos are centred on it, console windows open their title bar on it (WIN_TITLE_Y),
+    // fragments type out from it, artifacts gather around it, and traces, pulsars, cascades and
+    // predator swarms
+    // emanate from it — always clamped fully on screen and pushed out of the keepout BUFFER ZONE.
+    // Without an origin each effect places itself as it always does.
+    //
+    // The buffer zone is every keepout rect (getKeepoutRects) grown by KEEPOUT_BUFFER px on each
+    // side. inKeepout(x, y) tests a point against it; hosts use it to ignore taps there.
+    var KEEPOUT_BUFFER = 16;
+    // Console-style windows (.cyberspace-win: TERMINAL, CASCADE, SCHEMATIC, HEIST) unfold
+    // downward from their top edge, so an origin lands on the middle of the title bar, this many
+    // px below the top, and the window opens from the tap. Popups and memos are centred instead.
+    var WIN_TITLE_Y = 8;
+
+    function keepoutZones() {
+        var rects = getKeepoutRects(), out = [];
+        for (var i = 0; i < rects.length; i++) {
+            var r = rects[i];
+            out.push({ left: r.left - KEEPOUT_BUFFER, top: r.top - KEEPOUT_BUFFER,
+                       right: r.right + KEEPOUT_BUFFER, bottom: r.bottom + KEEPOUT_BUFFER });
+        }
+        return out;
+    }
+
+    // True when the viewport-% point (x, y) lies inside the keepout buffer zone.
+    function inKeepout(x, y) {
+        var o = asOrigin(typeof x === 'object' ? x : { x: x, y: y });
+        if (!o) return false;
+        var px = o.x / 100 * window.innerWidth, py = o.y / 100 * window.innerHeight;
+        var zones = keepoutZones();
+        for (var i = 0; i < zones.length; i++) {
+            var z = zones[i];
+            if (px >= z.left && px <= z.right && py >= z.top && py <= z.bottom) return true;
+        }
+        return false;
+    }
+
+    // Normalise an origin argument: { x, y } with finite numbers, else null.
+    function asOrigin(o) {
+        if (!o || typeof o !== 'object') return null;
+        var x = +o.x, y = +o.y;
+        return (isFinite(x) && isFinite(y)) ? { x: x, y: y } : null;
+    }
+    // The origin among a spawn function's arguments — its last origin-shaped argument.
+    function findOrigin(args) {
+        for (var i = args.length - 1; i >= 0; i--) {
+            var o = asOrigin(args[i]);
+            if (o) return o;
+        }
+        return null;
+    }
+
+    // Place a w×h px box so its anchor point (ax, ay ∈ 0..1 of the box; 0.5/0.5 = centre) sits on
+    // the origin, then clamp it on screen and push it out of the buffer zone (trying each side of
+    // the zone it hits and keeping the on-screen candidate with the least overlap, then the
+    // smallest move). Returns the box's top-left as viewport % [left, top].
+    function anchorBox(origin, w, h, ax, ay) {
+        var vw = window.innerWidth, vh = window.innerHeight;
+        var zones = keepoutZones();
+        function cx(v) { return Math.max(0, Math.min(v, vw - w)); }
+        function cy(v) { return Math.max(0, Math.min(v, vh - h)); }
+        function overlap(x, y) {
+            var ov = 0;
+            for (var k = 0; k < zones.length; k++) {
+                var z = zones[k];
+                var ox = Math.max(0, Math.min(x + w, z.right)  - Math.max(x, z.left));
+                var oy = Math.max(0, Math.min(y + h, z.bottom) - Math.max(y, z.top));
+                ov += ox * oy;
+            }
+            return ov;
+        }
+        var x0 = origin.x / 100 * vw - w * ax, y0 = origin.y / 100 * vh - h * ay;
+        var x = cx(x0), y = cy(y0);
+        for (var iter = 0; iter < 4; iter++) {
+            if (overlap(x, y) === 0) break;
+            var best = null;
+            for (var k = 0; k < zones.length; k++) {
+                var z = zones[k];
+                if (!(x < z.right && x + w > z.left && y < z.bottom && y + h > z.top)) continue;
+                var cands = [[cx(z.left - w), y], [cx(z.right), y], [x, cy(z.top - h)], [x, cy(z.bottom)]];
+                for (var c = 0; c < cands.length; c++) {
+                    var ov = overlap(cands[c][0], cands[c][1]);
+                    var mv = Math.abs(cands[c][0] - x0) + Math.abs(cands[c][1] - y0);
+                    if (!best || ov < best.ov || (ov === best.ov && mv < best.mv)) {
+                        best = { x: cands[c][0], y: cands[c][1], ov: ov, mv: mv };
+                    }
+                }
+            }
+            if (!best || (best.x === x && best.y === y)) break;
+            x = best.x; y = best.y;
+        }
+        return [x / vw * 100, y / vh * 100];
+    }
+
+    // Anchor an element that is already in the host: measures it (at least minW×minH, for
+    // content that grows after it appears) and writes left/top. Its transform-origin moves to the
+    // origin point (as it falls inside the box), so a scale-in entry animation grows out of the
+    // origin even when clamping or the buffer zone shifted the box.
+    function placeAt(el, origin, minW, minH, ax, ay) {
+        var w = Math.max(el.offsetWidth || 0, minW || 0), h = Math.max(el.offsetHeight || 0, minH || 0);
+        if (ay === 'title') ay = Math.min(0.5, WIN_TITLE_Y / h);
+        var p = anchorBox(origin, w, h, ax, ay);
+        el.style.left = p[0] + '%';
+        el.style.top  = p[1] + '%';
+        var vw = window.innerWidth, vh = window.innerHeight;
+        var tx = Math.max(0, Math.min(w, (origin.x - p[0]) / 100 * vw));
+        var ty = Math.max(0, Math.min(h, (origin.y - p[1]) / 100 * vh));
+        el.style.transformOrigin = Math.round(tx) + 'px ' + Math.round(ty) + 'px';
+        return p;
+    }
+
+    // A point near the origin where a w×h px marker centred on it is on screen and outside the
+    // buffer zone. Returns viewport px [x, y].
+    function anchorPoint(origin, w, h) {
+        var p = anchorBox(origin, w, h, 0.5, 0.5);
+        return [p[0] / 100 * window.innerWidth + w / 2, p[1] / 100 * window.innerHeight + h / 2];
+    }
+
     // ── Terminal windows ────────────────────────────────────────────────────
 
-    function spawnWindow(extraDelay, posX, posY, extraClass) {
+    // spawnWindow(extraDelay, posX, posY, extraClass, origin) — posX/posY place the top-left
+    // (viewport %); an origin opens its title bar on that point instead (it grows downward).
+    // spawnWindow(origin) works too.
+    function spawnWindow(extraDelay, posX, posY, extraClass, origin) {
+        origin = findOrigin(arguments);
+        if (typeof extraDelay !== 'number') extraDelay = 0;
+        if (typeof posX !== 'number') posX = undefined;
+        if (typeof extraClass !== 'string') extraClass = '';
+        if (!getHost()) return false;
         setTimeout(function () {
             var host = getHost();
             if (!host) return;
@@ -3437,9 +3573,11 @@ window.consoleBg = (function () {
             var win = document.createElement('div');
             var colorVar = pick(['', '', 'cyberspace-win--blue', 'cyberspace-win--amber']);
             win.className = 'cyberspace-win' + (colorVar ? ' ' + colorVar : '') + (extraClass ? ' ' + extraClass : '');
-            var wp = posX !== undefined ? [posX, posY] : bestPos(host, 228, 140, -8, 88, 4, 76);
-            win.style.left = wp[0] + '%';
-            win.style.top  = wp[1] + '%';
+            if (!origin) {
+                var wp = posX !== undefined ? [posX, posY] : bestPos(host, 228, 140, -8, 88, 4, 76);
+                win.style.left = wp[0] + '%';
+                win.style.top  = wp[1] + '%';
+            }
 
             var titleEl = document.createElement('div');
             titleEl.className = 'cyberspace-title';
@@ -3451,6 +3589,9 @@ window.consoleBg = (function () {
             win.appendChild(body);
 
             host.appendChild(win);
+            // Lines type in below the title bar after it appears, so the title bar opens on the origin
+            // and the window grows down from it; clamp against its finished height (~110px).
+            if (origin) placeAt(win, origin, 0, 110, 0.5, 'title');
 
             var lineCount = rand(2, 6);
             var lines = [];
@@ -3500,29 +3641,49 @@ window.consoleBg = (function () {
                     }, 130);
                 }
             }, rand(4, 12));
-        }, extraDelay || 0);
+        }, extraDelay);
+        return true;
     }
 
-    function spawnCascade() {
+    // With an origin the first window opens on it and the rest step away from the screen
+    // centre (toward the room the burst has), each clamped on screen and out of the buffer zone.
+    function spawnCascade(origin) {
+        origin = findOrigin(arguments);
+        if (!getHost()) return false;
         var n = rand(3, 6);
-        var x = rand(-5, 75), y = randTop(3, 85);
         var stepX = rand(2, 5), stepY = rand(1, 4);
+        if (origin) {
+            var sx = origin.x >= 50 ? -1 : 1, sy = origin.y >= 50 ? -1 : 1;
+            if (origin.x + sx * stepX * (n - 1) < 0 || origin.x + sx * stepX * (n - 1) > 100) sx = -sx;
+            if (origin.y + sy * stepY * (n - 1) < 0 || origin.y + sy * stepY * (n - 1) > 100) sy = -sy;
+            for (var j = 0; j < n; j++) {
+                spawnWindow(j * rand(65, 210), undefined, undefined, 'cyberspace-cascade',
+                    { x: origin.x + j * sx * stepX, y: origin.y + j * sy * stepY });
+            }
+            return true;
+        }
+        var x = rand(-5, 75), y = randTop(3, 85);
         for (var i = 0; i < n; i++) {
             spawnWindow(i * rand(65, 210), x + i * stepX, y + i * stepY, 'cyberspace-cascade');
         }
+        return true;
     }
 
     // ── Fatal error popup ───────────────────────────────────────────────────
 
-    function spawnError(posX, posY) {
+    // spawnError(posX, posY) places the top-left (viewport %); spawnError(origin) centres it there.
+    function spawnError(posX, posY, origin) {
+        origin = findOrigin(arguments);
         var host = getHost();
-        if (!host) return;
+        if (!host) return false;
 
         var popup = document.createElement('div');
         popup.className = 'cyberspace-err-popup';
-        var ep = posX !== undefined ? [posX, posY] : bestPos(host, 310, 90, -5, 80, 5, 88);
-        popup.style.left = ep[0] + '%';
-        popup.style.top  = ep[1] + '%';
+        if (!origin) {
+            var ep = typeof posX === 'number' ? [posX, posY] : bestPos(host, 310, 90, -5, 80, 5, 88);
+            popup.style.left = ep[0] + '%';
+            popup.style.top  = ep[1] + '%';
+        }
 
         // Layout: [red icon] | [title \n message \n ... \n OK btn]
         var icon = document.createElement('div');
@@ -3546,6 +3707,7 @@ window.consoleBg = (function () {
         popup.appendChild(content);
 
         host.appendChild(popup);
+        if (origin) placeAt(popup, origin, 0, 0, 0.5, 0.5);
 
         setTimeout(function () {
             popup.classList.add('cyberspace-win--out');
@@ -3553,19 +3715,24 @@ window.consoleBg = (function () {
                 if (popup.parentNode) popup.parentNode.removeChild(popup);
             }, 160);
         }, rand(1800, 4000));
+        return true;
     }
 
     // ── Warning popup ───────────────────────────────────────────────────────
 
-    function spawnWarning(posX, posY) {
+    // spawnWarning(posX, posY) places the top-left (viewport %); spawnWarning(origin) centres it there.
+    function spawnWarning(posX, posY, origin) {
+        origin = findOrigin(arguments);
         var host = getHost();
-        if (!host) return;
+        if (!host) return false;
 
         var popup = document.createElement('div');
         popup.className = 'cyberspace-warn-popup';
-        var wp2 = posX !== undefined ? [posX, posY] : bestPos(host, 290, 90, -5, 82, 5, 88);
-        popup.style.left = wp2[0] + '%';
-        popup.style.top  = wp2[1] + '%';
+        if (!origin) {
+            var wp2 = typeof posX === 'number' ? [posX, posY] : bestPos(host, 290, 90, -5, 82, 5, 88);
+            popup.style.left = wp2[0] + '%';
+            popup.style.top  = wp2[1] + '%';
+        }
 
         var content = document.createElement('div');
         content.className = 'cyberspace-warn-popup-content';
@@ -3582,6 +3749,7 @@ window.consoleBg = (function () {
 
         popup.appendChild(content);
         host.appendChild(popup);
+        if (origin) placeAt(popup, origin, 0, 0, 0.5, 0.5);
 
         setTimeout(function () {
             popup.classList.add('cyberspace-win--out');
@@ -3589,6 +3757,7 @@ window.consoleBg = (function () {
                 if (popup.parentNode) popup.parentNode.removeChild(popup);
             }, 160);
         }, rand(2500, 5500));
+        return true;
     }
 
     // ── Floating code fragments ─────────────────────────────────────────────
@@ -3598,20 +3767,48 @@ window.consoleBg = (function () {
     // Plausible typo characters — adjacent-key feel plus common punctuation.
     var FRAG_TYPO_CHARS = 'abcdefghijklmnopqrstuvwxyz_-=+*/.,;:()[]{}';
 
-    function spawnFrag() {
+    // With an origin the fragment types out from that point (its top-left), placed so the
+    // finished text — measured before typing starts — stays on screen and out of the buffer zone.
+    function spawnFrag(origin) {
+        origin = findOrigin(arguments);
         var host = getHost();
-        if (!host) return;
+        if (!host) return false;
 
         var el = document.createElement('div');
         var variant = pick(FRAG_COLOR_VARIANTS);
         el.className = 'cyberspace-frag' + (variant ? ' ' + variant : '');
-        // Code fragments are ~280×120 estimated — pick a position that avoids the tile keepout
-        var fp = safePos(280, 120, -4, 94, 2, 94);
-        el.style.left = fp[0] + '%';
-        el.style.top  = fp[1] + '%';
-        host.appendChild(el);
-
         var text      = pick(FRAGS);
+        if (origin) {
+            // Measure the finished text, then pick the corner of it that sits on the origin: the
+            // first of top-left, top-right, bottom-left, bottom-right whose box fits on screen and
+            // clear of the buffer zone without moving. The box is pinned by that corner (right/
+            // bottom instead of left/top, text right-aligned for a right corner), so the text
+            // types out of the origin and grows away from it. If no corner fits, top-left is
+            // clamped and pushed like any other box.
+            el.textContent = text;
+            host.appendChild(el);
+            var fw = el.offsetWidth, fh = el.offsetHeight;
+            var vw = window.innerWidth, vh = window.innerHeight;
+            var corners = [[0, 0], [1, 0], [0, 1], [1, 1]], fc = corners[0], fpos = null;
+            for (var ci = 0; ci < corners.length; ci++) {
+                var cp = anchorBox(origin, fw, fh, corners[ci][0], corners[ci][1]);
+                var wantL = origin.x - corners[ci][0] * fw / vw * 100, wantT = origin.y - corners[ci][1] * fh / vh * 100;
+                if (Math.abs(cp[0] - wantL) < 0.01 && Math.abs(cp[1] - wantT) < 0.01) { fc = corners[ci]; fpos = cp; break; }
+            }
+            if (!fpos) fpos = anchorBox(origin, fw, fh, 0, 0);
+            if (fc[0]) { el.style.right = (100 - fpos[0] - fw / vw * 100) + '%'; el.style.textAlign = 'right'; }
+            else       { el.style.left = fpos[0] + '%'; }
+            if (fc[1]) { el.style.bottom = (100 - fpos[1] - fh / vh * 100) + '%'; }
+            else       { el.style.top = fpos[1] + '%'; }
+            el.textContent = '';
+        } else {
+            // Code fragments are ~280×120 estimated — pick a position that avoids the tile keepout
+            var fp = safePos(280, 120, -4, 94, 2, 94);
+            el.style.left = fp[0] + '%';
+            el.style.top  = fp[1] + '%';
+            host.appendChild(el);
+        }
+
         // msPerChar 1.1-3.3 — 10% slower than the previous rand(1,3).
         var msPerChar = rand(11, 33) / 10;
         var lastTs    = null;
@@ -3687,24 +3884,29 @@ window.consoleBg = (function () {
             requestAnimationFrame(frame);
         }
         requestAnimationFrame(frame);
+        return true;
     }
 
     // ── Geometry schematic window ────────────────────────────────────────────
     // Shape catalog + renderer extracted to Components/SacredGeometry/sacred-geometry.js
-    // (window.SacredGeometry). spawnGeoWindow() below draws into it; nothing else changed.
+    // (window.SacredGeometry). spawnGeoWindow() below draws into it.
 
-    function spawnGeoWindow(forceIdx) {
+    // spawnGeoWindow(forceIdx, origin) — an origin opens its title bar there; spawnGeoWindow(origin) works.
+    function spawnGeoWindow(forceIdx, origin) {
+        origin = findOrigin(arguments);
         var host = getHost();
-        if (!host) return;
+        if (!host) return false;
         var SG = window.SacredGeometry;
-        if (!SG) return;   // graceful degrade if sacred-geometry.js didn't load
+        if (!SG) return false;   // graceful degrade if sacred-geometry.js didn't load
         var idx = (typeof forceIdx === 'number') ? forceIdx : rand(0, SG.count - 1);
 
         var win = document.createElement('div');
         win.className = 'cyberspace-win cyberspace-geo-win';
-        var gp = bestPos(host, 240, 130, -5, 80, 5, 90);
-        win.style.left = gp[0] + '%';
-        win.style.top  = gp[1] + '%';
+        if (!origin) {
+            var gp = bestPos(host, 240, 130, -5, 80, 5, 90);
+            win.style.left = gp[0] + '%';
+            win.style.top  = gp[1] + '%';
+        }
 
         var titleEl = document.createElement('div');
         titleEl.className = 'cyberspace-title';
@@ -3745,6 +3947,7 @@ window.consoleBg = (function () {
         innerEl.className = 'cyberspace-geo-report-inner';
         reportEl.appendChild(innerEl);
         bodyEl.appendChild(reportEl);
+        if (origin) placeAt(win, origin, 0, 0, 0.5, 'title');   // after the report: it widens the window
 
         var lineH = 7.7; // px per line: 0.33rem * 16px base * 1.45 line-height ≈ 7.66
         var visCount = Math.ceil(110 / lineH) + 3; // lines to fill viewport + 3 lookahead
@@ -3771,6 +3974,7 @@ window.consoleBg = (function () {
             win.classList.add('cyberspace-win--out');
             setTimeout(function () { if (win.parentNode) win.parentNode.removeChild(win); }, 500);
         }, ttl);
+        return true;
     }
 
     // ── Corporate memo intercept ──────────────────────────────────────────────
@@ -3941,17 +4145,23 @@ window.consoleBg = (function () {
         }, 22);
     }
 
-    function spawnMemo() {
+    // An origin centres the memo on that point.
+    function spawnMemo(origin) {
+        origin = findOrigin(arguments);
         var host = getHost();
-        if (!host) return;
+        if (!host) return false;
         var el = document.createElement('div');
         el.className = 'cyberspace-memo';
-        var mp = bestPos(host, 240, 110, -5, 78, 4, 88);
-        el.style.left = mp[0] + '%';
-        el.style.top  = mp[1] + '%';
+        if (!origin) {
+            var mp = bestPos(host, 240, 110, -5, 78, 4, 88);
+            el.style.left = mp[0] + '%';
+            el.style.top  = mp[1] + '%';
+        }
         el.textContent = pick(MEMOS);
         host.appendChild(el);
+        if (origin) placeAt(el, origin, 0, 0, 0.5, 0.5);
         setTimeout(function () { eraseMemo(el); }, rand(3000, 6000));
+        return true;
     }
 
 
@@ -4121,14 +4331,18 @@ window.consoleBg = (function () {
     ];
     function folderItemText() { return pick(FOLDER_NAMES); }
 
-    function spawnFolderRip() {
+    // An origin opens the file-browser window's title bar on that point.
+    function spawnFolderRip(origin) {
+        origin = findOrigin(arguments);
         var host = getHost();
-        if (!host) return;
+        if (!host) return false;
         var win = document.createElement('div');
         win.className = 'cyberspace-win cyberspace-folder-win';
-        var fp = bestPos(host, 220, 170, -2, 86, 4, 80);
-        win.style.left = fp[0] + '%';
-        win.style.top  = fp[1] + '%';
+        if (!origin) {
+            var fp = bestPos(host, 220, 170, -2, 86, 4, 80);
+            win.style.left = fp[0] + '%';
+            win.style.top  = fp[1] + '%';
+        }
 
         var titleEl = document.createElement('div');
         titleEl.className = 'cyberspace-title';
@@ -4148,6 +4362,7 @@ window.consoleBg = (function () {
         }
         win.appendChild(listEl);
         host.appendChild(win);
+        if (origin) placeAt(win, origin, 0, 0, 0.5, 'title');
 
         // After a beat, drop the highlight on a random consecutive run of 1–3 folders.
         var hiCount = rand(1, 3);
@@ -4190,6 +4405,7 @@ window.consoleBg = (function () {
             win.classList.add('cyberspace-folder-win--fade');
             setTimeout(function () { if (win.parentNode) win.parentNode.removeChild(win); }, 600);
         }, winFadeAt);
+        return true;
     }
 
     // ── Floating artifact clusters ───────────────────────────────────────────
@@ -4250,15 +4466,42 @@ window.consoleBg = (function () {
         for (var ri = 0; ri < rows; ri++) rowY[ri + 1] = rowY[ri] + rowH[ri];
         return { colW: colW, rowH: rowH, colX: colX, rowY: rowY, totalW: colX[cols], totalH: rowY[rows] };
     }
+    // artSpawn sets ART_ORIGIN (viewport %) for the duration of one synchronous variant build;
+    // artNewContainer then puts the container's (0,0) on it, and records the first container it
+    // makes in ART_LAST so artSpawn can return it and re-centre the finished glyph body.
+    var ART_ORIGIN = null, ART_LAST = null;
     function artNewContainer() {
         var el = document.createElement('div');
         el.className = 'cyberspace-artifact ' + pick(ART_PALETTES);
+        if (!ART_LAST) ART_LAST = el;
+        if (ART_ORIGIN) {
+            el.style.left = ART_ORIGIN.x + '%';
+            el.style.top  = ART_ORIGIN.y + '%';
+            return el;
+        }
         // Artifact body fits in roughly a 200×140 box once segments and feelers are spawned.
         // Use safePos so the structure doesn't materialise on top of the tile container.
         var ap = safePos(200, 140, -2, 88, -2, 85);
         el.style.left = ap[0] + '%';
         el.style.top  = ap[1] + '%';
         return el;
+    }
+    // Shift an artifact container so the bounding box of its glyphs is centred on the origin
+    // (clamped on screen, out of the buffer zone). The container itself is 0×0.
+    function artCentreOn(el, origin) {
+        var nodes = el.querySelectorAll('*');
+        var l = Infinity, t = Infinity, r = -Infinity, b = -Infinity;
+        for (var i = 0; i < nodes.length; i++) {
+            var rc = nodes[i].getBoundingClientRect();
+            if (!rc.width && !rc.height) continue;
+            l = Math.min(l, rc.left); t = Math.min(t, rc.top); r = Math.max(r, rc.right); b = Math.max(b, rc.bottom);
+        }
+        if (!(r > l)) return;
+        var vw = window.innerWidth, vh = window.innerHeight;
+        var p = anchorBox(origin, r - l, b - t, 0.5, 0.5);
+        // Shift the container's own left/top (still at the origin) by how far the body must move.
+        el.style.left = (origin.x + (p[0] / 100 * vw - l) / vw * 100) + '%';
+        el.style.top  = (origin.y + (p[1] / 100 * vh - t) / vh * 100) + '%';
     }
     function artGlyph() {
         return Math.random() < ART_INV_PHI
@@ -5923,10 +6166,26 @@ window.consoleBg = (function () {
     // Dispatcher — every spawn rolls a random variant from the enum so the screen cycles
     // through every iteration of how artifacts have ever looked. Pass forceVariant
     // (e.g. 'SPIDER') to bypass the random roll — used by the demo page.
-    function spawnArtifact(forceVariant) {
+    // spawnArtifact(forceVariant, origin) — an origin centres the glyph body there;
+    // spawnArtifact(origin) works.
+    function spawnArtifact(forceVariant, origin) {
+        origin = findOrigin(arguments);
+        if (!getHost()) return false;
+        artSpawn(typeof forceVariant === 'string' ? forceVariant : null, origin);
+        return true;
+    }
+    // Build one artifact (random variant unless given) and return its container element.
+    function artSpawn(variant, origin) {
         var host = getHost();
-        if (!host) return;
-        var variant = forceVariant || ART_VARIANTS[Math.floor(Math.random() * ART_VARIANTS.length)];
+        if (!host) return null;
+        variant = variant || ART_VARIANTS[Math.floor(Math.random() * ART_VARIANTS.length)];
+        ART_ORIGIN = origin || null; ART_LAST = null;
+        try { artBuildVariant(host, variant); } finally { ART_ORIGIN = null; }
+        var el = ART_LAST; ART_LAST = null;
+        if (origin && el && el.parentNode) artCentreOn(el, origin);
+        return el;
+    }
+    function artBuildVariant(host, variant) {
         switch (variant) {
             case 'SCATTER':   spawnArtifactScatter(host);   break;
             case 'LATTICE':   spawnArtifactLattice(host);   break;
@@ -5996,15 +6255,17 @@ window.consoleBg = (function () {
         return out; // array of letter strings; join with letter-gap, gap inside string is intra-letter gap
     }
 
-    function spawnMorseDot() {
+    // An origin puts the dot on that point (it then drifts away from it as usual).
+    function spawnMorseDot(origin) {
+        origin = findOrigin(arguments);
         var host = getHost();
-        if (!host) return;
+        if (!host) return false;
 
         // Natural-length message — Morse rules apply, no Fibonacci constraint.
         var msg     = pick(MORSE_MESSAGES);
         var color   = pick(MORSE_COLORS);
         var letters = morseEncode(msg);
-        if (!letters.length) return;
+        if (!letters.length) return false;
 
         // 90% blink, 10% shift. Shift mode is the rarer "this one's typing the cheat-code in motion" variant.
         var mode = Math.random() < 0.10 ? 'shift' : 'blink';
@@ -6027,7 +6288,14 @@ window.consoleBg = (function () {
         // composes cleanly with the orbit's drift transform. Spawn coords avoid the tile keepout.
         var orbit = document.createElement('div');
         orbit.className = 'cyberspace-morse-orbit';
-        var op = safePos(40, 40, 4, 92, 4, 92);
+        var op;
+        if (origin) {
+            // A 40×40 box around the dot (room for shift-mode moves), on screen and out of the zone.
+            var dp = anchorPoint(origin, 40, 40);
+            op = [dp[0] / window.innerWidth * 100, dp[1] / window.innerHeight * 100];
+        } else {
+            op = safePos(40, 40, 4, 92, 4, 92);
+        }
         orbit.style.left = op[0] + '%';
         orbit.style.top  = op[1] + '%';
         // Tiny drift vector — barely moves, but enough that you'd notice if you watched it.
@@ -6123,6 +6391,7 @@ window.consoleBg = (function () {
         // Safety cap — if the queue somehow runs long, force-clean
         var maxLifeMs = queue.reduce(function (a, q) { return a + q.units * unit; }, 0) + 1500;
         setTimeout(finish, maxLifeMs + 800);
+        return true;
     }
 
     // ── Network connection attempts ───────────────────────────────────────────
@@ -6574,9 +6843,14 @@ window.consoleBg = (function () {
     // The swarm is no longer a network-failure mechanic. It hunts the LARGEST artifact on
     // screen, consuming and converting its cells one at a time until nothing remains. Bails
     // silently if there's no suitable target. Should feel like a surprise every time.
-    function spawnArtifactPredator() {
+    //
+    // With an origin the swarm launches from that point instead of a random spot near the prey,
+    // and if no prey is big enough it first releases one (a LATTICE artifact, 25+ cells, placed
+    // by the usual rules) to hunt, so an origin call always produces a visible swarm.
+    function spawnArtifactPredator(origin) {
+        origin = findOrigin(arguments);
         var host = getHost();
-        if (!host) return;
+        if (!host) return false;
         // Find the largest artifact on screen by cell count
         var artifacts = host.querySelectorAll('.cyberspace-artifact');
         var target = null, mostCells = 0;
@@ -6584,7 +6858,11 @@ window.consoleBg = (function () {
             var c = a.querySelectorAll('.cyberspace-artifact-char').length;
             if (c > mostCells) { mostCells = c; target = a; }
         });
-        if (!target || mostCells < 16) return; // nothing big enough — silent bail
+        if ((!target || mostCells < 16) && origin) {
+            target = artSpawn('LATTICE', null);
+            mostCells = target ? target.querySelectorAll('.cyberspace-artifact-char').length : 0;
+        }
+        if (!target || mostCells < 16) return false; // nothing big enough — silent bail
 
         // Mark the artifact as under attack — its own despawn timer will skip removal
         // while this flag is set. The predator removes the empty container itself when
@@ -6600,11 +6878,17 @@ window.consoleBg = (function () {
         var cellPool = Array.prototype.slice.call(target.querySelectorAll('.cyberspace-artifact-char'));
         var n = Math.min(cellPool.length, rand(8, 14));
 
-        // Swarm origin — distant point off the artifact
-        var origAng  = Math.random() * Math.PI * 2;
-        var origDist = 220 + Math.random() * 200;
-        var ox = Math.max(20, Math.min((host.offsetWidth  || 800) - 20, ax + Math.cos(origAng) * origDist));
-        var oy = Math.max(20, Math.min((host.offsetHeight || 600) - 20, ay + Math.sin(origAng) * origDist));
+        // Swarm origin — the caller's origin, else a distant point off the artifact
+        var ox, oy;
+        if (origin) {
+            var sp = anchorPoint(origin, 40, 40);
+            ox = sp[0] - hostRect.left; oy = sp[1] - hostRect.top;
+        } else {
+            var origAng  = Math.random() * Math.PI * 2;
+            var origDist = 220 + Math.random() * 200;
+            ox = Math.max(20, Math.min((host.offsetWidth  || 800) - 20, ax + Math.cos(origAng) * origDist));
+            oy = Math.max(20, Math.min((host.offsetHeight || 600) - 20, ay + Math.sin(origAng) * origDist));
+        }
 
         // ── Prey detection + panic response ────────────────────────────────────
         // The artifact has a directional detection cone — fastest in its direction of travel,
@@ -6743,6 +7027,7 @@ window.consoleBg = (function () {
             setTimeout(function () { if (target.parentNode) target.parentNode.removeChild(target); }, 500);
         }
         requestAnimationFrame(step);
+        return true;
     }
 
     // Hostile interception swarm — originates OFF the wire and HOMES on a moving target.
@@ -7013,10 +7298,14 @@ window.consoleBg = (function () {
     // Cleared by every terminal path (success fade-out, planner failure, willFail trigger).
     var NET_BUSY = false;
 
-    function spawnNetConnect() {
-        if (NET_BUSY) return;
+    // With an origin the source node sits on that point and the wire runs from it to a random
+    // destination whose route stays clear of the keepout. Returns false when a trace is already
+    // running or no clear route exists.
+    function spawnNetConnect(origin) {
+        origin = findOrigin(arguments);
+        if (NET_BUSY) return false;
         var host = getHost();
-        if (!host) return;
+        if (!host) return false;
         NET_BUSY = true;
         var hostW = host.offsetWidth  || 800;
         var hostH = host.offsetHeight || 600;
@@ -7053,13 +7342,18 @@ window.consoleBg = (function () {
             return false;
         }
         var p1, p2, att = 0;
+        var fixedP1 = null;
+        if (origin) {
+            var sp = anchorPoint(origin, 100, 24);
+            fixedP1 = [sp[0] - hostRect.left, sp[1] - hostRect.top];
+        }
         do {
-            p1 = [rand(marg, hostW - marg), rand(marg, hostH - marg)];
+            p1 = fixedP1 || [rand(marg, hostW - marg), rand(marg, hostH - marg)];
             p2 = [rand(marg, hostW - marg), rand(marg, hostH - marg)];
             att++;
-        } while ((Math.abs(p1[0]-p2[0]) + Math.abs(p1[1]-p2[1]) < 220 || pairCrossesKeepout(p1, p2)) && att < 24);
+        } while ((Math.abs(p1[0]-p2[0]) + Math.abs(p1[1]-p2[1]) < 220 || pairCrossesKeepout(p1, p2)) && att < (fixedP1 ? 64 : 24));
         // If no clear placement was found, abort cleanly so we don't draw across tiles
-        if (pairCrossesKeepout(p1, p2)) { NET_BUSY = false; return; }
+        if (pairCrossesKeepout(p1, p2)) { NET_BUSY = false; return false; }
 
         function makeBox(px, py, opaque) {
             var el = document.createElement('div');
@@ -7085,17 +7379,33 @@ window.consoleBg = (function () {
         // So: retry the planner up to 8× with re-rolled randomness; if every attempt fails, this
         // attempt is silently aborted (boxes removed, NET_BUSY released — no fail message).
         var plan = null;
-        for (var pAtt = 0; pAtt < 8; pAtt++) {
-            plan = netPlanFibPath(p1, bw1, bh1, p2, bw2, bh2);
-            if (plan && plan.pts && plan.pts.length >= 2) break;
-            plan = null;
+        function planRoute() {
+            for (var pAtt = 0; pAtt < 8; pAtt++) {
+                var pl = netPlanFibPath(p1, bw1, bh1, p2, bw2, bh2);
+                if (pl && pl.pts && pl.pts.length >= 2) return pl;
+            }
+            return null;
+        }
+        plan = planRoute();
+        // With an origin the source is fixed, so a failed plan re-rolls the destination instead
+        // of giving up on the tap.
+        for (var reroll = 0; !plan && fixedP1 && reroll < 6; reroll++) {
+            var q, qa = 0;
+            do {
+                q = [rand(marg, hostW - marg), rand(marg, hostH - marg)];
+                qa++;
+            } while ((Math.abs(p1[0]-q[0]) + Math.abs(p1[1]-q[1]) < 220 || pairCrossesKeepout(p1, q)) && qa < 64);
+            if (pairCrossesKeepout(p1, q)) continue;
+            p2 = q;
+            box2.style.left = p2[0] + 'px'; box2.style.top = p2[1] + 'px';
+            plan = planRoute();
         }
         if (!plan) {
             // Couldn't plan a route at all — silent abort, no SEVER message (nothing was drawn).
             if (box1.parentNode) box1.parentNode.removeChild(box1);
             if (box2.parentNode) box2.parentNode.removeChild(box2);
             NET_BUSY = false;
-            return;
+            return false;
         }
         var pts = plan.pts;
         var gridPath = []; // legacy occupancy hook — empty since the new planner doesn't use NET_OCCUPIED
@@ -7211,6 +7521,158 @@ window.consoleBg = (function () {
             requestAnimationFrame(tick);
         }
         requestAnimationFrame(tick);
+        return true;
+    }
+
+    // ── SURGE — tap spark burst ─────────────────────────────────────────────────
+    // spawnSparkBurst(x, y) — a momentary power surge at a viewport-% point (or pass { x, y }):
+    // a white-hot flash with an expanding glow ring, and a shower of sparks that fly outward with
+    // random velocities, fall under gravity, trail short streaks with a hot core, and cool
+    // white → electric cyan/blue → orange-red → dark, burning out within ~300–700ms.
+    //
+    // Everything draws on ONE pooled full-screen canvas (created on first use, appended to <body>,
+    // position:fixed, pointer-events:none, z-index:1 — above the z-index:0 backdrop layers, below
+    // any positioned page content with a higher z-index, and never intercepting a click). Its
+    // requestAnimationFrame loop runs only while something is alive and stops at idle, clearing
+    // the canvas, so a page at rest pays nothing. The canvas carries data-state="running|idle".
+    // Under prefers-reduced-motion: reduce it draws only a brief, stationary flash (no particles,
+    // no ring). Not gated by the auto-spawn switch or the FX_* toggles: it is a response to input.
+    var SURGE_GRAVITY = 1500;              // px/s²
+    var SURGE_DRAG    = 2.2;               // 1/s velocity damping
+    var SURGE_RAMP = [                     // heat (1 → 0) colour ramp, Cyberspace palette
+        [1.00, 255, 255, 255],             // white-hot
+        [0.78, 150, 240, 255],             // electric cyan
+        [0.58,  60, 130, 255],             // blue
+        [0.36, 255, 110,  30],             // orange
+        [0.18, 255,   0,  51],             // red
+        [0.00,  40,   6,   8]              // dark
+    ];
+    var surge = { canvas: null, ctx: null, dpr: 1, sparks: [], flashes: [], raf: 0, last: 0, frames: 0 };
+
+    function surgeReduced() {
+        try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+        catch (e) { return false; }
+    }
+    function surgeCanvas() {
+        if (!surge.canvas || !surge.canvas.isConnected) {
+            var cv = document.createElement('canvas');
+            cv.className = 'cyberspace-surge';
+            cv.setAttribute('aria-hidden', 'true');
+            cv.style.cssText = 'position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1;';
+            cv.dataset.state = 'idle';
+            (document.body || document.documentElement).appendChild(cv);
+            surge.canvas = cv;
+            surge.ctx = cv.getContext('2d');
+        }
+        var dpr = Math.min(2, window.devicePixelRatio || 1);
+        var w = Math.round(window.innerWidth * dpr), h = Math.round(window.innerHeight * dpr);
+        if (surge.canvas.width !== w || surge.canvas.height !== h) { surge.canvas.width = w; surge.canvas.height = h; }
+        surge.dpr = dpr;
+        return surge.ctx;
+    }
+    function surgeColor(heat, alpha) {
+        var R = SURGE_RAMP;
+        for (var i = 0; i < R.length - 1; i++) {
+            if (heat <= R[i][0] && heat >= R[i + 1][0]) {
+                var t = (heat - R[i + 1][0]) / (R[i][0] - R[i + 1][0]);
+                return 'rgba(' + Math.round(R[i + 1][1] + (R[i][1] - R[i + 1][1]) * t) + ',' +
+                    Math.round(R[i + 1][2] + (R[i][2] - R[i + 1][2]) * t) + ',' +
+                    Math.round(R[i + 1][3] + (R[i][3] - R[i + 1][3]) * t) + ',' + alpha.toFixed(3) + ')';
+            }
+        }
+        return 'rgba(255,255,255,' + alpha.toFixed(3) + ')';
+    }
+    function surgeFrame(ts) {
+        var ctx = surge.ctx, dpr = surge.dpr;
+        var dt = surge.last ? Math.min(0.05, (ts - surge.last) / 1000) : 1 / 60;
+        surge.last = ts;
+        surge.frames++;
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.clearRect(0, 0, surge.canvas.width, surge.canvas.height);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.globalCompositeOperation = 'lighter';
+        ctx.lineCap = 'round';
+
+        // Flash: radial glow at the origin plus (full motion only) an expanding ring.
+        for (var f = surge.flashes.length - 1; f >= 0; f--) {
+            var fl = surge.flashes[f];
+            fl.age += dt * 1000;
+            var k = fl.age / fl.life;
+            if (k >= 1) { surge.flashes.splice(f, 1); continue; }
+            var glowA = (1 - k) * (1 - k);
+            var gr = fl.ring ? 10 + 26 * k : 22;
+            var g = ctx.createRadialGradient(fl.x, fl.y, 0, fl.x, fl.y, gr * 1.6);
+            g.addColorStop(0, 'rgba(255,255,255,' + (0.9 * glowA).toFixed(3) + ')');
+            g.addColorStop(0.35, 'rgba(150,240,255,' + (0.55 * glowA).toFixed(3) + ')');
+            g.addColorStop(1, 'rgba(60,130,255,0)');
+            ctx.fillStyle = g;
+            ctx.beginPath(); ctx.arc(fl.x, fl.y, gr * 1.6, 0, Math.PI * 2); ctx.fill();
+            if (fl.ring) {
+                ctx.strokeStyle = 'rgba(150,240,255,' + (0.8 * (1 - k)).toFixed(3) + ')';
+                ctx.lineWidth = 2.2 * (1 - k) + 0.4;
+                ctx.beginPath(); ctx.arc(fl.x, fl.y, 6 + 54 * (1 - Math.pow(1 - k, 3)), 0, Math.PI * 2); ctx.stroke();
+            }
+        }
+
+        // Sparks: integrate, then draw a streak (tail → head) and a hot core while young.
+        var damp = Math.max(0, 1 - SURGE_DRAG * dt);
+        for (var i = surge.sparks.length - 1; i >= 0; i--) {
+            var s = surge.sparks[i];
+            s.age += dt * 1000;
+            if (s.age >= s.life) { surge.sparks.splice(i, 1); continue; }
+            s.vx *= damp; s.vy = s.vy * damp + SURGE_GRAVITY * dt;
+            s.x += s.vx * dt; s.y += s.vy * dt;
+            var heat = 1 - s.age / s.life;
+            var tail = 0.016 + 0.02 * heat;            // streak length in seconds of travel
+            ctx.strokeStyle = surgeColor(heat, Math.min(1, 0.25 + heat));
+            ctx.lineWidth = s.w * (0.45 + 0.55 * heat);
+            ctx.beginPath(); ctx.moveTo(s.x - s.vx * tail, s.y - s.vy * tail); ctx.lineTo(s.x, s.y); ctx.stroke();
+            if (heat > 0.55) {
+                ctx.fillStyle = 'rgba(255,255,255,' + ((heat - 0.55) / 0.45).toFixed(3) + ')';
+                ctx.beginPath(); ctx.arc(s.x, s.y, s.w * 0.7, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        ctx.globalCompositeOperation = 'source-over';
+        if (surge.sparks.length || surge.flashes.length) {
+            surge.raf = requestAnimationFrame(surgeFrame);
+        } else {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, surge.canvas.width, surge.canvas.height);
+            surge.raf = 0; surge.last = 0;
+            surge.canvas.dataset.state = 'idle';
+        }
+    }
+    function spawnSparkBurst(x, y) {
+        var o = asOrigin(typeof x === 'object' ? x : { x: x, y: y });
+        if (!o || !document.body) return false;
+        var ctx = surgeCanvas();
+        if (!ctx) return false;
+        var px = o.x / 100 * window.innerWidth, py = o.y / 100 * window.innerHeight;
+        if (surgeReduced()) {
+            surge.flashes.push({ x: px, y: py, age: 0, life: 180, ring: false });
+        } else {
+            surge.flashes.push({ x: px, y: py, age: 0, life: 260, ring: true });
+            var n = rand(26, 40);
+            for (var i = 0; i < n; i++) {
+                var a = Math.random() * Math.PI * 2;
+                var sp = 160 + Math.random() * Math.random() * 640;   // most slow-ish, a few fast
+                surge.sparks.push({
+                    x: px, y: py,
+                    vx: Math.cos(a) * sp,
+                    vy: Math.sin(a) * sp - 120,                       // slight upward kick
+                    age: 0, life: rand(300, 700), w: 0.9 + Math.random() * 1.4
+                });
+            }
+        }
+        surge.canvas.dataset.state = 'running';
+        if (!surge.raf) { surge.last = 0; surge.raf = requestAnimationFrame(surgeFrame); }
+        return true;
+    }
+    // Live counters for tests and dev tools — no side effects.
+    function sparkStats() {
+        return { running: !!surge.raf, sparks: surge.sparks.length, flashes: surge.flashes.length,
+                 frames: surge.frames, reducedMotion: surgeReduced() };
     }
 
     // ── Spawn rate constants — edit here to tune both hosts identically ────────
@@ -7320,12 +7782,21 @@ window.consoleBg = (function () {
         }
     }).observe(document.body, { childList: true, subtree: true });
 
-    // _demo: internal-but-public spawn handles for the demo/observation page.
+    // Public API: start, spawnSparkBurst(x, y) and inKeepout(x, y) (viewport %), for any host.
+    // _demo: internal-but-public spawn handles for the demo/observation page and tap handlers.
     // Underscore-prefixed to signal "dev tool, not production API". Safe to ignore;
-    // accessing these has no side effect until you invoke them.
+    // accessing these has no side effect until you invoke them. Every spawn* takes an optional
+    // origin { x, y } (viewport %) — see "Origins" — and returns true when it spawned something,
+    // false when it declined (no host, a TRACE already running, no prey for PREDATOR, …).
     return {
         start: start,
+        spawnSparkBurst: spawnSparkBurst,
+        inKeepout: inKeepout,
         _demo: {
+            KEEPOUT_BUFFER: KEEPOUT_BUFFER,
+            inKeepout: inKeepout,
+            spawnSparkBurst: spawnSparkBurst,
+            sparkStats: sparkStats,
             ART_VARIANTS: ART_VARIANTS,
             SacredGeometry: (typeof window !== 'undefined') ? window.SacredGeometry : null,
             spawnArtifact: spawnArtifact,
