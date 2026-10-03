@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MindAttic Cares</title>
-<meta name="description" content="Charity work, in public, with the receipts attached.">
+<title>mindatticcares.com</title>
+<meta name="description" content="MindAttic Cares, the charity arm of MindAttic LLC: one static page that publishes full fundraising-event playbooks in the open, starting with a Y2K party benefiting Child's Play.">
 <meta name="generator" content="MindAttic Codex build-readme.ps1">
-<meta name="generated" content="2026-10-02">
+<meta name="generated" content="2026-10-03">
 <style>:root{
   --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
   --border:#30363d;
@@ -110,171 +110,143 @@ pre:hover .cpbtn{opacity:1}
     <div id="toc-inner"></div>
   </nav>
   <main id="content">
-<h1 id="mindattic-cares">MindAttic Cares</h1>
-<p><strong>Charity work, in public, with the receipts attached.</strong></p>
-<p>MindAttic Cares is the philanthropic arm of MindAttic LLC — the place where we organize, document, and execute the events and giving campaigns we run for causes we believe in. The site at <strong><a href="https://mindatticcares.com/">mindatticcares.com</a></strong> is a single hand-authored HTML page: every initiative on it is fully drafted in public, complete with timelines, budgets, vendor lists, and post-event wrap-ups, so anyone can copy what worked and skip what didn't.</p>
-<p>The flagship initiative is the <strong>Child's Play</strong> track — running an annual fundraising event that goes 100% to <a href="https://childsplaycharity.org/">childsplaycharity.org</a>, the gaming community's children's-hospital charity. The first event in that track is <strong>Y2K: End of the World Party</strong>, a 12-week-planned, 1999-themed dance event for the millennial demographic, with the full event playbook (timeline → venue → equipment → run-of-show → budget → sponsorship → post-event) published on the site.</p>
-<p><strong>Why MindAttic Cares:</strong></p>
+<h1 id="mindatticcarescom">mindatticcares.com</h1>
+<p>MindAttic Cares, the charity arm of MindAttic LLC: one static page that publishes full fundraising-event playbooks in the open, starting with a Y2K party benefiting Child's Play.</p>
+<p><a href="index.htm"><img src="https://img.shields.io/badge/HTML5-one%20page-e34f26" alt="HTML5"></a> <a href="index.htm"><img src="https://img.shields.io/badge/JavaScript-vanilla-f7df1e" alt="JavaScript"></a> <a href="https://github.com/mindattic/MindAttic.UiUx"><img src="https://img.shields.io/badge/assets-MindAttic.UiUx%20V9-6c5ce7" alt="Assets"></a> <a href="docs/BIBLE.md"><img src="https://img.shields.io/badge/build%20step-none-555555" alt="Build"></a> <a href="https://mindatticcares.com"><img src="https://img.shields.io/badge/status-live-2ea043" alt="Status"></a></p>
+<p><img src="docs/images/home.png" alt="The MindAttic Cares home page: a large black M with a red brush-stroke heart above the MindAttic Cares heading and introduction, with navigation for Child's Play and Y2K: End of the World Party"></p>
+<p>Try it: <a href="https://mindatticcares.com/">mindatticcares.com</a></p>
+<h2 id="why">Why</h2>
 <ul>
-<li><strong>Public-by-default planning.</strong> Every event has its full playbook on the public site — venue selection, permits, equipment sourcing, floor plan, staffing, run-of-show, budget, sponsorship pitch deck, marketing, compliance, decor plan. No proprietary checklists kept behind a paywall.</li>
-<li><strong>100% pass-through giving.</strong> Funds raised at every event go to a named partner charity directly. Operational costs are covered separately by MindAttic LLC; donors are not paying for our overhead.</li>
-<li><strong>One page, no CMS.</strong> The whole site is a single <code>index.htm</code> — inline CSS and JS, no framework, no build step. Its fonts and images are plain static files served from the shared <strong>MindAttic.UiUx</strong> package on the jsDelivr CDN, pinned to a release tag (see <a href="docs/AMENDMENTS.md#MAC-A2">MAC-A2</a>). No database, no static-site generator, no analytics. Anyone can fork it, edit a copy in a text editor, and host their own version of an event playbook.</li>
-<li><strong>Reusable templates.</strong> The 12-week planning timeline, the budget worksheet, the sponsorship pitch structure, the volunteer staffing model — all designed as templates a sibling charity can drop into their own event.</li>
+<li>See exactly how a charity event is planned: venue, permits, equipment, staffing, run of show, budget, sponsorship and wrap-up, all on the public page.</li>
+<li>Copy what works. The 12-week timeline, budget worksheet, sponsorship pitch structure and volunteer staffing model are written so another group can reuse them for its own event.</li>
+<li>Know where the money goes. The Child's Play track names its partner charity and the playbook sets its fundraising target in public.</li>
+<li>Read it anywhere, fork it in a text editor. The whole site is one <code>index.htm</code> with inline CSS and JS: no CMS, no framework, no build step, no analytics.</li>
 </ul>
-<hr>
-<h2 id="table-of-contents">Table of Contents</h2>
-<ul>
-<li><a href="#canonical-documentation-codex">Canonical documentation (Codex)</a></li>
-<li><a href="#whats-on-the-site">What's on the site</a></li>
-<li><a href="#stack">Stack</a></li>
-<li><a href="#repository-layout">Repository layout</a></li>
-<li><a href="#how-indexhtm-works">How index.htm works</a></li>
-<li><a href="#tooling">Tooling</a></li>
-<li><a href="#deploying">Deploying</a></li>
-<li><a href="#assets">Assets</a></li>
-<li><a href="#editing-the-site">Editing the site</a></li>
-<li><a href="#claude-code-project-setup">Claude Code project setup</a></li>
-<li><a href="#related">Related</a></li>
-</ul>
-<hr>
-<h2 id="canonical-documentation-codex">Canonical documentation (Codex)</h2>
-<p>This repo follows the MindAttic "Codex" documentation standard: a layered set of docs under <code>docs/</code> is the source of truth for what the project IS and the rules that govern it. This README is the "how to work here" layer; it links to canon rather than duplicating it.</p>
+<h2 id="features">Features</h2>
+<p>MindAttic Cares is the philanthropic arm of MindAttic LLC, described on the page as a 501(c)(3) nonprofit that provides digital access, support and educational assistance. The site is where its events and giving campaigns are organised and documented.</p>
 <table><thead><tr>
-<th>Layer</th>
-<th>File</th>
-<th>What it holds</th>
-</tr></thead><tbody>
-<tr>
-<td>L0 — Bible</td>
-<td><a href="docs/BIBLE.md">docs/BIBLE.md</a></td>
-<td>What MindAttic Cares IS / is NOT, architecture, the Laws (<code>MAC-LAW-*</code>), verified state, glossary. Section IDs <code>{#MAC-§N}</code>.</td>
-</tr>
-<tr>
-<td>L1 — Amendments</td>
-<td><a href="docs/AMENDMENTS.md">docs/AMENDMENTS.md</a></td>
-<td>Append-only change log (<code>MAC-A&lt;n&gt;</code>); an amendment <strong>wins</strong> over the bible. Currently three entries: <a href="docs/AMENDMENTS.md#MAC-A1">MAC-A1</a>, retiring the per-project deploy pipeline in favor of MindAttic.Deploy; <a href="docs/AMENDMENTS.md#MAC-A2">MAC-A2</a>, allowing tag-pinned static assets from the MindAttic.UiUx jsDelivr package; and <a href="docs/AMENDMENTS.md#MAC-A3">MAC-A3</a>, recording the linked 4-in-1 deploy, the real hosting layout, the automated tests and the 2026-10-02 audit fixes.</td>
-</tr>
-<tr>
-<td>L2 — User stories</td>
-<td><a href="docs/USER<em>STORIES.md">docs/USER</em>STORIES.md</a></td>
-<td>Stories <code>MAC-US-&lt;Epic&gt;&lt;n&gt;</code> across three epics (Visitor reading the site / Charity forking a playbook / Maintainer publishing). All currently 🟡 — see below.</td>
-</tr>
-<tr>
-<td>rfc</td>
-<td><a href="docs/rfc/">docs/rfc/</a></td>
-<td>Design notes; graduate into the bible + stories once decided. Currently <a href="docs/rfc/0001-multi-event-playbooks.md">RFC 0001</a> — how to scale past one event on one page.</td>
-</tr>
-<tr>
-<td>GENERATED</td>
-<td><a href="docs/BIBLE.digest.md">docs/BIBLE.digest.md</a></td>
-<td>Produced by <code>tools/codex.ps1 digest</code>; injected at Claude Code session start via <code>.claude/hooks/inject-digest.ps1</code>. Never hand-edit.</td>
-</tr>
-<tr>
-<td>Org laws</td>
-<td><a href="../MindAttic.HouseRules.md"><code>MindAttic.HouseRules.md</code></a></td>
-<td>Inherited by reference from BIBLE §5 (whole-number versioning, credential handling, verified-done, <code>psst</code> policy).</td>
-</tr>
-</tbody></table>
-<p><strong>Why every story is held at 🟡 instead of ✅:</strong> this repo has <strong>no automated test or build suite by design</strong> (<a href="docs/BIBLE.md#MAC-LAW-1">MAC-LAW-1</a> — no build step). Per the inherited HOUSE-LAW-8 ("verified done, not asserted"), a story can only be marked ✅ once it cites an automated test — and the only automated check in this repo is <code>tools/codex.ps1 doctor</code>, which validates the <em>documentation</em>, not the site itself. So behavior that is present and manually observable (the hash router, the TOC, the lite-YouTube embed, the deploy wiring) is still held at 🟡 until something automated proves it. See <a href="docs/USER<em>STORIES.md">docs/USER</em>STORIES.md</a> for the full list and the priority backlog (an anchor/link checker and an HTML/a11y CI pass are both queued but not built).</p>
-<h2 id="whats-on-the-site">What's on the site</h2>
-<table><thead><tr>
-<th>Section</th>
+<th>Page</th>
 <th>Content</th>
 </tr></thead><tbody>
 <tr>
-<td>MindAttic Cares (intro)</td>
-<td>Who we are and why we run these events.</td>
+<td>MindAttic Cares (<code>#home</code>)</td>
+<td>Who we are and why we run these events</td>
 </tr>
 <tr>
-<td>Child's Play</td>
-<td>The pass-through giving track. Why this charity, how funds flow, partnership details, an inline "lite" YouTube intro video.</td>
+<td>Child's Play (<code>#childs-play</code>)</td>
+<td>The giving track for <a href="https://childsplaycharity.org/">childsplaycharity.org</a>, the gaming community's children's-hospital charity: why this charity, how funds flow, partnership details and a click-to-load YouTube intro video</td>
 </tr>
 <tr>
-<td>Y2K: End of the World Party</td>
-<td>Full 19-section event playbook for the inaugural fundraiser — overview &amp; goals, how to use this playbook, 12-week planning timeline, venue/permits/insurance, equipment &amp; vendors, floor plan &amp; power, staffing &amp; volunteers, the show (countdown &amp; blackout), event-day run of show, budget &amp; cost estimates, sponsorship &amp; fundraising, marketing &amp; comms, compliance &amp; risk, experience design &amp; décor, "The World of 1999" cultural brief, show assets &amp; scripts, post-event wrap, master checklists, appendices.</td>
+<td>Y2K: End of the World Party (<code>#y2k</code>)</td>
+<td>The full playbook for the first fundraiser in the track, in 19 sections</td>
 </tr>
 </tbody></table>
-<p>Each subsequent event will be drafted on the same page in the same structure so the audience (and any sibling charity looking for a template) gets a consistent read. See <a href="docs/rfc/0001-multi-event-playbooks.md">RFC 0001</a> for the plan on how a second event will be added without breaking the current single-page-per-event model.</p>
+<p><img src="docs/images/childs-play.png" alt="The Child's Play page: the green game-controller logo with the tagline Play Games. Feel Better., an introduction, and the intro video poster with a play button"></p>
+<p>The Y2K playbook plans a 1999-themed New Year's Eve party for the millennial crowd that ends at midnight in a staged "Y2K power failure". Its 19 sections are:</p>
+<ol>
+<li>Overview and goals</li>
+<li>How to use this playbook</li>
+<li>12-week planning timeline</li>
+<li>Venue, permits and insurance</li>
+<li>Equipment and vendors</li>
+<li>Floor plan and power</li>
+<li>Staffing and volunteers</li>
+<li>The show: countdown and blackout</li>
+<li>Event-day run of show</li>
+<li>Budget and cost estimates</li>
+<li>Sponsorship and fundraising</li>
+<li>Marketing and comms</li>
+<li>Compliance and risk</li>
+<li>Experience design and decor</li>
+<li>The World of 1999 (cultural brief)</li>
+<li>Show assets and scripts</li>
+<li>Post-event wrap</li>
+<li>Master checklists</li>
+<li>Appendices</li>
+</ol>
+<p><img src="docs/images/y2k-playbook.png" alt="The Y2K playbook page: a TIME "The End of the World" cover and Y2K-era photos above the title and a two-column, 19-item playbook table of contents"></p>
+<p>Each later event will be drafted on the same page in the same structure, so readers (and any charity looking for a template) get a consistent read. <a href="docs/rfc/0001-multi-event-playbooks.md">RFC 0001</a> holds the plan for adding a second event without breaking the single-page model.</p>
+<h2 id="quick-start">Quick start</h2>
+<p>You need a modern browser. The text and navigation work offline; fonts and images load from jsDelivr when you are online.</p>
+<pre><code class="language-powershell">git clone https://github.com/mindattic/mindatticcares.com
+cd mindatticcares.com
+start index.htm</code></pre>
+<p>You should see the MindAttic Cares home page with links to Child's Play and the Y2K playbook along the top. Opened over <code>file://</code>, the intro video opens on YouTube in a new tab instead of embedding (see <a href="#how-it-works">How it works</a>).</p>
+<h2 id="how-it-works">How it works</h2>
+<p>The full architectural writeup lives in <a href="docs/BIBLE.md#MAC-§4">BIBLE §4</a>. The short version:</p>
+<ul>
+<li>Three pages, one document. <code>&lt;main&gt;</code> holds three <code>&lt;section class="page"&gt;</code> blocks, <code>home</code>, <code>childs-play</code> and <code>y2k</code>, and exactly one carries the <code>.active</code> class at a time.</li>
+<li>Hash router. One trailing <code>&lt;script&gt;</code> implements <code>show(name)</code> (toggles <code>.active</code> on the matching page and nav link, scrolls to top) and <code>fromHash()</code>. Bare page names like <code>#childs-play</code> select that page directly; any other anchor, such as <code>#sec-budget</code> or <code>#contents</code>, opens the page that contains it and scrolls it into view.</li>
+<li>In-page table of contents. The Y2K page carries <code>&lt;nav class="toc" id="contents"&gt;</code> linking to all 19 <code>&lt;h2 id="sec-*" class="sec"&gt;</code> sections, so <code>#contents</code> deep-links to it. The sections have no per-section "back to contents" links (removed 2026-10-03, MAC-A4).</li>
+<li>Click-to-load YouTube. The Child's Play intro video is a <code>.video[data-yt]</code> poster that, on click or Enter, swaps itself for a <code>youtube-nocookie.com</code> iframe. Over <code>file://</code>, where the iframe would be blocked, it opens the video in a new tab instead.</li>
+<li>Last-Updated stamp. The file's first line is a <code>Last Updated</code> HTML comment with an ISO 8601 UTC time, rewritten by the MindAttic.Deploy pipeline on every deploy, not by hand.</li>
+</ul>
+<p>Per <a href="docs/BIBLE.md#MAC-LAW-4">MAC-LAW-4</a>, the <code>id</code> values on pages and <code>sec-*</code> headings are load-bearing: the hash router and the table of contents key off them, so renaming one is a breaking navigation change that must update every reference.</p>
 <h2 id="stack">Stack</h2>
 <table><thead><tr>
 <th>Layer</th>
 <th>Technology</th>
 </tr></thead><tbody>
 <tr>
-<td><strong>Front-end</strong></td>
-<td>Single hand-authored <code>index.htm</code> (~60 KB) — inline <code>&lt;style&gt;</code> CSS and one inline <code>&lt;script&gt;</code>. No framework, no build step.</td>
+<td>Front end</td>
+<td>One hand-authored <code>index.htm</code> (about 60 KB): inline <code>&lt;style&gt;</code> CSS and one inline <code>&lt;script&gt;</code>. No framework, no build step</td>
 </tr>
 <tr>
-<td><strong>Assets</strong></td>
-<td>Fonts (Outfit), logos, icons, and photos are static files in the <strong>MindAttic.UiUx</strong> repo, served by jsDelivr and pinned to a release tag (<code>@V7</code>) — see <a href="#assets">Assets</a>. The page uses <code>&lt;link rel="preconnect"&gt;</code> + <code>&lt;link rel="preload"&gt;</code> for the CDN and the body font, <code>loading="lazy"</code> for below-the-fold images, and <code>srcset</code> for the large Y2K photo. The video section uses a click-to-load ("lite") YouTube embed.</td>
+<td>Assets</td>
+<td>Fonts (Outfit), logos, icons and photos are static files in the MindAttic.UiUx repo, served by jsDelivr and pinned to a release tag (<code>@V9</code>). The page uses <code>preconnect</code> and <code>preload</code> for the CDN and the body font, <code>loading="lazy"</code> for below-the-fold images, and <code>srcset</code> for the large Y2K photo</td>
 </tr>
 <tr>
-<td><strong>Hosting</strong></td>
-<td>Static hosting at <a href="https://mindatticcares.com/">mindatticcares.com</a> (no server-side code, no database)</td>
+<td>Hosting</td>
+<td>Static hosting (no server-side code, no database), see <a href="#deployment">Deployment</a></td>
 </tr>
 <tr>
-<td><strong>Deploy</strong></td>
-<td>Centralized via <strong>MindAttic.Deploy</strong> (sibling repo) — see <a href="#deploying">Deploying</a></td>
+<td>Deploy</td>
+<td>Centralised in the sibling MindAttic.Deploy repo</td>
 </tr>
 <tr>
-<td><strong>Docs tooling</strong></td>
-<td><code>tools/codex.ps1</code> (PowerShell 5.1, no external deps) — validates and regenerates the Codex docs only; does not touch <code>index.htm</code></td>
+<td>Docs tooling</td>
+<td><code>tools/codex.ps1</code> (PowerShell 5.1, no external dependencies) validates and regenerates the Codex docs only; it does not touch <code>index.htm</code></td>
 </tr>
 </tbody></table>
-<p>No build step. No <code>npm install</code>. No CMS. Open the file in any modern browser and you have the whole site — it needs a network connection to fetch its fonts and images from the CDN (the text and navigation work without them).</p>
-<h2 id="repository-layout">Repository layout</h2>
-<pre><code>mindatticcares.com/
-├── index.htm              # The entire site — one hand-authored HTML page (~60 KB); assets load from the CDN
-├── README.md               # ← you are here
-├── README.htm              # Generated from README.md via tools/build-readme.ps1 (shared engine)
-├── docs/
-│   ├── BIBLE.md            # L0 canon — what the project IS, architecture, the Laws
-│   ├── AMENDMENTS.md        # L1 canon — append-only change log (MAC-A&lt;n&gt;)
-│   ├── USER_STORIES.md     # L2 canon — stories MAC-US-&lt;Epic&gt;&lt;n&gt;
-│   ├── BIBLE.digest.md     # GENERATED digest of BIBLE.md — never hand-edit
-│   └── rfc/
-│       └── 0001-multi-event-playbooks.md
-├── tools/
-│   ├── codex.ps1           # doctor + digest CLI for the Codex docs
-│   └── build-readme.ps1    # Thin wrapper -&gt; shared codex-standard/build-readme.ps1 engine
-└── .claude/
-    ├── settings.json       # Statusline + SessionStart hooks (digest inject, checkpoint restore)
-    ├── statusline.ps1      # Context-window usage gauge shown in the Claude Code status line
-    ├── commands/
-    │   ├── checkpoint.md   # /checkpoint — snapshot the live discussion for /clear handoff
-    │   └── deploy.md       # /deploy — invoke MindAttic.Deploy for this site
-    ├── hooks/
-    │   ├── inject-digest.ps1     # SessionStart: injects docs/BIBLE.digest.md into context
-    │   └── restore-handoff.ps1   # SessionStart (matcher: clear): re-ingests checkpoint.md, then deletes it
-    └── skills/
-        ├── commit/         # Project skill: stage/commit/push working-tree changes
-        ├── discard/        # Project skill: discard working-tree changes
-        ├── revert/         # Project skill: revert a prior commit
-        └── run/             # Project skill: run/preview the site</code></pre>
-<blockquote><p>Fonts, logos, icons, and photos are <strong>not</strong> in this repo: they live in <code>MindAttic.UiUx</code> (see <a href="#assets">Assets</a>).  <code>deploy.ps1</code> / <code>deploy.bat</code> / a per-folder <code>settings.json</code> are <strong>retired</strong>. The FTP pipeline now lives in <strong>MindAttic.Deploy</strong> (see <a href="docs/AMENDMENTS.md#MAC-A1">MAC-A1</a> and <a href="#deploying">Deploying</a>).</p></blockquote>
-<h2 id="how-indexhtm-works">How index.htm works</h2>
-<p>The full architectural writeup lives in <a href="docs/BIBLE.md#MAC-§4">BIBLE §4</a>; the short version:</p>
+<h2 id="editing-the-site">Editing the site</h2>
+<p>Open <code>index.htm</code> in any editor. Sections are marked by <code>&lt;h2 id="sec-*" class="sec"&gt;</code> headings (for example <code>sec-overview</code>, <code>sec-timeline</code>, <code>sec-budget</code>); the table of contents and hash router are wired to those IDs. The CSS palette and playbook layout live in the <code>&lt;style&gt;</code> block near the top; the script is small and sits in the single <code>&lt;script&gt;</code> block at the bottom.</p>
+<p>To add a new event:</p>
+<ol>
+<li>Add a new <code>&lt;section class="page"&gt;</code> with its <code>&lt;h1&gt;</code> at the right insertion point.</li>
+<li>Copy the section template (<code>&lt;h2 id="sec-..."&gt;</code> cards) from the Y2K playbook.</li>
+<li>Update the in-page table of contents (<code>&lt;nav class="toc"&gt;</code>) and the top navigation (<code>&lt;header class="topbar"&gt;&lt;nav&gt;</code>).</li>
+<li>Namespace the new <code>sec-*</code> IDs per event to avoid anchor collisions with the Y2K playbook (see <a href="docs/rfc/0001-multi-event-playbooks.md">RFC 0001</a> for the agreed approach once a second event lands).</li>
+<li>Put any new image in <code>MindAttic.UiUx/mindatticcares.com/&lt;category&gt;/</code> (see <a href="#assets">Assets</a>), tag a new UiUx release and point the page at it.</li>
+<li>Deploy through MindAttic.Deploy (see <a href="#deployment">Deployment</a>).</li>
+</ol>
+<h2 id="assets">Assets</h2>
+<p>Binary assets are not embedded in <code>index.htm</code>. They are plain static files in the shared MindAttic.UiUx repo, organised by domain, and served at runtime by jsDelivr so the browser caches them and they are shared across MindAttic sites:</p>
+<pre><code class="language-text">MindAttic.UiUx/
+├── fonts/outfit/            # shared Outfit woff2 (Latin + Latin-Extended)
+└── mindatticcares.com/
+    ├── logos/               # M-Cares art (300/720 px web sizes) + the Child's Play logo
+    ├── icons/               # favicon / apple-touch icon
+    └── images/              # photos, video poster, page background</code></pre>
 <ul>
-<li><strong>Three pages, one document.</strong> <code>&lt;main&gt;</code> holds three <code>&lt;section class="page" id="..."&gt;</code> blocks — <code>home</code>, <code>childs-play</code>, <code>y2k</code> — and exactly one carries the <code>.active</code> class at a time.</li>
-<li><strong>Hash router.</strong> A single trailing <code>&lt;script&gt;</code> block implements <code>show(name)</code> (toggles <code>.active</code> on the matching page and nav link, scrolls to top) and <code>fromHash()</code> (routes from   <code>window.location.hash</code>: bare page names like <code>#childs-play</code> select that page directly; any other   anchor — e.g. <code>#sec-budget</code> or <code>#contents</code> — opens the page that contains it and scrolls it into   view).</li>
-<li><strong>In-page TOC.</strong> The Y2K page carries a <code>&lt;nav class="toc"&gt;</code> linking to all 19 `&lt;h2 id="sec-*" class="sec"&gt;<code> playbook sections (</code>&lt;nav class="toc" id="contents"&gt;<code>, so </code>#contents` deep-links to it).   The sections have no per-section "back to contents" links (removed 2026-10-03, MAC-A4).</li>
-<li><strong>Lite-YouTube embed.</strong> The Child's Play intro video is a <code>.video[data-yt="&lt;id&gt;"]</code> poster that, on click/Enter, swaps itself for a <code>youtube-nocookie.com</code> iframe — or, if the page is opened over   <code>file://</code> (where the iframe would be blocked), opens the video in a new tab instead.</li>
-<li><strong>Last-Updated stamp.</strong> The file's first line is <code>&lt;!-- Last Updated: &lt;ISO8601 UTC&gt; --&gt;</code>, rewritten by the MindAttic.Deploy pipeline on every deploy — not by hand.</li>
+<li>URL pattern: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/mindatticcares.com/&lt;category&gt;/&lt;file&gt;</code>, for example <code>.../logos/m-cares-black-red-transparent-720.png</code>. Fonts: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/fonts/outfit/outfit-latin.woff2</code>.</li>
+<li>Pinned to a tag. <code>@V9</code> is a whole-number UiUx release tag (HOUSE-LAW-1). Tags are immutable on jsDelivr, so what the page loads today is exactly what it loads tomorrow. To change an asset, add or replace the file in UiUx, cut a new tag and bump the tag in <code>index.htm</code> (the linked deploy does the last two steps for you).</li>
+<li>Naming: lowercase kebab-case, descriptive, with the pixel width as a suffix for resized web variants (<code>-300.png</code>, <code>-720.png</code>, <code>-960.jpg</code>).</li>
+<li>Full resolution: JPEGs are stored byte-identical at full resolution. The Y2K photo is the original 1920 by 1200, with a 960 px variant offered through <code>srcset</code>. PNGs may be recompressed only losslessly.</li>
+<li>What may be external: only static files from this package (<a href="docs/AMENDMENTS.md#MAC-A2">MAC-A2</a>). No analytics, trackers or third-party fonts (no Google Fonts requests).</li>
 </ul>
-<p>Per <a href="docs/BIBLE.md#MAC-LAW-4">MAC-LAW-4</a>, the <code>id="..."</code> values on pages and <code>sec-*</code> headers are load-bearing: the hash router and the TOC key off them, so renaming one is a breaking navigation change that must update every reference.</p>
 <h2 id="tooling">Tooling</h2>
-<p><code>tools/</code> holds two independent PowerShell scripts. Neither has an npm/build dependency; both run directly with Windows PowerShell 5.1 or PowerShell 7+.</p>
+<p><code>tools/</code> holds two independent PowerShell scripts with no npm or build dependency. Both run with Windows PowerShell 5.1 or PowerShell 7+.</p>
 <table><thead><tr>
 <th>Script</th>
 <th>Purpose</th>
 </tr></thead><tbody>
 <tr>
 <td><code>tools/codex.ps1</code></td>
-<td>Codex documentation CLI. <code>doctor</code> validates <code>docs/</code> (front-matter, stable IDs, cross-references, cited tests/paths, digest freshness) and exits non-zero on any hard error. <code>digest</code> regenerates <code>docs/BIBLE.digest.md</code> from BIBLE §1/§3/§5/§9 plus a user-story status index and the latest amendment head.</td>
+<td>Codex documentation CLI. <code>doctor</code> validates <code>docs/</code> (front-matter, stable IDs, cross-references, cited tests and paths, digest freshness) and exits non-zero on any hard error. <code>digest</code> regenerates <code>docs/BIBLE.digest.md</code> from BIBLE §1, §3, §5 and §9 plus a user-story status index and the latest amendment head</td>
 </tr>
 <tr>
 <td><code>tools/build-readme.ps1</code></td>
-<td>Thin wrapper that regenerates <code>README.htm</code> from <code>README.md</code>. The actual Markdown → HTML translation logic lives once, workspace-wide, in the sibling <code>codex-standard/build-readme.ps1</code> engine — every MindAttic repo's wrapper calls the same shared engine so all <code>README.htm</code> output looks and behaves identically. This repo's copy contains no rendering logic of its own; edit the shared engine to change output, not this wrapper.</td>
+<td>Thin wrapper that regenerates <code>README.htm</code> from <code>README.md</code> through the shared <code>codex-standard/build-readme.ps1</code> engine. Edit the shared engine to change output, not this wrapper</td>
 </tr>
 </tbody></table>
 <pre><code class="language-powershell"># Validate the Codex docs (exit 0 required before committing doc changes)
@@ -285,57 +257,75 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\codex.ps1 digest
 
 # Regenerate README.htm from README.md
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1</code></pre>
-<p><code>README.htm</code> and <code>index.htm</code> are separate, unrelated files: <code>index.htm</code> is the deployed site; <code>README.htm</code> is a local, generated rendering of this README for convenient viewing and is not part of the deployed site.</p>
-<h2 id="deploying">Deploying</h2>
-<blockquote><p><strong>Per-project deploy scripts are retired.</strong> <code>deploy.bat</code>, <code>deploy.ps1</code>, and a per-folder <code>settings.json</code> no longer exist in this folder. See <a href="docs/AMENDMENTS.md#MAC-A1">MAC-A1</a> for the migration history.</p></blockquote>
-<p>Deployment is owned by the central <strong>MindAttic.Deploy</strong> sibling repo. Use the <code>/deploy</code> Claude command, or run:</p>
+<p><code>README.htm</code> and <code>index.htm</code> are unrelated: <code>index.htm</code> is the deployed site; <code>README.htm</code> is a local, generated rendering of this README and is not deployed.</p>
+<h2 id="deployment">Deployment</h2>
+<p>Per-project deploy scripts are retired: <code>deploy.bat</code>, <code>deploy.ps1</code> and a per-folder <code>settings.json</code> no longer exist here (<a href="docs/AMENDMENTS.md#MAC-A1">MAC-A1</a>). Deployment is owned by the sibling MindAttic.Deploy repo. Use the <code>/deploy</code> Claude Code command, or run:</p>
 <pre><code class="language-powershell">cd D:\Projects\MindAttic\MindAttic.Deploy
 npm run deploy -- --site mindatticcares.com</code></pre>
-<p>This site is registered as a verbatim root-site FTP upload in <code>MindAttic.Deploy/projects.json</code> under <code>sites[]</code>, with <code>sourceDir: "../mindatticcares.com"</code>, <code>ftpRemotePath: "/mindatticcares.com"</code>, and <code>files: ["index.htm"]</code>. The pipeline stamps <code>index.htm</code> with a fresh <code>&lt;!-- Last Updated: &lt;ISO8601 UTC&gt; --&gt;</code> comment and FTPS-uploads it. FTP credentials are centralized in <code>MindAttic.Deploy/secrets/</code> (gitignored there, not read from this repo).</p>
-<p><strong>Linked deploy.</strong> This site is permanently linked with MindAttic.UiUx, ryandebraal.com and mindattic.com: the command above deploys <strong>all four</strong> — it publishes the UiUx package as the next tag (if it changed), pins that tag in every site, checks every asset is live on jsDelivr, then FTPs ryandebraal.com, this site and mindattic.com. <code>--dry-run</code> previews; <code>--no-link</code> deploys this site alone. Details: <a href=".claude/commands/deploy.md"><code>.claude/commands/deploy.md</code></a> and MindAttic.Deploy's README ("Linked deploy").</p>
-<p><strong>Where it is served.</strong> The FTP path <code>/mindatticcares.com/</code> is served at <code>https://ryandebraal.com/mindatticcares.com/</code>. The domain <code>https://mindatticcares.com/</code> is a registrar <em>masked forward</em>: a frameset whose single frame loads that URL, so the address bar keeps showing mindatticcares.com. Two consequences: the page always runs inside a frame (external links therefore open in a new tab), and a hash typed after the bare domain (<code>mindatticcares.com/#y2k</code>) is not passed into the frame — share deep links in the <code>https://ryandebraal.com/mindatticcares.com/#y2k</code> form.</p>
-<h2 id="assets">Assets</h2>
-<p>Binary assets are <strong>not</strong> embedded in <code>index.htm</code>. They are plain static files in the shared <strong>MindAttic.UiUx</strong> repo (<code>D:\Projects\MindAttic\MindAttic.UiUx</code>), organised by domain, and served at runtime by jsDelivr so they are cached by the browser and shared across MindAttic sites:</p>
-<pre><code>MindAttic.UiUx/
-├── fonts/outfit/            # shared Outfit woff2 (Latin + Latin-Extended)
-└── mindatticcares.com/
-    ├── logos/               # M-Cares art (300/720 px web sizes) + the Child's Play logo
-    ├── icons/               # favicon / apple-touch icon
-    └── images/              # photos, video poster, page background</code></pre>
+<p>This site is registered as a verbatim root-site FTP upload in <code>MindAttic.Deploy/projects.json</code> under <code>sites[]</code>, with <code>sourceDir: "../mindatticcares.com"</code>, <code>ftpRemotePath: "/mindatticcares.com"</code> and <code>files: ["index.htm"]</code>. The pipeline stamps the <code>Last Updated</code> comment in <code>index.htm</code> and FTPS-uploads it. FTP credentials are centralised in MindAttic.Deploy and never read from this repo.</p>
+<p>Linked deploy: this site is permanently linked with MindAttic.UiUx, ryandebraal.com and mindattic.com. The command above deploys all four: it publishes the UiUx package as the next tag (if it changed), pins that tag in every site, checks every asset is live on jsDelivr, then uploads ryandebraal.com, this site and mindattic.com. <code>--dry-run</code> previews; <code>--no-link</code> deploys this site alone. Details: <a href=".claude/commands/deploy.md">.claude/commands/deploy.md</a> and the MindAttic.Deploy README ("Linked deploy").</p>
+<p>Where it is served: the FTP path <code>/mindatticcares.com/</code> is served at <code>https://ryandebraal.com/mindatticcares.com/</code>. The domain <code>https://mindatticcares.com/</code> is a registrar masked forward: a frameset whose single frame loads that URL, so the address bar keeps showing mindatticcares.com. Two consequences:</p>
 <ul>
-<li><strong>URL pattern:</strong> <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/mindatticcares.com/&lt;category&gt;/&lt;file&gt;</code> — e.g. <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/mindatticcares.com/logos/m-cares-black-red-transparent-720.png</code>. Fonts: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/fonts/outfit/outfit-latin.woff2</code>.</li>
-<li><strong>Pinned to a tag.</strong> <code>@V7</code> is a whole-number UiUx release tag (HOUSE-LAW-1). Tags are immutable on jsDelivr, so what the page loads today is exactly what it loads tomorrow. To change an asset, add   or replace the file in UiUx, cut a new tag, and bump the tag in <code>index.htm</code>.</li>
-<li><strong>Naming:</strong> lowercase kebab-case, descriptive, with the pixel width as a suffix for resized web variants (<code>…-300.png</code>, <code>…-720.png</code>, <code>…-960.jpg</code>).</li>
-<li><strong>Full resolution:</strong> lossy files (JPEG) are stored byte-identical at full resolution — the Y2K photo is the original 1920×1200, with a 960-px variant offered through <code>srcset</code>. PNGs may be   recompressed only losslessly.</li>
-<li><strong>What is allowed to be external:</strong> only static files from this package (MAC-A2). No analytics, trackers, or third-party fonts (no Google Fonts requests).</li>
+<li>The page always runs inside a frame, so external links open in a new tab.</li>
+<li>A hash typed after the bare domain (<code>mindatticcares.com/#y2k</code>) is not passed into the frame. Share deep links in the <code>https://ryandebraal.com/mindatticcares.com/#y2k</code> form.</li>
 </ul>
-<h2 id="editing-the-site">Editing the site</h2>
-<p>Open <code>index.htm</code> in any editor. Sections are demarcated by <code>&lt;h2 id="sec-*" class="sec"&gt;</code> headers (e.g. <code>sec-overview</code>, <code>sec-timeline</code>, <code>sec-budget</code>) — the in-page TOC and hash router are wired to those IDs. The CSS palette and event-playbook layout live in the <code>&lt;style&gt;</code> block near the top of the file; the client-side JavaScript is small and lives in the single <code>&lt;script&gt;</code> block at the very bottom (see <a href="#how-indexhtm-works">How index.htm works</a>).</p>
-<p>When adding a new event:</p>
-<ol>
-<li>Add a new <code>&lt;section class="page" id="..."&gt;</code> / <code>&lt;h1&gt;</code> block at the relevant insertion point.</li>
-<li>Copy the section template (<code>&lt;h2 id="sec-..."&gt;</code> cards) from the existing Y2K playbook.</li>
-<li>Update the in-page TOC (<code>&lt;nav class="toc"&gt;</code>) and the top nav (<code>&lt;header class="topbar"&gt;&lt;nav&gt;</code>).</li>
-<li>Namespace new <code>sec-*</code> IDs per event to avoid anchor collisions with the existing Y2K playbook (see <a href="docs/rfc/0001-multi-event-playbooks.md">RFC 0001</a> for the agreed approach once a second    event lands).</li>
-<li>Put any new image in <code>MindAttic.UiUx/mindatticcares.com/&lt;category&gt;/</code> (see <a href="#assets">Assets</a>), tag a new UiUx release, and point the page at it.</li>
-<li>Deploy via MindAttic.Deploy (see <a href="#deploying">Deploying</a>).</li>
-</ol>
-<h2 id="claude-code-project-setup">Claude Code project setup</h2>
-<p>This repo carries a <code>.claude/</code> directory used by Claude Code sessions working in it:</p>
+<h2 id="limitations">Limitations</h2>
 <ul>
-<li><strong><code>settings.json</code></strong> wires a statusline (<code>statusline.ps1</code>, a context-window usage gauge) and two <code>SessionStart</code> hooks: <code>inject-digest.ps1</code> (always — injects <code>docs/BIBLE.digest.md</code>) and   <code>restore-handoff.ps1</code> (only on <code>/clear</code> — re-ingests a <code>checkpoint.md</code> transcript written by   <code>/checkpoint</code>, then deletes it so later <code>/clear</code>s stay clean).</li>
-<li><strong><code>commands/</code></strong> holds two slash commands: <code>/checkpoint</code> (snapshot the live discussion before a <code>/clear</code>) and <code>/deploy</code> (invoke MindAttic.Deploy for this site, see <a href="#deploying">Deploying</a>).</li>
-<li><strong><code>skills/</code></strong> holds four project-scoped skills: <code>commit</code>, <code>discard</code>, <code>revert</code>, and <code>run</code>.</li>
+<li>No automated test or build suite in this repo by design (<a href="docs/BIBLE.md#MAC-LAW-1">MAC-LAW-1</a>: no build step). Under HOUSE-LAW-8 ("verified done, not asserted") a story is only marked done once it cites an automated test, and the only automated check here is <code>tools/codex.ps1 doctor</code>, which validates the documentation, not the site. So behaviour that is present and manually observable (the hash router, the table of contents, the YouTube embed, the deploy wiring) is held at "manually verified".</li>
+<li>An anchor and link checker and an HTML and accessibility CI pass are queued in <a href="docs/USER_STORIES.md"><code>docs/USER_STORIES.md</code></a> but not built.</li>
+<li>One event per page today. Scaling to several events is planned in <a href="docs/rfc/0001-multi-event-playbooks.md">RFC 0001</a>.</li>
 </ul>
-<p>None of this affects the deployed site — it only shapes how an AI coding session behaves inside the repo.</p>
-<h2 id="related">Related</h2>
+<h2 id="documentation">Documentation</h2>
+<p>This repo follows the MindAttic Codex documentation standard (project code MAC). A fact lives in one layer; this README links to it rather than restating it.</p>
+<table><thead><tr>
+<th>Layer</th>
+<th>File</th>
+<th>What it holds</th>
+</tr></thead><tbody>
+<tr>
+<td>L0, Bible</td>
+<td><a href="docs/BIBLE.md">docs/BIBLE.md</a></td>
+<td>What MindAttic Cares is and is not, architecture, the Laws (<code>MAC-LAW-*</code>), verified state, glossary</td>
+</tr>
+<tr>
+<td>L1, Amendments</td>
+<td><a href="docs/AMENDMENTS.md">docs/AMENDMENTS.md</a></td>
+<td>Append-only change log (<code>MAC-A&lt;n&gt;</code>); an amendment wins over the bible</td>
+</tr>
+<tr>
+<td>L2, User stories</td>
+<td><a href="docs/USER_STORIES.md"><code>docs/USER_STORIES.md</code></a></td>
+<td>Stories <code>MAC-US-&lt;Epic&gt;&lt;n&gt;</code> across three epics: visitor reading the site, charity forking a playbook, maintainer publishing</td>
+</tr>
+<tr>
+<td>rfc</td>
+<td><a href="docs/rfc/">docs/rfc</a></td>
+<td>Design notes that graduate into the bible and stories once decided</td>
+</tr>
+<tr>
+<td>Generated</td>
+<td><a href="docs/BIBLE.digest.md">docs/BIBLE.digest.md</a></td>
+<td>Produced by <code>tools/codex.ps1 digest</code> and injected at session start by <code>.claude/hooks/inject-digest.ps1</code>. Never hand-edited</td>
+</tr>
+<tr>
+<td>Org laws</td>
+<td><a href="../MindAttic.HouseRules.md">MindAttic.HouseRules.md</a></td>
+<td>Inherited by reference from BIBLE §5 (whole-number versioning, credential handling, verified-done)</td>
+</tr>
+</tbody></table>
+<p>Agent instructions: <a href="AGENTS.md">AGENTS.md</a> is the project's agent entrypoint and <code>CLAUDE.md</code> forwards to the workspace-wide MindAttic agent standard. The <code>.claude/</code> folder configures Claude Code sessions here and does not affect the deployed site:</p>
 <ul>
-<li><strong>Child's Play</strong> — <a href="https://childsplaycharity.org/">childsplaycharity.org</a> — the children's-hospital charity that receives our Y2K event proceeds.</li>
-<li><strong>MindAttic LLC</strong> — <a href="https://mindattic.com/">mindattic.com</a> — the parent organization that funds the operational side so 100% of donations pass through to the partner charity.</li>
-<li><strong>MindAttic.Deploy</strong> (sibling repo) — owns the FTPS deploy pipeline for this and other MindAttic sites.</li>
+<li><code>settings.json</code> wires the status line (<code>statusline.ps1</code>, a context-window usage gauge), a <code>SessionStart</code> hook (<code>inject-digest.ps1</code>) and a <code>UserPromptSubmit</code> hook (<code>quickload-on-do.ps1</code>, which restores a quicksave when you reply <code>do</code>).</li>
+<li><code>commands/</code> holds <code>/deploy</code>, <code>/quicksave</code> and <code>/quickload</code>.</li>
+<li><code>skills/</code> holds <code>commit</code>, <code>discard</code>, <code>revert</code> and <code>run</code>.</li>
 </ul>
+<h2 id="license">License</h2>
+<p>This repo has no LICENSE file. All rights reserved.</p>
+<p>Related: <a href="https://childsplaycharity.org/">Child's Play</a>, the children's-hospital charity that receives the Y2K event's proceeds.</p>
+<hr>
+<p>Part of <a href="https://mindattic.com">MindAttic</a> — see more projects at <a href="https://github.com/mindattic">github.com/mindattic</a>. Related: <a href="https://github.com/mindattic/mindattic.com">mindattic.com</a>, <a href="https://github.com/mindattic/ryandebraal.com">ryandebraal.com</a>, <a href="https://github.com/mindattic/MindAttic.UiUx">MindAttic.UiUx</a>, <a href="https://github.com/mindattic/MindAttic.Deploy">MindAttic.Deploy</a>.</p>
 
-    <p class="codex-footer">Generated 2026-10-02 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
+    <p class="codex-footer">Generated 2026-10-03 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
   </main>
 </div>
 <script>(function(){
