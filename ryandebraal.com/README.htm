@@ -1,0 +1,400 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ryandebraal.com</title>
+<meta name="description" content="A resume that is its own work sample: one hand-authored HTML page with 16 animated themes, 3 profiles, hover tooltips for 447 technologies, and Markdown, HTML and PDF export, with no build step.">
+<meta name="generator" content="MindAttic Codex build-readme.ps1">
+<meta name="generated" content="2026-10-03">
+<style>:root{
+  --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
+  --border:#30363d;
+  --text:#e6edf3;--muted:#8b949e;
+  --h1:#58a6ff;--h2:#79c0ff;--h3:#d2a8ff;
+  --link:#58a6ff;--code:#f0f6fc;
+  --sidebar-w:272px;--content-max:900px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  background:var(--bg);color:var(--text);font-size:15px;line-height:1.8
+}
+#layout{display:flex;min-height:100vh}
+#sidebar{
+  width:var(--sidebar-w);flex-shrink:0;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  background:var(--bg2);border-right:1px solid var(--border);
+  padding:1.5rem 0
+}
+#sidebar::-webkit-scrollbar{width:4px}
+#sidebar::-webkit-scrollbar-track{background:transparent}
+#sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+#toc-inner{padding:0 .75rem}
+.toc-title{
+  display:block;font-size:.68rem;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.1em;padding:.1rem .5rem .9rem
+}
+.toc-a{
+  display:block;padding:.22rem .5rem;font-size:.79rem;color:var(--muted);
+  border-radius:4px;text-decoration:none;line-height:1.35;margin-bottom:1px;
+  transition:color .15s,background .15s
+}
+.toc-a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+.toc-a.active{color:var(--h1);background:rgba(88,166,255,.12);font-weight:500}
+.toc-a.is-h3{padding-left:1.25rem;font-size:.75rem}
+.toc-sep{border:none;border-top:1px solid var(--border);margin:.6rem .5rem}
+#content{
+  flex:1;min-width:0;
+  max-width:calc(var(--sidebar-w) + var(--content-max));
+  padding:2.5rem 3.5rem 5rem
+}
+h1{color:var(--h1);font-size:2rem;font-weight:700;
+   border-bottom:1px solid var(--border);padding-bottom:.5rem;margin-bottom:1.25rem}
+h2{color:var(--h2);font-size:1.35rem;font-weight:600;
+   margin-top:2.75rem;margin-bottom:.75rem;
+   border-bottom:1px solid var(--border);padding-bottom:.3rem}
+h3{color:var(--h3);font-size:1.05rem;font-weight:600;margin-top:1.5rem;margin-bottom:.4rem}
+h4{color:var(--text);font-size:.95rem;font-weight:600;margin-top:1rem}
+a{color:var(--link);text-decoration:none}
+a:hover{text-decoration:underline}
+p{margin:.7rem 0}
+ul,ol{padding-left:1.75rem;margin:.4rem 0}
+li{margin:.2rem 0}
+li>ul,li>ol{padding-left:1.5rem;margin:.1rem 0}
+hr{border:none;border-top:1px solid var(--border);margin:2.25rem 0}
+blockquote{
+  border-left:3px solid var(--h1);background:var(--bg2);
+  color:var(--muted);padding:.65rem 1rem;margin:1rem 0;
+  border-radius:0 4px 4px 0;font-style:italic
+}
+blockquote p{margin:0}
+code{
+  background:var(--bg2);color:var(--code);
+  padding:.15em .45em;border-radius:4px;font-size:.84em;
+  font-family:'Cascadia Code','Fira Code','Consolas','SF Mono',monospace
+}
+pre{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:6px;padding:1rem 1.25rem;overflow-x:auto;
+  margin:1rem 0;position:relative
+}
+pre code{background:none;padding:0;font-size:.84rem;line-height:1.65;color:var(--code)}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.875rem;overflow-x:auto;display:block}
+thead th{
+  background:var(--bg3);color:var(--h2);font-weight:600;
+  text-align:left;padding:.5rem .75rem;border:1px solid var(--border)
+}
+tbody td{padding:.4rem .75rem;border:1px solid var(--border);vertical-align:top}
+tbody tr:hover{background:rgba(255,255,255,.025)}
+.cpbtn{
+  position:absolute;top:.5rem;right:.5rem;
+  background:var(--bg3);color:var(--muted);
+  border:1px solid var(--border);border-radius:4px;
+  padding:.15rem .55rem;font-size:.71rem;font-family:inherit;
+  cursor:pointer;opacity:0;transition:opacity .15s,color .15s;line-height:1.5
+}
+pre:hover .cpbtn{opacity:1}
+.cpbtn:hover{color:var(--text)}
+.cpbtn.ok{color:#7ee787}
+.codex-footer{margin-top:3rem;padding-top:1rem;border-top:1px solid var(--border);color:var(--muted);font-size:.78rem}
+@media(max-width:820px){
+  #sidebar{display:none}
+  #content{padding:1.5rem 1.25rem 3.5rem}
+}</style>
+</head>
+<body>
+<div id="layout">
+  <nav id="sidebar" aria-label="Table of contents">
+    <div id="toc-inner"></div>
+  </nav>
+  <main id="content">
+<h1 id="ryandebraalcom">ryandebraal.com</h1>
+<p>A resume that is its own work sample: one hand-authored HTML page with 16 animated themes, 3 profiles, hover tooltips for 447 technologies, and Markdown, HTML and PDF export, with no build step.</p>
+<p><a href="index.htm"><img src="https://img.shields.io/badge/HTML5-one%20page-e34f26" alt="HTML5"></a> <a href="index.htm"><img src="https://img.shields.io/badge/JavaScript-vanilla%20ES2020-f7df1e" alt="JavaScript"></a> <a href="index.htm"><img src="https://img.shields.io/badge/Canvas%202D-hand--written%20FX-8e44ad" alt="Canvas 2D"></a> <a href="docs/BIBLE.md"><img src="https://img.shields.io/badge/build%20step-none-555555" alt="Build"></a> <a href="https://ryandebraal.com"><img src="https://img.shields.io/badge/status-live-2ea043" alt="Status"></a></p>
+<p><img src="docs/images/theme-synthwave.png" alt="The resume in the Synthwave theme: a neon sunset behind wireframe mountains and a perspective grid, with the resume card, summary and Bank of America experience in front"></p>
+<p>Try it: <a href="https://ryandebraal.com">ryandebraal.com</a></p>
+<h2 id="why">Why</h2>
+<ul>
+<li>A resume that proves the claims on it. Every animation frame and export pipeline is in the file you can read end to end in an afternoon.</li>
+<li>One set of content, three audiences. Switch between a classic, a pitch and a complete view of the same data with one click.</li>
+<li>Take it with you in the format the reader wants: Markdown, standalone HTML, PDF or a print layout, straight from the toolbar.</li>
+<li>Nothing between you and the page. The file you edit is byte for byte the file the browser runs: no bundler, no framework, no <code>npm install</code>.</li>
+<li>No tracking. Open the Network tab and you see the page, its fonts, images and theme art from <code>cdn.jsdelivr.net</code>, and html2pdf.js only when you export a PDF.</li>
+</ul>
+<h2 id="features">Features</h2>
+<p><img src="docs/images/theme-light.png" alt="The default Light theme: the resume card on a white background, with the theme player and settings toolbar across the top"></p>
+<h3 id="themes">Themes</h3>
+<ul>
+<li>16 themes: Light, Dark, Spring, Summer, Autumn, Winter, Matrix, Neko, Ocean, Sunset, Forest, Cyberpunk, Noir, Sakura, Sand and Synthwave.</li>
+<li>Theme switching is CSS custom properties only, never a JavaScript style mutation (<a href="docs/BIBLE.md#RDC-LAW-4">RDC-LAW-4</a>).</li>
+<li>A theme player in the toolbar shows what is playing and what is up next, and rotates through themes until you pause it.</li>
+<li>Custom Canvas 2D animations per theme, written from scratch with no animation library: bees with a flower-claiming state machine, snow that settles into SVG drifts, ten roaming Neko cats with the full 1998 sprite state machine (all 32 frames kept inline as tiny base64 CSS classes), sandstorm physics, parallax forest silhouettes, a perspective synthwave grid, neon acid-rain cyberpunk skylines and more.</li>
+<li><code>light</code>, <code>dark</code> and <code>noir</code> are static CSS-only themes with no bespoke effects.</li>
+<li>An adaptive quality step (<code>fx-quality-level</code>) scales the effects back on slower machines.</li>
+</ul>
+<p><img src="docs/images/theme-winter.png" alt="The Winter theme: snowflakes drifting over a pale blue background behind the resume card"></p>
+<h3 id="profiles">Profiles</h3>
+<ul>
+<li>Three rendering profiles, <code>classic</code>, <code>pitch</code> and <code>complete</code>, each a different view of the same resume data.</li>
+<li><code>render()</code> reprojects the one data object for the chosen audience (<a href="docs/BIBLE.md#RDC-LAW-5">RDC-LAW-5</a>).</li>
+</ul>
+<h3 id="tech-tooltips">Tech tooltips</h3>
+<ul>
+<li>Hover any technology tag in the skills or experience sections for a short description and where it was used.</li>
+<li>447 entries live in one <code>tooltips</code> object.</li>
+<li>Skill tags have a per-skill familiarity level you can cycle; it is remembered.</li>
+</ul>
+<h3 id="export">Export</h3>
+<ul>
+<li>Markdown (<code>exportMD</code>), standalone HTML (<code>exportHTML</code>) and PDF (<code>exportPDF</code>).</li>
+<li>Print layouts: <code>exportPrintPage</code>, <code>exportPrintDocument</code>, <code>exportPrintCV</code> and <code>printResume</code>.</li>
+<li>PDF export loads html2pdf.js 0.10.2 from jsDelivr on first use only.</li>
+</ul>
+<h3 id="everything-else">Everything else</h3>
+<ul>
+<li>The Outfit typeface from the CDN: weights 100 to 900 as two woff2 subsets (latin and latin-ext) hosted in MindAttic.UiUx and served by jsDelivr at a pinned tag. The latin file is preloaded. No Google Fonts request.</li>
+<li>Preferences persist in <code>localStorage</code>: theme, profile, font choice, theme timeout and transition, and per-skill familiarity.</li>
+<li>A mobile-first toolbar that adapts between desktop and portrait orientations.</li>
+<li>A DevTools easter egg: an ASCII banner printed to the console.</li>
+</ul>
+<h2 id="quick-start">Quick start</h2>
+<p>You need a modern browser and a network connection (fonts, portrait and theme art load from jsDelivr).</p>
+<pre><code class="language-powershell">git clone https://github.com/mindattic/ryandebraal.com
+cd ryandebraal.com
+start index.htm</code></pre>
+<p>That's it. There is no dev server, because there is nothing to compile. You should see the resume with the theme player running in the toolbar. Use the player buttons to step through themes; profiles, settings and export are in the toolbar menus.</p>
+<h2 id="how-it-works">How it works</h2>
+<p><code>index.htm</code> is a single hand-authored page (about 7,000 lines, about 0.47 MB on disk). Fonts, the portrait, the theme backgrounds and the PDF library are not embedded; they load from jsDelivr at a pinned MindAttic.UiUx tag (<a href="docs/BIBLE.md#RDC-LAW-1">RDC-LAW-1</a>).</p>
+<pre><code class="language-text">index.htm  (one page)
+├── &lt;!-- Last Updated: &lt;UTC&gt; --&gt;     stamped by the deploy pipeline (MindAttic.Deploy)
+├── &lt;head&gt;
+│   ├── DevTools easter-egg banner (ASCII, shown via console.log)
+│   └── &lt;style&gt;
+│       ├── CSS custom properties per [data-theme]
+│       ├── layout + toolbar rules
+│       └── @font-face Outfit (CDN woff2, weights 100-900) + Neko 32 inline frames
+├── &lt;body data-theme=… data-profile=…&gt;
+│   ├── resume DOM mount + toolbar
+│   ├── per-theme &lt;canvas&gt; FX layers
+│   └── &lt;script&gt;                      one IIFE-scoped global block
+│       ├── § DATA        const D = {…}              (the resume content)
+│       ├── § TOOLTIPS    const tooltips = {…}        (447 tech entries)
+│       ├── § RENDER      secHTML / expHTML / projHTML / eduHTML / patHTML / corpHTML /
+│       │                 skillsHTML / tag / buildTooltip / render()  (pure string builders)
+│       ├── § STATE       setTheme / setProfile / cycleTheme / pickTheme / cycleProfile /
+│       │                 filterSkills / cycleTagLevel / saveSkillFam / resetDefaults /
+│       │                 startThemeRotation / stopThemeRotation / toggleThemeRotation
+│       ├── § FX ENGINE   one start&lt;Theme&gt;() Canvas 2D initializer per animated theme,
+│       │                 driven by requestAnimationFrame; resizeCanvas / stopFX manage lifecycle
+│       └── § EXPORT      exportMD() · exportHTML() · runPdfExport(opts) with named wrappers
+│                         exportPDF() / exportPrintPage() / exportPrintDocument() /
+│                         exportPrintCV() · printResume() · toggleExportMenu / toggleMoreMenu</code></pre>
+<p>This mirrors <a href="docs/BIBLE.md#RDC-§4">docs/BIBLE.md §4</a>, the canonical version of this diagram. If the architecture changes, update that file first, then this section.</p>
+<h2 id="content-model">Content model</h2>
+<p>All resume content lives once, as a single in-file JavaScript object literal named <code>D</code> (<code>index.htm</code>, near line 1592). Every profile and export format is a read-only projection of this one object; there is never a second copy of the content.</p>
+<table><thead><tr>
+<th>Key</th>
+<th>What it holds</th>
+</tr></thead><tbody>
+<tr>
+<td><code>summary</code>, <code>pitchSummary</code></td>
+<td>Prose blurbs (full and pitch tone)</td>
+</tr>
+<tr>
+<td><code>skillsCore</code>, <code>skillsComplete</code></td>
+<td>Grouped skill lists (label and <code>items[]</code>)</td>
+</tr>
+<tr>
+<td><code>experience[]</code></td>
+<td>Title, company, location, dates, <code>tech[]</code> and <code>bullets[]</code> per role</td>
+</tr>
+<tr>
+<td><code>projects[]</code></td>
+<td>Name, URL and label per link: currently the MindAttic GitHub organisation and MindAttic books on Amazon</td>
+</tr>
+<tr>
+<td><code>education[]</code></td>
+<td>Degrees</td>
+</tr>
+<tr>
+<td><code>patents[]</code></td>
+<td>US patents</td>
+</tr>
+<tr>
+<td><code>corporate[]</code></td>
+<td>Registered entities</td>
+</tr>
+</tbody></table>
+<p>A sibling object, <code>tooltips</code> (<code>index.htm</code>, lines 977 to 1463), maps 447 technology names to hover descriptions.</p>
+<h2 id="themes-and-profiles-reference">Themes and profiles reference</h2>
+<ul>
+<li>Theme names: <code>light</code>, <code>dark</code>, <code>spring</code>, <code>summer</code>, <code>autumn</code>, <code>winter</code>, <code>matrix</code>, <code>neko</code>, <code>ocean</code>, <code>sunset</code>, <code>forest</code>, <code>cyberpunk</code>, <code>noir</code>, <code>sakura</code>, <code>sand</code>, <code>synthwave</code>. Selected with the <code>[data-theme]</code> attribute on <code>&lt;html&gt;</code>.</li>
+<li>Profile names: <code>classic</code>, <code>pitch</code>, <code>complete</code>. Selected with <code>[data-profile]</code> on <code>&lt;body&gt;</code>.</li>
+<li><code>localStorage</code> keys: <code>resume-settings</code> (all Settings-panel values, including theme timeout and transition), <code>resume-theme</code>, <code>tag-familiarity</code>, <code>neko-color</code> and <code>fx-quality-level</code>. Theme-rotation pause lasts for one visit and is not saved.</li>
+</ul>
+<h2 id="assets-and-cdn">Assets and CDN</h2>
+<p>Static assets live in the sibling MindAttic.UiUx repo and are served by jsDelivr at a whole-number tag. The page currently pins <code>V10</code>.</p>
+<ul>
+<li>Page art: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/ryandebraal.com/&lt;category&gt;/&lt;file&gt;</code> (<code>themes/&lt;name&gt;/&lt;name&gt;-NN.jpg</code>, <code>images/</code>, <code>icons/</code>).</li>
+<li>Shared fonts: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/fonts/outfit/outfit-latin.woff2</code> (and <code>outfit-latin-ext.woff2</code>).</li>
+<li>PDF export: html2pdf.js 0.10.2 from jsDelivr npm, loaded on first export.</li>
+</ul>
+<p>Names are lowercase kebab-case; JPEGs are never re-encoded. To add or change an asset:</p>
+<ol>
+<li>Put it in MindAttic.UiUx under <code>ryandebraal.com/&lt;category&gt;/</code>.</li>
+<li>Regenerate its <code>assets-manifest.json</code> with <code>tools\build-asset-manifest.ps1</code> in that repo, and commit.</li>
+<li>Run the linked <code>/deploy</code>: it tags the next whole-number release, pushes it, rewrites the <code>@V&lt;n&gt;</code> pins in <code>index.htm</code> and checks the CDN before uploading.</li>
+</ol>
+<p>Full conventions: <a href="docs/BIBLE.md#RDC-§10">docs/BIBLE.md §10</a>.</p>
+<h2 id="not-in-this-repo">Not in this repo</h2>
+<p>No <code>node_modules</code>. No <code>package.json</code>. No <code>webpack.config.js</code>. No <code>tsconfig.json</code>. No <code>.eslintrc</code>. No CI matrix. No Tailwind. No React. No Vite. No analytics SDK. No tracking pixels. No service worker. No polyfills. No minifier. No transpiler. No third-party fonts. Assets come only from the pinned jsDelivr paths allowed by <a href="docs/BIBLE.md#RDC-LAW-3">RDC-LAW-3</a>. No test suite, no compiler, no build command (see <a href="docs/BIBLE.md#RDC-§3">docs/BIBLE.md §3</a>).</p>
+<p>No per-project <code>deploy.ps1</code>, <code>deploy.bat</code> or <code>settings.json</code>: deploy is centralised in the sibling MindAttic.Deploy repo (<a href="docs/BIBLE.md#RDC-LAW-6">RDC-LAW-6</a>).</p>
+<h2 id="project-layout">Project layout</h2>
+<pre><code class="language-text">ryandebraal.com/
+├── index.htm              The entire hand-authored page (assets are hosted in MindAttic.UiUx)
+├── README.md              This file
+├── README.htm             Generated from README.md by tools/build-readme.ps1
+├── AGENTS.md              Project agent entrypoint
+├── CLAUDE.md              Provider forwarder to the MindAttic agent standard
+├── docs/
+│   ├── BIBLE.md           L0: what the site is and is not, architecture, the Laws (RDC-LAW-n)
+│   ├── AMENDMENTS.md      L1: pending decisions not yet folded into the bible (normally empty)
+│   ├── USER_STORIES.md    L2: capabilities and status (RDC-US-&lt;Epic&gt;&lt;n&gt;)
+│   ├── BIBLE.digest.md    GENERATED by tools/codex.ps1 digest, never hand-edited
+│   ├── images/            README screenshots
+│   └── rfc/
+│       └── 0001-in-browser-smoke-harness.md
+├── tools/
+│   ├── codex.ps1          Codex doctor and digest tool
+│   └── build-readme.ps1   Regenerates README.htm (thin wrapper, see below)
+└── .claude/
+    ├── settings.json, settings.local.json, launch.json, statusline.ps1
+    ├── commands/          deploy.md, quicksave.md, quickload.md
+    ├── hooks/             inject-digest.ps1, quickload-on-do.ps1
+    └── skills/            commit/, deploy/, discard/, revert/, run/ (each a SKILL.md)</code></pre>
+<h2 id="tooling">Tooling</h2>
+<table><thead><tr>
+<th>Script</th>
+<th>Purpose</th>
+</tr></thead><tbody>
+<tr>
+<td><code>tools/codex.ps1</code></td>
+<td>Codex CLI for this repo. <code>doctor</code> validates the <code>docs/</code> canon (front-matter, IDs, cross-references, cited tests and paths, digest freshness) and exits non-zero on any hard error. <code>digest</code> regenerates <code>docs/BIBLE.digest.md</code> from BIBLE §1, §3, §5 and §9 plus a status index and any pending decisions. Pure Windows PowerShell 5.1, no external modules.</td>
+</tr>
+<tr>
+<td><code>tools/build-readme.ps1</code></td>
+<td>Thin wrapper that regenerates <code>README.htm</code> from <code>README.md</code> by delegating to the shared engine at <code>../codex-standard/build-readme.ps1</code> (workspace root, outside this repo). Every MindAttic repo carries an identical wrapper, so all <code>README.htm</code> files share one engine.</td>
+</tr>
+</tbody></table>
+<pre><code class="language-powershell">powershell -NoProfile -ExecutionPolicy Bypass -File tools\codex.ps1 doctor
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\codex.ps1 digest
+powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1</code></pre>
+<p><code>doctor</code> must exit 0 after any change under <code>docs/</code>. <code>README.htm</code> is a generated, developer-facing rendering of this file and is unrelated to the site's <code>index.htm</code>, which is the shipped product.</p>
+<h2 id="deployment">Deployment</h2>
+<p>Deploy with the <code>/deploy</code> command (<code>.claude/commands/deploy.md</code>), which shells out to the sibling MindAttic.Deploy repo. This site is part of the permanently linked group <code>mindattic-web</code> (MindAttic.UiUx, ryandebraal.com, mindatticcares.com and mindattic.com): deploying any one of them deploys all four, in one run.</p>
+<pre><code class="language-powershell">powershell -NoProfile -ExecutionPolicy Bypass -Command "cd D:\Projects\MindAttic\MindAttic.Deploy; npm run deploy -- --site ryandebraal.com"</code></pre>
+<p>The run:</p>
+<ol>
+<li>Publishes the MindAttic.UiUx package first (tags the next <code>V&lt;n&gt;</code> if it has unreleased commits and pushes the tag).</li>
+<li>Pins that tag in every site's <code>index.htm</code>.</li>
+<li>Verifies every asset is live on jsDelivr, byte for byte.</li>
+<li>Only then stamps the <code>Last Updated</code> comment and FTPS-uploads <code>index.htm</code> to the site root, followed by mindatticcares.com and mindattic.com.</li>
+</ol>
+<p><code>--dry-run</code> previews the whole run without changing anything; <code>--no-link</code> deploys this site alone. The deploy never commits or pushes this repo. This site's profile lives in <code>MindAttic.Deploy/projects.json</code> under <code>sites[]</code>; FTP credentials are centralised in MindAttic.Deploy.</p>
+<h2 id="limitations">Limitations</h2>
+<ul>
+<li>No automated test suite yet. Every user story is held at "shipped, manually verified" because this project has no build step by design (<a href="docs/BIBLE.md#RDC-LAW-2">RDC-LAW-2</a>).</li>
+<li><a href="docs/rfc/0001-in-browser-smoke-harness.md">RFC 0001</a> proposes a dependency-free in-browser smoke harness covering every theme, profile and export (extending the MindAttic.UiUx Playwright suite, or an in-page <code>?selftest=1</code> block). It is planned, not built.</li>
+</ul>
+<h2 id="documentation">Documentation</h2>
+<p>This repo follows the MindAttic Codex documentation standard (project code RDC). A fact lives in exactly one layer; deeper detail is linked by stable ID, never duplicated here.</p>
+<ul>
+<li><a href="docs/BIBLE.md">docs/BIBLE.md</a> (L0): what the site is and is not, the architecture (§4) and the project Laws <code>RDC-LAW-1</code> to <code>RDC-LAW-6</code>.</li>
+<li><a href="docs/AMENDMENTS.md">docs/AMENDMENTS.md</a> (L1): decisions not yet folded into the bible; normally empty. Git history is the change record.</li>
+<li><a href="docs/USER_STORIES.md"><code>docs/USER_STORIES.md</code></a> (L2): capabilities by epic, each with its verification status.</li>
+<li><a href="docs/rfc/">docs/rfc</a>: open design notes; once decided they are folded into the bible and stories and deleted.</li>
+<li><a href="docs/BIBLE.digest.md">docs/BIBLE.digest.md</a>: generated by <code>tools/codex.ps1 digest</code>. Never hand-edit it.</li>
+<li>Org-wide laws: <a href="../MindAttic.HouseRules.md">MindAttic.HouseRules.md</a>, inherited by reference from BIBLE §5 (whole-number versioning, credentials never in code or commits, "done is verified, not asserted").</li>
+<li>Agent instructions: <a href="AGENTS.md">AGENTS.md</a> is the project's agent entrypoint. <code>CLAUDE.md</code> is a provider forwarder to the workspace-wide <code>MINDATTIC_AGENT.md</code> and <code>mindattic-agent-standard/AGENTS.md</code>; neither duplicates workflow. The <code>.claude/</code> folder holds the Claude Code commands, hooks, skills and status line listed in <a href="#project-layout">Project layout</a>.</li>
+</ul>
+<h2 id="license">License</h2>
+<p>This repo has no LICENSE file. All rights reserved. Built and maintained by <a href="https://ryandebraal.com">Ryan DeBraal</a>.</p>
+<hr>
+<p>Part of <a href="https://mindattic.com">MindAttic</a> — see more projects at <a href="https://github.com/mindattic">github.com/mindattic</a>. Related: <a href="https://github.com/mindattic/mindattic.com">mindattic.com</a>, <a href="https://github.com/mindattic/mindatticcares.com">mindatticcares.com</a>, <a href="https://github.com/mindattic/MindAttic.UiUx">MindAttic.UiUx</a>, <a href="https://github.com/mindattic/MindAttic.Deploy">MindAttic.Deploy</a>.</p>
+
+    <p class="codex-footer">Generated 2026-10-03 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
+  </main>
+</div>
+<script>(function(){
+  'use strict';
+  var inner   = document.getElementById('toc-inner');
+  var content = document.getElementById('content');
+  if(!inner||!content) return;
+
+  var headings = Array.from(content.querySelectorAll('h2,h3'));
+  if(headings.length){
+    var title = document.createElement('span');
+    title.className = 'toc-title';
+    title.textContent = 'Contents';
+    inner.appendChild(title);
+
+    headings.forEach(function(h){
+      var a = document.createElement('a');
+      a.href      = '#'+h.id;
+      a.textContent = h.textContent.replace(/[#¶]/g,'').trim();
+      a.className = 'toc-a'+(h.tagName==='H3'?' is-h3':'');
+      if(h.tagName==='H2' && inner.children.length>1){
+        var sep=document.createElement('hr');
+        sep.className='toc-sep';
+        inner.appendChild(sep);
+      }
+      inner.appendChild(a);
+    });
+  }
+
+  var tocLinks = inner.querySelectorAll('.toc-a');
+  if(tocLinks.length && 'IntersectionObserver' in window){
+    var idMap={};
+    tocLinks.forEach(function(l){idMap[decodeURIComponent(l.getAttribute('href').slice(1))]=l;});
+    var active=null;
+    var obs=new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          if(active)active.classList.remove('active');
+          active=idMap[e.target.id]||null;
+          if(active){
+            active.classList.add('active');
+            var sidebar=document.getElementById('sidebar');
+            if(sidebar){
+              var ar=active.getBoundingClientRect();
+              var sr=sidebar.getBoundingClientRect();
+              if(ar.top<sr.top||ar.bottom>sr.bottom)
+                active.scrollIntoView({block:'nearest'});
+            }
+          }
+        }
+      });
+    },{rootMargin:'-8% 0px -78% 0px',threshold:0});
+    headings.forEach(function(h){obs.observe(h);});
+  }
+
+  content.querySelectorAll('pre').forEach(function(pre){
+    var btn=document.createElement('button');
+    btn.className='cpbtn';
+    btn.textContent='copy';
+    btn.setAttribute('aria-label','Copy code');
+    btn.addEventListener('click',function(){
+      var text=(pre.querySelector('code')||pre).textContent;
+      if(!navigator.clipboard){return;}
+      navigator.clipboard.writeText(text).then(function(){
+        btn.textContent='copied!';btn.classList.add('ok');
+        setTimeout(function(){btn.textContent='copy';btn.classList.remove('ok');},1800);
+      }).catch(function(){});
+    });
+    pre.appendChild(btn);
+  });
+}());</script>
+</body>
+</html>
