@@ -6,16 +6,14 @@ locally against working copies — so you can iterate on content changes
 without round-tripping through GitHub.
 
 This folder only handles the **splice-in-place subscribers** that
-MindAttic.UiUx still owns: `mindattic.com` (CYBERSPACE block), the
+MindAttic.UiUx owns: `mindattic.com` (CYBERSPACE block), the
 `MindAttic.Psst` legal pages (OUTFITFONT block) and Tutor (auth-visual trio).
 Prose.Writer, Prose.Codex and Ideas are marked `retired` in `subscribers.json`
-(their target projects no longer exist); their scripts print the note and exit 0.
+(their target projects do not exist); their scripts print the note and exit 0.
 `ryandebraal.com` and `mindatticcares.com` are not spliced at all — they load
 fonts and their own assets straight from jsDelivr (see `docs/ASSETS.md`), at the tag
 [`MindAttic.Deploy`](../../MindAttic.Deploy/README.md)'s linked deploy pins. There are no
-other CDN consumers: the catalog landing pages and the Claudia / ChiMesh long-form pages
-that `MindAttic.Deploy` used to render were retired by its DEP-A6 (2026-10-03, see
-[MAU-A7](../docs/AMENDMENTS.md#MAU-A7)); each repo's GitHub README is now its project page.
+other CDN consumers; each repo's GitHub README is its project page.
 
 Each `sync-*.ps1` targets one subscriber. Each subscriber has one or more
 **marker blocks** (HTML comment pairs or CSS comment pairs) that the sync
@@ -104,7 +102,7 @@ first run. If you're standing up a new subscriber, add the `BEGIN/END MINDATTIC.
 pairs to its `app.css` by hand first.
 
 ```powershell
-powershell -File sync/sync-prose.ps1    # currently prints the two "retired" notes and exits 0
+powershell -File sync/sync-prose.ps1    # prints the two "retired" notes and exits 0
 ```
 
 ### `sync-mindattic-psst.ps1`
@@ -123,8 +121,7 @@ powershell -File sync/sync-mindattic-psst.ps1 -TargetRoot 'D:/path/to/MindAttic.
 ## Adding a new subscriber
 
 Before adding one here, **make sure it can't simply load from the CDN**. A
-project page is its GitHub README (the `MindAttic.Deploy` catalog that rendered
-READMEs into landing pages was retired by DEP-A6), and a hand-authored page can
+project page is its GitHub README, and a hand-authored page can
 reference components and assets by tag-pinned jsDelivr URL. Only add a
 `sync-<name>.ps1` here if the subscriber genuinely needs build-time
 splice-in-place (e.g. it has hand-authored content outside the marker
@@ -162,12 +159,8 @@ To prevent that, each marker-splice script detects the host file's
 dominant line ending *before* splicing (`Get-DominantEol` in
 `_subscribers.ps1`, CRLF wins ties) and normalizes the whole written file
 to it (`ConvertTo-Eol`) on the way out. So a subscriber only ever sees the
-content diff, never an EOL flip. (The first sync after this was introduced
-may show a one-time, content-free normalization for any host file that was
-previously committed with mixed endings — `git diff --ignore-cr-at-eol`
-confirms it's pure EOL. The wholesale `wwwroot/js/*` copies in
-`sync-prose.ps1` are byte-for-byte with source and are not
-normalized.)
+content diff, never an EOL flip. (The wholesale `wwwroot/js/*` copies in
+`sync-prose.ps1` are byte-for-byte with source and are not normalized.)
 
 ### Cyberspace JS is CDN-loaded for mindattic.com
 

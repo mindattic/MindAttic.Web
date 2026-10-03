@@ -73,7 +73,7 @@ exceptions**; requests only to the site's origin + the allow-list (`lib/paths.mj
 expected `@V<n>` tag (never `@main`, no stale tag); every UiUx URL in the HTML exists in the package and every asset is in
 the manifest; `<link rel=preconnect>` to jsDelivr; HTML size budget and no oversized `data:` URIs (guards against
 re-embedding base64); fonts actually load from the CDN (Outfit latin / Attic; latin-ext stays unfetched unless needed); no
-horizontal scrollbar from 320 to 1920 px; comments no longer claim "one file / no external requests".
+horizontal scrollbar from 320 to 1920 px; comments make no "one file / no external requests" claims.
 
 Site-specific:
 

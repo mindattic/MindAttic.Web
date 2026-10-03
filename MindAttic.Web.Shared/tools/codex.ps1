@@ -6,7 +6,7 @@
             JSON-vs-schema, ✅-story test tokens, cited paths exist, generatedFrom freshness,
             digest up to date). Exits non-zero on any hard error.
   digest  - regenerate docs/BIBLE.digest.md from BIBLE §1, §3, §5, §9 + a status index +
-            the latest amendment head.
+            any pending decisions (only when docs/AMENDMENTS.md has entries).
 .NOTES
   Windows PowerShell 5.1 safe. No build step. Run from anywhere:
     powershell -File tools/codex.ps1 doctor
@@ -83,18 +83,15 @@ function Invoke-Digest {
   $gDone = [char]::ConvertFromUtf32(0x2705)    # ✅
   $gPart = [char]::ConvertFromUtf32(0x1F7E1)   # 🟡
   $gPlan = [char]::ConvertFromUtf32(0x2B1C)    # ⬜
-  $gCut  = [char]::ConvertFromUtf32(0x1F5D1)   # 🗑
   $cDone = ([regex]::Matches($stories, [regex]::Escape($gDone))).Count
   $cPart = ([regex]::Matches($stories, [regex]::Escape($gPart))).Count
   $cPlan = ([regex]::Matches($stories, [regex]::Escape($gPlan))).Count
-  $cCut  = ([regex]::Matches($stories, [regex]::Escape($gCut))).Count
 
-  # latest amendment head: first "## CODE-A.. " heading + its first paragraph
-  $amendHead = ''
+  # pending decisions: every "## MAU-A<n>" heading in AMENDMENTS.md (normally none)
+  $pending = @()
   if (Test-Path $AmendPath) {
     $am = Read-Text $AmendPath
-    $ms = [regex]::Matches($am, "(?ms)^##\s+MAU-A\d+\b.*?(?=^##\s+MAU-A\d+\b|\Z)")
-    if ($ms.Count -gt 0) { $amendHead = $ms[$ms.Count - 1].Value.TrimEnd() }
+    foreach ($m in [regex]::Matches($am, "(?m)^##\s+(MAU-A\d+\b.*?)\s*$")) { $pending += ('- ' + $m.Groups[1].Value) }
   }
 
   $today = (Get-Date).ToString('yyyy-MM-dd')
@@ -105,18 +102,18 @@ function Invoke-Digest {
   [void]$sb.AppendLine('')
   [void]$sb.AppendLine('# MindAttic.UiUx (MAU) - Bible Digest')
   [void]$sb.AppendLine('> This digest is the session preamble; the full source of truth is docs/BIBLE.md.')
-  [void]$sb.AppendLine('> Laws inherit MindAttic.HouseRules.md. Amendments win over the bible.')
+  [void]$sb.AppendLine('> Laws inherit MindAttic.HouseRules.md.')
   [void]$sb.AppendLine('')
   if ($s1) { [void]$sb.AppendLine($s1); [void]$sb.AppendLine('') }
   if ($s3) { [void]$sb.AppendLine($s3); [void]$sb.AppendLine('') }
   if ($s5) { [void]$sb.AppendLine($s5); [void]$sb.AppendLine('') }
   if ($s9) { [void]$sb.AppendLine($s9); [void]$sb.AppendLine('') }
   [void]$sb.AppendLine('## Status index (from USER_STORIES.md)')
-  [void]$sb.AppendLine(("- done: {0} | partial: {1} | planned: {2} | cut: {3}" -f $cDone, $cPart, $cPlan, $cCut))
+  [void]$sb.AppendLine(("- done: {0} | partial: {1} | planned: {2}" -f $cDone, $cPart, $cPlan))
   [void]$sb.AppendLine('')
-  if ($amendHead) {
-    [void]$sb.AppendLine('## Latest amendment')
-    [void]$sb.AppendLine($amendHead)
+  if ($pending.Count -gt 0) {
+    [void]$sb.AppendLine('## Pending decisions (docs/AMENDMENTS.md)')
+    foreach ($p in $pending) { [void]$sb.AppendLine($p) }
     [void]$sb.AppendLine('')
   }
 

@@ -1,5 +1,5 @@
 // Checks every site must pass: it loads cleanly, talks only to allowed hosts, pulls its assets from the pinned
-// MindAttic.UiUx tag, and no longer carries embedded base64 or "all in one file" claims.
+// MindAttic.UiUx tag, and carries no embedded base64 or "all in one file" claims.
 import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -8,8 +8,8 @@ import { MAX_SINGLE_DATA_URI_CHARS, MAX_TOTAL_DATA_URI_CHARS } from '../../lib/b
 import { absOf, loadManifest } from '../../lib/walk.mjs';
 import { openSite, loadSite, uiuxUrlsIn, commentsOf } from '../../lib/site-session.mjs';
 
-// Phrases from the retired "everything in one file" philosophy (user decision, MAU-A4): they must not
-// come back in comments. Sync-managed UiUx marker blocks are excluded (they belong to the component).
+// Phrases claiming "everything in one file": sites load their assets from the CDN package (BIBLE MAU-LAW-7),
+// so these must not appear in comments. Sync-managed UiUx marker blocks are excluded (they belong to the component).
 const RETIRED_CLAIMS = [
   /\bone file\b/i, /\bsingle[- ]file\b/i, /no external requests?/i, /base64[- ]inlined/i, /inlined as base64/i,
   /inlined (?:as )?base64/i, /zero (?:external )?dependenc/i, /\bno cdn\b/i, /one http request/i, /self-contained single/i,
@@ -131,10 +131,9 @@ for (const [name, site] of Object.entries(SITES)) {
 
     test('no horizontal scrollbar at common viewport sizes, in every view the site has', async ({ browser }) => {
       // Every view a visitor can reach is checked, not just the first paint: the hash-routed pages of
-      // mindatticcares.com (its Y2K page once overflowed by 4-8px @320 while Home was fine), and every
-      // ryandebraal.com theme at the narrow phone widths (themes change fonts and add effect layers).
-      // (ryandebraal.com used to overflow by 118px @320 / 48px @390 because a long skill tag was nowrap;
-      // fixed with a narrow-screen wrap rule on .tag.)
+      // mindatticcares.com (a sub-page can overflow while Home is fine), and every ryandebraal.com theme
+      // at the narrow phone widths (themes change fonts and add effect layers; long skill tags rely on a
+      // narrow-screen wrap rule on .tag).
       test.setTimeout(120_000); // ~40 view x viewport combinations on ryandebraal.com
       const s = await openSite(browser, site, { viewport: { width: VIEWPORTS[0][0], height: VIEWPORTS[0][1] } });
       try {
@@ -183,10 +182,10 @@ for (const [name, site] of Object.entries(SITES)) {
       expect(hits, 'use width:100% (or position:fixed) instead of 100vw').toEqual([]);
     });
 
-    test('comments no longer make "all in one file / no external requests" claims', () => {
+    test('comments make no "all in one file / no external requests" claims', () => {
       const comments = commentsOf(html);
       const hits = RETIRED_CLAIMS.flatMap((re) => { const m = comments.match(new RegExp(`^.*${re.source}.*$`, 'gim')); return m ? m.map((l) => l.trim().slice(0, 140)) : []; });
-      expect(hits, 'retired philosophy still stated in comments').toEqual([]);
+      expect(hits, '"all in one file" claim stated in comments').toEqual([]);
     });
   });
 }

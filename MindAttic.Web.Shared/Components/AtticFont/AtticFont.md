@@ -59,14 +59,9 @@ No active subscriber currently receives Attic via marker-block splice. The
 splice contract is still supported: an `html-inline` subscriber gets it between
 `<!-- BEGIN MINDATTIC.UIUX:ATTICFONT --> … <!-- END … -->` markers, a
 `blazor-wwwroot` subscriber between
-`/* == BEGIN MINDATTIC.UIUX:ATTICFONT.CSS == */` markers. `mindattic.com` was
-unenrolled in MAU-A4 (it loads the font from the CDN), and the Prose
-subscribers are retired (see `subscribers.json`).
-
-The former catalog landing pages and the Claudia / ChiMesh long-form pages,
-which pulled this file from jsDelivr at `MindAttic.Deploy`'s
-`componentsVersion`, were retired by `MindAttic.Deploy` DEP-A6 (2026-10-03,
-see [MAU-A7](../../docs/AMENDMENTS.md#MAU-A7)).
+`/* == BEGIN MINDATTIC.UIUX:ATTICFONT.CSS == */` markers. `mindattic.com` is
+not enrolled (it loads the font from the CDN), and the Prose subscribers are
+retired (see `subscribers.json`).
 
 Edit here only. Downstream copies are derived artifacts.
 

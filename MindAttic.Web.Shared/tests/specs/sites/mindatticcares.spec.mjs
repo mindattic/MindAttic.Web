@@ -100,7 +100,7 @@ test.describe('mindatticcares.com — runtime asset loading', () => {
   });
 
   test('the playbook has no per-section "Back to contents" links, and its TOC links each open their section', async ({ browser }) => {
-    // The 17 "Back to contents" links were removed on purpose (mindatticcares.com MAC-A4); #contents still deep-links to the TOC.
+    // The playbook deliberately has no per-section "Back to contents" links; #contents deep-links to the TOC.
     const s = await openSite(browser, site, { viewport: { width: 390, height: 844 } });
     try {
       await s.page.goto(`${s.url}#contents`, { waitUntil: 'load' });

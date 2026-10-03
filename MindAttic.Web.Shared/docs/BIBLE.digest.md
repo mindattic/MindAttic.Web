@@ -4,30 +4,27 @@ AUTHORITATIVE - full detail in docs/BIBLE.md
 
 # MindAttic.UiUx (MAU) - Bible Digest
 > This digest is the session preamble; the full source of truth is docs/BIBLE.md.
-> Laws inherit MindAttic.HouseRules.md. Amendments win over the bible.
+> Laws inherit MindAttic.HouseRules.md.
 
 ## 1. The one sentence {#MAU-§1}
-MindAttic.UiUx is the org's **one-repo, every-front-end component library**: a catalog of
-self-contained CSS/JS/HTML bundles (fonts, effects, helpers) that is the single source of truth,
-delivered three ways — jsDelivr CDN at runtime, splice-in-place marker-block sync at build time,
-and a cross-repo GitHub Actions PR. It is also the **shared runtime asset package**: the fonts, logos,
-theme art and parallax textures of every MindAttic site live here as plain static files, organised by
-domain, and are loaded over jsDelivr at a pinned tag ([MAU-A4](AMENDMENTS.md#MAU-A4)).
+MindAttic.UiUx is the org's **one-repo, every-front-end component library and shared runtime asset
+package**: a catalog of self-contained CSS/JS/HTML bundles (fonts, effects, helpers) plus the fonts,
+logos, theme art and parallax textures of every MindAttic site, organised by domain, delivered three
+ways — jsDelivr CDN at a pinned whole-number tag, splice-in-place marker-block sync, and a cross-repo
+GitHub Actions PR.
 
 ## 3. What it is NOT {#MAU-§3}
-- **NOT a deploying repo.** It owns no hosting. ~~Catalog landing pages and the Claudia/ChiMesh long-form
-  builds are rendered by `MindAttic.Deploy`, which pulls components from jsDelivr at runtime.~~ **Superseded by [MAU-A7](AMENDMENTS.md#MAU-A7)** —
-  those pages were retired (`MindAttic.Deploy` DEP-A6); the CDN consumers are the three sites, pinned by the
-  linked deploy. Do not add `landing-page` or `build-html-js` subscriber kinds here ([MAU-LAW-4](#MAU-LAW-4)).
+- **NOT a deploying repo.** It owns no hosting. Its only CDN consumers are the three sites, whose tag
+  pin, CDN check and upload are done by `MindAttic.Deploy`'s linked deploy. A project's page is its
+  GitHub README; nothing renders project pages from UiUx components ([MAU-LAW-4](#MAU-LAW-4)).
 - **NOT a place to hand-edit downstream copies.** Spliced/derived copies in subscriber repos are
   derived artifacts; the next sync overwrites whatever is between the marker pairs.
 - **NOT a multi-component framework with shared runtime.** There is no shared bundle, no cross-component
   import graph, no dependency resolver beyond per-component declared assets.
 - **NOT semantically versioned.** Tags are whole numbers (`V1`, `V2`, …) only — never SemVer
   ([HOUSE-LAW-1](../MindAttic.HouseRules.md#HOUSE-LAW-1)).
-- **NOT the owner of the `.idea` runtime/SDK.** If `.idea` packaging is reintroduced, any `Ideas/`
-  projects would only *consume* the sibling `MindAttic.Ideas` Abstractions + `ma-idea` packer at
-  compile time; the SDK lives in that repo. The `Ideas/` subtree was removed as of 2026-06-07 (see MAU-A3).
+- **NOT a `.idea` package builder.** The repo has no `Ideas/` packaging subtree. `build.ps1` still
+  expects one and therefore throws for every `-Output` ([§6](#MAU-§6)).
 
 ## 5. The Laws {#MAU-§5}
 This project **inherits the org-wide House Rules** verbatim — see
@@ -57,65 +54,45 @@ Each `Components/<Name>/` ships everything it needs and imports no other compone
 component must be vendorable without dragging the rest.
 
 ### MAU-LAW-4 — This repo does not deploy {#MAU-LAW-4}
-Hosting belongs to `MindAttic.Deploy`. ~~Hosting, catalog landing pages, and the Claudia/ChiMesh long-form builds belong to `MindAttic.Deploy`,
-which pulls from jsDelivr at runtime.~~ Do not add `landing-page`/`build-html-js` kinds to
-`subscribers.json` or recreate the deleted `sync-landing-page.ps1` / `sync-claudia.ps1` /
-`sync-chimesh.ps1`. ~~Brand-new catalog pages are configured in `MindAttic.Deploy/projects.json`.~~
-**Superseded by [MAU-A7](AMENDMENTS.md#MAU-A7)** — there are no catalog pages any more; a project's page is its GitHub README.
+Hosting, tag pinning and uploads belong to `MindAttic.Deploy`. Do not add `landing-page`/`build-html-js`
+kinds to `subscribers.json`, and do not add sync scripts that render project pages
+(`sync-landing-page.ps1`, `sync-claudia.ps1`, `sync-chimesh.ps1`); a project's page is its GitHub README.
 
-### MAU-LAW-5 — Canonical assets are never duplicated into packaging subtrees {#MAU-LAW-5}
-If an `Ideas/*` or other packaging project is reintroduced, it must declare canonical UiUx assets via a
-manifest (`idea.assets.json` or equivalent) and stage them at build time. Raw source under `Components/`
-and `Themes/` is always the single source of truth and is never copied into source control under any
-packaging subtree. (The `Ideas/` subtree was removed as of 2026-06-07; this law governs any future
-reinstatement — see MAU-A3.)
+### MAU-LAW-5 — Nothing is copied twice {#MAU-LAW-5}
+Raw source under `Components/` and `Themes/` and every served asset exist in exactly one place. The
+package holds no byte-identical duplicate files (enforced by `tests/specs/assets/manifest.spec.mjs`). A
+packaging project (such as an `Ideas/*` RCL) declares the canonical assets it needs in a manifest
+(`idea.assets.json` or equivalent) and stages them at build time; it never commits copies.
 
 ### MAU-LAW-6 — Published CDN tags are immutable {#MAU-LAW-6}
-Never mutate a published whole-number tag (`V1`, `V2`, …). Ship the next number alongside it; subscribers
-pin the exact one (e.g. ~~`MindAttic.Deploy/projects.json:componentsVersion`~~ ({L}: key removed), the
-sites' `MindAttic.UiUx@V<n>` URLs set by the linked deploy, or `sync-mindattic-com.ps1 -CyberspaceCdnTag`). This refines [HOUSE-LAW-1](../MindAttic.HouseRules.md#HOUSE-LAW-1).
+Never mutate a published whole-number tag (`V1`, `V2`, …). Ship the next number alongside it; consumers
+pin the exact one (the sites' `MindAttic.UiUx@V<n>` URLs set by the linked deploy, or
+`sync-mindattic-com.ps1 -CyberspaceCdnTag`). This refines [HOUSE-LAW-1](../MindAttic.HouseRules.md#HOUSE-LAW-1).
+
+### MAU-LAW-7 — Sites load assets from the package; only used files are served {#MAU-LAW-7}
+A MindAttic site embeds no binary asset (base64 font, image, texture) in its HTML; it loads each from a
+tag-pinned jsDelivr URL into this package. Placement: used by several sites → `fonts/`; used by one site →
+`<domain>/<category>/`; needed by a component → that component's folder. Every served file is listed in
+`assets-manifest.json`; a file no site references lives in `archive/` and is never linked. Lossy files keep
+full resolution and bytes; lossless recompression must be pixel-identical; fonts are validated before
+commit ([ASSETS.md](ASSETS.md)).
 
 ## 9. Glossary {#MAU-§9}
 - **Component** — self-contained bundle under `Components/<Name>/`; the catalog atom.
 - **Theme** — composed bundle under `Themes/<Name>/` (`deps.json` lists its component deps).
 - **Subscriber** — consuming property declared in `subscribers.json`.
 - **Subscription** — one component entry (with overrides) on a subscriber.
+- **Retired subscriber** — a `subscribers.json` entry with a `"retired"` note; its sync reports and exits 0.
 - **Marker block** — `BEGIN/END MINDATTIC.UIUX:<MARKER>` region a sync regenerates.
 - **Splice-in-place** — delivery mode that rewrites only the marker block in a subscriber file.
 - **jsDelivr CDN** — `cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<ref>/<path>`, the runtime delivery.
 - **`subscribers.json`** — canonical components-registry + subscriber map (L5 data).
 - **`Vn` tag** — a whole-number release tag; immutable once published ([MAU-LAW-6](#MAU-LAW-6)).
+- **Linked deploy** — `MindAttic.Deploy`'s release flow that tags this package and pins the tag in the
+  three sites together.
 - **Asset manifest** — `assets-manifest.json`; the generated, verifiable list of every served asset.
+- **`archive/`** — kept-but-unserved files ([MAU-LAW-7](#MAU-LAW-7)).
 
 ## Status index (from USER_STORIES.md)
-- done: 4 | partial: 10 | planned: 3 | cut: 3
-
-## Latest amendment
-## MAU-A7 — Catalog landing pages retired downstream; the three sites are the only CDN consumers (records MindAttic.Deploy DEP-A6; supersedes the catalog clauses of BIBLE §3, §4, MAU-LAW-4 and MAU-LAW-6) {#MAU-A7}
-On 2026-10-03 `MindAttic.Deploy` retired its catalog pipeline (its amendment DEP-A6): the README-driven
-landing pages at `mindattic.com/<slug>.htm`, the `componentsVersion` pin in `projects.json`, `src/build.js`,
-`src/parts.js` (the ChiMesh/Claudia parts-picker addon) and repo auto-discovery are gone, and the server
-301-redirects the old `<slug>.htm` URLs to the GitHub repos. Each repo's GitHub README is now its project page.
-
-**Consequence for this repo.** The only jsDelivr consumers of MindAttic.UiUx are the three sites
-(`mindattic.com`, `ryandebraal.com`, `mindatticcares.com`), pinned to one whole-number tag by the linked
-deploy (currently `V9`). Nothing pulls components at a `componentsVersion` any more, so there is no second pin
-to bump after a release.
-
-- **Bible.** §3 "NOT a deploying repo", [MAU-LAW-4](BIBLE.md#MAU-LAW-4) (catalog pages belong to Deploy;
-  new catalog pages go in `projects.json`) and the `componentsVersion` example in
-  [MAU-LAW-6](BIBLE.md#MAU-LAW-6) are struck through and marked superseded; the §4 diagram's CDN consumer is
-  now "the three sites". The laws themselves stand: this repo still does not deploy, and published tags are
-  still immutable.
-- **Docs.** `.github/PIPELINES.md`, `sync/sync.md`, the sync workflow and `sync-all.ps1` header comments,
-  the `subscribers.json` `$comment`, `Components/{AtticFont,OutfitFont,BackHomeM,Cyberspace}/*.md`,
-  `Themes/Cyberspace/Cyberspace.md` and the `theme.css` header no longer describe Deploy-rendered catalog
-  subscribers. The obsolete `@v1.0.0` CDN examples now use the whole-number form (`@V9`). The AtticFont and
-  OutfitFont "Sync delivery" sections also now match `subscribers.json` (mindattic.com unenrolled in MAU-A4,
-  Prose retired in MAU-A5).
-- **Theme and BackHomeM.** `Themes/Cyberspace/` and `Components/BackHomeM/` have no current consumer; they stay
-  in the package (MAU-LAW-6: published tags keep serving them) for any future page.
-
-*Not changed:* no JS/CSS behaviour, no workflow job, no sync target (none of them wrote into Deploy's deleted
-`template/`). *Migration:* none.
+- done: 8 | partial: 8 | planned: 2
 

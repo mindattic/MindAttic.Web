@@ -3,19 +3,23 @@
 Whole-number release tags (`V1`, `V2`, …). A published tag is immutable ([MAU-LAW-6](docs/BIBLE.md#MAU-LAW-6));
 jsDelivr serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/<path>`.
 
-## Unreleased (next tag)
+## V10
+- README rewritten as full documentation and project page.
+- Docs, theme and component headers describe the three sites as the only CDN consumers (each repo's GitHub
+  README is its project page; nothing renders project pages from UiUx components).
+
+## V9
 - Unused files moved out of the package into `archive/` (kept in the repo, same relative paths): font TTF
   sources, the MindAttic Interactive wordmark and transparent monogram, the 1024px M-Cares master, and
   ryandebraal.com's 32 Neko frames + link icon. The package now serves 60 files (was 99)
-  ([MAU-A6](docs/AMENDMENTS.md#MAU-A6)).
-- Fixed: `MAU-A5` had been written into `BIBLE.md` instead of `AMENDMENTS.md`; stray tool-markup lines removed
-  from four docs.
+  ([MAU-LAW-7](docs/BIBLE.md#MAU-LAW-7)).
+- Stray tool-markup lines removed from four docs.
 - Tests: TTF sources are expected in `archive/fonts/<family>/`; new check that `archive/` is never in the
   manifest or linked from a site; cares spec follows the removal of the "Back to contents" links.
 
 ## V8
 - Retired the Prose.Writer, Prose.Codex and Ideas subscribers (targets no longer exist); their sync scripts now
-  report and exit 0, so `sync-all.ps1` is green again ([MAU-A5](docs/AMENDMENTS.md#MAU-A5)).
+  report and exit 0, so `sync-all.ps1` is green again.
 - `sync-subscribers.yml`: removed the dead Prose job, trimmed the paths filter to spliced components, full-history
   checkout for tag derivation.
 - Cyberspace test harness (`Components/Cyberspace/index.htm`) no longer throws on load.
@@ -24,7 +28,7 @@ jsDelivr serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiU
 - Docs brought in line with the tree (README, sync.md, PIPELINES.md, BIBLE, script headers).
 
 ## V7
-- **Shared runtime asset package** ([MAU-A4](docs/AMENDMENTS.md#MAU-A4), [docs/ASSETS.md](docs/ASSETS.md)):
+- **Shared runtime asset package** ([MAU-LAW-7](docs/BIBLE.md#MAU-LAW-7), [docs/ASSETS.md](docs/ASSETS.md)):
   global web fonts in `fonts/`; per-site assets in `mindattic.com/`, `mindatticcares.com/`, `ryandebraal.com/`;
   generated `assets-manifest.json` (path, bytes, SHA-256, size) via `tools/build-asset-manifest.ps1`.
 - Cyberspace parallax textures losslessly recompressed: 6.2 MB → 1.7 MB, pixel-identical.

@@ -4,7 +4,7 @@ A capital "M" in AtticFont pinned to the upper-left of the viewport, linking
 back to `mindattic.com`. No JS — just a styled `<a href>` so it survives
 script-disabled browsers and screen readers see it as a normal link.
 
-Built for satellite pages so a visitor can always get back to the hub. It was used on the README-driven catalog landing pages and the Claudia / ChiMesh pages that `MindAttic.Deploy` rendered; those were retired by `MindAttic.Deploy` DEP-A6 (2026-10-03, see [MAU-A7](../../docs/AMENDMENTS.md#MAU-A7)), so no current page consumes it. It stays available on the CDN for any future satellite page.
+Built for satellite pages so a visitor can always get back to the hub. No current page consumes it; it is available on the CDN for any satellite page.
 
 ---
 
@@ -64,8 +64,6 @@ Or via jsDelivr:
 CDN only: a page includes `back-home-m.css` via a tag-pinned jsDelivr `<link>`
 and hand-authors the `<a class="back-home-m">` element in its `<body>`. It is not
 spliced by any sync script. The theme `body-prelude.html` files carry only
-background-effect scaffolding, not this anchor. (The former consumer,
-`MindAttic.Deploy`'s catalog template pinned at `componentsVersion`, was removed
-by DEP-A6.)
+background-effect scaffolding, not this anchor.
 
 Edit here only. Downstream copies are derived artifacts.

@@ -22,4 +22,4 @@ After running, summarize: the release tag, which pins changed, the CDN gate resu
 Notes:
 - FTP credentials are centralized in `MindAttic.Deploy/secrets/ftp.json` (gitignored).
 - Pushing `main` triggers this repo's `.github/workflows/sync-subscribers.yml` when the push touches the paths it watches; it opens review PRs in the subscriber repos (it does not merge anything).
-- Design and rules: `MindAttic.Deploy/docs/AMENDMENTS.md` (DEP-A3) and `MindAttic.Deploy/src/linked.js`.
+- Design and rules: `MindAttic.Deploy/docs/BIBLE.md` and `MindAttic.Deploy/src/linked.js`.

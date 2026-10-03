@@ -35,7 +35,7 @@ if (fromIdx > -1) {
   const dir = path.resolve(process.argv[fromIdx + 1]);
   for (const abs of walk(dir)) {
     let rel = posix(path.relative(dir, abs));
-    rel = rel.replace(/^([^/]+)\/assets\//, '$1/'); // old layout had an assets/ level; it no longer exists
+    rel = rel.replace(/^([^/]+)\/assets\//, '$1/'); // normalise any <domain>/assets/ level to <domain>/ (the package has none)
     if (!DOMAIN_ROOTS.includes(rel.split('/')[0]) && !rel.startsWith('fonts/')) continue;
     if (!(rel in images)) record(rel, fs.readFileSync(abs));
   }

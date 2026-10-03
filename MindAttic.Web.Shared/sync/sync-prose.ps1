@@ -5,8 +5,8 @@
 # Runs the same component dispatch against each subscriber in turn so
 # the two apps are always in sync after every UiUx update.
 #
-# RETIRED (2026-10-02): Prose was restructured and neither v3/Prose.Writer nor
-# v3/Prose.Codex (Blazor wwwroots with UiUx marker blocks) exists any more, so
+# RETIRED: neither v3/Prose.Writer nor v3/Prose.Codex (Blazor wwwroots with
+# UiUx marker blocks) exists in Prose, so
 # both subscribers carry a "retired" field in subscribers.json and this script
 # reports them and exits 0. Re-enroll by pointing target at the new project,
 # adding the marker pairs, and deleting the field.

@@ -64,12 +64,9 @@ One active subscriber receives Outfit via marker-block splice:
   `<!-- BEGIN MINDATTIC.UIUX:OUTFITFONT --> … <!-- END … -->` markers by
   `sync/sync-mindattic-psst.ps1`.
 
-`mindattic.com` was unenrolled in MAU-A4 (it loads the font from the CDN), and
-the Prose subscribers (`blazor-wwwroot`, `/* == BEGIN MINDATTIC.UIUX:OUTFITFONT.CSS == */`
-markers) are retired (see `subscribers.json`). The former catalog landing pages
-and the Claudia / ChiMesh long-form pages, which pulled this file from jsDelivr at
-`MindAttic.Deploy`'s `componentsVersion`, were retired by `MindAttic.Deploy`
-DEP-A6 (2026-10-03, see [MAU-A7](../../docs/AMENDMENTS.md#MAU-A7)).
+`mindattic.com` is not enrolled (it loads the font from the CDN), and the Prose
+subscribers (`blazor-wwwroot`, `/* == BEGIN MINDATTIC.UIUX:OUTFITFONT.CSS == */`
+markers) are retired (see `subscribers.json`).
 
 Edit here only. Downstream copies are derived artifacts.
 

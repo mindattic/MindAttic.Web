@@ -6,7 +6,7 @@
 #   - OutfitFont / AtticFont -> CSS marker block in wwwroot/app.css
 #   - html-bundle components  -> jsFiles copied to wwwroot/js + CSS marker block
 #
-# RETIRED (2026-10-02): the MindAttic.Ideas.Web project no longer exists, so the
+# RETIRED: the MindAttic.Ideas.Web project does not exist, so the
 # "Ideas" subscriber carries a "retired" field in subscribers.json and this script
 # reports it and exits 0. Re-enroll by pointing target at the successor project,
 # adding the marker pairs to its wwwroot/app.css, and deleting the field.

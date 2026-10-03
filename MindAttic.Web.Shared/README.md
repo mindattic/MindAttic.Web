@@ -2,11 +2,11 @@
 
 Shared front-end assets for every MindAttic site: a cyberpunk console-background engine, 1024 animated line-art shapes, fonts and UI widgets, served from jsDelivr by immutable tag with no build step.
 
-[![JavaScript](https://img.shields.io/badge/JavaScript-vanilla-F7DF1E)](Components/Cyberspace/console-bg.js) [![CSS](https://img.shields.io/badge/CSS-no%20build-264DE4)](Components) [![jsDelivr V9](https://img.shields.io/badge/jsDelivr-V9-E84D3D)](CHANGELOG.md) [![Tests Playwright](https://img.shields.io/badge/tests-Playwright-2EAD33)](tests/README.md) [![Status active](https://img.shields.io/badge/status-active-brightgreen)](docs/BIBLE.md)
+[![JavaScript](https://img.shields.io/badge/JavaScript-vanilla-F7DF1E)](Components/Cyberspace/console-bg.js) [![CSS](https://img.shields.io/badge/CSS-no%20build-264DE4)](Components) [![jsDelivr V10](https://img.shields.io/badge/jsDelivr-V10-E84D3D)](CHANGELOG.md) [![Tests Playwright](https://img.shields.io/badge/tests-Playwright-2EAD33)](tests/README.md) [![Status active](https://img.shields.io/badge/status-active-brightgreen)](docs/BIBLE.md)
 
 ![The Cyberspace console-background engine running: console windows, a warning and a fatal-error popup, a geometric schematic window and a file-browser panel over a dark circuit-board backdrop](docs/images/cyberspace-backdrop.png)
 
-Try it: the backdrop behind the wordmark on [mindattic.com](https://mindattic.com) is this engine, loaded from `cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9`.
+Try it: the backdrop behind the wordmark on [mindattic.com](https://mindattic.com) is this engine, loaded from `cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10`.
 
 ## Why
 
@@ -57,13 +57,13 @@ Today three sites load from the package, all pinned to the same tag by MindAttic
 
 ### Themes
 
-`Themes/` composes components into a ready-to-use bundle. One theme remains:
+`Themes/` composes components into a ready-to-use bundle:
 
 | Theme | Composes |
 |---|---|
 | [Cyberspace](Themes/Cyberspace/Cyberspace.md) | `theme.css` (page chrome: hero, readme, buttons, layout), `body-prelude.html` (the three fixed-position effect divs) and the Cyberspace, OutfitFont, AtticFont and BackHomeM components declared in `deps.json` |
 
-The theme was built for the MindAttic.Deploy catalog landing pages, which were retired 2026-10-03 (DEP-A6); none of the three current sites loads it. The sister theme `Themes/Hardware/` was retired 2026-05-29.
+None of the three sites loads it today; it is served for any page that wants the composition.
 
 ## Quick start
 
@@ -73,9 +73,9 @@ Add the Cyberspace backdrop to any page, pinned to a release tag.
 2. Add the stylesheet and scripts from jsDelivr:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/Components/Cyberspace/frontpage.css">
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/Components/SacredGeometry/sacred-geometry.js" defer></script>
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V9/Components/Cyberspace/console-bg.js" defer></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/Components/Cyberspace/frontpage.css">
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/Components/SacredGeometry/sacred-geometry.js" defer></script>
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/Components/Cyberspace/console-bg.js" defer></script>
 ```
 
 Open the page: console windows, fragments and schematics start spawning in the margins around your content. [Components/Cyberspace/Cyberspace.md](Components/Cyberspace/Cyberspace.md) covers the optional `loader.js`, `tv-static.js` and `home-bg.js` scripts.
@@ -169,12 +169,12 @@ The canonical map is [subscribers.json](subscribers.json). It has two sections:
 
 | Subscriber | Kind | Target | Sync script | Subscriptions |
 |---|---|---|---|---|
-| mindattic.com | html-inline | mindattic.com/index.htm | sync-mindattic-com.ps1 | Cyberspace (fonts and logo load from the CDN, see MAU-A4) |
+| mindattic.com | html-inline | mindattic.com/index.htm | sync-mindattic-com.ps1 | Cyberspace (fonts and logo load from the CDN) |
 | MindAttic.Psst.Legal | html-inline-multi | MindAttic.Psst terms.htm and privacy.htm | sync-mindattic-psst.ps1 | OutfitFont |
 | Tutor | blazor-wwwroot | Tutor/Tutor.Blazor | sync-tutor.ps1 | UserLogin, UserCircle, UserTimeout |
-| Prose.Writer (retired) | blazor-wwwroot | no longer exists | sync-prose.ps1 | OutfitFont, AtticFont, Cyberspace, PinFooter, UserLogin, UserCircle, UserTimeout |
-| Prose.Codex (retired) | blazor-wwwroot | no longer exists | sync-prose.ps1 | same as Prose.Writer |
-| Ideas (retired) | blazor-wwwroot | no longer exists | sync-ideas.ps1 | UserLogin, UserCircle, UserTimeout |
+| Prose.Writer (retired) | blazor-wwwroot | does not exist | sync-prose.ps1 | OutfitFont, AtticFont, Cyberspace, PinFooter, UserLogin, UserCircle, UserTimeout |
+| Prose.Codex (retired) | blazor-wwwroot | does not exist | sync-prose.ps1 | same as Prose.Writer |
+| Ideas (retired) | blazor-wwwroot | does not exist | sync-ideas.ps1 | UserLogin, UserCircle, UserTimeout |
 
 ryandebraal.com and mindatticcares.com are not spliced; they reference the package by jsDelivr URL only.
 
@@ -228,15 +228,7 @@ The next sync enrolls or unenrolls automatically, unless the component's type ha
 
 ## Building
 
-There is no build step for consumers. Three repo tools exist.
-
-`build.ps1` copies a component's canonical files verbatim:
-
-```powershell
-.\build.ps1 -Build OutfitFont -Output standalone
-```
-
-Only `-Output standalone` does real work. `-Output idea` depends on an `Ideas/` packaging subtree removed 2026-06-07 (MAU-A3) and `-Output blazor` was never implemented.
+There is no build step for consumers. `build.ps1` targets `Ideas/` packaging projects that this repo does not contain, so it currently throws for every `-Output`; the working repo tools are the sync scripts and the asset-manifest generator.
 
 Run every splice locally, or one target:
 
@@ -366,17 +358,17 @@ MindAttic.UiUx/
   assets-manifest.json   generated list of every served file
   tests/                 Playwright suite for the package and the three sites
   sync/                  _subscribers.ps1 helper, sync-all.ps1, one sync-*.ps1 per subscriber, sync.md
-  docs/                  BIBLE, AMENDMENTS, USER_STORIES, ASSETS, rfc/, data/, images/
+  docs/                  BIBLE, AMENDMENTS, USER_STORIES, ASSETS, data/, images/
   tools/                 codex.ps1, build-asset-manifest.ps1, build-readme.ps1
   subscribers.json       components registry and subscriber map
-  build.ps1              standalone-copy build CLI
+  build.ps1              Ideas/ packaging build CLI (needs an Ideas/ subtree)
   .github/               PIPELINES.md and workflows/sync-subscribers.yml
 ```
 
 ## Documentation
 
-- [docs/BIBLE.md](docs/BIBLE.md): what the system is and is not, architecture, the laws (MAU-LAW-1 to 6).
-- [docs/AMENDMENTS.md](docs/AMENDMENTS.md): append-only change log.
+- [docs/BIBLE.md](docs/BIBLE.md): what the system is and is not, architecture, the laws (MAU-LAW-1 to 7).
+- [docs/AMENDMENTS.md](docs/AMENDMENTS.md): pending decisions not yet folded into the bible (normally empty).
 - [docs/USER-STORIES](docs/USER_STORIES.md): stories with test and evidence citations.
 - [docs/ASSETS.md](docs/ASSETS.md): the runtime asset package.
 - [docs/data/components.json](docs/data/components.json): the component catalog as data.

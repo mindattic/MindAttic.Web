@@ -2,7 +2,7 @@
 
 Dark cyberpunk landing-page chrome. Composes with the **Cyberspace** Component (effects engine), the **OutfitFont** + **AtticFont** Components, and the **BackHomeM** Component into a single README-style project page.
 
-> **No current consumer.** This theme was built for the README-driven catalog landing pages that `MindAttic.Deploy` rendered at `mindattic.com/<slug>.htm` (a project declared `theme: "Cyberspace"` in `MindAttic.Deploy/projects.json`). Those pages, the `projects[]` registry and the build that inserted the theme were retired by `MindAttic.Deploy` DEP-A6 on 2026-10-03 (see [MAU-A7](../../docs/AMENDMENTS.md#MAU-A7)); each repo's GitHub README is now its project page. The files stay here, served on the CDN, for any future page that wants the composition.
+> **No current consumer.** No page loads this theme today (each repo's GitHub README is its project page). The files are served on the CDN for any page that wants the composition.
 
 ## What this theme includes
 
@@ -46,5 +46,3 @@ Prose consumes the **Cyberspace Component directly** from its Blazor `wwwroot` â
 ## Related
 
 - Component layer: [`Components/Cyberspace/`](../../Components/Cyberspace/Cyberspace.md) â€” the raw effects engine.
-
-> The former sister theme `Themes/Hardware/` (light/dark documentation aesthetic) was retired 2026-05-29; ChiMesh and Claudia then rendered on Cyberspace with the MindAttic.Deploy parts-picker augmentation until that render was retired too (DEP-A6, 2026-10-03).

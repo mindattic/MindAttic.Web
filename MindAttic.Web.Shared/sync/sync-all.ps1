@@ -6,14 +6,12 @@
 #   - sync-mindattic-com.ps1   → mindattic.com/index.htm (CYBERSPACE block)
 #   - sync-mindattic-psst.ps1  → MindAttic.Psst/{terms,privacy}.htm (OUTFITFONT block)
 #   - sync-tutor.ps1           → Tutor.Blazor/wwwroot/ (auth-visual trio)
-#   - sync-prose.ps1           → retired (Prose.Writer / Prose.Codex no longer exist)
-#   - sync-ideas.ps1           → retired (MindAttic.Ideas.Web no longer exists)
+#   - sync-prose.ps1           → retired (Prose.Writer / Prose.Codex do not exist)
+#   - sync-ideas.ps1           → retired (MindAttic.Ideas.Web does not exist)
 #
 # The three sites load fonts, logos and the engine from the jsDelivr CDN
 # at the tag pinned by MindAttic.Deploy's linked deploy; only mindattic.com's
-# CYBERSPACE block is spliced. The former catalog landing pages and the
-# Claudia/ChiMesh long-form builds were retired by MindAttic.Deploy DEP-A6
-# (2026-10-03, docs/AMENDMENTS.md MAU-A7) and never had a sync script here.
+# CYBERSPACE block is spliced. There are no other CDN consumers.
 #
 # Production delivery happens via .github/workflows/sync-subscribers.yml
 # (push-triggered cross-repo PRs). This script is the local equivalent

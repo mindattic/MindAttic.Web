@@ -16,8 +16,8 @@ if ([string]::IsNullOrWhiteSpace($digest)) { Write-Output '{}'; return }
 $preamble = @"
 [MindAttic Codex - AUTHORITATIVE SESSION CONTEXT for MindAttic.UiUx (MAU)]
 The following is the generated digest of docs/BIBLE.md, the single source of truth for this repo.
-Treat it as authoritative. Full detail lives in docs/BIBLE.md; amendments (docs/AMENDMENTS.md) win
-over the bible; project laws inherit MindAttic.HouseRules.md. Do not duplicate facts - cite by {#id}.
+Treat it as authoritative. Full detail lives in docs/BIBLE.md; project laws inherit
+MindAttic.HouseRules.md. Do not duplicate facts - cite by {#id}.
 
 "@
 

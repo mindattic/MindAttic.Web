@@ -2,7 +2,7 @@
 
 MindAttic.UiUx is a source-of-truth repo. Content reaches subscribers two ways:
 
-1. **jsDelivr CDN** — every file is served at a versioned URL. The CDN consumers are the three sites (`mindattic.com`, `ryandebraal.com`, `mindatticcares.com`), pinned to one whole-number tag by `MindAttic.Deploy`'s linked deploy. That's the default path for anything new. (The README-driven catalog landing pages at `mindattic.com/<slug>.htm` and the Claudia / ChiMesh long-form builds that used to load components from the CDN were retired by `MindAttic.Deploy` amendment DEP-A6 on 2026-10-03; each repo's GitHub README is now its project page — see [MAU-A7](../docs/AMENDMENTS.md#MAU-A7).)
+1. **jsDelivr CDN** — every file is served at a versioned URL. The CDN consumers are the three sites (`mindattic.com`, `ryandebraal.com`, `mindatticcares.com`), pinned to one whole-number tag by `MindAttic.Deploy`'s linked deploy. That's the default path for anything new.
 2. **Marker-block sync** (GitHub Action + local PowerShell) — for subscribers that need build-time splice into hand-authored files: `mindattic.com/index.htm` (CYBERSPACE block only), the `MindAttic.Psst` legal pages, and Tutor (local only). Prose.Writer / Prose.Codex / Ideas are marked `retired` in `subscribers.json`.
 
 If you are wiring up a new subscriber, prefer pipeline 1. Pipeline 2 is reserved for cases where the subscriber genuinely needs content inlined inside files it also hand-authors.
@@ -21,7 +21,7 @@ Where `<ref>` is any of:
 
 | Ref form | Example | Behavior |
 |---|---|---|
-| Whole-number tag (required for prod) | `@V7` | Immutable; cached forever |
+| Whole-number tag (required for prod) | `@V10` | Immutable; cached forever |
 | Branch | `@main` | Cached ~7 days unless purged |
 | Commit SHA | `@a1b2c3d` | Immutable; cached forever |
 
@@ -31,8 +31,8 @@ Paths are case-sensitive on GitHub: component folders (`Cyberspace`, `SacredGeom
 
 ```html
 <!-- pinned, production -->
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/Components/Cyberspace/console-bg.js"></script>
-<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V7/Components/Cyberspace/frontpage.css">
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/Components/Cyberspace/console-bg.js"></script>
+<link  rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/Components/Cyberspace/frontpage.css">
 
 <!-- bleeding edge (dev only) -->
 <script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@main/Components/Cyberspace/console-bg.js"></script>
@@ -41,8 +41,8 @@ Paths are case-sensitive on GitHub: component folders (`Cyberspace`, `SacredGeom
 **Cutting a release:**
 
 ```bash
-git tag -a V8 -m "..."     # whole numbers only, never SemVer; never move a published tag
-git push origin main V8
+git tag -a V11 -m "..."     # whole numbers only, never SemVer; never move a published tag
+git push origin main V11
 # jsDelivr serves the new tag within a minute
 ```
 
@@ -52,7 +52,7 @@ any of the three sites) tags the next `V<n>` when `HEAD` is ahead of the latest 
 verifies every asset on the CDN, then FTPs the sites. Runtime assets (fonts, logos, theme art) are documented
 in [`docs/ASSETS.md`](../docs/ASSETS.md).
 
-There is no other CDN pin to bump: the `componentsVersion` key in `MindAttic.Deploy/projects.json` (which pinned the catalog landing pages) was removed with those pages (DEP-A6, [MAU-A7](../docs/AMENDMENTS.md#MAU-A7)).
+The three sites are the only CDN consumers; there is no other pin to bump.
 
 **Purging the cache (rare, only needed for branch refs):**
 
@@ -104,7 +104,7 @@ For fast iteration without pushing to GitHub, the `sync/sync-all.ps1` script doe
 powershell -File sync/sync-all.ps1
 ```
 
-`MindAttic.Deploy` also invokes `sync-mindattic-com.ps1` as a `preDeploy` hook (passing the release tag during a linked deploy) so the block is fresh before each FTPS upload. Its (disabled) Prose app still lists `sync-prose.ps1`, which now just reports the Prose subscribers as retired.
+`MindAttic.Deploy` also invokes `sync-mindattic-com.ps1` as a `preDeploy` hook (passing the release tag during a linked deploy) so the block is fresh before each FTPS upload. Its (disabled) Prose app lists `sync-prose.ps1`, which reports the Prose subscribers as retired and exits 0.
 
 ## Choosing a pipeline per subscriber
 
@@ -114,6 +114,6 @@ powershell -File sync/sync-all.ps1
 | `ryandebraal.com`, `mindatticcares.com` | jsDelivr only (no splice) | Hand-authored pages that reference `fonts/` and their own `<domain>/` asset folder by tag-pinned URL |
 | `MindAttic.Psst` legal pages | Inlined OUTFITFONT marker block in `terms.htm` + `privacy.htm` (kept fresh by Action / `sync-mindattic-psst.ps1`) | Small legal pages hand-authored around the block |
 | Tutor (Blazor) | `app.css` marker blocks (local `sync-tutor.ps1` only) | Blazor build needs deterministic input |
-| Prose.Writer / Prose.Codex / Ideas | — (retired) | Target projects no longer exist; see `retired` in `subscribers.json` |
-| Project pages (IdiotProof, Claudia, ChiMesh, …) | — (none) | Retired by DEP-A6 ([MAU-A7](../docs/AMENDMENTS.md#MAU-A7)): each repo's GitHub README is its project page; nothing is rendered from UiUx components |
+| Prose.Writer / Prose.Codex / Ideas | — (retired) | Target projects do not exist; see `retired` in `subscribers.json` |
+| Project pages (IdiotProof, Claudia, ChiMesh, …) | — (none) | Each repo's GitHub README is its project page; nothing is rendered from UiUx components |
 | Anything new | jsDelivr CDN | Only fall back to pipeline 2 if the subscriber needs hand-authored content interleaved with the components |

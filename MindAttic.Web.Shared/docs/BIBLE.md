@@ -12,12 +12,11 @@ updated: 2026-10-03
 > README says how to build/run; this says how to think about the system.
 
 ## 1. The one sentence {#MAU-§1}
-MindAttic.UiUx is the org's **one-repo, every-front-end component library**: a catalog of
-self-contained CSS/JS/HTML bundles (fonts, effects, helpers) that is the single source of truth,
-delivered three ways — jsDelivr CDN at runtime, splice-in-place marker-block sync at build time,
-and a cross-repo GitHub Actions PR. It is also the **shared runtime asset package**: the fonts, logos,
-theme art and parallax textures of every MindAttic site live here as plain static files, organised by
-domain, and are loaded over jsDelivr at a pinned tag ([MAU-A4](AMENDMENTS.md#MAU-A4)).
+MindAttic.UiUx is the org's **one-repo, every-front-end component library and shared runtime asset
+package**: a catalog of self-contained CSS/JS/HTML bundles (fonts, effects, helpers) plus the fonts,
+logos, theme art and parallax textures of every MindAttic site, organised by domain, delivered three
+ways — jsDelivr CDN at a pinned whole-number tag, splice-in-place marker-block sync, and a cross-repo
+GitHub Actions PR.
 
 ## 2. The product promise {#MAU-§2}
 - **One source of truth, three delivery modes.** A component is authored once under `Components/`
@@ -35,29 +34,28 @@ domain, and are loaded over jsDelivr at a pinned tag ([MAU-A4](AMENDMENTS.md#MAU
   ([MAU-LAW-3](#MAU-LAW-3)).
 - **Marker-block contract.** Every splice is bounded by `BEGIN/END MINDATTIC.UIUX:<MARKER>` comments;
   only what is between the markers is regenerated ([MAU-LAW-2](#MAU-LAW-2)).
-- **One shared asset backend.** Binary assets (fonts, images, textures) are never embedded in a site's
-  HTML; each site references them by tag-pinned jsDelivr URL. Layout, naming and quality rules are in
-  [ASSETS.md](ASSETS.md); the verified file list is `assets-manifest.json`.
+- **One shared asset backend.** The three sites (`mindattic.com`, `ryandebraal.com`, `mindatticcares.com`)
+  embed no binary assets; each references fonts and art by tag-pinned jsDelivr URL, all pinned to the
+  same tag (currently `V10`) by `MindAttic.Deploy`'s linked deploy ([MAU-LAW-7](#MAU-LAW-7)). Layout,
+  naming and quality rules are in [ASSETS.md](ASSETS.md); the verified file list is `assets-manifest.json`.
 
 ## 3. What it is NOT {#MAU-§3}
-- **NOT a deploying repo.** It owns no hosting. ~~Catalog landing pages and the Claudia/ChiMesh long-form
-  builds are rendered by `MindAttic.Deploy`, which pulls components from jsDelivr at runtime.~~ **Superseded by [MAU-A7](AMENDMENTS.md#MAU-A7)** —
-  those pages were retired (`MindAttic.Deploy` DEP-A6); the CDN consumers are the three sites, pinned by the
-  linked deploy. Do not add `landing-page` or `build-html-js` subscriber kinds here ([MAU-LAW-4](#MAU-LAW-4)).
+- **NOT a deploying repo.** It owns no hosting. Its only CDN consumers are the three sites, whose tag
+  pin, CDN check and upload are done by `MindAttic.Deploy`'s linked deploy. A project's page is its
+  GitHub README; nothing renders project pages from UiUx components ([MAU-LAW-4](#MAU-LAW-4)).
 - **NOT a place to hand-edit downstream copies.** Spliced/derived copies in subscriber repos are
   derived artifacts; the next sync overwrites whatever is between the marker pairs.
 - **NOT a multi-component framework with shared runtime.** There is no shared bundle, no cross-component
   import graph, no dependency resolver beyond per-component declared assets.
 - **NOT semantically versioned.** Tags are whole numbers (`V1`, `V2`, …) only — never SemVer
   ([HOUSE-LAW-1](../MindAttic.HouseRules.md#HOUSE-LAW-1)).
-- **NOT the owner of the `.idea` runtime/SDK.** If `.idea` packaging is reintroduced, any `Ideas/`
-  projects would only *consume* the sibling `MindAttic.Ideas` Abstractions + `ma-idea` packer at
-  compile time; the SDK lives in that repo. The `Ideas/` subtree was removed as of 2026-06-07 (see MAU-A3).
+- **NOT a `.idea` package builder.** The repo has no `Ideas/` packaging subtree. `build.ps1` still
+  expects one and therefore throws for every `-Output` ([§6](#MAU-§6)).
 
 ## 4. Architecture canon {#MAU-§4}
 
 ```
-                       Components/  +  Themes/        <-- single source of truth (raw css/js/html/json)
+            Components/ + Themes/ + fonts/ + <domain>/     <-- single source of truth
                               |
         +---------------------+----------------------+
         |                     |                      |
@@ -73,24 +71,22 @@ domain, and are loaded over jsDelivr at a pinned tag ([MAU-A4](AMENDMENTS.md#MAU
 - `Components/` — canonical component source. Each is self-contained: `<name>.{html,css,js}` +
   optional `<name>.json` config + `<FolderName>.md` doc. Catalog (13): Cyberspace, SacredGeometry,
   OutfitFont, AtticFont, PinFooter, BackHomeM, WebSnapshot, PageScrollbar, Textbox, Tooltip, UserLogin,
-  UserCircle, UserTimeout. (See `README.md` and `docs/data/components.json` for the full per-component
-  table.) Auth-visual components (UserLogin, UserCircle, UserTimeout) are authored and wired into
-  `subscribers.json`.
-- `fonts/` — web fonts shared by more than one site (`fonts/outfit/`, `fonts/attic/`; the TTF sources are kept in
-  `archive/fonts/`, outside the served package).
+  UserCircle, UserTimeout (per-component table in `README.md` and `docs/data/components.json`).
+- `Themes/` — composed bundles built from components (`Themes/Cyberspace/`: `theme.css`,
+  `body-prelude.html`, `deps.json`). No current page loads it; it is served for any page that wants it.
+- `fonts/` — web fonts shared by more than one site (`fonts/outfit/`, `fonts/attic/`).
 - `<domain>/<category>/` — per-site runtime assets: `mindattic.com/logos/`,
-  `mindatticcares.com/logos/`, `ryandebraal.com/{themes/<name>,icons,images}/`. See
+  `mindatticcares.com/{logos,icons,images}/`, `ryandebraal.com/{themes/<name>,images}/`. See
   [ASSETS.md](ASSETS.md).
+- `archive/` — files no site references (font TTF sources, brand masters, art a page keeps inline), at
+  the relative path they would have in the package. In the repo, not served ([MAU-LAW-7](#MAU-LAW-7)).
 - `assets-manifest.json` — generated by `tools/build-asset-manifest.ps1`: path, bytes, SHA-256 and pixel
-  size of every served asset.
-- `tests/` — the Playwright suite that validates this package and the three sites that consume it.
-- `Themes/` — composed bundles built from components (currently `Themes/Cyberspace/`: `theme.css`,
-  `body-prelude.html`, `deps.json`).
+  size of every served asset (60 files).
+- `tests/` — the Playwright suite that validates this package and the three sites that consume it
+  (`tests/README.md`).
 - `sync/` — PowerShell splice scripts + `sync-all.ps1` umbrella, all dot-sourcing `_subscribers.ps1`.
-- `subscribers.json` — canonical `components` registry + `subscribers` map. Cited as L5 data; see
-  [§4.2](#MAU-§4) and `docs/data/`.
-- `build.ps1` — build CLI (retained for `standalone` output; `idea` and `blazor` outputs are stubs
-  without the `Ideas/` subtree — see §6).
+- `subscribers.json` — canonical `components` registry + `subscribers` map ([§4.2](#MAU-§4)).
+- `build.ps1` — build CLI for `Ideas/` packaging projects; non-functional without that subtree ([§6](#MAU-§6)).
 - `.github/` — `.github/PIPELINES.md` + `.github/workflows/sync-subscribers.yml`.
 
 ### 4.2 Domain model (NOUNS)
@@ -101,25 +97,46 @@ domain, and are loaded over jsDelivr at a pinned tag ([MAU-A4](AMENDMENTS.md#MAU
 - **Domain folder** — the top-level folder named for a site (`mindattic.com/`, …) that holds that site's
   own assets in category folders (`logos/`, `icons/`, `images/`, `themes/<name>/`).
 - **Subscriber** — a consuming repo/property declared in `subscribers.json` (`kind` ∈
-  `html-inline`, `blazor-wwwroot`, `html-inline-multi`).
+  `html-inline`, `blazor-wwwroot`, `html-inline-multi`). Current entries:
+
+  | Subscriber | Kind | Subscriptions | Delivered by |
+  |---|---|---|---|
+  | `mindattic.com` | `html-inline` (`index.htm`) | Cyberspace | Action + `sync-mindattic-com.ps1` (also the site's linked-deploy `preDeploy` hook) |
+  | `MindAttic.Psst.Legal` | `html-inline-multi` (`terms.htm`, `privacy.htm`) | OutfitFont | Action + `sync-mindattic-psst.ps1` |
+  | `Tutor` | `blazor-wwwroot` | UserLogin, UserCircle, UserTimeout | `sync-tutor.ps1` (local only) |
+  | `Prose.Writer`, `Prose.Codex`, `Ideas` | `blazor-wwwroot` | (retired) | `sync-prose.ps1`, `sync-ideas.ps1` report and exit 0 |
+
+  `ryandebraal.com` and `mindatticcares.com` are not subscribers: they load from the CDN only.
 - **Subscription** — one `{ component, …overrides }` entry on a subscriber (e.g. `applyToSelector`,
   `jsOnly`). Override precedence: subscription value > component JSON default > none.
+- **Retired subscriber** — an entry carrying a `"retired"` string (why, and how to re-enroll: point
+  `target` at the successor project, add the marker pairs, delete the field). Its target project does not
+  exist; its script prints the note and exits 0.
 - **Marker block** — the `BEGIN/END MINDATTIC.UIUX:<MARKER>` region in a subscriber file that a sync
   regenerates.
 
 ### 4.3 Key services (VERBS)
 - **sync** (`sync/sync-*.ps1`, umbrella `sync-all.ps1`) — splice a component's bundle into a subscriber's
-  marker block, idempotently. `_subscribers.ps1`'s `Get-Subscriber` reads `subscribers.json`.
-- **build** (`build.ps1`) — copy raw canonical assets for `standalone` output. The `idea` and `blazor`
-  output targets are stubs (the `Ideas/` RCL subtree was removed — see §6 and MAU-A3).
+  marker block, idempotently, keeping the host file's line endings (`Get-DominantEol` / `ConvertTo-Eol`).
+  `_subscribers.ps1`'s `Get-Subscriber` reads `subscribers.json`; `Test-SubscriberRetired` makes a retired
+  subscriber's script print its note and exit 0, so `sync-all.ps1` stays green.
+- **mindattic.com splice** (`sync/sync-mindattic-com.ps1`) — writes the CYBERSPACE block: the small
+  Cyberspace scripts inline, `sacred-geometry.js` + `console-bg.js` as `defer` jsDelivr `<script>` tags,
+  and low-priority preloads of the three parallax textures. `-CyberspaceCdnTag` defaults to the latest
+  `V*` tag (`git describe`, fallback `V7` outside a git checkout); the linked deploy passes the release tag.
+- **cross-repo sync** (`.github/workflows/sync-subscribers.yml`) — two jobs, `sync-mindattic-com` and
+  `sync-mindattic-psst`. On a push to `main` touching `Components/Cyberspace/**`,
+  `Components/OutfitFont/**`, `subscribers.json`, `sync/**` or the workflow (or on `workflow_dispatch`;
+  not when the commit says `[skip ci]`), each checks out this repo (the mindattic.com job with
+  `fetch-depth: 0` so the tag can be derived) and the subscriber repo, runs its sync script and opens or
+  updates a PR on branch `auto/sync-components`, using the `SUBSCRIBER_REPO_TOKEN` PAT. There is no
+  Tutor or Prose job.
 - **CDN delivery** — implicit; jsDelivr serves any path at a pinned `@Vn` tag (no infra here).
-- **cross-repo sync** (`.github/workflows/sync-subscribers.yml`) — opens PRs into the two splice repos it
-  serves (`mindattic.com`, `MindAttic.Psst`) on a push to `main` that touches a spliced component,
-  `subscribers.json`, `sync/**` or the workflow (not when the commit says `[skip ci]`), using the
-  `SUBSCRIBER_REPO_TOKEN` PAT.
-- **retire** — a subscriber whose target project is gone keeps its entry with a `"retired"` note; its sync
-  script prints the note and exits 0 (`Test-SubscriberRetired`), so `sync-all.ps1` stays green
-  ([MAU-A5](AMENDMENTS.md#MAU-A5)).
+- **release** — `MindAttic.Deploy`'s linked deploy (`npm run deploy -- --uiux`, or `--site` for any of the
+  three sites) tags the next `V<n>` when `HEAD` is ahead of the latest tag, pins it in the three sites,
+  runs the `preDeploy` hooks, verifies every used asset on jsDelivr, then uploads the sites.
+- **asset manifest** (`tools/build-asset-manifest.ps1`, `-Verify` fails if stale) — regenerates
+  `assets-manifest.json`.
 
 ## 5. The Laws {#MAU-§5}
 This project **inherits the org-wide House Rules** verbatim — see
@@ -149,89 +166,80 @@ Each `Components/<Name>/` ships everything it needs and imports no other compone
 component must be vendorable without dragging the rest.
 
 ### MAU-LAW-4 — This repo does not deploy {#MAU-LAW-4}
-Hosting belongs to `MindAttic.Deploy`. ~~Hosting, catalog landing pages, and the Claudia/ChiMesh long-form builds belong to `MindAttic.Deploy`,
-which pulls from jsDelivr at runtime.~~ Do not add `landing-page`/`build-html-js` kinds to
-`subscribers.json` or recreate the deleted `sync-landing-page.ps1` / `sync-claudia.ps1` /
-`sync-chimesh.ps1`. ~~Brand-new catalog pages are configured in `MindAttic.Deploy/projects.json`.~~
-**Superseded by [MAU-A7](AMENDMENTS.md#MAU-A7)** — there are no catalog pages any more; a project's page is its GitHub README.
+Hosting, tag pinning and uploads belong to `MindAttic.Deploy`. Do not add `landing-page`/`build-html-js`
+kinds to `subscribers.json`, and do not add sync scripts that render project pages
+(`sync-landing-page.ps1`, `sync-claudia.ps1`, `sync-chimesh.ps1`); a project's page is its GitHub README.
 
-### MAU-LAW-5 — Canonical assets are never duplicated into packaging subtrees {#MAU-LAW-5}
-If an `Ideas/*` or other packaging project is reintroduced, it must declare canonical UiUx assets via a
-manifest (`idea.assets.json` or equivalent) and stage them at build time. Raw source under `Components/`
-and `Themes/` is always the single source of truth and is never copied into source control under any
-packaging subtree. (The `Ideas/` subtree was removed as of 2026-06-07; this law governs any future
-reinstatement — see MAU-A3.)
+### MAU-LAW-5 — Nothing is copied twice {#MAU-LAW-5}
+Raw source under `Components/` and `Themes/` and every served asset exist in exactly one place. The
+package holds no byte-identical duplicate files (enforced by `tests/specs/assets/manifest.spec.mjs`). A
+packaging project (such as an `Ideas/*` RCL) declares the canonical assets it needs in a manifest
+(`idea.assets.json` or equivalent) and stages them at build time; it never commits copies.
 
 ### MAU-LAW-6 — Published CDN tags are immutable {#MAU-LAW-6}
-Never mutate a published whole-number tag (`V1`, `V2`, …). Ship the next number alongside it; subscribers
-pin the exact one (e.g. ~~`MindAttic.Deploy/projects.json:componentsVersion`~~ ({L}: key removed), the
-sites' `MindAttic.UiUx@V<n>` URLs set by the linked deploy, or `sync-mindattic-com.ps1 -CyberspaceCdnTag`). This refines [HOUSE-LAW-1](../MindAttic.HouseRules.md#HOUSE-LAW-1).
+Never mutate a published whole-number tag (`V1`, `V2`, …). Ship the next number alongside it; consumers
+pin the exact one (the sites' `MindAttic.UiUx@V<n>` URLs set by the linked deploy, or
+`sync-mindattic-com.ps1 -CyberspaceCdnTag`). This refines [HOUSE-LAW-1](../MindAttic.HouseRules.md#HOUSE-LAW-1).
+
+### MAU-LAW-7 — Sites load assets from the package; only used files are served {#MAU-LAW-7}
+A MindAttic site embeds no binary asset (base64 font, image, texture) in its HTML; it loads each from a
+tag-pinned jsDelivr URL into this package. Placement: used by several sites → `fonts/`; used by one site →
+`<domain>/<category>/`; needed by a component → that component's folder. Every served file is listed in
+`assets-manifest.json`; a file no site references lives in `archive/` and is never linked. Lossy files keep
+full resolution and bytes; lossless recompression must be pixel-identical; fonts are validated before
+commit ([ASSETS.md](ASSETS.md)).
 
 ## 6. Verified state {#MAU-§6}
-Status legend: ✅ done (verified) · 🟡 partial · ⬜ planned · 🗑️ cut · living.
+Status legend: ✅ done (verified) · 🟡 partial · ⬜ planned · living.
 
-- 🟡 **Component catalog (`Components/`).** Thirteen self-contained components present with source + docs
-  (Cyberspace, SacredGeometry, OutfitFont, AtticFont, PinFooter, BackHomeM, WebSnapshot, PageScrollbar,
-  Textbox, Tooltip, UserLogin, UserCircle, UserTimeout). Auth-visual trio (UserLogin/UserCircle/UserTimeout)
-  authored and wired into `subscribers.json` as of 2026-06-07. No automated test suite in this repo;
-  correctness is verified manually / downstream. Marked 🟡 (present, not test-proven here).
-- ✅ **Shared asset package (`fonts/`, `<domain>/`).** Verified 2026-10-02: the three Cyberspace
-  parallax textures were losslessly recompressed (6.2 MB → 1.7 MB, pixel-identical to the originals);
-  the Outfit/Attic woff2 files were extracted, and the Outfit *Latin* file previously carried in
-  `outfit-font.css` was found corrupt (browsers silently fell back to a system font) and replaced with the
-  genuine Google Fonts file; `ryandebraal.com/` (76 files, byte-verified against the extraction
-  manifest) and the brand logos were added. Test coverage lives in `tests/` (see `tests/README.md`).
-- 🟡 **Distribution (`sync/`, CDN, Action).** Five sync scripts (`sync-mindattic-com.ps1`,
-  `sync-mindattic-psst.ps1`, `sync-tutor.ps1`, and `sync-prose.ps1` / `sync-ideas.ps1`, whose subscribers
-  are retired) + `sync-all.ps1` umbrella. Verified 2026-10-02: `sync-mindattic-com.ps1` run against a copy
-  of `mindattic.com/index.htm` is byte-identical (idempotent, tag derived as `V7`); `sync-prose.ps1` and
-  `sync-ideas.ps1` report their retired subscribers and exit 0 (they threw "Path not found" before
-  [MAU-A5](AMENDMENTS.md#MAU-A5)). The GitHub Action's last green run is not captured here — 🟡.
-- 🗑️ **`.idea` packaging build (`build.ps1` + `Ideas/*`).** The `Ideas/` RCL subtree was **removed** from
-  this repo as of 2026-06-07 (see MAU-A3). The `build.ps1` `idea` and `blazor` output targets are now
-  stubs (warnings only); the `standalone` copy path is unaffected. The previous build evidence
-  (CS0246/CS0117 SDK drift from the 2026-06-07 Codex install session) is superseded by the removal. If
-  `.idea` packaging is reintroduced, establish fresh build evidence at that time.
-  See [RFC 0001](rfc/0001-pluginbase-sdk-drift.md) for the original SDK-drift context.
-- ⬜ **Tests.** There is **no test project** in this repo (the only `*.test.*` hits are inside
-  `Components/WebSnapshot/node_modules/`). The nearest thing to a smoke test is SacredGeometry's
-  `build-previews.mjs`. No `✅` story may claim test verification until a test exists.
-
-**Build evidence (2026-06-07, full-sync):** No `.idea` build applicable (`Ideas/` subtree absent). No
-automated test project (`dotnet test` n/a). Component source tree verified on disk: 13 components. Sync
-scripts: 5 subscriber scripts + `sync-all.ps1` umbrella, all present.
+- ✅ **Shared asset package (`fonts/`, `<domain>/`, `Components/Cyberspace/assets/`).** 60 served files,
+  matching `assets-manifest.json` byte-for-byte. Verified 2026-10-03: `npx playwright test --project=assets`
+  in `tests/` — 91 passed (manifest exact, fonts and images decode, budgets, naming, layout, `archive/`
+  kept out).
+- ✅ **Sites consume the package at the pinned tag.** `tests/specs/sites/*.spec.mjs` checks each of the
+  three sites for clean loads, allowed hosts, the expected tag (highest `V<n>`, override `UIUX_TAG`), no
+  overflow at every viewport and view, and CDN-loaded fonts. Verified 2026-10-03: `npx playwright test`
+  in `tests/` (local mode) — 162 passed, 5 skipped (the live-only CDN specs).
+- 🟡 **Component catalog (`Components/`).** Thirteen self-contained components present with source + docs.
+  No component-level tests; correctness is verified manually (harnesses `Components/Cyberspace/index.htm`,
+  `Components/SacredGeometry/index.htm`) and through the sites suite (Cyberspace on mindattic.com).
+- 🟡 **Distribution (`sync/`, Action).** `sync-mindattic-com.ps1` run against a copy of
+  `mindattic.com/index.htm` is byte-identical (idempotent); `sync-prose.ps1` and `sync-ideas.ps1` report
+  their retired subscribers and exit 0. No automated sync test; the Action's last run is not captured here.
+- ⬜ **`build.ps1`.** Every output resolves an `Ideas/MindAttic.Ideas.{Plugin|Theme}.<Build>` project first
+  and throws `No Ideas/ build-projects folder` because the repo has no `Ideas/` subtree (verified
+  2026-10-03 with `-Output standalone`). `-Output blazor` is a stub warning.
 
 ## 7. Active frontier {#MAU-§7}
-- **`Ideas/` subtree removed (MAU-A3).** The `.idea` packaging path is gone. `build.ps1 -Output idea`
-  and `-Output blazor` are now stubs. [RFC 0001](rfc/0001-pluginbase-sdk-drift.md) is superseded by the
-  removal; kept for historical reference. Reintroducing `.idea` packaging requires a new RFC.
-- **Six new components landed** (PageScrollbar, Textbox, Tooltip, UserLogin, UserCircle, UserTimeout).
-  Auth-visual trio is authored and wired into `subscribers.json`; all 13 components documented in
-  `docs/data/components.json`.
-- `README.md` component table and `CLAUDE.md` layout section are not yet updated to list the new
-  components — that is a docs-tier task, not tracked as a story.
+- Graduate the distribution stories to ✅ with an automated sync-idempotency check.
+- Decide `build.ps1`'s fate: make `standalone` work from `Components/` directly, or remove the script.
 - Epics and backlog: see [USER_STORIES.md](USER_STORIES.md).
 
 ## 8. Quality bar {#MAU-§8}
 A feature is **done** (✅) only when:
-1. It builds clean where a build applies (`build.ps1` produces the artifact; or a future packaging subtree
-   compiles) — per [HOUSE-LAW-8](../MindAttic.HouseRules.md#HOUSE-LAW-8).
+1. It builds or runs clean where that applies — per [HOUSE-LAW-8](../MindAttic.HouseRules.md#HOUSE-LAW-8).
 2. For a component change, the relevant `sync/sync-*.ps1` runs **idempotently** (a second run yields no
    diff) and a single component is independently vendorable ([MAU-LAW-3](#MAU-LAW-3)).
 3. Canonical source is edited in `Components/`/`Themes/` only; no derived/downstream copy is hand-edited
-   ([MAU-LAW-2](#MAU-LAW-2)); no asset duplicated into any packaging subtree ([MAU-LAW-5](#MAU-LAW-5)).
-4. A shipped content change is published behind the **next whole-number tag**, never by mutating an
+   ([MAU-LAW-2](#MAU-LAW-2)); nothing is copied twice ([MAU-LAW-5](#MAU-LAW-5)).
+4. An asset change regenerates `assets-manifest.json` and passes `tests/` (`npm run test:local`)
+   ([MAU-LAW-7](#MAU-LAW-7)).
+5. A shipped content change is published behind the **next whole-number tag**, never by mutating an
    existing one ([MAU-LAW-6](#MAU-LAW-6)).
-5. The verifying evidence is named in the story (test token, or the build/sync command + observed result).
+6. The verifying evidence is named in the story (test token, or the command + observed result).
 
 ## 9. Glossary {#MAU-§9}
 - **Component** — self-contained bundle under `Components/<Name>/`; the catalog atom.
 - **Theme** — composed bundle under `Themes/<Name>/` (`deps.json` lists its component deps).
 - **Subscriber** — consuming property declared in `subscribers.json`.
 - **Subscription** — one component entry (with overrides) on a subscriber.
+- **Retired subscriber** — a `subscribers.json` entry with a `"retired"` note; its sync reports and exits 0.
 - **Marker block** — `BEGIN/END MINDATTIC.UIUX:<MARKER>` region a sync regenerates.
 - **Splice-in-place** — delivery mode that rewrites only the marker block in a subscriber file.
 - **jsDelivr CDN** — `cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<ref>/<path>`, the runtime delivery.
 - **`subscribers.json`** — canonical components-registry + subscriber map (L5 data).
 - **`Vn` tag** — a whole-number release tag; immutable once published ([MAU-LAW-6](#MAU-LAW-6)).
+- **Linked deploy** — `MindAttic.Deploy`'s release flow that tags this package and pins the tag in the
+  three sites together.
 - **Asset manifest** — `assets-manifest.json`; the generated, verifiable list of every served asset.
+- **`archive/`** — kept-but-unserved files ([MAU-LAW-7](#MAU-LAW-7)).

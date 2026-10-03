@@ -48,8 +48,8 @@ it):
 ```
 
 `sacred-geometry.js` must load **before** `console-bg.js`: the SCHEMATIC effect draws its
-shapes from `window.SacredGeometry` (the shape catalog used to live inline here; it was
-extracted into the [SacredGeometry](../SacredGeometry/SacredGeometry.md) component). If it's
+shapes from `window.SacredGeometry` (the shape catalog lives in the
+[SacredGeometry](../SacredGeometry/SacredGeometry.md) component). If it's
 absent, schematic windows simply don't spawn — everything else is unaffected.
 
 Production hosts pull the same files from jsDelivr instead of inlining:

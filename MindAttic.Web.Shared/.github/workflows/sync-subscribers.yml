@@ -1,17 +1,15 @@
 name: Sync content to subscribers
 
 # ====================================================================
-# This workflow only handles the two remaining "splice-in-place"
-# subscribers that MindAttic.UiUx still owns: mindattic.com (html-inline,
+# This workflow handles the two "splice-in-place" subscribers that
+# live in their own GitHub repos: mindattic.com (html-inline,
 # CYBERSPACE block) and the MindAttic.Psst legal pages (html-inline-multi
 # -> terms.htm/privacy.htm). Tutor is synced locally only (sync-tutor.ps1);
 # Prose.Writer / Prose.Codex / Ideas are "retired" in subscribers.json.
 #
 # The three sites load fonts, logos and the Cyberspace engine from jsDelivr
-# at the tag the MindAttic.Deploy linked deploy pins. The former catalog
-# landing pages and Claudia/ChiMesh long-form builds were retired
-# (MindAttic.Deploy DEP-A6, 2026-10-03; see docs/AMENDMENTS.md MAU-A7) --
-# each repo's GitHub README is its project page. Do not re-add legs for them.
+# at the tag the MindAttic.Deploy linked deploy pins; they need no job here.
+# Project pages are each repo's GitHub README; nothing else consumes UiUx.
 # ====================================================================
 
 on:
@@ -76,8 +74,7 @@ jobs:
           author: "MindAttic Components Bot <noreply@mindattic.com>"
           committer: "MindAttic Components Bot <noreply@mindattic.com>"
 
-  # sync-prose was removed 2026-10-02: Prose.Writer / Prose.Codex are marked "retired" in
-  # subscribers.json (the v3 Blazor wwwroots with UiUx marker blocks no longer exist in mindattic/Prose).
+  # No Prose job: Prose.Writer / Prose.Codex are marked "retired" in subscribers.json.
 
   sync-mindattic-psst:
     name: Sync into MindAttic.Psst (terms.htm + privacy.htm)
