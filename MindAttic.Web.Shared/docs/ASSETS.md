@@ -22,15 +22,15 @@ Global assets live at the repo root; a site's own assets live in a folder named 
 ```
 MindAttic.UiUx/
 ├── fonts/                         global: web fonts used by more than one site
-│   ├── outfit/                    outfit-latin.woff2, outfit-latin-ext.woff2, outfit.ttf
-│   └── attic/                     attic.woff2, attic.ttf
+│   ├── outfit/                    outfit-latin.woff2, outfit-latin-ext.woff2
+│   └── attic/                     attic.woff2
 ├── mindattic.com/                 site-specific: one folder per domain
-│   └── logos/                     m-monogram.png, m-icon-16.png, favicon.ico, wordmark PNGs
+│   └── logos/                     m-monogram.png, m-icon-16.png, favicon.ico
 ├── mindatticcares.com/
 │   ├── logos/  icons/  images/
 ├── ryandebraal.com/
 │   ├── themes/<theme>/            sunset, sakura, noir (one folder per theme)
-│   └── icons/  images/
+│   └── images/
 ├── Components/<Name>/             component-owned runtime files (CSS/JS and what they cannot work without)
 │   └── Cyberspace/assets/         circuitboard.00-02.png parallax textures
 └── assets-manifest.json           generated: path, bytes, SHA-256, pixel size of every asset
@@ -41,8 +41,10 @@ Rule of thumb: **used by several sites → top-level folder (`fonts/`); used by 
 folders are named for what the files are (`logos`, `icons`, `images`, `themes/<name>`), not for the
 page that uses them. Nothing is ever copied into two places ([MAU-LAW-5](BIBLE.md#MAU-LAW-5)).
 
-The `.ttf` next to each web font is the original the woff2 was made from, kept so the web font can be
-regenerated. Browsers never request it.
+**Only what a site uses is in the package.** Files nothing references — the TTF sources of the web
+fonts, brand masters, art a page keeps inline — live in [`archive/`](../archive/README.md), at the same
+relative path they would have in the package. They stay in the repo but are not in `assets-manifest.json`,
+not in this layout and not part of the supported URLs; a test fails if a site links to `archive/`.
 
 ## Quality rules
 
@@ -54,7 +56,7 @@ regenerated. Browsers never request it.
 - **Validate fonts before committing them.** Load every woff2 with `fontTools` (or in a browser) —
   a browser silently falls back to a system font when a woff2 is corrupt, which hides the bug.
 - **Names:** lowercase kebab-case, descriptive, no spaces; put the variant last
-  (`m-monogram-transparent.png`).
+  (`m-cares-black-red-transparent-720.png`).
 
 ## Adding or changing an asset
 

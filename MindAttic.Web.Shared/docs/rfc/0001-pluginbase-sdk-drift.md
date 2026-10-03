@@ -58,4 +58,3 @@ is confirmed, escalating to Option 3 only if the removal was a regression.
 4. Add a build-smoke check to `tools/codex.ps1` or a CI step so the break can't silently recur. *(Risk: low.)*
 
 ## Graduates into: [BIBLE §6 Verified state](../BIBLE.md#MAU-§6), [MAU-US-C1](../USER_STORIES.md)
-</content>

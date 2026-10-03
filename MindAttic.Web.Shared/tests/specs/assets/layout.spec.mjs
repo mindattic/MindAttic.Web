@@ -3,10 +3,10 @@ import { test, expect } from '@playwright/test';
 import fs from 'node:fs';
 import path from 'node:path';
 import { UIUX_ROOT, DOMAIN_ROOTS } from '../../lib/paths.mjs';
-import { walk, posix } from '../../lib/walk.mjs';
+import { walk, posix, loadManifest } from '../../lib/walk.mjs';
 
 const REQUIRED = [
-  // shared web fonts + the TTF sources they were built from
+  // shared web fonts (their TTF sources are kept in archive/fonts/)
   'fonts/outfit/outfit-latin.woff2', 'fonts/outfit/outfit-latin-ext.woff2',
   'fonts/attic/attic.woff2',
   // Cyberspace engine + styles + textures + SacredGeometry catalogue (loaded by every Cyberspace host)
@@ -30,14 +30,29 @@ test.describe('package layout', () => {
     });
   }
 
-  test('every web font family keeps the TTF it was built from (fonts/<family>/*.ttf or fonts/<family>/src/*.ttf)', () => {
+  test('every web font family keeps the TTF it was built from, in archive/fonts/<family>/ (not served)', () => {
     const fontsDir = path.join(UIUX_ROOT, 'fonts');
     const missing = [];
     for (const fam of fs.readdirSync(fontsDir, { withFileTypes: true }).filter((e) => e.isDirectory())) {
-      const files = walk(path.join(fontsDir, fam.name)).map((f) => path.basename(f));
-      if (files.some((f) => f.endsWith('.woff2')) && !files.some((f) => f.endsWith('.ttf'))) missing.push(`fonts/${fam.name}/ has no .ttf source`);
+      const served = walk(path.join(fontsDir, fam.name)).map((f) => path.basename(f));
+      if (!served.some((f) => f.endsWith('.woff2'))) continue;
+      const arch = path.join(UIUX_ROOT, 'archive', 'fonts', fam.name);
+      const kept = fs.existsSync(arch) ? walk(arch).map((f) => path.basename(f)) : [];
+      if (!kept.some((f) => f.endsWith('.ttf'))) missing.push(`archive/fonts/${fam.name}/ has no .ttf source`);
+      if (served.some((f) => f.endsWith('.ttf'))) missing.push(`fonts/${fam.name}/ serves a .ttf; keep sources in archive/fonts/${fam.name}/`);
     }
-    expect(missing, 'woff2 families without their TTF source').toEqual([]);
+    expect(missing, 'woff2 families without their archived TTF source').toEqual([]);
+  });
+
+  test('archive/ is kept out of the package: nothing in the manifest lives there and no site links to it', () => {
+    const inManifest = (loadManifest()?.files ?? []).filter((f) => f.path.startsWith('archive/')).map((f) => f.path);
+    expect(inManifest).toEqual([]);
+    const linked = [];
+    for (const d of DOMAIN_ROOTS) {
+      const page = path.join(UIUX_ROOT, '..', d, 'index.htm');
+      if (fs.existsSync(page) && /MindAttic\.UiUx@[^/]+\/archive\//.test(fs.readFileSync(page, 'utf8'))) linked.push(d);
+    }
+    expect(linked, 'sites linking to archive/').toEqual([]);
   });
 
   test('every domain folder that the sites use has content in at least one category folder', () => {

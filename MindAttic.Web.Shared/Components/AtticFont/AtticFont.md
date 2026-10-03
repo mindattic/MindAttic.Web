@@ -81,4 +81,4 @@ Sites that are not enrolled for splicing (for example `mindattic.com` and `ryand
 font as a plain woff2 file from the shared asset package, which is smaller than inlining it and is cached
 across sites: `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/fonts/attic/` (files and rules in
 [`docs/ASSETS.md`](../../docs/ASSETS.md)). Preload the file from `<head>` with `crossorigin`. The original
-TTF is kept next to the woff2 in `fonts/attic/src/`.
+TTF is kept in `archive/fonts/attic/` (in the repo, not served).

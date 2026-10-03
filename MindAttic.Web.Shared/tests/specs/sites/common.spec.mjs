@@ -76,6 +76,28 @@ for (const [name, site] of Object.entries(SITES)) {
       expect(unlisted, 'asset files missing from assets-manifest.json — regenerate it').toEqual([]);
     });
 
+    test('has a search snippet and a link-preview card (description, canonical, Open Graph, Twitter) whose image is in the package', () => {
+      const head = html.slice(0, html.search(/<\/head>/i));
+      const meta = (attr, key) => head.match(new RegExp(`<meta[^>]*${attr}="${key}"[^>]*content="([^"]*)"`, 'i'))?.[1];
+      const desc = meta('name', 'description');
+      expect(desc, 'meta description').toBeTruthy();
+      expect(desc.length, 'description length (search engines show ~50-160 chars)').toBeGreaterThanOrEqual(50);
+      expect(desc.length).toBeLessThanOrEqual(200);
+      expect(head).toMatch(/<link[^>]*rel="canonical"[^>]*href="https:\/\/[^"]+\/"/i);
+      for (const k of ['og:type', 'og:title', 'og:description', 'og:url', 'og:image']) expect(meta('property', k), k).toBeTruthy();
+      for (const k of ['twitter:card', 'twitter:image']) expect(meta('name', k), k).toBeTruthy();
+      expect(meta('property', 'og:description')).toBe(desc);
+      const img = meta('property', 'og:image');
+      const m = img.match(/MindAttic\.UiUx@(V\d+)\/(.+)$/);
+      expect(m, 'og:image is served from the pinned UiUx package').toBeTruthy();
+      expect(m[1]).toBe(EXPECTED_TAG);
+      const file = (manifest?.files ?? []).find((f) => f.path === m[2]);
+      expect(file, `${m[2]} is in assets-manifest.json`).toBeTruthy();
+      expect(meta('property', 'og:image:width')).toBe(String(file.width));
+      expect(meta('property', 'og:image:height')).toBe(String(file.height));
+      expect(meta('name', 'twitter:image')).toBe(img);
+    });
+
     test('opens the jsDelivr connection early (<link rel=preconnect>)', () => {
       expect(html).toMatch(/<link[^>]+rel="preconnect"[^>]+href="https:\/\/cdn\.jsdelivr\.net"/i);
     });

@@ -136,15 +136,16 @@ MindAttic.UiUx/
 │   └── Cyberspace/                # theme.css, body-prelude.html, deps.json, Cyberspace.md
 │
 ├── fonts/                         # shared web fonts (served over jsDelivr; see docs/ASSETS.md)
-│   ├── outfit/                    #   outfit-latin.woff2, outfit-latin-ext.woff2, outfit.ttf
-│   └── attic/                     #   attic.woff2, attic.ttf
+│   ├── outfit/                    #   outfit-latin.woff2, outfit-latin-ext.woff2
+│   └── attic/                     #   attic.woff2
 ├── mindattic.com/          # per-site runtime assets, one top-level folder per domain
-│   └── logos/                     #   m-monogram*.png, m-icon-16.png, favicon.ico, wordmark PNGs
+│   └── logos/                     #   m-monogram.png, m-icon-16.png, favicon.ico
 ├── mindatticcares.com/     #
 │   └── logos/                     #   m-cares*.png
 ├── ryandebraal.com/        #
 │   ├── themes/<name>/             #   sunset, sakura, noir ... one folder per theme
-│   ├── icons/  images/            #
+│   └── images/                    #
+├── archive/                       # kept, NOT served: font TTF sources, brand masters, unused art (archive/README.md)
 ├── assets-manifest.json           # generated: path, bytes, SHA-256, pixel size of every asset
 ├── tests/                         # Playwright suite: validates this package + the 3 sites that consume it
 │

@@ -99,17 +99,21 @@ test.describe('mindatticcares.com — runtime asset loading', () => {
     }
   });
 
-  test('"Back to contents" links stay on the Y2K page and bring the table of contents into view', async ({ browser }) => {
+  test('the playbook has no per-section "Back to contents" links, and its TOC links each open their section', async ({ browser }) => {
+    // The 17 "Back to contents" links were removed on purpose (mindatticcares.com MAC-A4); #contents still deep-links to the TOC.
     const s = await openSite(browser, site, { viewport: { width: 390, height: 844 } });
     try {
-      await s.page.goto(`${s.url}#sec-budget`, { waitUntil: 'load' });
-      await expect(s.page.locator('#y2k')).toHaveClass(/active/);
-      const back = s.page.locator('#y2k a.back-top').last();
-      await expect(back).toHaveAttribute('href', '#contents');
-      await back.scrollIntoViewIfNeeded();
-      await back.click();
+      await s.page.goto(`${s.url}#contents`, { waitUntil: 'load' });
       await expect(s.page.locator('#y2k')).toHaveClass(/active/);
       await expect(s.page.locator('nav.toc#contents')).toBeInViewport();
+      expect(await s.page.locator('a.back-top, a[href="#contents"]').count(), 'no back-to-contents links').toBe(0);
+      const toc = s.page.locator('nav.toc#contents a[href^="#sec-"]');
+      const n = await toc.count();
+      expect(n).toBeGreaterThan(0);
+      const last = toc.nth(n - 1);
+      const target = (await last.getAttribute('href')).slice(1);
+      await last.click();
+      await expect(s.page.locator(`#${target}`)).toBeInViewport();
       expect(s.rec.pageErrors).toEqual([]);
     } finally { await s.context.close(); }
   });

@@ -4,6 +4,16 @@ Whole-number release tags (`V1`, `V2`, …). A published tag is immutable ([MAU-
 jsDelivr serves any file at `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@<tag>/<path>`.
 
 ## Unreleased (next tag)
+- Unused files moved out of the package into `archive/` (kept in the repo, same relative paths): font TTF
+  sources, the MindAttic Interactive wordmark and transparent monogram, the 1024px M-Cares master, and
+  ryandebraal.com's 32 Neko frames + link icon. The package now serves 60 files (was 99)
+  ([MAU-A6](docs/AMENDMENTS.md#MAU-A6)).
+- Fixed: `MAU-A5` had been written into `BIBLE.md` instead of `AMENDMENTS.md`; stray tool-markup lines removed
+  from four docs.
+- Tests: TTF sources are expected in `archive/fonts/<family>/`; new check that `archive/` is never in the
+  manifest or linked from a site; cares spec follows the removal of the "Back to contents" links.
+
+## V8
 - Retired the Prose.Writer, Prose.Codex and Ideas subscribers (targets no longer exist); their sync scripts now
   report and exit 0, so `sync-all.ps1` is green again ([MAU-A5](docs/AMENDMENTS.md#MAU-A5)).
 - `sync-subscribers.yml`: removed the dead Prose job, trimmed the paths filter to spliced components, full-history

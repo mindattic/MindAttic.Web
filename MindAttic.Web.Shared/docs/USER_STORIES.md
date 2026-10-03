@@ -64,4 +64,3 @@ updated: 2026-06-07
 ### Audit log
 No stories have been changed from an original spec yet. (When a story's ask changes, the original text is
 preserved here verbatim, marked "(original spec — audit log)".)
-</content>
