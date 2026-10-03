@@ -1,0 +1,1090 @@
+<!-- Last Updated: 2026-10-03T20:08:31Z -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MindAttic Cares</title>
+<!-- Search-result snippet and link-preview card (Open Graph / Twitter). The image is served
+     from the MindAttic.UiUx CDN package like every other asset on this page. -->
+<meta name="description" content="MindAttic Cares is a 501(c)(3) nonprofit that provides digital access, support and educational assistance. This year it supports Child’s Play, which brings games to children in hospitals.">
+<link rel="canonical" href="https://mindatticcares.com/">
+<meta name="theme-color" content="#0d1117">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="MindAttic Cares">
+<meta property="og:title" content="MindAttic Cares">
+<meta property="og:description" content="MindAttic Cares is a 501(c)(3) nonprofit that provides digital access, support and educational assistance. This year it supports Child’s Play, which brings games to children in hospitals.">
+<meta property="og:url" content="https://mindatticcares.com/">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/logos/m-cares-black-red-transparent-720.png">
+<meta property="og:image:width" content="720">
+<meta property="og:image:height" content="720">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MindAttic Cares">
+<meta name="twitter:description" content="MindAttic Cares is a 501(c)(3) nonprofit that provides digital access, support and educational assistance. This year it supports Child’s Play, which brings games to children in hospitals.">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/logos/m-cares-black-red-transparent-720.png">
+<!-- Resource hints.  Binary assets (fonts, logos, photos) are served from the
+     MindAttic.UiUx package on jsDelivr, pinned to a release tag.  Open that
+     connection immediately and start the body font before the CSS is parsed.
+     Fonts need `crossorigin` even though they are same-page requests -- that
+     is how the font fetch is made; without it the preload is fetched twice. -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/fonts/outfit/outfit-latin.woff2">
+<link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/icons/m-cares-icon-96.png">
+<link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/icons/m-cares-icon-96.png">
+<style>
+/* latin-ext */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/fonts/outfit/outfit-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Outfit';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/fonts/outfit/outfit-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+*,*::before,*::after { box-sizing: border-box; }
+html { overflow-y: scroll; scroll-behavior: smooth; }
+html,body { margin:0; padding:0; }
+body {
+  background:#fff url("https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/images/background-abstract-light-1500x500.png") 0 100% / contain no-repeat fixed;
+  color:#111;
+  font-family: 'Outfit', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  font-weight:300;
+  font-size:18px;
+  line-height:1.55;
+  letter-spacing:-0.1px;
+  min-height:100vh;
+}
+a { color:#ff0033; text-decoration:none; }
+a:hover { text-decoration:underline; }
+.topbar a, .topbar a:hover { color:#111; text-decoration:none; }
+img { max-width:100%; height:auto; display:block; }
+
+/* Header / top bar */
+.topbar {
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:28px;
+  padding: 28px clamp(20px, 4vw, 60px) 0;
+}
+.topbar .brand { display:flex; align-items:center; }
+.topbar .brand img { width:54px; height:auto; }
+.topbar nav { display:flex; gap:28px; font-size:17px; }
+.topbar nav a { padding:6px 2px; }
+.topbar nav a.active { font-weight:500; }
+
+/* Main container */
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(40px, 7vw, 90px) clamp(20px, 5vw, 60px) 120px;
+}
+.hero { display:flex; justify-content:center; margin: 0 0 36px; }
+.hero img { max-width: 520px; width:100%; }
+.hero.small img { max-width: 480px; }
+
+h1 { font-size: clamp(28px, 3.2vw, 36px); font-weight:500; letter-spacing:-0.3px; margin:0 0 18px; }
+h2 { font-size: clamp(22px, 2.2vw, 26px); font-weight:500; letter-spacing:-0.2px; margin: 36px 0 14px; }
+h3 { font-size: 19px; font-weight:600; letter-spacing:-0.1px; margin: 26px 0 10px; }
+p { margin: 0 0 16px; }
+ul { padding-left: 22px; margin: 0 0 16px; }
+li { margin: 4px 0; }
+strong { font-weight:600; }
+.tagline { color:#444; font-size:15px; margin:-8px 0 20px; }
+
+/* Embedded video (Child's Play) — click-to-play lite-youtube */
+.video {
+  position:relative;
+  margin: 24px 0 8px;
+  padding-bottom: 56.25%;
+  height:0;
+  overflow:hidden;
+  border-radius: 6px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  background:#000;
+  cursor:pointer;
+}
+.video img,
+.video iframe {
+  position:absolute; top:0; left:0;
+  width:100%; height:100%;
+  border:0;
+  display:block;
+}
+.video img { object-fit:cover; }
+.video .play {
+  position:absolute;
+  top:50%; left:50%;
+  transform: translate(-50%, -50%);
+  width:72px; height:50px;
+  background: rgba(0,0,0,0.75);
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  transition: background 0.15s;
+}
+.video:hover .play { background:#ff0000; }
+.video .play::after {
+  content:'';
+  display:block;
+  width:0; height:0;
+  border-left: 18px solid #fff;
+  border-top: 11px solid transparent;
+  border-bottom: 11px solid transparent;
+  margin-left: 4px;
+}
+
+/* Page switching */
+.page { display:none; }
+.page.active { display:block; }
+
+/* Subtle dividers */
+hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
+
+/* Playbook table of contents */
+.toc {
+  background:#f7f7f7;
+  border:1px solid #e7e7e7;
+  border-radius:6px;
+  padding:18px 22px;
+  margin:0 0 36px;
+}
+.toc h3 {
+  margin:0 0 10px;
+  font-size:13px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.8px;
+  color:#666;
+}
+.toc ol { columns:2; column-gap:28px; padding-left:22px; margin:0; font-size:15px; }
+.toc li { margin:3px 0; break-inside:avoid; }
+.toc a { color:#111; }
+.toc a:hover { color:#ff0033; text-decoration:underline; }
+
+/* Section heading with permalink anchor */
+.sec, .toc { scroll-margin-top:20px; }
+
+/* Budget / cost tables */
+.budget {
+  width:100%;
+  border-collapse:collapse;
+  margin:14px 0 24px;
+  font-size:15px;
+}
+.budget caption {
+  text-align:left;
+  font-weight:600;
+  padding:6px 0 8px;
+  color:#333;
+}
+.budget th, .budget td {
+  text-align:left;
+  padding:8px 10px;
+  border-bottom:1px solid #eee;
+  vertical-align:top;
+}
+.budget thead th { background:#f7f7f7; font-weight:600; border-bottom:1px solid #ddd; }
+.budget td.num, .budget th.num {
+  text-align:right;
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.budget tr.subtotal td { border-top:1px solid #bbb; font-weight:600; background:#fafafa; }
+.budget tr.total td { border-top:2px solid #111; font-weight:700; background:#f3f3f3; }
+
+/* Callout boxes */
+.callout {
+  border-left:3px solid #ff0033;
+  background:#fff5f7;
+  padding:14px 18px;
+  margin:18px 0;
+  border-radius:0 6px 6px 0;
+}
+.callout.note { border-left-color:#2a7ad9; background:#f0f6fc; }
+.callout.safety { border-left-color:#d97706; background:#fff8e6; }
+.callout .label {
+  display:block;
+  margin-bottom:4px;
+  font-size:12px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.8px;
+  color:#666;
+}
+.callout p:last-child { margin-bottom:0; }
+
+/* Two-column grids for trivia categories */
+.grid-2 {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:0 36px;
+}
+
+@media (max-width:540px) {
+  body { font-size:16px; }
+  .topbar { padding-top:18px; }
+  .topbar nav { gap:18px; font-size:15px; }
+  .topbar .brand img { width:42px; }
+  .toc ol { columns:1; }
+  .grid-2 { grid-template-columns:1fr; }
+  .budget { font-size:14px; }
+  .budget th, .budget td { padding:6px 8px; }
+}
+/* The widest budget tables need a little less padding to fit a 320px phone without a sideways scroll. */
+@media (max-width:360px) {
+  .budget { font-size:13px; }
+  .budget th, .budget td { padding:6px 4px; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <a class="brand" href="#" data-page="home" aria-label="MindAttic Cares home">
+    <img alt="MindAttic Cares" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/logos/m-cares-black-red-transparent-300.png" width="300" height="300" decoding="async">
+  </a>
+  <nav>
+    <a href="#" data-page="home">MindAttic Cares</a>
+    <a href="#childs-play" data-page="childs-play">Child&rsquo;s Play</a>
+    <a href="#y2k" data-page="y2k">Y2K: End of the World Party</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- HOME -->
+  <section class="page" id="home">
+    <div class="hero">
+      <img alt="MindAttic Cares" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/logos/m-cares-black-red-transparent-720.png" width="720" height="720" fetchpriority="high" decoding="async">
+    </div>
+    <h1>MindAttic Cares</h1>
+    <p>MindAttic Cares is a 501(c)(3) nonprofit organization dedicated to serving charitable, educational, and social missions that benefit the public. The organization provides digital access, support, and educational assistance. Its goal is to help individuals who lack the means to access education, entertainment, and resources in the digital space.</p>
+  </section>
+
+  <!-- CHILD'S PLAY -->
+  <section class="page" id="childs-play">
+    <div class="hero">
+      <img alt="Child&rsquo;s Play &mdash; Play Games. Feel Better." src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/logos/childs-play-logo.png" width="768" height="518" loading="lazy" decoding="async">
+    </div>
+    <h1>Child&rsquo;s Play</h1>
+    <p>This year, we are proud to focus our giving efforts on Child&rsquo;s Play, a nonprofit that uses the power of gaming to improve the lives of children in hospitals.</p>
+    <div class="video" data-yt="NG4IISU4-iQ" role="button" tabindex="0" aria-label="Play: Hi! We&rsquo;re Child&rsquo;s Play Charity">
+      <img alt="" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/images/childs-play-video-poster.jpg" width="800" height="450" loading="lazy" decoding="async">
+      <span class="play" aria-hidden="true"></span>
+    </div>
+    <p>Founded in 2003 by Mike Krahulik and Jerry Holkins of Penny Arcade, Child&rsquo;s Play now supports 190+ hospitals and domestic violence shelters worldwide, reaching countless children. Their initiatives go far beyond providing games; they create meaningful therapeutic opportunities.</p>
+    <p>Games are more than entertainment. They provide comfort, distraction, empowerment, and joy during some of the hardest times in a child&rsquo;s life. With your support, Child&rsquo;s Play can continue to help children around the world Play Games, Feel Better&trade;.</p>
+    <p><a href="https://childsplaycharity.org" target="_blank" rel="noopener">Visit childsplaycharity.org</a></p>
+  </section>
+
+  <!-- Y2K -->
+  <section class="page" id="y2k">
+    <div class="hero">
+      <img alt="Y2K" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/images/y2k-end-of-the-world-party-960.jpg" srcset="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/images/y2k-end-of-the-world-party-960.jpg 960w, https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V11/mindatticcares.com/images/y2k-end-of-the-world-party.jpg 1920w" sizes="(max-width: 520px) 100vw, 520px" width="1920" height="1200" loading="lazy" decoding="async">
+    </div>
+    <h1>Y2K: End of the World Party</h1>
+    <p class="tagline">A complete charity-event playbook &mdash; benefiting Child&rsquo;s Play.</p>
+
+    <nav class="toc" id="contents" aria-label="Playbook contents">
+      <h3>Playbook Contents</h3>
+      <ol>
+        <li><a href="#sec-overview">Overview &amp; Goals</a></li>
+        <li><a href="#sec-howto">How to Use This Playbook</a></li>
+        <li><a href="#sec-timeline">12-Week Planning Timeline</a></li>
+        <li><a href="#sec-venue">Venue, Permits &amp; Insurance</a></li>
+        <li><a href="#sec-equipment">Equipment &amp; Vendors</a></li>
+        <li><a href="#sec-floor">Floor Plan &amp; Power</a></li>
+        <li><a href="#sec-staffing">Staffing &amp; Volunteers</a></li>
+        <li><a href="#sec-show">The Show: Countdown &amp; Blackout</a></li>
+        <li><a href="#sec-runofshow">Event-Day Run of Show</a></li>
+        <li><a href="#sec-budget">Budget &amp; Cost Estimates</a></li>
+        <li><a href="#sec-sponsorship">Sponsorship &amp; Fundraising</a></li>
+        <li><a href="#sec-marketing">Marketing &amp; Comms</a></li>
+        <li><a href="#sec-compliance">Compliance &amp; Risk</a></li>
+        <li><a href="#sec-decor">Experience Design &amp; D&eacute;cor</a></li>
+        <li><a href="#sec-culture">The World of 1999 (Cultural Brief)</a></li>
+        <li><a href="#sec-assets">Show Assets &amp; Scripts</a></li>
+        <li><a href="#sec-post">Post-Event Wrap</a></li>
+        <li><a href="#sec-checklists">Master Checklists</a></li>
+        <li><a href="#sec-appendix">Appendices</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="sec-overview" class="sec">1. Overview &amp; Goals</h2>
+    <p><strong>Purpose.</strong> Stage an immersive, late-90s charity party on New Year&rsquo;s Eve that culminates in a theatrical midnight &ldquo;Y2K power failure&rdquo; &mdash; raising funds and in-kind support for <a href="https://childsplaycharity.org" target="_blank" rel="noopener">Child&rsquo;s Play</a>.</p>
+    <p><strong>Theme.</strong> What we were all doing on 12/31/1999 &mdash; N64 on CRTs, TRL-era music, Lisa Frank, slap bracelets, Surge and Mountain Dew, Totino&rsquo;s Pizza Rolls, countdowns on TV. At 11:58 PM a pre-recorded &ldquo;breaking news&rdquo; bulletin warns of a grid collapse. At 12:00 AM the master breaker is pulled and the event ends in a controlled blackout.</p>
+    <p><strong>Target.</strong> 250 GA + 30 VIP attendees (cap 320 incl. staff/sponsors), ~$50K gross / ~$10K net to Child&rsquo;s Play after costs.</p>
+
+    <p><strong>Success Criteria</strong></p>
+    <ul>
+      <li>Hit fundraising target (cash + in-kind) and finish in the black.</li>
+      <li>95% uptime on consoles/arcades; zero safety incidents.</li>
+      <li>Blackout sequence executed flawlessly (emergency lights active, safe egress, positive guest sentiment).</li>
+      <li>Net Promoter Score &ge; 50 in post-event survey.</li>
+      <li>At least 3 returning sponsor commitments for next year.</li>
+    </ul>
+
+    <h2 id="sec-howto" class="sec">2. How to Use This Playbook</h2>
+    <p>This document is structured for an organizing committee of 4&ndash;8 leads. Read top-to-bottom once, then assign owners per section. The <a href="#sec-timeline">12-Week Timeline</a> is your spine; every other section feeds it. The <a href="#sec-budget">Budget</a> is your guard rail; recheck after every signed contract. The <a href="#sec-checklists">Master Checklists</a> are your safety net for the final 72 hours.</p>
+    <div class="callout note">
+      <span class="label">Recommended Committee</span>
+      <p><strong>Event Lead</strong> (final approver) &middot; <strong>Producer</strong> (vendors, timeline) &middot; <strong>Sponsorship Lead</strong> &middot; <strong>Marketing Lead</strong> &middot; <strong>Tech/AV Lead</strong> &middot; <strong>Volunteer Coordinator</strong> &middot; <strong>Finance/Compliance</strong>.</p>
+    </div>
+
+    <h2 id="sec-timeline" class="sec">3. 12-Week Planning Timeline</h2>
+    <p>Working backward from event day (ED). If your venue or municipal permits demand longer lead times, expand T&minus;12 accordingly.</p>
+
+    <h3>T&minus;12 weeks &mdash; Foundation</h3>
+    <ul>
+      <li>Confirm 501(c)(3) status and fiscal sponsor letter ready for sponsors.</li>
+      <li>Set date, capacity target, ticket price tiers, and gross-revenue goal.</li>
+      <li>Open dedicated event bank sub-account; set up accounting tags.</li>
+      <li>Begin venue scouting (3&ndash;5 candidates); request walkthroughs.</li>
+      <li>Draft sponsor one-sheet and target list of 25&ndash;40 prospects.</li>
+      <li>Stand up event website (this page), reservation list, and email capture.</li>
+    </ul>
+
+    <h3>T&minus;10 weeks &mdash; Lock the venue</h3>
+    <ul>
+      <li>Walkthroughs complete; verify circuits, dock, elevator, egress, ADA.</li>
+      <li>Sign venue license; pay deposit; secure date in writing.</li>
+      <li>File for required permits (special event, indoor amusement, food, liquor).</li>
+      <li>Request insurance quotes (GL 1M/2M + host liquor if applicable).</li>
+      <li>Place vendor holds: console partner, arcade row, furniture, AV/DJ.</li>
+    </ul>
+
+    <h3>T&minus;8 weeks &mdash; Launch sales</h3>
+    <ul>
+      <li>Sponsorship outreach in earnest; 1:1 calls with top 10 prospects.</li>
+      <li>Open ticket sales (early-bird pricing for first 2 weeks).</li>
+      <li>Announce on socials with brand identity locked.</li>
+      <li>Begin volunteer recruitment (target: 18 volunteers, recruit 24).</li>
+      <li>Brief Child&rsquo;s Play on the event; request quote &amp; logo usage.</li>
+    </ul>
+
+    <h3>T&minus;6 weeks &mdash; Production design</h3>
+    <ul>
+      <li>Finalize floor plan and power map; share with venue and electrician.</li>
+      <li>Confirm console counts (24 live + 4&ndash;6 spares) and arcade lineup.</li>
+      <li>Lock catering menu and bar plan; pay deposits.</li>
+      <li>Commission &ldquo;Breaking News&rdquo; bulletin video (3&ndash;4 week lead).</li>
+      <li>First sponsor commitments due; update budget.</li>
+    </ul>
+
+    <h3>T&minus;4 weeks &mdash; Press &amp; volunteers</h3>
+    <ul>
+      <li>Issue press release and pitch local media/podcasts.</li>
+      <li>Confirm all volunteers; send role packets and shift schedule.</li>
+      <li>Order signage, wristbands, sponsor wall, merch.</li>
+      <li>Finalize raffle &amp; auction items; print bid sheets.</li>
+      <li>Lock paid social ad spend (peaks T&minus;3 to T&minus;1).</li>
+    </ul>
+
+    <h3>T&minus;2 weeks &mdash; Tech rehearsal</h3>
+    <ul>
+      <li>Full cue-to-cue rehearsal of the midnight countdown + breaker pull (offsite or onsite).</li>
+      <li>Submit final headcount to caterer; confirm bar tab cap.</li>
+      <li>Reconfirm docks, security, elevator reservations, load-in window.</li>
+      <li>Print run-of-show, contact sheet, and emergency procedures.</li>
+      <li>Pre-pack load-in kit (gaff tape, ramps, tools, first aid, batteries).</li>
+    </ul>
+
+    <h3>T&minus;1 week &mdash; Final confirms</h3>
+    <ul>
+      <li>Confirm every vendor with a phone call (not just email).</li>
+      <li>Distribute final volunteer schedule with radio channels.</li>
+      <li>Safety walkthrough with venue; sign blackout-procedure waiver.</li>
+      <li>Last marketing push: email blast, IG stories, &ldquo;tickets running out.&rdquo;</li>
+    </ul>
+
+    <h3>Event Day &mdash; Execute</h3>
+    <ul>
+      <li>See <a href="#sec-runofshow">Section 9 &mdash; Event-Day Run of Show</a>.</li>
+    </ul>
+
+    <h2 id="sec-venue" class="sec">4. Venue, Permits &amp; Insurance</h2>
+    <p><strong>Target Spaces</strong> (~5,000&ndash;8,000 sq ft, ground-floor preferred, 200+ amp service):</p>
+    <ul>
+      <li>Event lofts, gallery spaces, brewery taprooms, community halls, school gyms (after-hours), or convertible warehouse venues.</li>
+      <li>Built-in dock, freight elevator, and enough 20A circuits for ~80&ndash;100 amps of live load.</li>
+      <li>House A/V is a bonus; full BYOAV is acceptable.</li>
+    </ul>
+
+    <p><strong>Venue Action Steps</strong></p>
+    <ul>
+      <li><strong>Licensing.</strong> Short-term license agreement; spell out hours, load-in, signage rights, alcohol policy, security minimums.</li>
+      <li><strong>Walkthrough.</strong> Map circuits/panels, dock + elevator dimensions, egress routes, emergency-light controls, restroom counts.</li>
+      <li><strong>Approvals.</strong> Get written sign-off on the intentional blackout sequence; coordinate with fire marshal if required.</li>
+      <li><strong>Insurance.</strong> Certificate of Insurance naming owner/manager as additional insured; vendor COIs collected; host-liquor coverage if alcohol is served.</li>
+      <li><strong>Permits.</strong> Special-event/indoor-amusement permit; temporary food permit; special-event liquor (if serving). Lead time varies by city &mdash; file early.</li>
+      <li><strong>Life Safety.</strong> Confirm emergency lighting stays active during the breaker pull; entry signage informs guests; ADA compliance throughout.</li>
+    </ul>
+
+    <div class="callout safety">
+      <span class="label">Safety Non-Negotiable</span>
+      <p>The midnight blackout pulls only show-load circuits. Emergency egress lighting, exit signs, and fire systems must be on an independent, untouchable circuit. Get this in writing from the venue and the electrician of record.</p>
+    </div>
+
+    <h2 id="sec-equipment" class="sec">5. Equipment &amp; Vendors</h2>
+    <p><strong>Console Focus (N64-era):</strong> GoldenEye 007, Mario Kart 64, Super Smash Bros., Tony Hawk&rsquo;s Pro Skater, Perfect Dark, Wave Race 64.</p>
+    <p><strong>Primary Partner (turnkey):</strong> I Play Games! (Kevin Fair) &mdash; CRTs or lag-free displays, N64s, carts, controllers, spares, on-site staffing.</p>
+    <p><strong>Arcade Vendors:</strong> Chicago Arcade Rentals, Castle Party Rentals, ArcadeRentals.com, Chicago Sports Games.</p>
+    <p><strong>Backup / National:</strong> Fully Loaded Electronics, New Retro Entertainment, VGNY Events.</p>
+    <p><strong>Furniture:</strong> Arcana Vintage Rentals, Anew Vintage Rentals, South Loop Loft, Bowery &amp; Bash, AFR, CORT (fallback).</p>
+
+    <p><strong>Counts &amp; Redundancy</strong></p>
+    <ul>
+      <li>Consoles: 24 live + 4&ndash;6 spares.</li>
+      <li>CRTs/Displays: 24 + 2 spares (test for lag if flat-panel).</li>
+      <li>Controllers: 2.5&times; concurrent players for N64 (OEM + quality replicas).</li>
+      <li>Cabling/PSUs: 25% buffer.</li>
+      <li>Arcades: 10&ndash;12 units (mix of fighters, party, drivers; confirm power draw per unit).</li>
+    </ul>
+
+    <p><strong>Vendor Contracting Checklist</strong></p>
+    <ul>
+      <li>Quote in writing; itemized; tax/delivery/setup/strike broken out.</li>
+      <li>Cancellation policy and weather clause.</li>
+      <li>COI naming venue + MindAttic Cares as additional insured.</li>
+      <li>Load-in/load-out windows and dock access named.</li>
+      <li>On-site contact name and mobile number.</li>
+    </ul>
+
+    <h2 id="sec-floor" class="sec">6. Floor Plan &amp; Power</h2>
+    <p><strong>Zones &amp; Flow</strong></p>
+    <ul>
+      <li>36&Prime; minimum aisles; clear exit routes; food kept away from consoles; sound zoning so the &ldquo;newsroom&rdquo; remains audible at 11:58.</li>
+      <li>Cable ramps on every crossing; gaff-taped lines; rugs secured.</li>
+    </ul>
+
+    <p><strong>Suggested Layout</strong></p>
+    <ul>
+      <li><strong>Front:</strong> Registration &rarr; Sponsor Wall &rarr; Merch/Donation kiosk.</li>
+      <li><strong>Left:</strong> Arcade Row on dedicated circuits.</li>
+      <li><strong>Center:</strong> Four Console Pods (each = 6 stations) with lounge seating.</li>
+      <li><strong>Right:</strong> Tournament Feature Stage + audience seats.</li>
+      <li><strong>Rear:</strong> Food/Drink counters + bussed high-tops.</li>
+      <li><strong>Projection Walls:</strong> One continuous &ldquo;MTV/TRL&rdquo; loop; one &ldquo;Newsroom&rdquo; screen reserved for the 11:58 PM bulletin.</li>
+    </ul>
+
+    <p><strong>Power Worksheet (Pre-Build)</strong></p>
+    <ul>
+      <li>CRT + N64 station &asymp; 1.5&ndash;2.0 A</li>
+      <li>Arcade cabinets avg 3&ndash;5 A; outliers up to 8 A</li>
+      <li>Audio/Projection &asymp; 15&ndash;20 A</li>
+      <li>Food warmers/coolers &asymp; 10&ndash;15 A</li>
+      <li>Target buffer: &ge;20% per circuit</li>
+    </ul>
+
+    <p><strong>Circuit Planning</strong></p>
+    <ul>
+      <li>Console Pod (6 stations): ~12 A &rarr; place on two 20 A circuits.</li>
+      <li>Arcade Row (10 units): group by draw; no more than 3&ndash;4 per 20 A; isolate any 8 A machines.</li>
+      <li>AV &amp; Lighting: dedicated 20 A.</li>
+      <li>Food: dedicated 20 A.</li>
+      <li>Label every circuit at the distro; complete a checklist before doors.</li>
+    </ul>
+
+    <h2 id="sec-staffing" class="sec">7. Staffing &amp; Volunteers</h2>
+    <p>Target ratio: 1 staff/volunteer per 15 guests. For 280 guests, plan ~19 staff &amp; volunteer roles on duty during peak hours.</p>
+
+    <table class="budget" aria-label="Staffing roster">
+      <thead><tr><th>Role</th><th>#</th><th>Hours</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Event Lead</td><td>1</td><td>open&ndash;close</td><td>Command, approvals, calls the show.</td></tr>
+        <tr><td>Producer / Ops Manager</td><td>1</td><td>open&ndash;close</td><td>Load-in/out, docks, power distro.</td></tr>
+        <tr><td>Tech Captain (Consoles)</td><td>1 + 3 techs</td><td>open&ndash;close</td><td>Station build, QA, swaps.</td></tr>
+        <tr><td>Arcade Lead</td><td>1</td><td>open&ndash;close</td><td>Cabinet placement, vendor liaison.</td></tr>
+        <tr><td>AV Director</td><td>1</td><td>open&ndash;close</td><td>Projectors, DJ feed, bulletin roll.</td></tr>
+        <tr><td>Stage Manager</td><td>1</td><td>20:00&ndash;00:30</td><td>Cue stack 23:45&ndash;00:05.</td></tr>
+        <tr><td>Electrician (approved)</td><td>1</td><td>23:30&ndash;00:15</td><td>Breaker throw, safety verification.</td></tr>
+        <tr><td>Safety Officer</td><td>1</td><td>open&ndash;close</td><td>Egress, incident log, first aid.</td></tr>
+        <tr><td>Registration Lead</td><td>1 + 3</td><td>doors&ndash;21:00</td><td>Check-in, capacity count, will-call.</td></tr>
+        <tr><td>Food Lead</td><td>1</td><td>open&ndash;close</td><td>Vendors, permits, allergen signs.</td></tr>
+        <tr><td>Ushers</td><td>6</td><td>21:30&ndash;00:15</td><td>Aisles/exits, midnight posts.</td></tr>
+        <tr><td>Runners</td><td>2</td><td>open&ndash;close</td><td>Parts, signage, cables.</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Radios &amp; Channels.</strong> Event Lead, Ops, Tech Cap, Arcade Lead, AV, Stage, Safety, Electrician. Spare batteries staged at Ops.</p>
+    <p><strong>Volunteer Brief (Highlights)</strong></p>
+    <ul>
+      <li>Keep aisles &amp; exits clear; report spills immediately.</li>
+      <li>Be in position by 23:45; no phones in the final 15 minutes.</li>
+      <li>After blackout: use issued lanterns; never shine a phone flash at guests&rsquo; eyes.</li>
+      <li>If anything feels unsafe &mdash; stop the show. Tell Safety. We&rsquo;ll work it out.</li>
+    </ul>
+
+    <h2 id="sec-show" class="sec">8. The Show: Countdown &amp; Blackout</h2>
+    <p><strong>23:45</strong> &mdash; DJ fades to low; house lights dim slightly.<br>
+    <strong>23:50</strong> &mdash; Host sets the stage; announces &ldquo;news bulletin at 11:58 PM.&rdquo;<br>
+    <strong>23:58</strong> &mdash; Pre-rendered &ldquo;Breaking News&rdquo; video rolls on all projectors (except emergency lights). Audio to full.<br>
+    <strong>23:59:40</strong> &mdash; Crowd countdown appears on-screen; host leads final 20 seconds.<br>
+    <strong>00:00:00</strong> &mdash; Stage Manager radios &ldquo;GO&rdquo;; Electrician throws the master breaker (pre-approved scope) excluding emergency egress.<br>
+    <strong>+0:30 sec</strong> &mdash; Host on battery megaphone thanks attendees; staff activate lanterns; ushers guide exits.<br>
+    <strong>+5:00 min</strong> &mdash; Emergency lights only; doors remain staffed; no re-entry.</p>
+
+    <div class="callout safety">
+      <span class="label">Safety Controls</span>
+      <p>Emergency lighting on separate, protected circuit (tested same day). Battery megaphone + flashlights/lanterns staged at every usher post. Ushers pre-positioned at exits 15 minutes before midnight. Printed notice at entry: &ldquo;Lights will go out at midnight as part of the show.&rdquo; Anyone with mobility, vision, or sensory needs is briefed at check-in and assigned a buddy.</p>
+    </div>
+
+    <h2 id="sec-runofshow" class="sec">9. Event-Day Run of Show</h2>
+    <p><strong>07:00</strong> Building access, radios distributed, all-hands safety brief.<br>
+    <strong>07:30</strong> Furniture in; rugs taped; cable ramps placed.<br>
+    <strong>09:00</strong> Arcade row delivered; power-test each unit.<br>
+    <strong>10:30</strong> Console pods built; label stations; burn-in tests.<br>
+    <strong>13:00</strong> AV/projectors live; TRL loop running; bulletin test (muted).<br>
+    <strong>15:00</strong> All-hands; permit postings; door signage; volunteer dinner.<br>
+    <strong>16:30</strong> VIP doors.<br>
+    <strong>17:00</strong> GA doors; background playlist.<br>
+    <strong>18:30</strong> Mario Kart heats.<br>
+    <strong>20:00</strong> GoldenEye friendly bracket.<br>
+    <strong>21:30</strong> Trivia + costume awards.<br>
+    <strong>22:30</strong> Free play; midnight-plan reminder over PA.<br>
+    <strong>23:45</strong> Lights dim; ushers to posts.<br>
+    <strong>23:50</strong> Host preamble; AV on standby.<br>
+    <strong>23:58</strong> &ldquo;Breaking News&rdquo; video.<br>
+    <strong>23:59</strong> On-screen countdown.<br>
+    <strong>00:00</strong> Breaker throw (egress lights remain).<br>
+    <strong>00:30</strong> Megaphone farewell; guide exits.<br>
+    <strong>01:30</strong> Final sweep; load-out begins.</p>
+
+    <h2 id="sec-budget" class="sec">10. Budget &amp; Cost Estimates</h2>
+    <p>The estimates below assume a Chicago-style urban venue, ~280 attendees, single evening. Numbers are mid-market; adjust &plusmn;25% by region and venue tier. All figures USD.</p>
+
+    <h3>Expenses (itemized)</h3>
+
+    <table class="budget" aria-label="Expense estimates">
+      <caption>Venue &amp; Operations</caption>
+      <thead><tr><th>Line item</th><th>Detail</th><th class="num">Estimate</th></tr></thead>
+      <tbody>
+        <tr><td>Venue rental</td><td>8-hour block, NYE premium</td><td class="num">$4,500</td></tr>
+        <tr><td>Cleaning fee</td><td>Post-event deep clean</td><td class="num">$500</td></tr>
+        <tr><td>Security</td><td>2 guards &times; 8 hr &times; $35</td><td class="num">$560</td></tr>
+        <tr><td>Coat check</td><td>Staff or vendor</td><td class="num">$300</td></tr>
+        <tr class="subtotal"><td colspan="2">Subtotal &mdash; Venue &amp; Ops</td><td class="num">$5,860</td></tr>
+      </tbody>
+    </table>
+
+    <table class="budget" aria-label="Permits and insurance">
+      <caption>Insurance &amp; Permits</caption>
+      <thead><tr><th>Line item</th><th>Detail</th><th class="num">Estimate</th></tr></thead>
+      <tbody>
+        <tr><td>General liability</td><td>$1M/$2M, day-of policy</td><td class="num">$450</td></tr>
+        <tr><td>Host liquor coverage</td><td>If alcohol served</td><td class="num">$250</td></tr>
+        <tr><td>Special-event permit</td><td>Municipal (BACP or local)</td><td class="num">$250</td></tr>
+        <tr><td>Temporary food permit</td><td>Single-event license</td><td class="num">$150</td></tr>
+        <tr><td>Special-event liquor</td><td>If self-serving</td><td class="num">$500</td></tr>
+        <tr class="subtotal"><td colspan="2">Subtotal &mdash; Insurance &amp; Permits</td><td class="num">$1,600</td></tr>
+      </tbody>
+    </table>
+
+    <table class="budget" aria-label="Gaming equipment">
+      <caption>Gaming Equipment</caption>
+      <thead><tr><th>Line item</th><th>Detail</th><th class="num">Estimate</th></tr></thead>
+      <tbody>
+        <tr><td>I Play Games (turnkey)</td><td>24 stations + on-site staff</td><td class="num">$7,500</td></tr>
+        <tr><td>Arcade row</td><td>10 cabinets, NYE rates</td><td class="num">$5,500</td></tr>
+        <tr><td>Delivery / setup / strike</td><td>Across vendors</td><td class="num">$800</td></tr>
+        <tr><td>Controllers / spares</td><td>OEM + quality replicas</td><td class="num">$400</td></tr>
+        <tr class="subtotal"><td colspan="2">Subtotal &mdash; Gaming Equipment</td><td class="num">$14,200</td></tr>
+      </tbody>
+    </table>
+
+    <table class="budget" aria-label="Furniture and decor">
+      <caption>Furniture &amp; D&eacute;cor</caption>
+      <thead><tr><th>Line item</th><th>Detail</th><th class="num">Estimate</th></tr></thead>
+      <tbody>
+        <tr><td>Vintage lounge furniture</td><td>Bean bags, mushroom chairs, recliners</td><td class="num">$2,400</td></tr>
+        <tr><td>Rugs / lava lamps / neon</td><td>Suburban-basement vibe</td><td class="num">$600</td></tr>
+        <tr><td>Themed props &amp; handouts</td><td>Slap bracelets, Lisa Frank, AOL CDs</td><td class="num">$400</td></tr>
+        <tr><td>Sponsor wall &amp; signage hardware</td><td>Stands, banners, easels</td><td class="num">$350</td></tr>
+        <tr class="subtotal"><td colspan="2">Subtotal &mdash; Furniture &amp; D&eacute;cor</td><td class="num">$3,750</td></tr>
+      </tbody>
+    </table>
+
+    <table class="budget" aria-label="AV and production">
+      <caption>AV, Lighting &amp; Production</caption>
+      <thead><tr><th>Line item</th><th>Detail</th><th class="num">Estimate</th></tr></thead>
+      <tbody>
+        <tr><td>DJ + sound system</td><td>Including monitors &amp; mics</td><td class="num">$1,500</td></tr>
+        <tr><td>Projectors &times; 3 + screens</td><td>Newsroom + 2 ambient walls</td><td class="num">$1,200</td></tr>
+        <tr><td>Lighting package</td><td>Wash, gobos, haze</td><td class="num">$800</td></tr>
+        <tr><td>Battery megaphones &amp; lanterns</td><td>Blackout sequence kit</td><td class="num">$250</td></tr>
+        <tr><td>&ldquo;Breaking News&rdquo; video production</td><td>2-min spot, anchor, graphics</td><td class="num">$1,500</td></tr>
+        <tr class="subtotal"><td colspan="2">Subtotal &mdash; AV &amp; Production</td><td class="num">$5,250</td></tr>
+      </tbody>
+    </table>
+
+    <table class="budget" aria-label="Food and beverage">
+      <caption>Food &amp; Beverage</caption>
+      <thead><tr><th>Line item</th><th>Detail</th><th class="num">Estimate</th></tr></thead>
+      <tbody>
+        <tr><td>Catering &mdash; retro menu</td><td>Pizza rolls, sliders, snacks @ ~$10/pp</td><td class="num">$2,800</td></tr>
+        <tr><td>Bar program</td><td>Beer, wine, signature 90s cocktails</td><td class="num">$1,800</td></tr>
+        <tr><td>Soft drinks (Surge / Mountain Dew)</td><td>Bulk + ice</td><td class="num">$400</td></tr>
+        <tr><td>Water station + cups</td><td>Required for sustained dance/play</td><td class="num">$200</td></tr>
+        <tr class="subtotal"><td colspan="2">Subtotal &mdash; Food &amp; Beverage</td><td class="num">$5,200</td></tr>
+      </tbody>
+    </table>
+
+    <table class="budget" aria-label="Marketing and merchandise">
+      <caption>Marketing, Merch &amp; Print</caption>
+      <thead><tr><th>Line item</th><th>Detail</th><th class="num">Estimate</th></tr></thead>
+      <tbody>
+        <tr><td>Brand &amp; poster design</td><td>Identity + 6 deliverables</td><td class="num">$800</td></tr>
+        <tr><td>Print signage</td><td>Wayfinding, station cards, ADA</td><td class="num">$600</td></tr>
+        <tr><td>Wristbands &amp; tickets</td><td>GA / VIP / Sponsor / Minor</td><td class="num">$200</td></tr>
+        <tr><td>Paid social (Meta/IG)</td><td>~$200/wk &times; 4 weeks</td><td class="num">$800</td></tr>
+        <tr><td>Photography (event)</td><td>4-hour package</td><td class="num">$800</td></tr>
+        <tr><td>Merch (shirts, stickers)</td><td>Cost of goods, sold at-cost or for fundraising</td><td class="num">$700</td></tr>
+        <tr class="subtotal"><td colspan="2">Subtotal &mdash; Marketing &amp; Merch</td><td class="num">$3,900</td></tr>
+      </tbody>
+    </table>
+
+    <table class="budget" aria-label="Staffing">
+      <caption>Paid Staff (volunteers handle the rest)</caption>
+      <thead><tr><th>Line item</th><th>Detail</th><th class="num">Estimate</th></tr></thead>
+      <tbody>
+        <tr><td>Producer / Stage Manager</td><td>10-hr day, contract</td><td class="num">$1,200</td></tr>
+        <tr><td>Electrician of record</td><td>5-hr on-call, includes breaker throw</td><td class="num">$750</td></tr>
+        <tr><td>AV technician</td><td>Setup + run</td><td class="num">$600</td></tr>
+        <tr><td>Volunteer meals &amp; thank-yous</td><td>~24 people</td><td class="num">$400</td></tr>
+        <tr class="subtotal"><td colspan="2">Subtotal &mdash; Staffing</td><td class="num">$2,950</td></tr>
+      </tbody>
+    </table>
+
+    <table class="budget" aria-label="Other operational">
+      <caption>Other Operational</caption>
+      <thead><tr><th>Line item</th><th>Detail</th><th class="num">Estimate</th></tr></thead>
+      <tbody>
+        <tr><td>Ticketing platform fees</td><td>~3% of ticket revenue</td><td class="num">$350</td></tr>
+        <tr><td>Payment processing</td><td>~2.9% on donations/auction</td><td class="num">$400</td></tr>
+        <tr><td>Radios / comms rental</td><td>8 units</td><td class="num">$200</td></tr>
+        <tr><td>First-aid kit &amp; supplies</td><td>Restock for event</td><td class="num">$150</td></tr>
+        <tr><td>Load-in kit / consumables</td><td>Gaff, ties, batteries, wipes</td><td class="num">$300</td></tr>
+        <tr class="subtotal"><td colspan="2">Subtotal &mdash; Other Operational</td><td class="num">$1,400</td></tr>
+      </tbody>
+    </table>
+
+    <table class="budget" aria-label="Budget totals">
+      <caption>Budget Roll-Up</caption>
+      <thead><tr><th>Category</th><th></th><th class="num">Amount</th></tr></thead>
+      <tbody>
+        <tr><td>Venue &amp; Operations</td><td></td><td class="num">$5,860</td></tr>
+        <tr><td>Insurance &amp; Permits</td><td></td><td class="num">$1,600</td></tr>
+        <tr><td>Gaming Equipment</td><td></td><td class="num">$14,200</td></tr>
+        <tr><td>Furniture &amp; D&eacute;cor</td><td></td><td class="num">$3,750</td></tr>
+        <tr><td>AV &amp; Production</td><td></td><td class="num">$5,250</td></tr>
+        <tr><td>Food &amp; Beverage</td><td></td><td class="num">$5,200</td></tr>
+        <tr><td>Marketing &amp; Merch</td><td></td><td class="num">$3,900</td></tr>
+        <tr><td>Paid Staff</td><td></td><td class="num">$2,950</td></tr>
+        <tr><td>Other Operational</td><td></td><td class="num">$1,400</td></tr>
+        <tr class="subtotal"><td>Subtotal</td><td></td><td class="num">$44,110</td></tr>
+        <tr><td>Contingency (12%)</td><td></td><td class="num">$5,293</td></tr>
+        <tr class="total"><td>Total Estimated Expense</td><td></td><td class="num">$49,403</td></tr>
+      </tbody>
+    </table>
+
+    <h3>Revenue plan</h3>
+    <table class="budget" aria-label="Revenue plan">
+      <thead><tr><th>Revenue source</th><th>Detail</th><th class="num">Target</th></tr></thead>
+      <tbody>
+        <tr><td>GA tickets</td><td>250 &times; $35</td><td class="num">$8,750</td></tr>
+        <tr><td>VIP tickets</td><td>30 &times; $85</td><td class="num">$2,550</td></tr>
+        <tr><td>Sponsorship &mdash; Millennium</td><td>3 &times; $5,000</td><td class="num">$15,000</td></tr>
+        <tr><td>Sponsorship &mdash; Bug Fixer</td><td>5 &times; $2,500</td><td class="num">$12,500</td></tr>
+        <tr><td>Sponsorship &mdash; Y2K Compliant</td><td>10 &times; $1,000</td><td class="num">$10,000</td></tr>
+        <tr><td>Raffle / silent auction</td><td>~25 items, avg $120</td><td class="num">$3,000</td></tr>
+        <tr><td>On-site donations</td><td>Donation kiosk + tip jar</td><td class="num">$1,500</td></tr>
+        <tr><td>Merch sales</td><td>Net after COGS</td><td class="num">$800</td></tr>
+        <tr class="total"><td>Total Projected Revenue</td><td></td><td class="num">$54,100</td></tr>
+      </tbody>
+    </table>
+
+    <p><strong>Projected net to Child&rsquo;s Play: ~$4,700 minimum, ~$10K+ with in-kind savings.</strong> Each $5K in confirmed in-kind sponsorship (e.g., free venue, donated catering) flows nearly 1:1 to the charity.</p>
+
+    <p><strong>Break-Even Math</strong><br>
+    Break-Even Tickets = (Total Fixed Costs &minus; Confirmed Sponsorships) / Avg Ticket Price.<br>
+    At $49,403 cost and $37,500 in confirmed sponsorships: ~298 tickets at a blended $40 avg.</p>
+
+    <h2 id="sec-sponsorship" class="sec">11. Sponsorship &amp; Fundraising</h2>
+
+    <h3>Sponsorship Tiers</h3>
+    <ul>
+      <li><strong>Millennium Sponsor &mdash; $5,000:</strong> Top-line logo on entrance wall, &ldquo;news bulletin&rdquo; credits, stage mentions, 6 VIP tickets, sponsor table.</li>
+      <li><strong>Bug Fixer &mdash; $2,500:</strong> Station placards, digital/social promos, 4 VIP tickets.</li>
+      <li><strong>Y2K Compliant &mdash; $1,000:</strong> Website &amp; social mentions, entry signage, 2 VIP tickets.</li>
+      <li><strong>In-Kind:</strong> Snacks, beverages, d&eacute;cor, printing, professional services. Placement based on retail value.</li>
+    </ul>
+
+    <h3>Sponsor Outreach Workflow</h3>
+    <ol>
+      <li>Build target list of 25&ndash;40 prospects (alumni, local tech firms, retro/gaming brands).</li>
+      <li>Send personalized email with one-sheet PDF; CC committee member with relationship.</li>
+      <li>Follow up by phone within 5 business days.</li>
+      <li>Confirmed sponsors get an onboarding packet: logo specs, deadlines, ticket allocation, photo release.</li>
+      <li>Post-event recap sent within 10 days (see <a href="#sec-post">Section 17</a>).</li>
+    </ol>
+
+    <h3>Fundraising Beyond Tickets</h3>
+    <ul>
+      <li><strong>Silent Auction.</strong> 20&ndash;30 items, 90s-themed gift baskets, signed memorabilia, experience packages. Bid sheets at retro-styled tables; close at 22:00.</li>
+      <li><strong>Raffle.</strong> Anchor prize (e.g., restored N64 in original box) at $10/ticket or $25 for 3. Drawing at 22:30.</li>
+      <li><strong>Donation Kiosk.</strong> Tap-to-give terminal at entry; suggested amounts $20/$50/$100; show running total on screen during evening.</li>
+      <li><strong>Live Ask.</strong> Two-minute moment at 21:30 from a Child&rsquo;s Play hospital partner or family.</li>
+      <li><strong>Corporate Match.</strong> Promote employer matching gifts on entry signage and email confirmations.</li>
+    </ul>
+
+    <h2 id="sec-marketing" class="sec">12. Marketing &amp; Comms</h2>
+
+    <p><strong>Identity:</strong> VHS static, CRT scanlines, chrome gradients, pixel fonts.<br>
+    <strong>Palette:</strong> Electric blue, acid green, fuchsia, chrome, black.<br>
+    <strong>Type:</strong> Headline &mdash; Orbital / Eurostile-like; Body &mdash; Verdana / Arial-like.<br>
+    <strong>Poster Concept:</strong> &ldquo;Party Like It&rsquo;s 1999&hellip; Because It Is.&rdquo; Big chrome 2000, CRT frame, countdown ticks.<br>
+    <strong>Hashtags:</strong> #Y2K #MindAtticCares #PartyLikeIts1999.</p>
+
+    <h3>Channel Plan</h3>
+    <ul>
+      <li><strong>Website.</strong> This playbook page as the public source of truth; ticket CTA above the fold.</li>
+      <li><strong>Email.</strong> 4-touch sequence: announce, early-bird closing, sponsor reveal, last-call.</li>
+      <li><strong>Instagram / TikTok.</strong> Short-form &mdash; 90s nostalgia clips, costume teases, behind-the-scenes setup.</li>
+      <li><strong>Facebook event.</strong> For older demographics; invite list seeded by committee.</li>
+      <li><strong>Reddit / Discord.</strong> Post in local-city subs and retro-gaming communities.</li>
+      <li><strong>Local press.</strong> Pitch to alt-weeklies, event calendars, podcasts at T&minus;4.</li>
+    </ul>
+
+    <h3>Press Release Skeleton</h3>
+    <div class="callout note">
+      <p><strong>FOR IMMEDIATE RELEASE.</strong> MindAttic Cares revives 1999 for one night only &mdash; a Y2K-themed charity party benefiting Child&rsquo;s Play, the nonprofit that brings games to children in hospitals worldwide. Guests will play GoldenEye and Mario Kart on original N64 consoles, dance to TRL-era hits, and gather under projection screens for a midnight &ldquo;Breaking News&rdquo; bulletin that ends in a theatrical Y2K blackout. Tickets and sponsorship at [URL]. Contact: [name, email, phone].</p>
+    </div>
+
+    <h2 id="sec-compliance" class="sec">13. Compliance &amp; Risk</h2>
+
+    <p><strong>Licensing &amp; Permits</strong></p>
+    <ul>
+      <li>Public Place of Amusement / Indoor Special Event: engage local licensing agency for ticketed public entertainment.</li>
+      <li>Temporary Food: single-event food license if warming or serving. No home-prepared foods.</li>
+      <li>Alcohol (if any): Special-Event Retailer&rsquo;s license or partnership with a licensed caterer; display license on-site.</li>
+    </ul>
+
+    <p><strong>Insurance</strong></p>
+    <ul>
+      <li>GL $1M / $2M aggregate; additional insureds: venue owner, building manager.</li>
+      <li>Host liquor coverage if applicable.</li>
+      <li>Vendor COIs collected and filed for every contracted vendor.</li>
+    </ul>
+
+    <p><strong>Life Safety</strong></p>
+    <ul>
+      <li>Pre-approved blackout plan with the building; electrician of record signs off in writing.</li>
+      <li>Emergency lights verified on an independent circuit or battery backup &mdash; tested same day.</li>
+      <li>ADA aisles 36&Prime; minimum; exits marked and unobstructed at all times.</li>
+      <li>Trained ushers at every exit before midnight, with battery flashlights and lanterns.</li>
+    </ul>
+
+    <p><strong>Operations</strong></p>
+    <ul>
+      <li>Radio check every hour; comm hand-off at shift changes.</li>
+      <li>Incident log at the Safety desk; first-aid kit; water station for staff.</li>
+      <li>Crowd count at registration; hard hold if venue capacity reached.</li>
+    </ul>
+
+    <p><strong>Minors Policy</strong></p>
+    <ul>
+      <li>Under 16 with a guardian only; clear wristband color coding when alcohol is present.</li>
+      <li>Photography opt-out wristband available; staff briefed.</li>
+    </ul>
+
+    <h3>Risk Register (top items)</h3>
+    <table class="budget" aria-label="Risk register">
+      <thead><tr><th>Risk</th><th>Mitigation</th></tr></thead>
+      <tbody>
+        <tr><td>Ticket sales fall short</td><td>Early-bird, last-week paid social, comp tickets to high-influence guests, hold raffle/auction to backfill.</td></tr>
+        <tr><td>Vendor no-show</td><td>Backup vendors named in <a href="#sec-equipment">&sect;5</a>; deposits paid only to confirmed primaries.</td></tr>
+        <tr><td>Power overload trips house</td><td>Power worksheet pre-built; clamp-meter test at load-in; 20% headroom; arcade outliers isolated.</td></tr>
+        <tr><td>Blackout misfires (egress lights drop)</td><td>Test 24 hours prior, retest 1 hour prior; electrician on radio; immediate house-lights restore plan.</td></tr>
+        <tr><td>Guest injury during blackout</td><td>Pre-positioned ushers, lanterns, megaphone announcement, first-aid kit at Safety desk.</td></tr>
+        <tr><td>Weather (winter storm)</td><td>Snow day / postponement clause in venue and major vendor contracts; communicate via email/socials by 14:00.</td></tr>
+      </tbody>
+    </table>
+
+    <h2 id="sec-decor" class="sec">14. Experience Design &amp; D&eacute;cor</h2>
+    <p><strong>Look &amp; Feel:</strong> Suburban 90s basement &times; computer lab.</p>
+    <p><strong>D&eacute;cor:</strong> Lava lamps, bean bags, mushroom chairs, recliners, shag/throw rugs, neon rope lights, VHS stacks, floppy disks, CRT scanline projections, Windows 98 desktop loops.</p>
+    <p><strong>Props &amp; Handouts:</strong> Slap bracelets, Lisa Frank stickers, AOL CDs, &ldquo;Y2K Compliant&rdquo; stickers on gear, paper &ldquo;Tech Support Tickets.&rdquo;</p>
+    <p><strong>Photo Moments:</strong> Step-and-repeat with sponsor logos in chrome Y2K type; CRT-stack photo wall; &ldquo;Breaking News&rdquo; anchor desk backdrop.</p>
+
+    <h2 id="sec-culture" class="sec">15. The World of 1999 (Cultural Brief)</h2>
+    <p>Before the countdown, guests are fully immersed in the world leading up to Y2K &mdash; a mix of excitement, confusion, and techno-futurist optimism. This atmosphere guides the visuals, d&eacute;cor, trivia, music, and tone of the event.</p>
+
+    <h3>&#127757; World &amp; News</h3>
+    <ul>
+      <li>The world prepared for the Y2K bug.</li>
+      <li>Bill Clinton was acquitted in his impeachment trial.</li>
+      <li>Vladimir Putin rose to power in Russia.</li>
+      <li>Columbine High School shooting shocked the U.S.</li>
+      <li>John F. Kennedy Jr. died in a plane crash.</li>
+      <li>Napster launched, changing music forever.</li>
+      <li>Lance Armstrong won his first Tour de France.</li>
+      <li>The Panama Canal was handed back to Panama by the U.S.</li>
+      <li>Pok&eacute;mon mania swept the globe.</li>
+      <li>The Dow Jones hit 10,000 for the first time.</li>
+      <li>West Nile Virus appeared in the U.S. for the first time.</li>
+      <li>SpongeBob SquarePants premiered on Nickelodeon.</li>
+      <li>The Matrix was released, redefining sci-fi cinema.</li>
+    </ul>
+
+    <h3>&#128190; Tech &amp; Internet</h3>
+    <ul>
+      <li>AOL Instant Messenger (AIM), ICQ, and Yahoo! Messenger connected early adopters.</li>
+      <li>Dial-up modems screeched their way online.</li>
+      <li>Google was barely a year old.</li>
+      <li>MySpace didn&rsquo;t exist &mdash; but LiveJournal did.</li>
+      <li>Windows 98 SE ran nearly every home PC.</li>
+      <li>USB flash drives were new and rare.</li>
+      <li>CD burners let everyone make mix CDs for friends.</li>
+      <li>Nokia 3210 with Snake was peak mobile tech.</li>
+      <li>GeoCities, Angelfire, and Yahoo! dominated the web.</li>
+      <li>eBay and floppy disks coexisted.</li>
+    </ul>
+
+    <h3>&#128250; TV &amp; Media</h3>
+    <ul>
+      <li>&ldquo;Who Wants to Be a Millionaire?&rdquo; debuted.</li>
+      <li>Friends, Frasier, and ER dominated primetime.</li>
+      <li>The Sopranos changed television.</li>
+      <li>Buffy and Angel defined late-night teen drama.</li>
+      <li>TRL (Total Request Live) ruled MTV culture.</li>
+      <li>South Park: Bigger, Longer &amp; Uncut shocked parents.</li>
+      <li>Jerry Springer thrived in chaos.</li>
+      <li>WWF vs. WCW was peak wrestling.</li>
+      <li>Family Guy premiered.</li>
+    </ul>
+
+    <h3>&#127926; Music</h3>
+    <ul>
+      <li>Britney Spears dropped &ldquo;&hellip;Baby One More Time.&rdquo;</li>
+      <li>NSYNC and Backstreet Boys ruled the radio.</li>
+      <li>Eminem&rsquo;s &ldquo;My Name Is&rdquo; shocked suburbia.</li>
+      <li>Blink-182&rsquo;s Enema of the State redefined pop-punk.</li>
+      <li>Ricky Martin made everyone &ldquo;Livin&rsquo; la Vida Loca.&rdquo;</li>
+      <li>Cher&rsquo;s &ldquo;Believe&rdquo; introduced Auto-Tune.</li>
+      <li>Santana and Rob Thomas made &ldquo;Smooth&rdquo; inescapable.</li>
+      <li>Korn, Limp Bizkit, and Linkin Park led the nu-metal wave.</li>
+    </ul>
+
+    <h3>&#127918; Gaming</h3>
+    <ul>
+      <li>PlayStation dominated living rooms.</li>
+      <li>Dreamcast launched in Japan.</li>
+      <li>Nintendo 64 had Smash Bros., Donkey Kong 64, GoldenEye.</li>
+      <li>PC gamers played Half-Life, Unreal Tournament, System Shock 2.</li>
+      <li>Pok&eacute;mon Red/Blue/Yellow ruled Game Boy.</li>
+      <li>EverQuest pioneered online RPGs.</li>
+      <li>Counter-Strike became an underground hit.</li>
+      <li>Tony Hawk&rsquo;s Pro Skater made everyone a skater.</li>
+      <li>RollerCoaster Tycoon and StarCraft filled LAN parties.</li>
+    </ul>
+
+    <h3>&#127916; Movies</h3>
+    <ul>
+      <li>Fight Club made audiences question reality.</li>
+      <li>The Sixth Sense shocked the world.</li>
+      <li>Star Wars: Episode I broke box office records.</li>
+      <li>American Beauty won Best Picture.</li>
+      <li>The Blair Witch Project went viral before social media.</li>
+      <li>Office Space nailed cubicle life.</li>
+      <li>Austin Powers: The Spy Who Shagged Me owned the summer.</li>
+      <li>The Mummy made Brendan Fraser a hero.</li>
+    </ul>
+
+    <h3>&#128086; Fashion &amp; Lifestyle</h3>
+    <ul>
+      <li>JNCO jeans and platform shoes.</li>
+      <li>Frosted tips and butterfly clips.</li>
+      <li>Abercrombie, Tommy Hilfiger, and cargo pants.</li>
+      <li>Mood rings, puka shells, slap bracelets.</li>
+      <li>Clear phones, chrome finishes, and futuristic &ldquo;Y2K&rdquo; styling.</li>
+      <li>Rollerblading, skateboarding, and suburban mall culture.</li>
+    </ul>
+
+    <h3>&#128191; Culture &amp; Trends</h3>
+    <ul>
+      <li>Everyone feared midnight 12/31/1999 would crash civilization.</li>
+      <li>People hoarded bottled water and canned goods.</li>
+      <li>Blockbuster was still king.</li>
+      <li>Beepers and pagers were normal.</li>
+      <li>Furbies, Tamagotchis, and Giga Pets haunted classrooms.</li>
+      <li>Laser pointers and Beanie Babies everywhere.</li>
+      <li>&ldquo;The Rachel&rdquo; haircut survived into a new decade.</li>
+    </ul>
+
+    <h3>&#128172; Slang &amp; Everyday Life</h3>
+    <p>&ldquo;Talk to the hand.&rdquo; &middot; &ldquo;As if!&rdquo; &middot; &ldquo;Wassup!&rdquo; &middot; &ldquo;All that and a bag of chips.&rdquo; &middot; &ldquo;You&rsquo;ve got mail!&rdquo; &middot; &ldquo;It&rsquo;s all good.&rdquo; &middot; &ldquo;Peace out.&rdquo;</p>
+
+    <h2 id="sec-assets" class="sec">16. Show Assets &amp; Scripts</h2>
+
+    <h3>Breaking News Video (2:00) &mdash; Script Beats</h3>
+    <ul>
+      <li>0:00&ndash;0:20 Cold open: anchor desk; lower-third &ldquo;Rolling Y2K Outages.&rdquo;</li>
+      <li>0:20&ndash;0:50 Vox pops of &ldquo;IT admins&rdquo; + b-roll of beige towers, BIOS screens.</li>
+      <li>0:50&ndash;1:20 Map graphic; &ldquo;legacy systems&rdquo; mention; modem SFX; subtle siren bed.</li>
+      <li>1:20&ndash;1:40 Anchor: &ldquo;Midwest grid crossing threshold&hellip;&rdquo;</li>
+      <li>1:40&ndash;2:00 Full-screen countdown; tone swell; CUT TO BLACK.</li>
+    </ul>
+
+    <p><strong>VO Sample Lines</strong></p>
+    <ul>
+      <li>&ldquo;We&rsquo;re receiving reports of sporadic failures as clocks cross midnight.&rdquo;</li>
+      <li>&ldquo;Officials urge calm and&hellip; a healthy sense of humor.&rdquo;</li>
+      <li>&ldquo;If you&rsquo;re seeing this, you&rsquo;re already part of history.&rdquo;</li>
+    </ul>
+
+    <p><strong>Loops &amp; Playlists</strong></p>
+    <ul>
+      <li>TRL-era video pool; Windows 98 screensavers; VHS static bumpers.</li>
+      <li>DJ set: late-90s top 40, alt-rock, hip-hop, and a midnight throwback bloc.</li>
+    </ul>
+
+    <h3>Host Script &mdash; Live Ask (21:30, 2 minutes)</h3>
+    <div class="callout note">
+      <p>&ldquo;Tonight is a party &mdash; but it&rsquo;s also a delivery. Every dollar you spent on a ticket, every drink, every raffle ticket goes to Child&rsquo;s Play. Since 2003 they&rsquo;ve put games into the hands of kids in 190+ hospitals worldwide &mdash; comfort during the hardest weeks of those kids&rsquo; lives. If you&rsquo;ve ever lost an afternoon to GoldenEye, you know exactly what that means. The donation kiosk is by the door. Three taps. Then come back and beat me at Mario Kart.&rdquo;</p>
+    </div>
+
+    <h2 id="sec-post" class="sec">17. Post-Event Wrap</h2>
+    <ul>
+      <li><strong>Finance.</strong> Reconcile ticketing, donations, raffle within 5 days; pay vendors within terms.</li>
+      <li><strong>Charity Transfer.</strong> Cut Child&rsquo;s Play check within 14 days; share confirmation with sponsors.</li>
+      <li><strong>Sponsor Recap (Email).</strong> Thank-you, funds raised, attendance, media hits, photo link, impact note from Child&rsquo;s Play.</li>
+      <li><strong>Survey (5 Qs).</strong> How did you hear? Favorite part? Anything confusing? Rate the midnight moment. Would you return?</li>
+      <li><strong>Debrief.</strong> 90-minute committee retro within 7 days; capture what worked, power/queue/volume notes, &ldquo;keep for next year&rdquo; list.</li>
+      <li><strong>Tax Acknowledgments.</strong> Donor receipts issued per IRS requirements (above $250 thresholds).</li>
+      <li><strong>Social Recap.</strong> Highlight reel, photo carousel, thank-you graphic to every sponsor.</li>
+    </ul>
+
+    <h2 id="sec-checklists" class="sec">18. Master Checklists</h2>
+
+    <h3>Load-In Kit</h3>
+    <p>Gaff tape, electrical tape, zip ties, multi-strip power, labeled extensions (10/25/50 ft), cable ramps, microfiber cloths, screen wipes, nitrile gloves, multi-tool, tape measure, sharpies, label maker, surge protectors, batteries (AA/AAA/9V), flashlights, lanterns, headlamps, trash bags, contractor bags, clipboards with run-of-show, first-aid kit, allergen-aware snacks for staff.</p>
+
+    <h3>Signage Pack</h3>
+    <p>Entry / wayfinding / sponsor wall / station ID cards / &ldquo;Lights Out at Midnight&rdquo; notice / food allergen cards / ADA route signs / restroom directions / coat-check / will-call / merch / silent-auction.</p>
+
+    <h3>Power Distro</h3>
+    <p>Map circuits; label every quad and extension; test with clamp meter at load-in; note high-draw cabs; maintain 20% headroom; photograph the final distro for the file.</p>
+
+    <h3>AV Cue Sheet</h3>
+    <p>TRL loop &rarr; mic check (16:00) &rarr; bulletin test muted (16:30) &rarr; tournament graphics ready (18:00) &rarr; bulletin roll @ 23:58 &rarr; countdown overlay @ 23:59:40 &rarr; hard cut @ 00:00:00 &rarr; emergency PA standby through 00:30.</p>
+
+    <h3>Sanitation</h3>
+    <p>Bins at every food station; fresh liners hourly; wipes at each console pod; spill kit at Ops; restroom check every 90 minutes.</p>
+
+    <h3>Volunteer Day-Of Packet</h3>
+    <p>Shift schedule with radio channel, supervisor name and mobile, map with role posts marked, evacuation route, parking/transit info, dress code, meal voucher, thank-you gift card.</p>
+
+    <h2 id="sec-appendix" class="sec">19. Appendices</h2>
+    <p><strong>A) Contact Directory.</strong> Venue, building security, electrician of record, I Play Games, arcade vendor, furniture rental, catering, bar service, insurance broker, permits office, Child&rsquo;s Play liaison.</p>
+    <p><strong>B) Floor Plan Notes.</strong> Station IDs, cable paths, ADA routes, extinguisher and first-aid locations.</p>
+    <p><strong>C) Power Map Template.</strong> Circuit numbers, amperage, devices, buffer, last-tested timestamp.</p>
+    <p><strong>D) COI Wording.</strong> Additional-insured entities, dates, address, waiver of subrogation if required.</p>
+    <p><strong>E) Sample Waivers.</strong> Photo consent, tournament participation, liability acknowledgment for retro equipment.</p>
+    <p><strong>F) Sponsor One-Sheet Outline.</strong> Mission, audience, reach, tier table, deadlines, call-to-action, contact.</p>
+    <p><strong>G) Donor Tax-Receipt Template.</strong> 501(c)(3) language, EIN, no-goods-or-services statement (or fair-market-value adjustment for tickets).</p>
+
+    <hr>
+    <p style="margin-top:40px; color:#888; font-size:14px;">End of Playbook &middot; MindAttic Cares &middot; Benefiting Child&rsquo;s Play</p>
+  </section>
+
+</main>
+
+<script>
+(function(){
+  var pages = ['home','childs-play','y2k'];
+  var navLinks = document.querySelectorAll('[data-page]');
+
+  function show(name){
+    if (pages.indexOf(name) === -1) name = 'home';
+    document.querySelectorAll('.page').forEach(function(s){
+      s.classList.toggle('active', s.id === name);
+    });
+    document.querySelectorAll('header nav a').forEach(function(a){
+      a.classList.toggle('active', a.getAttribute('data-page') === name);
+    });
+    window.scrollTo(0, 0);
+  }
+
+  function fromHash(){
+    var h = (window.location.hash || '').replace(/^#/, '');
+    if (h && pages.indexOf(h) === -1) {
+      // In-page anchor (e.g. #sec-budget, #contents): open the page that contains it, then
+      // bring the anchor into view (show() resets the scroll position to the top).
+      var target = document.getElementById(h);
+      var owner = target && target.closest('.page');
+      if (owner && !owner.classList.contains('active')) {
+        show(owner.id);
+        target.scrollIntoView();
+      } else if (!document.querySelector('.page.active')) {
+        show('home');
+      }
+      return;
+    }
+    show(h || 'home');
+  }
+
+  navLinks.forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      var name = a.getAttribute('data-page');
+      if (name === 'home') {
+        history.replaceState(null, '', window.location.pathname);
+      } else {
+        history.replaceState(null, '', '#' + name);
+      }
+      show(name);
+    });
+  });
+
+  window.addEventListener('hashchange', fromHash);
+  fromHash();
+
+  // Lite YouTube: click poster -> swap to iframe (or open YouTube if blocked, e.g. file://)
+  document.querySelectorAll('.video[data-yt]').forEach(function(box){
+    function play(){
+      var id = box.getAttribute('data-yt');
+      if (window.location.protocol === 'file:') {
+        window.open('https://www.youtube.com/watch?v=' + id, '_blank', 'noopener');
+        return;
+      }
+      var iframe = document.createElement('iframe');
+      iframe.src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+      iframe.title = 'YouTube video';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.setAttribute('allowfullscreen', '');
+      box.innerHTML = '';
+      box.appendChild(iframe);
+      box.style.cursor = 'default';
+    }
+    box.addEventListener('click', play);
+    box.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); play(); }
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

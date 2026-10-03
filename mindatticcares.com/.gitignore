@@ -1,0 +1,6 @@
+﻿.vs/
+*.user
+
+# FTP deploy credentials â€” never commit
+/settings.json
+.claude/quicksave.md
