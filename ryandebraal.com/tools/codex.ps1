@@ -6,7 +6,7 @@
     doctor  Validate the Codex docs (front-matter, IDs, cross-refs, data schemas, story tests,
             cited paths, generatedFrom freshness). Exits non-zero on any hard error.
     digest  Regenerate docs/BIBLE.digest.md from BIBLE.md (sec 1, 3, 5, 9 + a status index +
-            the latest amendment head).
+            any pending decisions from AMENDMENTS.md).
   Windows PowerShell 5.1 compatible. No external modules, no build step.
 .EXAMPLE
   powershell -ExecutionPolicy Bypass -File tools/codex.ps1 doctor
@@ -32,7 +32,6 @@ $amendPath   = Join-Path $docsDir 'AMENDMENTS.md'
 $EMOJI_DONE    = [char]0x2705                                  # check mark
 $EMOJI_PARTIAL = [string][char]0xD83D + [char]0xDFE1           # yellow circle (surrogate pair)
 $EMOJI_PLANNED = [char]0x2B1C                                  # white large square
-$EMOJI_CUT     = [string][char]0xD83D + [char]0xDDD1           # wastebasket (surrogate pair)
 $SECT          = [char]0x00A7                                  # section sign
 
 # ---------- shared helpers ----------
@@ -99,24 +98,23 @@ function Invoke-Digest {
     $s9 = Get-BibleSection -Text $bible -Number 9
 
     # Status index from USER_STORIES.md. Match story-line statuses by Unicode code point so the
-    # count is independent of source encoding. U+2705 done, U+1F7E1 partial, U+2B1C planned,
-    # U+1F5D1 cut. U+1F7E1 / U+1F5D1 are surrogate pairs in .NET strings.
-    $done = 0; $partial = 0; $planned = 0; $cut = 0
+    # count is independent of source encoding. U+2705 done, U+1F7E1 partial, U+2B1C planned.
+    # U+1F7E1 is a surrogate pair in .NET strings.
+    $done = 0; $partial = 0; $planned = 0
     if (Test-Path $storiesPath) {
         $stories = Read-Utf8 $storiesPath
         $idTok   = "RDC-US-[A-Za-z0-9]+\s+"   # ID token regex; only the glyph is escaped literally
         $done    = ([regex]::Matches($stories, $idTok + [regex]::Escape($EMOJI_DONE))).Count
         $partial = ([regex]::Matches($stories, $idTok + [regex]::Escape($EMOJI_PARTIAL))).Count
         $planned = ([regex]::Matches($stories, $idTok + [regex]::Escape($EMOJI_PLANNED))).Count
-        $cut     = ([regex]::Matches($stories, $idTok + [regex]::Escape($EMOJI_CUT))).Count
     }
 
-    # Latest amendment head (first "## RDC-A..." block heading + following lines until next ##)
-    $amendHead = ''
+    # Pending decisions: every "## RDC-A..." entry in AMENDMENTS.md (normally none).
+    $pending = ''
     if (Test-Path $amendPath) {
         $amend = Read-Utf8 $amendPath
-        $am = [regex]::Match($amend, "(?ms)^##\s+RDC-A\d+.*?(?=^##\s+RDC-A\d+|\z)")
-        if ($am.Success) { $amendHead = $am.Value.TrimEnd() }
+        $am = [regex]::Matches($amend, "(?ms)^##\s+RDC-A\d+.*?(?=^##\s+RDC-A\d+|\z)")
+        if ($am.Count -gt 0) { $pending = (($am | ForEach-Object { $_.Value.TrimEnd() }) -join "`r`n`r`n") }
     }
 
     $nl = [Environment]::NewLine
@@ -132,11 +130,11 @@ function Invoke-Digest {
     if ($s5) { [void]$sb.AppendLine($s5); [void]$sb.AppendLine("") }
     if ($s9) { [void]$sb.AppendLine($s9); [void]$sb.AppendLine("") }
     [void]$sb.AppendLine("## Status index (USER_STORIES.md)")
-    [void]$sb.AppendLine("done: $done | partial: $partial | planned: $planned | cut: $cut")
+    [void]$sb.AppendLine("done: $done | partial: $partial | planned: $planned")
     [void]$sb.AppendLine("")
-    if ($amendHead) {
-        [void]$sb.AppendLine("## Latest amendment")
-        [void]$sb.AppendLine($amendHead)
+    if ($pending) {
+        [void]$sb.AppendLine("## Pending decisions (AMENDMENTS.md)")
+        [void]$sb.AppendLine($pending)
     }
 
     $out = $sb.ToString()

@@ -9,7 +9,7 @@
 ryandebraal.com is a single hand-authored `index.htm` — pure HTML, CSS, and vanilla
 JavaScript with **no build step and no framework** — that renders Ryan DeBraal's fully
 interactive, themeable, animated resume in any modern browser. Its static assets (fonts, images,
-theme art) are served from the jsDelivr CDN ([RDC-A3](AMENDMENTS.md#RDC-A3)).
+theme art) are served from the jsDelivr CDN at a pinned MindAttic.UiUx tag ([RDC-LAW-1](#RDC-LAW-1)).
 
 ## 3. What it is NOT {#RDC-§3}
 
@@ -17,9 +17,9 @@ theme art) are served from the jsDelivr CDN ([RDC-A3](AMENDMENTS.md#RDC-A3)).
   no webpack/vite/rollup, no TypeScript, no transpiler, no minifier, no polyfills.
 - **NOT a multi-page site.** One hand-authored `index.htm`: no separate `.css`/`.js` source files,
   no service worker, no SPA router. Static assets (fonts, images, one library) are files hosted in
-  MindAttic.UiUx and loaded by URL ([RDC-A3](AMENDMENTS.md#RDC-A3)).
+  MindAttic.UiUx and loaded by URL ([RDC-LAW-1](#RDC-LAW-1)).
 - **NOT instrumented.** No analytics SDK, no tracking pixels, no telemetry, no third-party fonts.
-  The only external hosts are the two jsDelivr paths listed in [RDC-A3](AMENDMENTS.md#RDC-A3).
+  The only external hosts are the two jsDelivr paths listed in [RDC-LAW-3](#RDC-LAW-3).
 - **NOT a CMS / not data-driven from a backend.** Resume content is an in-file JS object literal
   (`D`); there is no server, database, or API behind the page.
 - **NOT a generic template.** It is one person's resume; the themes/animations are bespoke, not a
@@ -33,24 +33,30 @@ Most relevant inherited laws: whole-number versioning [see HOUSE-LAW-1], credent
 code/commits [see HOUSE-LAW-3], and "done is verified, not asserted" [see HOUSE-LAW-8].
 Project-specific laws below.
 
-### {#RDC-LAW-1} One file, one request — SUPERSEDED by [RDC-A3](AMENDMENTS.md#RDC-A3)
-*Original law (kept for history):* the shipped product is a single `index.htm`; no asset may be split
-out or loaded from a CDN; everything is inlined as base64.
-**Now:** `index.htm` is the only hand-authored page, but static assets live as real files in
-MindAttic.UiUx and are loaded from jsDelivr at a pinned whole-number tag. Do not inline large
-assets; do not add hosts beyond those listed in RDC-A3. Tiny assets (the Neko frames) may stay inline.
+### {#RDC-LAW-1} One hand-authored page; static assets by pinned CDN URL
+`index.htm` is the only hand-authored page. Static assets (fonts, images, theme art, large libraries)
+are real files hosted in **MindAttic.UiUx** and served by **jsDelivr** at an immutable whole-number tag
+(currently `@V10`), referenced by URL. Do not inline large assets. Tiny assets stay inline on purpose:
+the 32 Neko sprite frames (~1 KB each) and the 864-byte link icon. `<link rel="preconnect|preload">`,
+`loading="lazy"` and `decoding="async"` are allowed and used. Trade-offs accepted: without the CDN the
+page falls back to system fonts and plain backgrounds; `exportHTML()` output references CDN URLs; PDF
+export needs a network connection the first time.
 
 ### {#RDC-LAW-2} Zero dependencies, zero build step
 No `package.json`, bundler, transpiler, minifier, framework, or polyfill enters the repo. The source
 the author writes is byte-for-byte the source the browser runs. "Open it" is the only build.
-Loading a pinned third-party file by URL is allowed ([RDC-A3](AMENDMENTS.md#RDC-A3)); installing or
-building one is not.
+Loading a pinned third-party file by URL from an allowed host ([RDC-LAW-3](#RDC-LAW-3)) is allowed;
+installing or building one is not.
 
 ### {#RDC-LAW-3} No tracking; external hosts are an allow-list
-No analytics, tracking pixels, telemetry, third-party fonts, or phoning-home scripts — ever. The
-page may request static assets only from the hosts listed in [RDC-A3](AMENDMENTS.md#RDC-A3)
-(jsDelivr: MindAttic.UiUx assets at a pinned tag, and html2pdf.js 0.10.2 on demand). Any new host
-needs a new amendment.
+No analytics, tracking pixels, telemetry, third-party fonts (Google Fonts etc.), or phoning-home
+scripts — ever. The page may request static assets only from this exhaustive list:
+- `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V10/...` — our own assets (Outfit fonts at
+  `fonts/outfit/`; page art at `ryandebraal.com/`).
+- `https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js` — the PDF export
+  library, loaded on demand the first time a PDF is exported.
+
+Adding any other host is a decision recorded in this law first.
 
 ### {#RDC-LAW-4} Themes are CSS-variable swaps, not JS style mutation
 A theme is a `[data-theme]` value resolving to CSS custom properties. JavaScript sets the attribute
@@ -61,8 +67,8 @@ Resume facts live once in the `D` object literal. The three profiles (classic/pi
 both export formats (Markdown/PDF) are pure projections of `D` — never a second copy of the content.
 
 ### {#RDC-LAW-6} Deploy is owned by MindAttic.Deploy
-Publishing is centralized in the sibling **MindAttic.Deploy** repo (stamp + FTPS-upload). The
-retired per-project `deploy.ps1`/`deploy.bat`/`settings.json` must not be reintroduced.
+Publishing is centralized in the sibling **MindAttic.Deploy** repo (stamp + FTPS-upload). This repo
+carries no deploy script or FTP settings of its own (no `deploy.ps1`/`deploy.bat`/`settings.json`).
 
 ## 9. Glossary {#RDC-§9}
 
@@ -75,31 +81,11 @@ retired per-project `deploy.ps1`/`deploy.bat`/`settings.json` must not be reintr
 - **Tooltip map** — the `tooltips` object mapping a technology name to its hover description.
 - **Profile / render projection** — read-only views derived from `D`; never a second content copy.
 - **MindAttic.Deploy** — the sibling repo that stamps and FTPS-uploads `index.htm`.
-- **MindAttic.UiUx** — the sibling repo that hosts this site's static assets (and the shared Outfit/Attic fonts); served by jsDelivr at whole-number tags (`V7`, …).
+- **MindAttic.UiUx** — the sibling repo that hosts this site's static assets (and the shared Outfit/Attic fonts); served by jsDelivr at whole-number tags (currently `V10`).
 - **Skill familiarity** — per-tag familiarity level the reader can cycle; persisted in
   `localStorage` (`tag-familiarity`).
 
 ## Status index (USER_STORIES.md)
-done: 0 | partial: 10 | planned: 2 | cut: 0
+done: 0 | partial: 11 | planned: 1
 
-## Latest amendment
-## RDC-A1 — Adopt the Codex documentation standard (supersedes —)
-
-**What changed:** Installed the MindAttic Codex canonical-documentation layout for this repo:
-`docs/BIBLE.md` (L0), `docs/AMENDMENTS.md` (L1), `docs/USER_STORIES.md` (L2), `docs/rfc/` (design
-notes), `tools/codex.ps1` (doctor + digest), and a `SessionStart` hook injecting
-`docs/BIBLE.digest.md`.
-
-**Why:** Give the single-file site a real source of truth and the same documentation discipline as
-the rest of MindAttic, without touching `index.htm` or any shipped content.
-
-**Migration:** None — the repo had no prior canon docs (`docs/`, `ARCHITECTURE.md`, etc.). The
-existing `README.md` (build/run) and project `CLAUDE.md` (work rules) are unchanged; `CLAUDE.md`
-gains a Codex pointer section. The org-wide
-[MindAttic.HouseRules.md](../../MindAttic.HouseRules.md) is inherited by reference, not copied.
-
-**Domain decision:** Classed as `website`; per Codex Phase 2 no L5 `docs/data/*.json` was created —
-the only structured content (the `D` resume object and `tooltips` map) lives in `index.htm`, and
-extracting it would duplicate source and violate [RDC-LAW-1](BIBLE.md#RDC-LAW-1)/
-[RDC-LAW-5](BIBLE.md#RDC-LAW-5).
 

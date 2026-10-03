@@ -18,7 +18,7 @@ $preamble = @"
 [ryandebraal.com - Codex BIBLE digest | AUTHORITATIVE]
 The following is the authoritative, condensed source of truth for this project (generated from
 docs/BIBLE.md). Treat it as ground truth for what the project IS, is NOT, and its Laws. When in
-doubt, defer to docs/BIBLE.md and docs/AMENDMENTS.md (an amendment wins over the bible). Do not
+doubt, defer to docs/BIBLE.md. Do not
 modify the shipped index.htm content or introduce dependencies/build steps.
 
 "@

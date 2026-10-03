@@ -1,6 +1,6 @@
 ---
 name: deploy
-description: Deploy ryandebraal.com via MindAttic.Deploy (sibling repo). Stamps index.htm and FTPS-uploads it to the site root. Replaces the retired local deploy.ps1.
+description: Deploy ryandebraal.com via MindAttic.Deploy (sibling repo). Stamps index.htm and FTPS-uploads it to the site root. Deploying it deploys the whole linked mindattic-web group.
 ---
 
 When invoked, run:
@@ -11,4 +11,4 @@ powershell -NoProfile -ExecutionPolicy Bypass -Command "cd D:\Projects\MindAttic
 
 Then report the upload result and flag any failures.
 
-The site's profile lives in `MindAttic.Deploy/projects.json` under `sites[]`. Credentials are centralized in `MindAttic.Deploy/secrets/ftp.json`; the per-site `settings.json` and `deploy.ps1` in this folder are retired.
+The site's profile lives in `MindAttic.Deploy/projects.json` under `sites[]`. Credentials are centralized in `MindAttic.Deploy/secrets/ftp.json`. This folder has no deploy script or FTP settings of its own.

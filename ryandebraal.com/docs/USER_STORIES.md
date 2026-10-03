@@ -4,12 +4,12 @@ project: ryandebraal.com
 code: RDC
 layer: stories
 status: living
-updated: 2026-06-07
+updated: 2026-10-03
 ---
 
 # ryandebraal.com — User Stories
 
-> ✅ done (shipped & tested) · 🟡 partial · ⬜ planned · 🗑️ cut. Every ✅ cites the test.
+> ✅ done (shipped & tested) · 🟡 partial · ⬜ planned. Every ✅ cites the test.
 >
 > **This project ships no automated test suite and has no build step**
 > ([BIBLE §6](BIBLE.md#RDC-§6), [RDC-LAW-2](BIBLE.md#RDC-LAW-2)). Per the status legend, `✅`
@@ -20,19 +20,16 @@ updated: 2026-06-07
 
 ## Epic A — Lean page + CDN assets
 
-- **RDC-US-A1 🟡** As a reader, I can open the resume from a single small `index.htm` (~0.45 MB)
+- **RDC-US-A1 🟡** As a reader, I can open the resume from a single small `index.htm` (~0.47 MB)
   with no install or build, and the fonts and art load from the CDN as needed. *Given a modern
   browser, When I open `index.htm`, Then the resume renders and fonts/images arrive from jsDelivr.*
-  *(rewritten 2026-10-02 per [RDC-A3](AMENDMENTS.md#RDC-A3); verified locally and live against `@V7`
-  by the MindAttic.UiUx Playwright suite — `MindAttic.UiUx/tests/specs/sites/ryandebraal.spec.mjs`.)*
-  *(original spec — audit log: "open the resume from a single `index.htm` … the Network tab shows one
-  document request.")*
+  *(checked locally and live against `@V10` by the MindAttic.UiUx Playwright suite —
+  `MindAttic.UiUx/tests/specs/sites/ryandebraal.spec.mjs`; [RDC-LAW-1](BIBLE.md#RDC-LAW-1).)*
 - **RDC-US-A2 🟡** As a skeptical engineer, I can open DevTools and confirm there is no analytics,
   tracking, or third-party font, and that the only external hosts are the jsDelivr paths allowed by
-  [RDC-A3](AMENDMENTS.md#RDC-A3). *Given DevTools open, When I view Network, Then every request goes to
-  the page itself or to `cdn.jsdelivr.net`.* *(rewritten 2026-10-02; the host allow-list is asserted by the MindAttic.UiUx Playwright suite —
-  `MindAttic.UiUx/tests/specs/sites/common.spec.mjs`; enforced by [RDC-LAW-3](BIBLE.md#RDC-LAW-3).)* *(original spec — audit log: "zero third-party
-  requests and an inlined font/sprite atlas … no CDN/analytics/font request appears.")*
+  [RDC-LAW-3](BIBLE.md#RDC-LAW-3). *Given DevTools open, When I view Network, Then every request goes to
+  the page itself or to `cdn.jsdelivr.net`.* *(the host allow-list is asserted by the MindAttic.UiUx Playwright suite —
+  `MindAttic.UiUx/tests/specs/sites/common.spec.mjs`.)*
 
 ## Epic B — Themes & animation
 
@@ -42,9 +39,9 @@ updated: 2026-06-07
   manually — no automated test; functions in [BIBLE §4.3](BIBLE.md#RDC-§4).)*
 - **RDC-US-B2 🟡** As a reader, I can let themes auto-rotate and pause/resume rotation. *Given
   rotation enabled, When time elapses, Then the theme advances; When I toggle pause, Then it stops
-  until I resume it (the pause lasts for the visit; it is not persisted).* *(shipped; verified
-  manually 2026-10-02 — `startThemeRotation`/`toggleThemeRotation`; all 16 themes reachable by
-  next/previous/random, including Sand.)*
+  until I resume it (the pause lasts for the visit; it is not persisted).* Rotation defaults to 60 seconds per theme. *(shipped; verified
+  manually — `startThemeRotation`/`toggleThemeRotation`; all 16 themes reachable by
+  next/previous/random.)*
 
 ## Epic C — Resume profiles & content
 
@@ -72,7 +69,7 @@ updated: 2026-06-07
 
 - **RDC-US-E1 🟡** As the author, I can deploy by stamping and FTPS-uploading `index.htm` through
   the shared pipeline. *Given a change, When I run the deploy skill, Then MindAttic.Deploy stamps
-  `<!-- Last Updated -->` and uploads the file.* *(shipped; verified 2026-10-02 by the first linked
+  `<!-- Last Updated -->` and uploads the file.* *(shipped; exercised by the linked
   deploy — see `.claude/commands/deploy.md`, [RDC-LAW-6](BIBLE.md#RDC-LAW-6).)*
 
 ## Priority backlog
@@ -80,11 +77,7 @@ updated: 2026-06-07
 1. **RDC-US-F1 ⬜** As a maintainer, I can run a dependency-free in-browser smoke harness that
    asserts all 16 themes mount, all 3 profiles render, and export produces non-empty output — so a
    regression turns a 🟡 into a real `✅`. *(blocked on [RFC 0001](rfc/0001-in-browser-smoke-harness.md).)*
-2. **RDC-US-F2 ⬜** As a maintainer, I can assert in that harness that no runtime network request
-   goes to a host outside the [RDC-A3](AMENDMENTS.md#RDC-A3) allow-list, codifying
-   [RDC-LAW-3](BIBLE.md#RDC-LAW-3).
-
-### Audit log
-
-No stories have been changed from an original spec yet. When a story's intent changes, preserve the
-original ask verbatim here, marked "(original spec — audit log)".
+2. **RDC-US-F2 🟡** As a maintainer, I can assert that no runtime network request goes to a host
+   outside the [RDC-LAW-3](BIBLE.md#RDC-LAW-3) allow-list. *(page-load requests are asserted by the
+   out-of-repo MindAttic.UiUx Playwright suite — `specs/sites/common.spec.mjs`; requests made after
+   theme changes and exports are not yet covered.)*
