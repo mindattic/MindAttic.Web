@@ -96,3 +96,10 @@ being fully offline; PDF export needs a network connection the first time.
 **Migration:** `index.htm` rewritten to reference CDN URLs (assets extracted byte-identically for
 JPEGs/fonts, PNGs losslessly recompressed). BIBLE body text, README and USER_STORIES updated to match.
 RDC-LAW-1 keeps its ID (history) and is marked superseded rather than deleted.
+
+## RDC-A4 — Meta description, link-preview tags, 60-second theme rotation (refines RDC-A3) {#RDC-A4}
+Decision (user, 2026-10-03): `<head>` gains a `meta description`, a canonical URL (`https://ryandebraal.com/`),
+`theme-color`, and Open Graph (`og:type` = `profile`) / Twitter "summary" card tags; the preview image is
+`ryandebraal.com/images/ryan-portrait.png` (400×400) from the MindAttic.UiUx package. The default theme
+rotation (`theme_timeout`) changes from 30 to 60 seconds; a visitor who moved the "Seconds per Theme"
+slider keeps their saved value, since only changed settings are stored in `resume-settings`.
