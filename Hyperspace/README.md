@@ -1,10 +1,10 @@
 # Hyperspace
 
-A single-page field guide to what a five-dimensional object would look like passing through our world: interactive hypercube slices and projections, then a walkable 3D gallery of 100 higher-dimensional exhibits.
+A single-page field guide to what a hyperdimensional object would look like passing through our world: interactive hypercube slices and projections, then a walkable 3D gallery of 100 higher-dimensional exhibits.
 
 ![HTML](https://img.shields.io/badge/HTML-single%20file-E34F26) ![Three.js 0.160.0](https://img.shields.io/badge/Three.js-0.160.0-black) ![Shapes MindAttic.Web.Shared](https://img.shields.io/badge/shapes-MindAttic.Web.Shared-E84D3D) ![Status live](https://img.shields.io/badge/status-live-brightgreen)
 
-![Hyperspace landing screen: What a 5-dimensional object looks like passing through our world, with an Enter the Gallery button](docs/images/hero.png)
+![Hyperspace landing screen: What a Hyperdimensional object looks like passing through our world, with an Enter the Gallery button](docs/images/hero.png)
 
 Try it: [mindattic.com/hyperspace](https://mindattic.com/hyperspace/)
 
@@ -19,7 +19,7 @@ Try it: [mindattic.com/hyperspace](https://mindattic.com/hyperspace/)
 
 ## Features
 
-- Hero animation and a "ladder" that steps from 2D to 5D.
+- Hero animation and a "ladder" that steps from 2D to Hyperdimensional.
 - Slice explorer: choose a tesseract (4D) or penteract (5D), turn rotation on or off, sweep the cube through our space, and drag sliders for the offset along the 4th and 5th axes. A readout shows the vertex and face count of the current cross-section and whether the object is present at all.
 - Projection explorer: cube, tesseract or penteract wireframes cast into 3D, with chips for each plane of rotation.
 - What you would actually witness: six short accounts (it blinks in from nowhere, morphs two ways at once, passes through itself, knots fall open, there is no inside, it never settles).
