@@ -1866,7 +1866,7 @@ window.homeBg = (function () {
                             link buttons beneath them.
        <footer>           — Copyright, fixed to the bottom edge.
        <script>           — fits the motto to the wordmark's width.
-       <script>           — tap outside the lockup: a spark surge and a
+       <script>           — tap outside the lockup: a quiet tap hint and a
                             random Cyberspace effect, both at the tap.
 
      The three links are plain <a> elements — no script builds them, so
@@ -2025,17 +2025,17 @@ window.homeBg = (function () {
 })();
 </script>
 
-<!-- Tap / click around the lockup → a spark surge and one random Cyberspace
+<!-- Tap / click around the lockup → a quiet tap hint and one random Cyberspace
      effect, both starting where you tapped.
      console-bg.js (loaded above in the CYBERSPACE block) exposes:
        consoleBg.inKeepout(x, y)        — is this point in the buffer zone
                                           (the .lockup keepout plus a small
                                           margin)?
-       consoleBg.spawnSparkBurst(x, y)  — a short shower of sparks that
-                                          cool from white to cyan to
-                                          orange-red and burn out, with a
-                                          flash ring (only a brief flash if
-                                          you prefer reduced motion).
+       consoleBg.spawnSparkBurst(x, y)  — a small soft glow and a single
+                                          thin ring that ease outward a
+                                          short distance and fade (just the
+                                          glow, stationary, if you prefer
+                                          reduced motion).
        consoleBg._demo.spawn*(origin)   — one effect each.  Underscore-
                                           prefixed means "dev handle, not a
                                           stable API", but it's the only

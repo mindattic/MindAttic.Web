@@ -26,7 +26,7 @@ Where `<ref>` is any of:
 | Branch | `@main` | Cached ~7 days unless purged |
 | Commit SHA | `@a1b2c3d` | Immutable; cached forever |
 
-Tags on MindAttic.Web start at `V12`. Apps that still load `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V<n>/<path>` (tags `V1` to `V11` of the older MindAttic.UiUx repo) keep working, because those tags stay served.
+Tags on MindAttic.Web start at `V12`. Only `MindAttic.Web@V<n>` URLs are served; the former MindAttic.UiUx repository and its `V1` to `V11` URLs no longer exist.
 
 Paths are case-sensitive on GitHub: the `MindAttic.Web.Shared/` prefix, component folders (`Cyberspace`, `SacredGeometry`, `Hyperspace`, `OutfitFont`, `AtticFont`, `PinFooter`, `BackHomeM`, `WebSnapshot`, `PageScrollbar`, `Textbox`, `Tooltip`, `UserLogin`, `UserCircle`, `UserTimeout`), theme folders (`Themes/Cyberspace`), and the asset folders (`fonts/`, `mindattic.com/`, `mindatticcares.com/`, `ryandebraal.com/` — lowercase).
 

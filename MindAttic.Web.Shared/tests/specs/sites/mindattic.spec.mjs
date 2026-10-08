@@ -418,7 +418,7 @@ test.describe('mindattic.com — Cyberspace', () => {
     } finally { await s.context.close(); }
   });
 
-  test('the tap spark burst draws on one pooled click-through canvas, animates, then goes idle', async ({ browser }) => {
+  test('the tap sonic pulse draws on one pooled click-through canvas, animates, then goes idle', async ({ browser }) => {
     const s = await openSite(browser, site, { viewport: { width: 1000, height: 700 } });
     try {
       await loadSite(s);
@@ -434,16 +434,16 @@ test.describe('mindattic.com — Cyberspace', () => {
         return { stats: window.consoleBg._demo.sparkStats(), state: cv.dataset.state, lit, pe: cs.pointerEvents, pos: cs.position, z: cs.zIndex, parent: cv.parentElement.tagName };
       });
       expect(live.stats.running).toBe(true);
-      expect(live.stats.sparks, 'sparks in flight').toBeGreaterThan(10);
+      expect(live.stats.flashes, 'the glow + ring is alive').toBe(1);
       expect(live.state).toBe('running');
-      expect(live.lit, 'pixels drawn').toBeGreaterThan(50);
+      expect(live.lit, 'pixels drawn').toBeGreaterThan(5);
       expect({ pe: live.pe, pos: live.pos, z: live.z, parent: live.parent }).toEqual({ pe: 'none', pos: 'fixed', z: '1', parent: 'BODY' });
 
       await s.page.mouse.click(860, 560); // a second tap reuses the same canvas
       expect(await s.page.locator('canvas.cyberspace-surge').count(), 'one pooled canvas').toBe(1);
 
-      // Every spark burns out within ~700ms; then the loop stops and the canvas is cleared.
-      await s.page.waitForFunction(() => !window.consoleBg._demo.sparkStats().running, null, { timeout: 1500 });
+      // The hint fades out within ~200ms; then the loop stops and the canvas is cleared.
+      await s.page.waitForFunction(() => !window.consoleBg._demo.sparkStats().running, null, { timeout: 1000 });
       const idle = await s.page.evaluate(async () => {
         const cv = document.querySelector('canvas.cyberspace-surge');
         const f0 = window.consoleBg._demo.sparkStats().frames;

@@ -217,11 +217,11 @@ Status legend: ✅ done (verified) · 🟡 partial · ⬜ planned · living.
   of MindAttic.Web, override `SHARED_TAG`), no
   overflow at every viewport and view, and CDN-loaded fonts. Verified 2026-10-03: `npx playwright test`
   in `tests/` (local mode) — assets and sites projects: 167 passed, 5 skipped (the live-only CDN specs).
-- ✅ **Cyberspace origins and the tap spark surge.** Every spawn function takes an optional origin
+- ✅ **Cyberspace origins and the tap sonic pulse.** Every spawn function takes an optional origin
   `{ x, y }` (viewport %) and starts the effect there, clamped on screen and kept out of the keepout
   buffer zone (keepout rects + `KEEPOUT_BUFFER` 16px); `consoleBg.inKeepout` tests a point against the
-  zone; `consoleBg.spawnSparkBurst` draws a gravity spark burst on one pooled, click-through canvas
-  whose loop stops at idle (flash only under reduced motion). Verified 2026-10-03:
+  zone; `consoleBg.spawnSparkBurst` draws a quiet glow + thin ring tap hint (no particles) on one
+  pooled, click-through canvas whose loop stops at idle (flash only under reduced motion). Verified 2026-10-03:
   `tests/specs/sites/mindattic.spec.mjs` (stories MAU-US-E1 to E4) in `npm run test:local`.
 - ✅ **Hyperspace shape library and Hyperspace Reader (`Components/Hyperspace/`).** `hyperspace.js` holds
   the 100 exhibits of the Hyperspace page (stable ids, plaque metadata, geometry, pure projection for

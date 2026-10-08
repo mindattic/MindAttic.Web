@@ -26,7 +26,7 @@ window.consoleBg = (function () {
     // that point — see "Origins" below.
     //
     // INPUT RESPONSE (not in the tick dispatcher; a host calls it on a tap):
-    //   SURGE      — spark burst + flash ring    (spawnSparkBurst)
+    //   SURGE      — quiet tap hint: small glow + thin ring (spawnSparkBurst)
     //
     // ARTIFACT BEHAVIOR VARIANTS (rolled per spawn — see ART_VARIANTS):
     //   SCATTER    — random blob, all glyphs drift one direction (original)
@@ -7554,29 +7554,18 @@ window.consoleBg = (function () {
         return true;
     }
 
-    // ── SURGE — tap spark burst ─────────────────────────────────────────────────
-    // spawnSparkBurst(x, y) — a momentary power surge at a viewport-% point (or pass { x, y }):
-    // a white-hot flash with an expanding glow ring, and a shower of sparks that fly outward with
-    // random velocities, fall under gravity, trail short streaks with a hot core, and cool
-    // white → electric cyan/blue → orange-red → dark, burning out within ~300–700ms.
+    // ── SURGE — tap sonic pulse ──────────────────────────────────────────────────
+    // spawnSparkBurst(x, y) — a quiet hint that a tap landed at a viewport-% point (or pass
+    // { x, y }): a small, soft glow and a single thin ring that expands just a little and fades,
+    // like a sonar blip. No particles, no spray — nothing radiating in spokes. Done within ~200ms.
     //
     // Everything draws on ONE pooled full-screen canvas (created on first use, appended to <body>,
     // position:fixed, pointer-events:none, z-index:1 — above the z-index:0 backdrop layers, below
     // any positioned page content with a higher z-index, and never intercepting a click). Its
     // requestAnimationFrame loop runs only while something is alive and stops at idle, clearing
     // the canvas, so a page at rest pays nothing. The canvas carries data-state="running|idle".
-    // Under prefers-reduced-motion: reduce it draws only a brief, stationary flash (no particles,
-    // no ring). Not gated by the auto-spawn switch or the FX_* toggles: it is a response to input.
-    var SURGE_GRAVITY = 1500;              // px/s²
-    var SURGE_DRAG    = 2.2;               // 1/s velocity damping
-    var SURGE_RAMP = [                     // heat (1 → 0) colour ramp, Cyberspace palette
-        [1.00, 255, 255, 255],             // white-hot
-        [0.78, 150, 240, 255],             // electric cyan
-        [0.58,  60, 130, 255],             // blue
-        [0.36, 255, 110,  30],             // orange
-        [0.18, 255,   0,  51],             // red
-        [0.00,  40,   6,   8]              // dark
-    ];
+    // Under prefers-reduced-motion: reduce it draws only the glow, stationary, with no ring.
+    // Not gated by the auto-spawn switch or the FX_* toggles: it is a response to input.
     var surge = { canvas: null, ctx: null, dpr: 1, sparks: [], flashes: [], raf: 0, last: 0, frames: 0 };
 
     function surgeReduced() {
@@ -7600,18 +7589,6 @@ window.consoleBg = (function () {
         surge.dpr = dpr;
         return surge.ctx;
     }
-    function surgeColor(heat, alpha) {
-        var R = SURGE_RAMP;
-        for (var i = 0; i < R.length - 1; i++) {
-            if (heat <= R[i][0] && heat >= R[i + 1][0]) {
-                var t = (heat - R[i + 1][0]) / (R[i][0] - R[i + 1][0]);
-                return 'rgba(' + Math.round(R[i + 1][1] + (R[i][1] - R[i + 1][1]) * t) + ',' +
-                    Math.round(R[i + 1][2] + (R[i][2] - R[i + 1][2]) * t) + ',' +
-                    Math.round(R[i + 1][3] + (R[i][3] - R[i + 1][3]) * t) + ',' + alpha.toFixed(3) + ')';
-            }
-        }
-        return 'rgba(255,255,255,' + alpha.toFixed(3) + ')';
-    }
     function surgeFrame(ts) {
         var ctx = surge.ctx, dpr = surge.dpr;
         var dt = surge.last ? Math.min(0.05, (ts - surge.last) / 1000) : 1 / 60;
@@ -7623,14 +7600,15 @@ window.consoleBg = (function () {
         ctx.globalCompositeOperation = 'lighter';
         ctx.lineCap = 'round';
 
-        // Flash: radial glow at the origin plus (full motion only) an expanding ring.
+        // A soft glow that fades out, plus (full motion only) a single thin ring that eases out
+        // a short distance and fades with it — a hint, not a show.
         for (var f = surge.flashes.length - 1; f >= 0; f--) {
             var fl = surge.flashes[f];
             fl.age += dt * 1000;
             var k = fl.age / fl.life;
             if (k >= 1) { surge.flashes.splice(f, 1); continue; }
-            var glowA = (1 - k) * (1 - k);
-            var gr = fl.ring ? 10 + 26 * k : 22;
+            var glowA = 0.35 * (1 - k) * (1 - k);
+            var gr = fl.ring ? 4 + 4 * k : 7;
             var g = ctx.createRadialGradient(fl.x, fl.y, 0, fl.x, fl.y, gr * 1.6);
             g.addColorStop(0, 'rgba(255,255,255,' + (0.9 * glowA).toFixed(3) + ')');
             g.addColorStop(0.35, 'rgba(150,240,255,' + (0.55 * glowA).toFixed(3) + ')');
@@ -7638,33 +7616,15 @@ window.consoleBg = (function () {
             ctx.fillStyle = g;
             ctx.beginPath(); ctx.arc(fl.x, fl.y, gr * 1.6, 0, Math.PI * 2); ctx.fill();
             if (fl.ring) {
-                ctx.strokeStyle = 'rgba(150,240,255,' + (0.8 * (1 - k)).toFixed(3) + ')';
-                ctx.lineWidth = 2.2 * (1 - k) + 0.4;
-                ctx.beginPath(); ctx.arc(fl.x, fl.y, 6 + 54 * (1 - Math.pow(1 - k, 3)), 0, Math.PI * 2); ctx.stroke();
-            }
-        }
-
-        // Sparks: integrate, then draw a streak (tail → head) and a hot core while young.
-        var damp = Math.max(0, 1 - SURGE_DRAG * dt);
-        for (var i = surge.sparks.length - 1; i >= 0; i--) {
-            var s = surge.sparks[i];
-            s.age += dt * 1000;
-            if (s.age >= s.life) { surge.sparks.splice(i, 1); continue; }
-            s.vx *= damp; s.vy = s.vy * damp + SURGE_GRAVITY * dt;
-            s.x += s.vx * dt; s.y += s.vy * dt;
-            var heat = 1 - s.age / s.life;
-            var tail = 0.016 + 0.02 * heat;            // streak length in seconds of travel
-            ctx.strokeStyle = surgeColor(heat, Math.min(1, 0.25 + heat));
-            ctx.lineWidth = s.w * (0.45 + 0.55 * heat);
-            ctx.beginPath(); ctx.moveTo(s.x - s.vx * tail, s.y - s.vy * tail); ctx.lineTo(s.x, s.y); ctx.stroke();
-            if (heat > 0.55) {
-                ctx.fillStyle = 'rgba(255,255,255,' + ((heat - 0.55) / 0.45).toFixed(3) + ')';
-                ctx.beginPath(); ctx.arc(s.x, s.y, s.w * 0.7, 0, Math.PI * 2); ctx.fill();
+                var ringR = 4 + 12 * (1 - Math.pow(1 - k, 3));
+                ctx.strokeStyle = 'rgba(150,240,255,' + (0.3 * (1 - k)).toFixed(3) + ')';
+                ctx.lineWidth = 1 * (1 - k) + 0.3;
+                ctx.beginPath(); ctx.arc(fl.x, fl.y, ringR, 0, Math.PI * 2); ctx.stroke();
             }
         }
 
         ctx.globalCompositeOperation = 'source-over';
-        if (surge.sparks.length || surge.flashes.length) {
+        if (surge.flashes.length) {
             surge.raf = requestAnimationFrame(surgeFrame);
         } else {
             ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -7680,20 +7640,9 @@ window.consoleBg = (function () {
         if (!ctx) return false;
         var px = o.x / 100 * window.innerWidth, py = o.y / 100 * window.innerHeight;
         if (surgeReduced()) {
-            surge.flashes.push({ x: px, y: py, age: 0, life: 180, ring: false });
+            surge.flashes.push({ x: px, y: py, age: 0, life: 140, ring: false });
         } else {
-            surge.flashes.push({ x: px, y: py, age: 0, life: 260, ring: true });
-            var n = rand(26, 40);
-            for (var i = 0; i < n; i++) {
-                var a = Math.random() * Math.PI * 2;
-                var sp = 160 + Math.random() * Math.random() * 640;   // most slow-ish, a few fast
-                surge.sparks.push({
-                    x: px, y: py,
-                    vx: Math.cos(a) * sp,
-                    vy: Math.sin(a) * sp - 120,                       // slight upward kick
-                    age: 0, life: rand(300, 700), w: 0.9 + Math.random() * 1.4
-                });
-            }
+            surge.flashes.push({ x: px, y: py, age: 0, life: 200, ring: true });
         }
         surge.canvas.dataset.state = 'running';
         if (!surge.raf) { surge.last = 0; surge.raf = requestAnimationFrame(surgeFrame); }

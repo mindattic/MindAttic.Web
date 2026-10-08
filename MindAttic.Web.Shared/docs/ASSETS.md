@@ -13,7 +13,7 @@ https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<tag>/MindAttic.Web.Shared/<
 
 `<tag>` is a whole-number release tag of MindAttic.Web (`V12`, `V13`, …) and **tags are immutable** ([MAU-LAW-6](BIBLE.md#MAU-LAW-6)),
 so a pinned URL returns the same bytes forever and is cached by browsers and by the CDN edge
-indefinitely. Never point a production page at `@main`. Apps that still load `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.UiUx@V<n>/<path>` (tags `V1` to `V11` of the older MindAttic.UiUx repo) keep working, because those tags stay served.
+indefinitely. Never point a production page at `@main`. Only `MindAttic.Web@V<n>` URLs are served; the former MindAttic.UiUx repository and its `V1` to `V11` URLs no longer exist.
 
 ## Layout
 

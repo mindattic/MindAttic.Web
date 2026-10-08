@@ -7,7 +7,7 @@ pulsars blink in code, folder-rip heists exfiltrate files in real time, and
 a parallax circuit-board hums behind everything under static scan-lines.
 
 13 named effects, content-aware spawning that stays out of your layout,
-spawn-at-a-point origins for tap handlers, a tap spark surge, and no build step. Drops into any page with three `<div>`s, one `<link>`, and
+spawn-at-a-point origins for tap handlers, a tap sonic pulse, and no build step. Drops into any page with three `<div>`s, one `<link>`, and
 one `<script>`.
 
 ---
@@ -18,7 +18,7 @@ one `<script>`.
 Cyberspace/
 ├── frontpage.html   # DOM scaffolding — three fixed-position layer divs
 ├── frontpage.css    # CYBERSPACE rules, scan-lines, neon-flicker keyframes
-├── console-bg.js    # the engine (13 effects, origins, spark surge, keepout system, parallax)
+├── console-bg.js    # the engine (13 effects, origins, sonic pulse, keepout system, parallax)
 ├── home-bg.js       # torn-edge portrait compositor — exposes window.homeBg
 ├── tv-static.js     # navigation-transition TV-static overlay
 ├── loader.js        # tiny global loader show/hide helpers
@@ -118,21 +118,20 @@ Each function returns `true` when it spawned and `false` when it declined.
 
 ---
 
-## Tap spark surge
+## Tap sonic pulse
 
 ```js
 consoleBg.spawnSparkBurst(x, y);   // viewport %, or spawnSparkBurst({ x, y })
 ```
 
-SURGE is a momentary power surge for tap feedback. A white-hot flash and glow
-ring appear, then 26 to 40 sparks fly outward with random velocities and fall
-under gravity, with short trails and a hot core. They cool from white through
-cyan and blue to orange-red and dark, and burn out in 300 to 700ms. One pooled
-`canvas.cyberspace-surge` is appended to `<body>` (`position: fixed`,
-`pointer-events: none`, `z-index: 1`, `data-state="running|idle"`). Its
-`requestAnimationFrame` loop stops and clears when idle. With
-`prefers-reduced-motion: reduce` it draws only a brief stationary flash.
-`consoleBg._demo.sparkStats()` returns live counters.
+SURGE is a quiet hint that a tap landed, not a show. A small soft glow and a
+single thin ring ease outward a short distance and fade, done within 200ms.
+No particles, nothing radiating in spokes. One pooled `canvas.cyberspace-surge`
+is appended to `<body>` (`position: fixed`, `pointer-events: none`,
+`z-index: 1`, `data-state="running|idle"`). Its `requestAnimationFrame` loop
+stops and clears when idle. With `prefers-reduced-motion: reduce` it draws
+only the glow, stationary, with no ring. `consoleBg._demo.sparkStats()`
+returns live counters.
 
 ---
 
