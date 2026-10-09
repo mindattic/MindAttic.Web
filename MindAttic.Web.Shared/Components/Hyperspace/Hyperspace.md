@@ -55,8 +55,8 @@ hall, ten exhibits to a row, sixteen rows).
 | `refs`, `cites` | string[] | Reference keys and the resolved APA-7 citations (HTML). |
 | `row`, `col` | number | Gallery coordinates. |
 
-The plaque states what the object is; the wireframe is what the page draws. They can differ: the
-120-cell is drawn with its 600-cell scaffold. Frames too large to animate whole are
+The plaque states what the object is; the wireframe is what the page draws. Frames too large to animate
+whole are
 cut down and say so in a `Frame` fact: 2₄₁ draws a sample of 6000 edges, 1₄₂ the 953 vertices nearest one
 pole, the lattices their kissing configuration (Barnes–Wall around one contact). `stats(id)` reports what
 is actually drawn.

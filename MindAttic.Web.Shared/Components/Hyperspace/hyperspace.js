@@ -118,13 +118,8 @@
       return { verts, edges: edgesByShortest(verts) };
     }
 
-    // 120-cell: dual of the 600-cell — 600 vertices. We render its 600-cell wireframe
-    // dual scaffold for performance; mathematically faithful as its reciprocal figure.
-    function cell120() {
-      // Use the 600-cell vertex set scaled, capped edges, as a representative dual frame.
-      const c = cell600();
-      return { verts: c.verts, edges: c.edges.slice(0, 720) };
-    }
+    // 120-cell: dual of the 600-cell — 600 vertices, 1200 edges, from the H4 diagram ringed at its 5 end.
+    const cell120 = () => wythoff(4, H4, ring(4, 0));
 
     // ---- helpers ----------------------------------------------------------------
 
@@ -1280,7 +1275,7 @@
    boundary is built from 120 dodecahedral cells meeting three to an edge, with 600 vertices and 1200
    edges. It is the dual of the 600-cell, and its vertex coordinates are built from the golden ratio φ.</p>
    <p>It is the largest of the six regular polychora by cell count and among the most intricate regular
-   figures in any dimension. The frame shown here renders its reciprocal scaffold for clarity at speed.</p>`,
+   figures in any dimension.</p>`,
       refs:['coxeter', 'schlafli'] },
 
     { id:'600-cell', name:'600-cell', tag:'Regular 4-polytope', schlafli:'{3,3,5}', family:'reg', dim:4,

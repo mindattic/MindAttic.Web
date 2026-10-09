@@ -82,7 +82,7 @@ test.describe('shape library', () => {
 
   test('constructed exhibits draw exactly the vertices and edges their plaques state', () => {
     const exact = [
-      'rectified-5-cell', 'truncated-5-cell', 'cantellated-5-cell', 'runcinated-5-cell',
+      '120-cell', 'rectified-5-cell', 'truncated-5-cell', 'cantellated-5-cell', 'runcinated-5-cell',
       'rectified-tesseract', 'truncated-tesseract', 'cantellated-tesseract', 'runcinated-tesseract',
       'rectified-24-cell', 'snub-24-cell',
       'rectified-penteract', 'truncated-penteract', 'cantellated-penteract', 'runcinated-penteract',
