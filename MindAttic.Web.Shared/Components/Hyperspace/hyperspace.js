@@ -720,6 +720,8 @@
     const B4 = [[0, 1, 4], [1, 2, 3], [2, 3, 3]];
     const F4 = [[0, 1, 3], [1, 2, 4], [2, 3, 3]];
     const H4 = [[0, 1, 5], [1, 2, 3], [2, 3, 3]];
+    const A5 = [[0, 1, 3], [1, 2, 3], [2, 3, 3], [3, 4, 3]];
+    const B5 = [[0, 1, 4], [1, 2, 3], [2, 3, 3], [3, 4, 3]];
     // E6, E7, E8: a chain with one branch on its third node. Arms from the branch node: E6 2,2,1;
     // E7 2,3,1; E8 2,4,1. k_ij rings the end of the arm of length k.
     const chain = n => Array.from({ length: n - 1 }, (_, i) => [i, i + 1, 3]);
@@ -770,6 +772,13 @@
         if (Math.hypot(...w) > 1e-6 && others.length < 2) others.push(unit(w));
       }
       const verts = V.filter(v => !inPlane(v, u1, u2) && !inPlane(v, others[0], others[1]));
+      return { verts, edges: edgesByShortest(verts) };
+    }
+
+    // Snub 24-cell: the 600-cell with the 24 vertices of an inscribed 24-cell removed, the 96 even
+    // permutations of (±φ, ±1, ±1/φ, 0)/2. Its 432 edges are the 600-cell edges that remain.
+    function snub24() {
+      const verts = cell600().verts.filter(v => v.filter(x => Math.abs(x) > 1e-9).length === 3);
       return { verts, edges: edgesByShortest(verts) };
     }
 
@@ -1331,7 +1340,7 @@
       refs:['coxeter', 'manning'] },
     // ===== ROW 2 — Uniform 4-polytopes (truncations & rectifications) ============
     { id:'rectified-5-cell', name:'Rectified 5-cell', tag:'Uniform 4-polytope', schlafli:'t₁{3,3,3}', family:'unif', dim:4,
-      gen:()=>nSimplex(4), rot:[P(0,3,.45),P(1,2,.3)],
+      gen:()=>wythoff(4,A4,ring(4,1)), rot:[P(0,3,.45),P(1,2,.3)],
       facts:{Cells:'5 tetra + 5 octa', Vertices:10, Edges:30, Faces:30},
       blurb:'The 5-cell with its vertices sliced to mid-edges.',
       article:`<p>The <b>rectified 5-cell</b> (dispentachoron) is what you get by cutting each vertex of a
@@ -1342,7 +1351,7 @@
       refs:['elte', 'coxeter'] },
 
     { id:'truncated-5-cell', name:'Truncated 5-cell', tag:'Uniform 4-polytope', schlafli:'t₀,₁{3,3,3}', family:'unif', dim:4,
-      gen:()=>nSimplex(4), rot:[P(0,3,.4),P(2,3,.26)],
+      gen:()=>wythoff(4,A4,ring(4,0,1)), rot:[P(0,3,.4),P(2,3,.26)],
       facts:{Cells:'5 tetra + 5 trunc-tetra', Vertices:20, Edges:40, Faces:30},
       blurb:'Each vertex of the 5-cell shaved to a small tetrahedron.',
       article:`<p>The <b>truncated 5-cell</b> shaves each of the 5-cell's five vertices, replacing them
@@ -1353,18 +1362,18 @@
       refs:['elte', 'coxeter'] },
 
     { id:'cantellated-5-cell', name:'Cantellated 5-cell', tag:'Uniform 4-polytope', schlafli:'t₀,₂{3,3,3}', family:'unif', dim:4,
-      gen:()=>nSimplex(4), rot:[P(0,3,.36),P(1,3,.24)],
-      facts:{Cells:'5+5+10 cells', Vertices:30, Edges:90, Faces:80},
+      gen:()=>wythoff(4,A4,ring(4,0,2)), rot:[P(0,3,.36),P(1,3,.24)],
+      facts:{Cells:'5 cuboctahedra + 5 octahedra + 10 triangular prisms', Vertices:30, Edges:90, Faces:80},
       blurb:'Both edges and vertices of the 5-cell expanded outward.',
       article:`<p>The <b>cantellated 5-cell</b> applies a second-order truncation — beveling both vertices
-   and edges of the 5-cell at once. It carries thirty vertices and a mix of tetrahedra, octahedra and
-   triangular prisms among its twenty cells.</p>
+   and edges of the 5-cell at once. It carries thirty vertices, and its twenty cells are five
+   cuboctahedra, five octahedra and ten triangular prisms.</p>
    <p>Cantellation (Coxeter's t₀,₂ operation) is what turns a cube into a rhombicuboctahedron in 3D; in
    4D it produces correspondingly richer uniform figures.</p>`,
       refs:['coxeter', 'elte'] },
 
     { id:'runcinated-5-cell', name:'Runcinated 5-cell', tag:'Uniform 4-polytope', schlafli:'t₀,₃{3,3,3}', family:'unif', dim:4,
-      gen:()=>nSimplex(4), rot:[P(0,3,.3),P(1,2,.3),P(2,3,.18)],
+      gen:()=>wythoff(4,A4,ring(4,0,3)), rot:[P(0,3,.3),P(1,2,.3),P(2,3,.18)],
       facts:{Cells:'30 cells', Vertices:20, Edges:60, Faces:70},
       blurb:'A purely 4D expansion that separates the cells of the 5-cell.',
       article:`<p>The <b>runcinated 5-cell</b> uses <i>runcination</i> — a third-order truncation that has
@@ -1375,8 +1384,8 @@
       refs:['coxeter', 'elte'] },
 
     { id:'rectified-tesseract', name:'Rectified tesseract', tag:'Uniform 4-polytope', schlafli:'t₁{4,3,3}', family:'unif', dim:4,
-      gen:tesseract, rot:[P(0,3,.4),P(1,2,.28)],
-      facts:{Cells:'8 cuboct + 16 tetra', Vertices:32, Edges:88, Faces:88},
+      gen:()=>wythoff(4,B4,ring(4,1)), rot:[P(0,3,.4),P(1,2,.28)],
+      facts:{Cells:'8 cuboct + 16 tetra', Vertices:32, Edges:96, Faces:88},
       blurb:'The tesseract with its corners cut to mid-edges.',
       article:`<p>The <b>rectified tesseract</b> truncates the tesseract's sixteen vertices all the way to
    the midpoints of its edges. The eight cubic cells become cuboctahedra and sixteen new tetrahedral
@@ -1386,7 +1395,7 @@
       refs:['coxeter', 'elte'] },
 
     { id:'truncated-tesseract', name:'Truncated tesseract', tag:'Uniform 4-polytope', schlafli:'t₀,₁{4,3,3}', family:'unif', dim:4,
-      gen:tesseract, rot:[P(0,3,.36),P(1,3,.24)],
+      gen:()=>wythoff(4,B4,ring(4,0,1)), rot:[P(0,3,.36),P(1,3,.24)],
       facts:{Cells:'8 trunc-cubes + 16 tetra', Vertices:64, Edges:128, Faces:88},
       blurb:'The hypercube with truncated-cube cells.',
       article:`<p>The <b>truncated tesseract</b> shaves each of the tesseract's sixteen vertices, turning
@@ -1396,7 +1405,7 @@
       refs:['coxeter', 'elte'] },
 
     { id:'rectified-24-cell', name:'Rectified 24-cell', tag:'Uniform 4-polytope', schlafli:'t₁{3,4,3}', family:'unif', dim:4,
-      gen:cell24, rot:[P(0,3,.34),P(1,2,.26),P(2,3,.16)],
+      gen:()=>wythoff(4,F4,ring(4,1)), rot:[P(0,3,.34),P(1,2,.26),P(2,3,.16)],
       facts:{Cells:'24 cuboct + 24 cubes', Vertices:96, Edges:288, Faces:240},
       blurb:'The self-dual 24-cell, rectified into cuboctahedra.',
       article:`<p>The <b>rectified 24-cell</b> cuts the 24-cell's vertices to mid-edge, turning its 24
@@ -1408,7 +1417,7 @@
       refs:['coxeter', 'conway'] },
 
     { id:'snub-24-cell', name:'Snub 24-cell', tag:'Uniform 4-polytope', schlafli:'s{3,4,3}', family:'unif', dim:4,
-      gen:cell600, rot:[P(0,3,.3),P(1,2,.22),P(2,3,.14)],
+      gen:snub24, rot:[P(0,3,.3),P(1,2,.22),P(2,3,.14)],
       facts:{Cells:'120 tetra + 24 icosa', Vertices:96, Edges:432, Faces:480},
       blurb:'A chiral polytope whose vertices form part of the 600-cell.',
       article:`<p>The <b>snub 24-cell</b> is a chiral (handed) uniform polychoron whose 96 vertices are a
@@ -1419,22 +1428,23 @@
       refs:['gosset', 'coxeter'] },
 
     { id:'cantellated-tesseract', name:'Cantellated tesseract', tag:'Uniform 4-polytope', schlafli:'t₀,₂{4,3,3}', family:'unif', dim:4,
-      gen:tesseract, rot:[P(0,3,.34),P(1,2,.26),P(2,3,.18)],
-      facts:{Cells:'8 cuboct + 16 octa + 32 prisms', Vertices:96, Edges:288, Faces:248},
+      gen:()=>wythoff(4,B4,ring(4,0,2)), rot:[P(0,3,.34),P(1,2,.26),P(2,3,.18)],
+      facts:{Cells:'8 rhombicuboct + 16 octa + 32 prisms', Vertices:96, Edges:288, Faces:248},
       blurb:'The tesseract with vertices and edges expanded outward.',
       article:`<p>The <b>cantellated tesseract</b> bevels both the vertices and edges of the tesseract
-   simultaneously. Its cells include cuboctahedra, octahedra and triangular prisms, and it preserves
+   simultaneously. Its cells are rhombicuboctahedra, octahedra and triangular prisms, and it preserves
    the full hyperoctahedral symmetry of the parent.</p>
    <p>Cantellation is the operation that turns a cube into a rhombicuboctahedron; here it produces
    a correspondingly richer four-dimensional figure.</p>`,
       refs:['coxeter', 'elte'] },
 
     { id:'runcinated-tesseract', name:'Runcinated tesseract', tag:'Uniform 4-polytope', schlafli:'t₀,₃{4,3,3}', family:'unif', dim:4,
-      gen:tesseract, rot:[P(0,3,.3),P(1,2,.24),P(2,3,.16)],
-      facts:{Cells:'16 tetra + 32 prisms + 8 cubes', Vertices:64, Edges:192, Faces:208},
+      gen:()=>wythoff(4,B4,ring(4,0,3)), rot:[P(0,3,.3),P(1,2,.24),P(2,3,.16)],
+      facts:{Cells:'16 tetra + 32 tri-prisms + 32 cubes', Vertices:64, Edges:192, Faces:208},
       blurb:`A 4D expansion that pulls the tesseract's cells apart.`,
       article:`<p>The <b>runcinated tesseract</b> applies runcination to the tesseract — a third-order
-   truncation that separates its cells and fills the gaps with tetrahedra and prisms. It has sixty-four
+   truncation that separates its eight cubes and fills the gaps with 24 more cubes, 32 triangular prisms and
+   16 tetrahedra. It has sixty-four
    vertices and is one of the most symmetrically expanded forms of the 4-cube.</p>`,
       refs:['coxeter', 'elte'] },
     // ===== ROW 3 — The 5-cube (penteract) family =================================
@@ -1472,8 +1482,8 @@
       refs:['coxeter', 'schlafli'] },
 
     { id:'rectified-penteract', name:'Rectified penteract', tag:'Uniform 5-polytope', schlafli:'t₁{4,3,3,3}', family:'five', dim:5,
-      gen:()=>nCube(5), rot:[P(0,4,.36),P(2,3,.24)],
-      facts:{Dimension:'5D', Vertices:80, Edges:'480', Cells:'mixed'},
+      gen:()=>wythoff(5,B5,ring(5,1)), rot:[P(0,4,.36),P(2,3,.24)],
+      facts:{Dimension:'5D', Vertices:80, Edges:320, '4-faces':'10 rectified tesseracts + 32 5-cells'},
       blurb:'The penteract cut to its edge-midpoints.',
       article:`<p>The <b>rectified penteract</b> truncates the 5-cube's 32 vertices to the midpoints of its
    edges, producing 80 new vertices — one per original edge. Its facets are rectified tesseracts and
@@ -1483,8 +1493,8 @@
       refs:['coxeter', 'elte'] },
 
     { id:'truncated-penteract', name:'Truncated penteract', tag:'Uniform 5-polytope', schlafli:'t₀,₁{4,3,3,3}', family:'five', dim:5,
-      gen:()=>nCube(5), rot:[P(0,4,.32),P(1,4,.22)],
-      facts:{Dimension:'5D', Vertices:160, Edges:'400', Cells:'mixed'},
+      gen:()=>wythoff(5,B5,ring(5,0,1)), rot:[P(0,4,.32),P(1,4,.22)],
+      facts:{Dimension:'5D', Vertices:160, Edges:400, '4-faces':'10 truncated tesseracts + 32 5-cells'},
       blurb:'The 5-cube with shaved vertices.',
       article:`<p>The <b>truncated penteract</b> shaves each of the 5-cube's 32 vertices, replacing each
    with a small 5-cell facet while the tesseract cells become truncated tesseracts. It has 160 vertices.</p>
@@ -1494,7 +1504,7 @@
 
     { id:'5-demicube', name:'5-demicube', tag:'Uniform 5-polytope', schlafli:'h{4,3,3,3}', family:'five', dim:5,
       gen:()=>nDemicube(5), rot:[P(0,4,.4),P(1,3,.26)],
-      facts:{Dimension:'5D', Vertices:16, '4-faces':'16 5-cells + 10 16-cells', Symmetry:'D₅'},
+      facts:{Dimension:'5D', Vertices:16, Edges:80, '4-faces':'16 5-cells + 10 16-cells', Symmetry:'D₅'},
       blurb:'The alternated penteract — half its vertices removed.',
       article:`<p>The <b>5-demicube</b> (demipenteract) is the penteract with alternate vertices deleted —
    keeping the sixteen whose coordinates have an even number of minus signs. Its facets are sixteen
@@ -1504,19 +1514,19 @@
       refs:['coxeter', 'elte'] },
 
     { id:'cantellated-penteract', name:'Cantellated penteract', tag:'Uniform 5-polytope', schlafli:'t₀,₂{4,3,3,3}', family:'five', dim:5,
-      gen:()=>nCube(5), rot:[P(0,4,.3),P(2,4,.2),P(1,3,.16)],
-      facts:{Dimension:'5D', Vertices:'480', Operation:'cantellation', Symmetry:'B₅'},
+      gen:()=>wythoff(5,B5,ring(5,0,2)), rot:[P(0,4,.3),P(2,4,.2),P(1,3,.16)],
+      facts:{Dimension:'5D', Vertices:320, Edges:1280, '4-faces':'10 cantellated tesseracts + 32 rectified 5-cells + 80 tetrahedral prisms', Symmetry:'B₅'},
       blurb:'A second-order bevel of the 5-cube.',
       article:`<p>The <b>cantellated penteract</b> bevels both the vertices and edges of the 5-cube
-   simultaneously (Coxeter's t₀,₂). The result mixes rhombicuboctahedral and prismatic cells across its
-   boundary, with several hundred vertices.</p>
+   simultaneously (Coxeter's t₀,₂). Its 320 vertices bound ten cantellated tesseracts, 32 rectified
+   5-cells and 80 tetrahedral prisms.</p>
    <p>It belongs to the B₅ family of uniform 5-polytopes — the same hyperoctahedral symmetry that
    governs the penteract and 5-orthoplex.</p>`,
       refs:['coxeter', 'elte'] },
 
     { id:'omnitruncated-5-simplex', name:'Omnitruncated 5-simplex', tag:'Uniform 5-polytope', schlafli:'t₀,₁,₂,₃,₄{3,3,3,3}', family:'five', dim:5,
-      gen:()=>nSimplex(5), rot:[P(0,4,.3),P(1,3,.22),P(2,4,.14)],
-      facts:{Dimension:'5D', Vertices:720, Symmetry:'A₅', Note:'all mirrors active'},
+      gen:()=>wythoff(5,A5,ring(5,0,1,2,3,4)), rot:[P(0,4,.3),P(1,3,.22),P(2,4,.14)],
+      facts:{Dimension:'5D', Vertices:720, Edges:1800, Symmetry:'A₅', Note:'all mirrors active'},
       blurb:'Every mirror of the 5-simplex turned on at once.',
       article:`<p>The <b>omnitruncated 5-simplex</b> activates every node of the A₅ Coxeter diagram at
    once — the maximal truncation. It has exactly 720 vertices, one for each element of the symmetric
@@ -1526,21 +1536,23 @@
       refs:['coxeter', 'elte'] },
 
     { id:'runcinated-penteract', name:'Runcinated penteract', tag:'Uniform 5-polytope', schlafli:'t₀,₃{4,3,3,3}', family:'five', dim:5,
-      gen:()=>nCube(5), rot:[P(0,4,.32),P(1,3,.24),P(2,4,.16)],
-      facts:{Dimension:'5D', Vertices:320, Operation:'runcination', Symmetry:'B₅'},
+      gen:()=>wythoff(5,B5,ring(5,0,3)), rot:[P(0,4,.32),P(1,3,.24),P(2,4,.16)],
+      facts:{Dimension:'5D', Vertices:320, Edges:1440, '4-faces':'10 runcinated tesseracts + 32 rectified 5-cells + 80 octahedral prisms + 80 {4}×{3} duoprisms', Symmetry:'B₅'},
       blurb:'The 5-cube with its cells separated and prisms inserted.',
       article:`<p>The <b>runcinated penteract</b> expands the 5-cube along its 3-faces, pulling the tesseract
-   cells apart and bridging the gaps with prisms and simplices. It is the five-dimensional analogue of
+   cells apart and bridging the gaps with rectified 5-cells, octahedral prisms and square-triangle
+   duoprisms. It is the five-dimensional analogue of
    the runcinated tesseract.</p>`,
       refs:['coxeter', 'elte'] },
 
     { id:'stericated-penteract', name:'Stericated penteract', tag:'Uniform 5-polytope', schlafli:'t₀,₄{4,3,3,3}', family:'five', dim:5,
-      gen:()=>nCube(5), rot:[P(0,4,.3),P(1,3,.22),P(2,4,.14)],
-      facts:{Dimension:'5D', Vertices:80, Operation:'sterication', Symmetry:'B₅'},
+      gen:()=>wythoff(5,B5,ring(5,0,4)), rot:[P(0,4,.3),P(1,3,.22),P(2,4,.14)],
+      facts:{Dimension:'5D', Vertices:160, Edges:640, '4-faces':'10 tesseracts + 40 cubic prisms + 80 {4}×{3} duoprisms + 80 tetrahedral prisms + 32 5-cells', Symmetry:'B₅'},
       blurb:'The 5-cube expanded along its 4-faces — its tesseract facets.',
       article:`<p>The <b>stericated penteract</b> is the 5-cube expanded along its 4-faces, the highest-order
-   truncation possible in five dimensions. It has eighty vertices and mixes tesseracts and 5-cell
-   facets across its boundary.</p>`,
+   truncation possible in five dimensions. Its 160 vertices bound the ten original tesseracts, pulled
+   apart, with 32 5-cells where the vertices were and cubic prisms, duoprisms and tetrahedral prisms
+   filling the gaps between them.</p>`,
       refs:['coxeter', 'elte'] },
     // ===== ROW 4 — Higher hypercubes, simplices, and the Gosset figure ===========
     { id:'6-cube', name:'6-cube', tag:'Regular 6-polytope', schlafli:'{4,3,3,3,3}', family:'ncube', dim:6,
@@ -3153,8 +3165,8 @@
             octonions: octonions, cyclic5D: cyclic5D, d4Lattice: d4Lattice, d5Lattice: d5Lattice,
             aRoots: aRoots, ammannBeenker: ammannBeenker, edgesByShortest: edgesByShortest,
             coxeterRoots: coxeterRoots, wythoff: wythoff, wythoffVerts: wythoffVerts, rootSystem: rootSystem,
-            diagrams: Object.freeze({ A4: A4, B4: B4, F4: F4, H4: H4, E6: E6, E7: E7, E8: E8 }),
-            grandAntiprism: grandAntiprism, antiprism3D: antiprism3D, starPolychoron: starPolychoron,
+            diagrams: Object.freeze({ A4: A4, B4: B4, F4: F4, H4: H4, A5: A5, B5: B5, E6: E6, E7: E7, E8: E8 }),
+            grandAntiprism: grandAntiprism, snub24: snub24, antiprism3D: antiprism3D, starPolychoron: starPolychoron,
             kissing: kissing, barnesWallMinimal: barnesWallMinimal, coxeterToddMinimal: coxeterToddMinimal,
             elserSloane: elserSloane, icosahedralQuasicrystal: icosahedralQuasicrystal, hopfHigher: hopfHigher,
             spunKnot: spunKnot, trefoilSeifert: trefoilSeifert, romanSurface: romanSurface, cp2: cp2,
