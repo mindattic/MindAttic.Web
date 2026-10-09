@@ -1,6 +1,6 @@
 # MindAttic.Web.Shared
 
-Shared front-end assets for every MindAttic site: a cyberpunk console-background engine, 1024 animated line-art shapes, a library of 100 higher-dimensional shapes with a sci-fi scanner window, fonts and UI widgets, served from jsDelivr by immutable tag with no build step.
+Shared front-end assets for every MindAttic site: a cyberpunk console-background engine, 1024 animated line-art shapes, a library of 159 higher-dimensional shapes with a sci-fi scanner window, fonts and UI widgets, served from jsDelivr by immutable tag with no build step.
 
 [![JavaScript](https://img.shields.io/badge/JavaScript-vanilla-F7DF1E)](Components/Cyberspace/console-bg.js) [![CSS](https://img.shields.io/badge/CSS-no%20build-264DE4)](Components) [![jsDelivr](https://img.shields.io/badge/CDN-jsDelivr-E84D3D)](docs/PIPELINES.md) [![Tests Playwright](https://img.shields.io/badge/tests-Playwright-2EAD33)](tests/README.md) [![Status active](https://img.shields.io/badge/status-active-brightgreen)](docs/BIBLE.md)
 
@@ -29,7 +29,7 @@ Fourteen components live under `Components/`, each with its source files, a usag
 |---|---|---|
 | [Cyberspace](Components/Cyberspace/Cyberspace.md) | HTML + CSS + JS bundle | Cyberpunk console-background engine: 13 named effects (TERMINAL, CRASH, TREMOR, LEAK, SCHEMATIC, CASCADE, ARTIFACT with 24 variants, FRAGMENT, TRACE, PULSAR, HEIST, PREDATOR, READER), scan-line overlay, parallax circuit-board, keepout zones around content, spawn-at-a-point origins and a tap sonic pulse. SCHEMATIC draws its shapes from SacredGeometry; READER opens a Hyperspace Reader over the Hyperspace library. |
 | [SacredGeometry](Components/SacredGeometry/SacredGeometry.md) | JS (UMD) + SVG | 1024 unique, animatable line-art shapes (polyhedra, parametric curves, knots, fractals). One renderer targets a live canvas or a static SVG string; `build-previews.mjs` emits a poster per shape and doubles as a smoke test. |
-| [Hyperspace](Components/Hyperspace/Hyperspace.md) | JS (UMD) | The standard library of 100 higher-dimensional shapes from the Hyperspace page (polytopes, duoprisms, curved manifolds, lattices), each with a stable id, plaque metadata, geometry and a pure projection to Three.js or a 2D canvas, plus the Hyperspace Reader: a scanner window with a Dimensional Threshold bar, rotating readouts and a shutdown sequence. The Hyperspace page builds its gallery from it. |
+| [Hyperspace](Components/Hyperspace/Hyperspace.md) | JS (UMD) | The standard library of 159 higher-dimensional shapes from the Hyperspace page (polytopes, duoprisms, curved manifolds, lattices), each with a stable id, plaque metadata, geometry and a pure projection to Three.js or a 2D canvas, plus the Hyperspace Reader: a scanner window with a Dimensional Threshold bar, rotating readouts and a shutdown sequence. The Hyperspace page builds its gallery from it. |
 | [OutfitFont](Components/OutfitFont/OutfitFont.md) | font + CSS | Outfit variable font (weights 100 to 900) inlined as base64 woff2, Latin and Latin-Extended, plus a `--font-outfit` token. |
 | [AtticFont](Components/AtticFont/AtticFont.md) | font + CSS | Attic display face inlined as base64 woff2 with a `--font-attic` token. Per-subscriber `applyToSelector` controls where it is auto-applied. |
 | [PinFooter](Components/PinFooter/PinFooter.md) | CSS + JS | Pins any `.pin-when-short` element to the bottom while the document is shorter than the viewport; releases it when content overflows. |
@@ -54,7 +54,7 @@ The SacredGeometry QA grid (`Components/SacredGeometry/index.htm`) shows every s
 
 ![The Hyperspace Reader scanning a tesseract: a rotating wireframe on a radar scope, instrument readouts, a Dimensional Threshold bar, UNRESOLVED flags and scrolling details](docs/images/hyperspace-reader.png)
 
-The Hyperspace harness (`Components/Hyperspace/index.htm`) shows all 100 shapes; click one to point the Hyperspace Reader at it.
+The Hyperspace harness (`Components/Hyperspace/index.htm`) shows all 159 shapes; click one to point the Hyperspace Reader at it.
 
 ### Shared runtime asset package
 

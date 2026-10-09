@@ -1,6 +1,6 @@
 # Hyperspace
 
-The standard library of **100 higher-dimensional shapes** (the exhibits of the
+The standard library of **159 higher-dimensional shapes** (the exhibits of the
 [Hyperspace](https://github.com/mindattic/Hyperspace) page) and the **Hyperspace Reader**, a Cyberspace
 scanner window that locks on to one of them and fails to make sense of it.
 
@@ -35,16 +35,16 @@ first from the CDN, with a fallback to `../MindAttic.Web.Shared/` (the same Mind
 
 ## Shape record
 
-`Hyperspace.shapes` is a frozen array in gallery order (index 0 to 99; `row`/`col` place it in the
-10 x 10 hall). Every field comes from the Hyperspace page's own exhibit data, unchanged.
+`Hyperspace.shapes` is a frozen array in gallery order (index 0 to 158; `row`/`col` place it in the
+hall, ten exhibits to a row, sixteen rows).
 
 | Field | Type | Meaning |
 |---|---|---|
 | `id` | string | Stable kebab-case id derived once from the name (`5-cell`, `tesseract`, `e8-polytope-421`, `boys-surface`) and written into the source, so it does not change if a name is edited. |
 | `index` | number | Position in the catalog and the gallery. |
 | `name`, `tag` | string | Display name and classification line from the plaque. |
-| `family` | string | Category key: `reg`, `unif`, `five`, `ncube`, `curve`, `duo`, `rot`, `phys`, `prism`. |
-| `familyLabel`, `color` | string | The page's palette label and colour for that family. |
+| `family` | string | Category key: `reg`, `unif`, `five`, `ncube`, `curve`, `duo`, `rot`, `phys`, `prism`, `star`, `comb`. |
+| `familyLabel`, `color` | string | The family's label and colour (see Palette). |
 | `dim` | number | The native dimension the plaque states. |
 | `schlafli` | string | The plaque's symbol (a Schläfli symbol for polytopes, otherwise the notation the page uses, such as `S³` or `K²`). |
 | `symmetry` | string or null | The plaque's `Symmetry` fact when it states one. |
@@ -55,16 +55,34 @@ first from the CDN, with a fallback to `../MindAttic.Web.Shared/` (the same Mind
 | `refs`, `cites` | string[] | Reference keys and the resolved APA-7 citations (HTML). |
 | `row`, `col` | number | Gallery coordinates. |
 
-The plaque states what the object is; the wireframe is what the page draws. They can differ: several
-uniform polytopes reuse their parent's frame (the truncated tesseract is drawn as a tesseract), and the
-120-cell is drawn with its 600-cell scaffold. `stats(id)` reports what is actually drawn.
+The plaque states what the object is; the wireframe is what the page draws. They can differ: the
+uniform polytopes of rows 2 and 3 reuse their parent's frame (the truncated tesseract is drawn as a
+tesseract), and the 120-cell is drawn with its 600-cell scaffold. Frames too large to animate whole are
+cut down and say so in a `Frame` fact: 2₄₁ draws a sample of 6000 edges, 1₄₂ the 953 vertices nearest one
+pole, the lattices their kissing configuration (Barnes–Wall around one contact). `stats(id)` reports what
+is actually drawn.
+
+The other constructed exhibits draw their true frames, and the spec checks their counts against the
+plaque. Uniform polytopes and the E₆/E₇/E₈ Gosset polytopes come from `wythoff`: a seed point reflected
+through the mirrors of a Coxeter diagram (`gen.diagrams`), at distance 1 from every ringed mirror.
+The star polychora share the 600-cell's or the 120-cell's vertices; `starPolychoron` picks the chord
+class whose neighbours form the vertex figure. Quasicrystals store each point as
+`[physical..., internal...]`, so the projection drops internal space first.
+
+## Palette
+
+The eleven family colours were solved as one set against the gallery floor (`#06061A`). Every pair is at
+least 15 OKLab ΔE×100 apart for normal vision and 8 under simulated protanopia and deuteranopia
+(Machado 2009). Every colour has OKLCH lightness 0.48 to 0.67, chroma of at least 0.10 and at least 3:1
+contrast with the floor. The spec re-checks the pair distances. Yellow and mint cannot reach that
+lightness band, so `duo` is a bronze and `phys` a mauve.
 
 ---
 
 ## API
 
 ```js
-Hyperspace.count                 // 100
+Hyperspace.count                 // 159
 Hyperspace.shapes                // frozen records (above)
 Hyperspace.ids()                 // ['5-cell', 'tesseract', ...]
 Hyperspace.get(idOrIndex)        // record; RangeError if unknown
@@ -85,7 +103,8 @@ Hyperspace.rotate(verts, i, j, a)        // rotate in the (i, j) plane (returns 
 Hyperspace.projectTo3D(verts, dist=3.2)  // perspective-project nD -> 3D, one axis at a time
 Hyperspace.projectDown(verts, toDim, d)  // the same down to any dimension (the page's explorers use 2)
 Hyperspace.gen                           // the generators: nCube, nSimplex, nOrthoplex, nDemicube,
-                                         // cell24, cell600, duoprism, glome, hopfFibration, ...
+                                         // cell24, cell600, duoprism, glome, hopfFibration, wythoff,
+                                         // starPolychoron, kissing, elserSloane, hopfHigher, polyprism, ...
 ```
 
 **Three.js.** The gallery fills a `LineSegments` buffer each frame from
@@ -183,3 +202,9 @@ scrolling details and removes its DOM on close, and that the Hyperspace page ren
 Edit `hyperspace.js` here (the Hyperspace page reads it; never copy it back into the page). Keep ids
 stable: they are how consumers address shapes. Ship through the next whole-number tag and repin the
 Hyperspace page.
+
+Adding shapes: append records to `RAW` under a `// ===== ROW n` comment (declaration order is gallery
+order; the hall grows a row per ten shapes on its own). Then update `COUNT` in `hyperspace.spec.mjs`, and
+the count in the Hyperspace page's gallery intro, `Hyperspace/README.md`, the MindAttic.Web.Shared README,
+`docs/BIBLE.md`, `docs/USER_STORIES.md`, `docs/data/components.json` and the repo README. A new family
+needs a colour that keeps the Palette guarantees; the spec checks them.

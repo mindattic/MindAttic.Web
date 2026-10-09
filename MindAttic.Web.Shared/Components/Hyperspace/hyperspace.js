@@ -1,7 +1,7 @@
 /* Hyperspace — the standard library of higher-dimensional shapes.
  *
  * One catalog, several consumers:
- *   - the Hyperspace page (github.com/mindattic/Hyperspace): the walkable 10 x 10 gallery
+ *   - the Hyperspace page (github.com/mindattic/Hyperspace): the walkable gallery (ten exhibits to a row)
  *     (Three.js) and the explorers (2D canvas) build every exhibit from this file;
  *   - hyperspace-reader.js in this folder: the Cyberspace "Hyperspace Reader" scanner window.
  *
@@ -520,7 +520,7 @@
       return { verts, edges };
     }
 
-    // ---- additional builders for the 10×10 hall ---------------------------------
+    // ---- additional builders for the gallery hall --------------------------------
 
     // 4D prism over a 3D polyhedron.
     function prism4D(poly) {
@@ -633,22 +633,22 @@
       return { verts, edges };
     }
 
-    // Kuen surface — another constant-negative-curvature surface.
+    // Kuen surface — another constant-negative-curvature surface:
+    // (2 cosh v (cos u + u sin u), 2 cosh v (sin u − u cos u), v (cosh² v + u²) − sinh 2v) / (cosh² v + u²).
     function kuenSurface(u = 22, vv = 22) {
       const verts = [], edges = [];
       const id = (i, j) => i * vv + j;
       for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
-        const s = 0.05 + Math.PI * (i / (u - 1)) * 0.95;
-        const t = 2 * Math.PI * j / vv;
-        const d = 1 + s * s * Math.sin(t) * Math.sin(t);
-        const x = 2 * Math.cosh(s) * Math.cos(t) * (Math.cos(s) + s * Math.sin(s)) / d;
-        const y = 2 * Math.cosh(s) * Math.sin(t) * (Math.cos(s) + s * Math.sin(s)) / d;
-        const z = s - Math.cosh(s) * Math.sinh(s);
-        verts.push([x * 0.4, y * 0.4, z * 0.4, Math.sin(s + t) * 0.3]);
+        const a = -4.5 + 9 * i / (u - 1), b = -3 + 6 * j / (vv - 1);
+        const ch = Math.cosh(b), d = ch * ch + a * a;
+        const x = 2 * ch * (Math.cos(a) + a * Math.sin(a)) / d;
+        const y = 2 * ch * (Math.sin(a) - a * Math.cos(a)) / d;
+        const z = b - Math.sinh(2 * b) / d;
+        verts.push([x, y, z, Math.sin(a + b) * 0.3]);
       }
       for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
         if (i + 1 < u) edges.push([id(i, j), id(i + 1, j)]);
-        edges.push([id(i, j), id(i, (j + 1) % vv)]);
+        if (j + 1 < vv) edges.push([id(i, j), id(i, j + 1)]);
       }
       return { verts, edges };
     }
@@ -662,6 +662,452 @@
           if (Math.abs(a) + Math.abs(b) + Math.abs(c) + Math.abs(d) + Math.abs(e) + Math.abs(f) + Math.abs(g) + Math.abs(h) <= 2)
             verts.push([a, b, c, d, e, f, g, h]);
       return { verts, edges: edgesByShortest(verts).slice(0, 600) };
+    }
+
+    // ---- Wythoff construction -----------------------------------------------------
+
+    // Simple roots of a Coxeter group from its diagram: links are [i, j, m] for the branches of the
+    // diagram (m = 3 unless marked), every other pair commutes. The Gram matrix -cos(pi/m) is positive
+    // definite for a finite group; its Cholesky factor gives unit roots, root i using coordinates 0..i.
+    function coxeterRoots(n, links) {
+      const G = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => i === j ? 1 : 0));
+      for (const [i, j, m] of links) G[i][j] = G[j][i] = -Math.cos(Math.PI / m);
+      const L = Array.from({ length: n }, () => new Array(n).fill(0));
+      for (let i = 0; i < n; i++) for (let j = 0; j <= i; j++) {
+        let s = G[i][j];
+        for (let k = 0; k < j; k++) s -= L[i][k] * L[j][k];
+        L[i][j] = i === j ? Math.sqrt(s) : s / L[j][j];
+      }
+      return L;
+    }
+    function reflect(v, r) {
+      let d = 0; for (let k = 0; k < v.length; k++) d += v[k] * r[k];
+      return v.map((x, k) => x - 2 * d * r[k]);
+    }
+    const vkey = v => v.map(x => (Math.abs(x) < 5e-7 ? 0 : x).toFixed(6)).join(',');
+    function orbit(seeds, roots) {
+      const seen = new Set(), out = [];
+      const queue = seeds.filter(v => { const k = vkey(v); if (seen.has(k)) return false; seen.add(k); return true; });
+      for (let q = 0; q < queue.length; q++) {
+        out.push(queue[q]);
+        for (const r of roots) { const w = reflect(queue[q], r), k = vkey(w); if (!seen.has(k)) { seen.add(k); queue.push(w); } }
+      }
+      return out;
+    }
+    // Uniform polytope from a ringed diagram: the seed sits at distance 1 from every ringed mirror and on
+    // every unringed one, so all edges have length 2. Scaled to circumradius `radius`.
+    function wythoffVerts(n, links, rings, radius = 1) {
+      const L = coxeterRoots(n, links), p = new Array(n).fill(0);
+      for (let i = 0; i < n; i++) {
+        let s = rings[i] ? 1 : 0;
+        for (let k = 0; k < i; k++) s -= L[i][k] * p[k];
+        p[i] = s / L[i][i];
+      }
+      return scaleTo(orbit([p], L), radius);
+    }
+    function wythoff(n, links, rings, radius = 1) {
+      const verts = wythoffVerts(n, links, rings, radius);
+      return { verts, edges: edgesByShortest(verts) };
+    }
+    function scaleTo(verts, radius) {
+      let m = 0; for (const v of verts) m = Math.max(m, Math.hypot(...v));
+      return m > 0 ? verts.map(v => v.map(x => x * radius / m)) : verts;
+    }
+    // Every root of a crystallographic system: the orbit of its simple roots.
+    const rootSystem = (n, links) => orbit(coxeterRoots(n, links), coxeterRoots(n, links));
+
+    const A4 = [[0, 1, 3], [1, 2, 3], [2, 3, 3]];
+    const B4 = [[0, 1, 4], [1, 2, 3], [2, 3, 3]];
+    const F4 = [[0, 1, 3], [1, 2, 4], [2, 3, 3]];
+    const H4 = [[0, 1, 5], [1, 2, 3], [2, 3, 3]];
+    // E6, E7, E8: a chain with one branch on its third node. Arms from the branch node: E6 2,2,1;
+    // E7 2,3,1; E8 2,4,1. k_ij rings the end of the arm of length k.
+    const chain = n => Array.from({ length: n - 1 }, (_, i) => [i, i + 1, 3]);
+    const E6 = [...chain(5), [2, 5, 3]];
+    const E7 = [...chain(6), [2, 6, 3]];
+    const E8 = [...chain(7), [2, 7, 3]];
+    const ring = (n, ...on) => Array.from({ length: n }, (_, i) => on.includes(i) ? 1 : 0);
+
+    // Keep at most `max` edges, sampled evenly through the list, for frames too dense to draw whole.
+    function capEdges(edges, max) {
+      if (edges.length <= max) return edges;
+      const out = [], step = edges.length / max;
+      for (let i = 0; i < max; i++) out.push(edges[Math.floor(i * step)]);
+      return out;
+    }
+    // The whole shells of vertices nearest one pole (verts[0]), up to `max` vertices: a symmetric patch of
+    // a vertex set too large to animate whole.
+    function polarCap(verts, max) {
+      const pole = verts[0];
+      const dot = v => v.reduce((s, x, k) => s + x * pole[k], 0);
+      const sorted = verts.slice().sort((a, b) => dot(b) - dot(a));
+      let n = 0;
+      while (n < sorted.length) {
+        let m = n; const d = dot(sorted[n]);
+        while (m < sorted.length && Math.abs(dot(sorted[m]) - d) < 1e-6) m++;
+        if (m > max && n > 0) break;
+        n = m;
+      }
+      return sorted.slice(0, n);
+    }
+
+    // ---- uniform 4-polytopes beyond the Wythoff families ---------------------------
+
+    // Grand antiprism: the 600-cell with two completely orthogonal great decagons removed (100 vertices,
+    // 500 edges, all of them 600-cell edges).
+    function grandAntiprism() {
+      const c = cell600(), V = c.verts;
+      const e = c.edges[0], a = V[e[0]], b = V[e[1]];
+      // orthonormal basis of the decagon's plane, then of the completely orthogonal plane
+      const unit = v => { const m = Math.hypot(...v); return v.map(x => x / m); };
+      const dotp = (x, y) => x.reduce((s, xi, k) => s + xi * y[k], 0);
+      const u1 = unit(a), u2 = unit(b.map((x, k) => x - dotp(b, u1) * u1[k]));
+      const inPlane = (v, p, q) => Math.abs(dotp(v, v) - dotp(v, p) ** 2 - dotp(v, q) ** 2) < 1e-6;
+      const others = [];
+      for (let k = 0; k < 4; k++) {
+        let w = new Array(4).fill(0); w[k] = 1;
+        for (const u of [u1, u2, ...others]) { const d = dotp(w, u); w = w.map((x, i) => x - d * u[i]); }
+        if (Math.hypot(...w) > 1e-6 && others.length < 2) others.push(unit(w));
+      }
+      const verts = V.filter(v => !inPlane(v, u1, u2) && !inPlane(v, others[0], others[1]));
+      return { verts, edges: edgesByShortest(verts) };
+    }
+
+    // Uniform n-antiprism with edge 2: two n-gons a half-step apart.
+    function antiprism3D(n) {
+      const r = 1 / Math.sin(Math.PI / n), h = r * Math.sqrt(Math.sin(Math.PI / n) ** 2 - Math.sin(Math.PI / (2 * n)) ** 2);
+      const verts = [];
+      for (let i = 0; i < n; i++) {
+        const a = 2 * Math.PI * i / n, b = a + Math.PI / n;
+        verts.push([r * Math.cos(a), r * Math.sin(a), h], [r * Math.cos(b), r * Math.sin(b), -h]);
+      }
+      return { verts, edges: edgesByShortest(verts) };
+    }
+
+    // ---- regular star polychora ---------------------------------------------------
+
+    // A Schläfli-Hess polychoron {p,q,r} shares its vertices with the 600-cell (120) or the 120-cell (600);
+    // its edges are the one chord class whose neighbours form the vertex figure {q,r}. Within a face {p} the
+    // two neighbours of a vertex lie L·f apart (f = 1 for {3}, φ for {5}, 1/φ for {5/2}), and in the vertex
+    // figure each of them has `deg` such partners. The figure's edges are the shortest distance among the
+    // neighbours ({3,5}, {5,5/2}, {5,3}, {3,3}) or a longer one ({5/2,5}, {3,5/2}, {5/2,3}): `figLong`.
+    const FACE_CHORD = { '3': 1, '5': PHI, '5/2': 1 / PHI };
+    function starPolychoron(p, figVerts, deg, base, figLong) {
+      const V = base === 600 ? wythoffVerts(4, H4, ring(4, 0)) : cell600().verts;
+      const v0 = V[0], chords = {};
+      for (let i = 1; i < V.length; i++) { const k = dist2(v0, V[i]).toFixed(5); (chords[k] = chords[k] || []).push(V[i]); }
+      for (const k of Object.keys(chords).sort((a, b) => a - b)) {
+        const N = chords[k];
+        if (N.length !== figVerts) continue;
+        const d2 = Number(k) * FACE_CHORD[p] ** 2;
+        let shortest = Infinity;
+        for (const a of N) for (const b of N) if (a !== b) shortest = Math.min(shortest, dist2(a, b));
+        if ((Math.abs(d2 - shortest) > 1e-4) !== !!figLong) continue;
+        if (N.every(a => N.filter(b => b !== a && Math.abs(dist2(a, b) - d2) < 1e-4).length === deg)) {
+          const L2 = Number(k), edges = [];
+          for (let i = 0; i < V.length; i++) for (let j = i + 1; j < V.length; j++)
+            if (Math.abs(dist2(V[i], V[j]) - L2) < 1e-4) edges.push([i, j]);
+          return { verts: V, edges };
+        }
+      }
+      throw new Error('Hyperspace: no chord class fits {' + p + ',…}');
+    }
+
+    // ---- lattices -------------------------------------------------------------------
+
+    // Kissing configuration: one sphere at the origin and the minimal vectors of the lattice it touches.
+    // Spokes and the 60° neighbours between touching spheres have the same length, so both are edges.
+    function kissing(shell, maxEdges) {
+      const verts = scaleTo([new Array(shell[0].length).fill(0), ...shell], 1);
+      return { verts, edges: capEdges(edgesByShortest(verts), maxEdges) };
+    }
+    // Barnes-Wall lattice BW16: x ∈ Z^16 with x mod 2 in the Reed-Muller code RM(1,4) and Σx ≡ 0 (mod 4).
+    // Minimal vectors (norm 8): (±2,±2,0^14), 480 of them, and ±1 on a weight-8 codeword with an even
+    // number of minus signs, 3840 of them.
+    function barnesWallMinimal() {
+      const out = [];
+      for (let i = 0; i < 16; i++) for (let j = i + 1; j < 16; j++) for (const si of [2, -2]) for (const sj of [2, -2]) {
+        const v = new Array(16).fill(0); v[i] = si; v[j] = sj; out.push(v);
+      }
+      for (let a = 1; a < 16; a++) for (const b of [0, 1]) {
+        const support = [];
+        for (let x = 0; x < 16; x++) { let f = b; for (let k = 0; k < 4; k++) f ^= (a >> k & 1) & (x >> k & 1); if (f) support.push(x); }
+        for (let m = 0; m < 256; m++) {
+          let minus = 0; for (let k = 0; k < 8; k++) minus += m >> k & 1;
+          if (minus % 2) continue;
+          const v = new Array(16).fill(0); support.forEach((x, k) => { v[x] = (m >> k & 1) ? -1 : 1; }); out.push(v);
+        }
+      }
+      return out;
+    }
+    // Coxeter-Todd lattice K12 as Eisenstein 6-vectors x with all x_i congruent mod θ = √-3 and Σx ≡ 0 (mod 3).
+    // Minimal vectors (norm 6): θ(u e_i + v e_j) with v ≡ -u (mod θ), 270 of them, and ±(ω^a1, ..., ω^a6)
+    // with Σ ω^ai ≡ 0 (mod 3), 486 of them. Each Eisenstein coordinate a + bω is drawn as (a - b/2, b√3/2).
+    function coxeterToddMinimal() {
+      const w = [[1, 0], [-0.5, Math.sqrt(3) / 2], [-0.5, -Math.sqrt(3) / 2]];          // 1, ω, ω²
+      const mul = (p, q) => [p[0] * q[0] - p[1] * q[1], p[0] * q[1] + p[1] * q[0]];
+      const theta = [0, Math.sqrt(3)];
+      const out = [], vec = cs => out.push(cs.flat());
+      for (let i = 0; i < 6; i++) for (let j = i + 1; j < 6; j++)
+        for (const s of [1, -1]) for (let a = 0; a < 3; a++) for (let b = 0; b < 3; b++) {
+          const v = Array.from({ length: 6 }, () => [0, 0]);
+          v[i] = mul(theta, w[a].map(x => s * x)); v[j] = mul(theta, w[b].map(x => -s * x));
+          vec(v);
+        }
+      for (let m = 0; m < 729; m++) {
+        const e = [0, 1, 2, 3, 4, 5].map(k => Math.floor(m / 3 ** k) % 3);
+        const n = [0, 1, 2].map(r => e.filter(x => x === r).length);
+        if ((n[0] - n[1]) % 3 || (n[1] - n[2]) % 3) continue;
+        for (const s of [1, -1]) vec(e.map(a => w[a].map(x => s * x)));
+      }
+      return out;
+    }
+
+    // ---- quasicrystals ----------------------------------------------------------------
+
+    // Points are stored as [parallel..., perpendicular...]: the perspective projection drops the
+    // perpendicular (internal-space) coordinates first, leaving the quasicrystal in physical space.
+
+    // Elser-Sloane: the icosian ring (E8) cut down to 4D. A unit icosian has coordinates (a + bφ)/2; the
+    // Galois conjugate φ -> 1 - φ gives its internal-space image. Points are reached from the origin by
+    // unit-icosian steps, kept while |x| ≤ 2 and the internal image lies in a ball of radius 1; edges are
+    // the unit-icosian steps between kept points.
+    function elserSloane(rPar = 2, rPerp = 1) {
+      const U = [];
+      for (let i = 0; i < 4; i++) for (const s of [1, -1]) { const p = [[0, 0], [0, 0], [0, 0], [0, 0]]; p[i] = [2 * s, 0]; U.push(p); }
+      for (let m = 0; m < 16; m++) U.push([0, 1, 2, 3].map(k => [(m >> k & 1) ? -1 : 1, 0]));
+      const base = [[0, 1], [1, 0], [-1, 1], [0, 0]];                    // φ, 1, 1/φ, 0 (each over 2)
+      for (const perm of evenPermutations4()) for (let m = 0; m < 8; m++) {
+        let bit = 0;
+        U.push(perm.map(k => { const c = base[k]; if (k === 3) return [0, 0]; const s = (m >> bit++ & 1) ? -1 : 1; return [s * c[0], s * c[1]]; }));
+      }
+      const par = x => x.map(([a, b]) => (a + b * PHI) / 2), perp = x => x.map(([a, b]) => (a + b * (1 - PHI)) / 2);
+      const key = x => x.map(c => c.join(':')).join(',');
+      const seen = new Map(), pts = [[[0, 0], [0, 0], [0, 0], [0, 0]]]; seen.set(key(pts[0]), 0);
+      for (let q = 0; q < pts.length; q++) for (const u of U) {
+        const y = pts[q].map((c, k) => [c[0] + u[k][0], c[1] + u[k][1]]), k = key(y);
+        if (seen.has(k) || Math.hypot(...par(y)) > rPar + 1e-9 || Math.hypot(...perp(y)) > rPerp + 1e-9) continue;
+        seen.set(k, pts.length); pts.push(y);
+      }
+      const edges = [];
+      pts.forEach((x, i) => { for (const u of U) { const j = seen.get(key(x.map((c, k) => [c[0] + u[k][0], c[1] + u[k][1]]))); if (j > i) edges.push([i, j]); } });
+      return { verts: scaleTo(pts.map(x => [...par(x), ...perp(x).map(c => c * 0.5)]), 1.2), edges };
+    }
+
+    // Icosahedral quasicrystal: Z^6 cut down to 3D. The six basis vectors go to the six icosahedral axes
+    // in physical space and to the Galois-conjugate axes in internal space; a lattice point is kept when
+    // its internal image falls in the window (the rhombic triacontahedron the unit 6-cube projects to) and
+    // |x| ≤ rPar. Edges are the lattice's unit steps, which project to the six icosahedral directions.
+    function icosahedralQuasicrystal(rPar = 2.6) {
+      const ax = (a, b) => { const v = [[0, a, b], [0, -a, b], [a, b, 0], [-a, b, 0], [b, 0, a], [b, 0, -a]]; return v.map(x => { const m = Math.hypot(...x); return x.map(c => c / m); }); };
+      const gPar = ax(1, PHI), gPerp = ax(1, -1 / PHI);
+      const cross = (u, v) => [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]];
+      const dot3 = (u, v) => u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
+      const faces = [];
+      for (let i = 0; i < 6; i++) for (let j = i + 1; j < 6; j++) {
+        const nrm = cross(gPerp[i], gPerp[j]);
+        faces.push([nrm, gPerp.reduce((s, g) => s + Math.abs(dot3(nrm, g)), 0) / 2]);
+      }
+      const shift = [0.0123, -0.0217, 0.0311];
+      const inWindow = y => faces.every(([nrm, h]) => Math.abs(dot3(nrm, y.map((c, k) => c - shift[k]))) <= h);
+      const proj = (n, g) => [0, 1, 2].map(c => n.reduce((s, x, i) => s + x * g[i][c], 0));
+      const R = 3, pts = [], index = new Map();
+      const n = new Array(6).fill(-R);
+      for (;;) {
+        const p = proj(n, gPar), q = proj(n, gPerp);
+        if (Math.hypot(...p) <= rPar && inWindow(q)) { index.set(n.join(','), pts.length); pts.push([...p, ...q.map(c => c * 0.5)]); }
+        let k = 0; while (k < 6 && n[k] === R) n[k++] = -R;
+        if (k === 6) break; n[k]++;
+      }
+      const edges = [];
+      for (const [k, i] of index) {
+        const m = k.split(',').map(Number);
+        for (let d = 0; d < 6; d++) { const s = m.slice(); s[d]++; const j = index.get(s.join(',')); if (j !== undefined) edges.push([i, j]); }
+      }
+      return { verts: scaleTo(pts, 1.2), edges };
+    }
+
+    // ---- higher Hopf fibrations ---------------------------------------------------------
+
+    // Cayley-Dickson product on 2^k components: quaternions at length 4, octonions at length 8.
+    function cdMul(a, b) {
+      const n = a.length; if (n === 1) return [a[0] * b[0]];
+      const h = n / 2, conj = x => x.map((c, i) => i ? -c : c);
+      const a1 = a.slice(0, h), a2 = a.slice(h), b1 = b.slice(0, h), b2 = b.slice(h);
+      const sub = (x, y) => x.map((c, i) => c - y[i]), add = (x, y) => x.map((c, i) => c + y[i]);
+      return [...sub(cdMul(a1, b1), cdMul(conj(b2), a2)), ...add(cdMul(b2, a1), cdMul(a2, conj(b1)))];
+    }
+    // S^(2n-1) -> S^n for n = 4 (quaternions) or 8 (octonions). The fibre over m is {(m·y, y)/√(1+|m|²) : |y| = 1},
+    // a round (n-1)-sphere because left multiplication is linear; each is drawn as three of its great circles.
+    function hopfHigher(n, fibers = 9, seg = 28) {
+      const verts = [], edges = [];
+      for (let f = 0; f < fibers; f++) {
+        const r = Math.tan(Math.PI * (f + 0.5) / (2 * fibers)), m = new Array(n).fill(0);
+        const a = 2 * Math.PI * f / fibers;
+        m[0] = r * Math.cos(a); m[1 + f % (n - 1)] = r * Math.sin(a);
+        const k = 1 / Math.sqrt(1 + r * r);
+        for (const dir of [1, 2, n - 1]) {
+          const start = verts.length;
+          for (let s = 0; s < seg; s++) {
+            const t = 2 * Math.PI * s / seg, y = new Array(n).fill(0);
+            y[0] = Math.cos(t); y[dir] = Math.sin(t);
+            verts.push([...cdMul(m, y), ...y].map(c => c * k));
+            edges.push([start + s, start + (s + 1) % seg]);
+          }
+        }
+      }
+      return { verts, edges };
+    }
+
+    // ---- 4D topology ------------------------------------------------------------------------
+
+    // Artin spinning: a knotted arc in the half-space r ≥ 0 with both ends on r = 0, swept round the
+    // boundary plane, (x, y, r) -> (x, y, r cos s, r sin s), is a knotted 2-sphere in 4-space. Drawn as copies
+    // of the arc at `copies` spin angles plus the circles traced by every fourth arc point.
+    function spunKnot(curve, copies = 10, seg = 120) {
+      const pts = [];
+      for (let i = 0; i < seg; i++) pts.push(curve(2 * Math.PI * i / seg));
+      let lo = 0; pts.forEach((p, i) => { if (p[0] < pts[lo][0]) lo = i; });
+      const off = 0.25 - pts[lo][0];
+      const arc = [];
+      for (let i = 1; i < seg; i++) { const p = pts[(lo + i) % seg]; arc.push([p[1], p[2], p[0] + off]); }
+      arc.unshift([arc[0][0], arc[0][1], 0]); arc.push([arc[arc.length - 1][0], arc[arc.length - 1][1], 0]);
+      const verts = [], edges = [];
+      for (let c = 0; c < copies; c++) {
+        const s = 2 * Math.PI * c / copies, start = verts.length;
+        arc.forEach(([x, y, r]) => verts.push([x, y, r * Math.cos(s), r * Math.sin(s)].map(v => v * 0.3)));
+        for (let i = 0; i + 1 < arc.length; i++) edges.push([start + i, start + i + 1]);
+      }
+      for (let i = 2; i < arc.length - 2; i += 4)
+        for (let c = 0; c < copies; c++) edges.push([c * arc.length + i, ((c + 1) % copies) * arc.length + i]);
+      return { verts, edges };
+    }
+    const trefoilCurve = t => [Math.sin(t) + 2 * Math.sin(2 * t), Math.cos(t) - 2 * Math.cos(2 * t), -Math.sin(3 * t)];
+    const figureEightCurve = t => [(2 + Math.cos(2 * t)) * Math.cos(3 * t), (2 + Math.cos(2 * t)) * Math.sin(3 * t), Math.sin(4 * t)];
+
+    // Milnor fibre of z² - w³ on S³: the trefoil's Seifert surface F = {(z, w) ∈ S³ : z² - w³ > 0}. Over a
+    // polar grid of w, |z|² = 1 - |w|², and z² = w³ + s for the real s > 0 that puts z² on the circle of
+    // radius |z|²; the two roots s± and the two square roots of z² give four sheets. Grid points where no
+    // such s exists are NaN (dropped by geometry()). The trefoil itself (z² = w³) is the boundary curve.
+    function trefoilSeifert(nr = 14, nb = 48) {
+      const verts = [], edges = [];
+      for (const root of [1, -1]) for (const half of [0, Math.PI]) {
+        const id = (i, j) => start + i * nb + j, start = verts.length;
+        for (let i = 0; i < nr; i++) for (let j = 0; j < nb; j++) {
+          const r = 0.02 + 0.96 * i / (nr - 1), b = 2 * Math.PI * j / nb;
+          const A = 1 - r * r, cr = r ** 3 * Math.cos(3 * b), ci = r ** 3 * Math.sin(3 * b), disc = A * A - ci * ci;
+          const s = disc >= 0 ? -cr + root * Math.sqrt(disc) : NaN;
+          if (!(s > 0)) { verts.push([NaN, NaN, NaN, NaN]); continue; }
+          const ang = root > 0 ? Math.atan2(ci, cr + s) : Math.atan2(-ci, -(cr + s)) + Math.PI;
+          const al = ang / 2 + half, zr = Math.sqrt(A);
+          verts.push([zr * Math.cos(al), zr * Math.sin(al), r * Math.cos(b), r * Math.sin(b)]);
+        }
+        for (let i = 0; i < nr; i++) for (let j = 0; j < nb; j++) {
+          if (i + 1 < nr) edges.push([id(i, j), id(i + 1, j)]);
+          edges.push([id(i, j), id(i, (j + 1) % nb)]);
+        }
+      }
+      let r0 = 0.75; for (let k = 0; k < 40; k++) r0 -= (r0 * r0 + r0 ** 3 - 1) / (2 * r0 + 3 * r0 * r0);
+      const start = verts.length, n = 96;
+      for (let i = 0; i < n; i++) {
+        const t = 2 * Math.PI * i / n, zr = Math.sqrt(1 - r0 * r0);
+        verts.push([zr * Math.cos(3 * t), zr * Math.sin(3 * t), r0 * Math.cos(2 * t), r0 * Math.sin(2 * t)]);
+        edges.push([start + i, start + (i + 1) % n]);
+      }
+      // a jump between branches would draw a chord across the figure: keep only short grid edges
+      return { verts, edges: edges.filter(([a, b]) => !(dist2(verts[a], verts[b]) > 0.09)) };
+    }
+
+    // RP² embedded in 4-space by (x, y, z) on S² -> (yz, xz, xy, (x² - y²)/2), a projection of the Veronese
+    // surface. Dropping the fourth coordinate gives Steiner's Roman surface with its triple point.
+    function romanSurface(u = 20, vv = 32) {
+      const verts = [], edges = [], id = (i, j) => i * vv + j;
+      for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
+        const th = Math.PI * (i + 0.5) / u, ph = 2 * Math.PI * j / vv;
+        const x = Math.sin(th) * Math.cos(ph), y = Math.sin(th) * Math.sin(ph), z = Math.cos(th);
+        verts.push([y * z * 2, x * z * 2, x * y * 2, (x * x - y * y)]);
+      }
+      for (let i = 0; i < u; i++) for (let j = 0; j < vv; j++) {
+        if (i + 1 < u) edges.push([id(i, j), id(i + 1, j)]);
+        edges.push([id(i, j), id(i, (j + 1) % vv)]);
+      }
+      return { verts, edges };
+    }
+
+    // CP² embedded in 8-space as the rank-one projectors z z*/|z|² (trace-free part of a 3x3 Hermitian
+    // matrix). Drawn through its toric picture: over points of the moment triangle (|z0|², |z1|², |z2|²) the
+    // fibre is a torus (two circles of phase), collapsing to circles on the edges and points at the corners.
+    function cp2(steps = 5, seg = 24) {
+      const verts = [], edges = [];
+      const embed = (p, a1, a2) => {
+        const z = [[Math.sqrt(p[0]), 0], [Math.sqrt(p[1]) * Math.cos(a1), Math.sqrt(p[1]) * Math.sin(a1)], [Math.sqrt(p[2]) * Math.cos(a2), Math.sqrt(p[2]) * Math.sin(a2)]];
+        const off = (i, j) => [z[i][0] * z[j][0] + z[i][1] * z[j][1], z[i][1] * z[j][0] - z[i][0] * z[j][1]];
+        return [(p[0] - p[1]) / Math.SQRT2, (p[0] + p[1] - 2 * p[2]) / Math.sqrt(6), ...off(0, 1), ...off(0, 2), ...off(1, 2)].map(c => c * Math.SQRT2);
+      };
+      const circle = f => { const start = verts.length; for (let s = 0; s < seg; s++) { verts.push(f(2 * Math.PI * s / seg)); edges.push([start + s, start + (s + 1) % seg]); } };
+      for (let i = 0; i <= steps; i++) for (let j = 0; i + j <= steps; j++) {
+        const p = [i / steps, j / steps, (steps - i - j) / steps];
+        if (p[1] > 0) circle(a => embed(p, a, 0));
+        if (p[2] > 0) circle(a => embed(p, 0, a));
+        if (p[1] > 0 && p[2] > 0) circle(a => embed(p, a, a));
+      }
+      return { verts, edges };
+    }
+
+    // ---- honeycombs, products and spheres --------------------------------------------------
+
+    // Finite cluster of a periodic tiling: the tiling's vertices within `radius` of the origin, edges at the
+    // tiling's edge length.
+    function cluster(points, radius) {
+      const verts = points.filter(p => Math.hypot(...p) <= radius + 1e-9);
+      return { verts: scaleTo(verts, 1.2), edges: edgesByShortest(verts) };
+    }
+    function latticeBox(R, keep) {
+      const out = [], n = [-R, -R, -R, -R];
+      for (;;) {
+        if (keep(n)) out.push(n.slice());
+        let k = 0; while (k < 4 && n[k] === R) n[k++] = -R;
+        if (k === 4) return out; n[k]++;
+      }
+    }
+    // {4,3,3,4}: a 2x2x2x2 block of tesseracts (the integer points of [-1,1]^4).
+    const tesseractHoneycomb = () => { const verts = latticeBox(1, () => true); return { verts, edges: edgesByShortest(verts) }; };
+    // {3,3,4,3}: the D4 lattice (integer points with even sum); every vertex has the 24-cell as vertex figure.
+    const cell16Honeycomb = () => cluster(latticeBox(2, n => (n[0] + n[1] + n[2] + n[3]) % 2 === 0), Math.sqrt(6));
+    // {3,4,3,3}: the deep holes of D4, Z^4 with odd sum plus (Z + ½)^4, edge 1; a 24-cell around the origin
+    // and its neighbours.
+    const cell24Honeycomb = () => {
+      const odd = latticeBox(2, n => Math.abs(n[0] + n[1] + n[2] + n[3]) % 2 === 1);
+      const half = latticeBox(2, n => n.every(x => x < 2)).map(n => n.map(x => x + 0.5));
+      return cluster([...odd, ...half], 1.75);
+    };
+
+    // Product of regular polygons {n1}×{n2}×...: one vertex per choice of a corner from each.
+    function polyprism(...ns) {
+      const verts = [], edges = [];
+      const total = ns.reduce((a, b) => a * b, 1), digits = i => ns.map((n, k) => Math.floor(i / ns.slice(0, k).reduce((a, b) => a * b, 1)) % n);
+      const index = d => d.reduce((s, x, k) => s + x * ns.slice(0, k).reduce((a, b) => a * b, 1), 0);
+      for (let i = 0; i < total; i++) verts.push(digits(i).flatMap((x, k) => { const a = 2 * Math.PI * x / ns[k]; return [Math.cos(a), Math.sin(a)]; }));
+      for (let i = 0; i < total; i++) { const d = digits(i); ns.forEach((n, k) => { const e = d.slice(); e[k] = (e[k] + 1) % n; edges.push([i, index(e)]); }); }
+      return { verts, edges };
+    }
+
+    // S^(n-1) in n-space as a net of round circles: ring r lies at height cos(φ) on the last axis, in a plane
+    // spanned by (cos ψ, 0, sin ψ, 0, ...) and (0, cos ψ, 0, sin ψ, ...) that turns with r through the other axes.
+    function sphereNet(n, rings = 7, seg = 28) {
+      const verts = [], edges = [];
+      for (let r = 0; r < rings; r++) {
+        const phi = Math.PI * (r + 0.5) / rings, c = Math.sin(phi), s = Math.cos(phi), start = verts.length;
+        const psi = Math.PI * r / rings, cp = Math.cos(psi), sp = Math.sin(psi);
+        for (let i = 0; i < seg; i++) {
+          const th = 2 * Math.PI * i / seg, v = new Array(n).fill(0);
+          v[0] = c * cp * Math.cos(th); v[2] = c * sp * Math.cos(th);
+          v[1] = c * cp * Math.sin(th); v[3] = c * sp * Math.sin(th);
+          v[n - 1] = s;
+          verts.push(v); edges.push([start + i, start + (i + 1) % seg]);
+        }
+      }
+      return { verts, edges };
     }
 
     // ---- projection -------------------------------------------------------------
@@ -700,7 +1146,7 @@
     // =====================================================================================
     // The exhibits (from the Hyperspace page). Each entry is data: a stable id, the geometry
     // generator, the rotation planes [i, j, speed rad/s, offset], the plaque facts, a blurb, the
-    // article (HTML) and its references. Declaration order is the gallery order (10 x 10 hall).
+    // article (HTML) and its references. Declaration order is the gallery order, ten to a row.
     // =====================================================================================
 
     const R = {
@@ -730,18 +1176,35 @@
       clifford: `Clifford, W. K. (1873). Preliminary sketch of biquaternions. <i>Proceedings of the London Mathematical Society, s1-4</i>(1), 381–395. <a href="https://doi.org/10.1112/plms/s1-4.1.381" target="_blank" rel="noopener">https://doi.org/10.1112/plms/s1-4.1.381</a>`,
       villarceau: `Villarceau, Y. (1848). Théorème sur le tore. <i>Nouvelles Annales de Mathématiques, 7</i>, 345–347.`,
       klein: `Klein, F. (1882). <i>Über Riemann's Theorie der algebraischen Funktionen und ihrer Integrale</i>. B. G. Teubner.`,
+      hess: `Hess, E. (1883). <i>Einleitung in die Lehre von der Kugelteilung mit besonderer Berücksichtigung ihrer Anwendung auf die Theorie der gleichflächigen und der gleicheckigen Polyeder</i>. B. G. Teubner.`,
+      conwayguy: `Conway, J. H., & Guy, M. J. T. (1967). Four-dimensional Archimedean polytopes. In <i>Proceedings of the Colloquium on Convexity, Copenhagen 1965</i> (pp. 38–39). Københavns Universitets Matematiske Institut.`,
+      barneswall: `Barnes, E. S., & Wall, G. E. (1959). Some extreme forms defined in terms of Abelian groups. <i>Journal of the Australian Mathematical Society, 1</i>(1), 47–63.`,
+      coxetertodd: `Coxeter, H. S. M., & Todd, J. A. (1953). An extreme duodenary form. <i>Canadian Journal of Mathematics, 5</i>, 384–392. <a href="https://doi.org/10.4153/CJM-1953-043-4" target="_blank" rel="noopener">https://doi.org/10.4153/CJM-1953-043-4</a>`,
+      elsersloane: `Elser, V., & Sloane, N. J. A. (1987). A highly symmetric four-dimensional quasicrystal. <i>Journal of Physics A: Mathematical and General, 20</i>(18), 6161–6168. <a href="https://doi.org/10.1088/0305-4470/20/18/018" target="_blank" rel="noopener">https://doi.org/10.1088/0305-4470/20/18/018</a>`,
+      levine: `Levine, D., & Steinhardt, P. J. (1984). Quasicrystals: A new class of ordered structures. <i>Physical Review Letters, 53</i>(26), 2477–2480. <a href="https://doi.org/10.1103/PhysRevLett.53.2477" target="_blank" rel="noopener">https://doi.org/10.1103/PhysRevLett.53.2477</a>`,
+      adams: `Adams, J. F. (1960). On the non-existence of elements of Hopf invariant one. <i>Annals of Mathematics, 72</i>(1), 20–104. <a href="https://doi.org/10.2307/1970147" target="_blank" rel="noopener">https://doi.org/10.2307/1970147</a>`,
+      artin: `Artin, E. (1925). Zur Isotopie zweidimensionaler Flächen im R₄. <i>Abhandlungen aus dem Mathematischen Seminar der Universität Hamburg, 4</i>, 174–177.`,
+      seifert: `Seifert, H. (1935). Über das Geschlecht von Knoten. <i>Mathematische Annalen, 110</i>, 571–592. <a href="https://doi.org/10.1007/BF01448044" target="_blank" rel="noopener">https://doi.org/10.1007/BF01448044</a>`,
+      milnorsing: `Milnor, J. (1968). <i>Singular points of complex hypersurfaces</i>. Princeton University Press.`,
+      apery: `Apéry, F. (1987). <i>Models of the real projective plane</i>. Vieweg.`,
+      atiyah: `Atiyah, M. F. (1982). Convexity and commuting Hamiltonians. <i>Bulletin of the London Mathematical Society, 14</i>(1), 1–15. <a href="https://doi.org/10.1112/blms/14.1.1" target="_blank" rel="noopener">https://doi.org/10.1112/blms/14.1.1</a>`,
     };
 
-    const C = {  // category palette
-      reg:   '#A78BFA', // regular 4-polytopes
-      unif:  '#60A5FA', // uniform polytopes
-      five:  '#34D399', // 5-cube family
-      ncube: '#2DD4BF', // n-cube / simplex
-      curve: '#F472B6', // curved manifolds
-      duo:   '#FCD34D', // duoprisms
-      rot:   '#FB923C', // rotations
-      phys:  '#86EFAC', // spacetime / lattices
-      prism: '#FB7185', // 5D prisms & products
+    // Category palette, solved as one set of 11 against the gallery floor (#06061A): every pair is at
+    // least 15 OKLab ΔE apart for normal vision and 8 under simulated protanopia and deuteranopia, every
+    // colour sits in OKLCH L 0.48–0.67 with chroma ≥ 0.10 and at least 3:1 contrast with the floor.
+    const C = {
+      reg:   '#9E75FB', // regular 4-polytopes
+      unif:  '#298BC2', // uniform polytopes
+      five:  '#4DAA7E', // 5-cube family
+      ncube: '#147A57', // n-cube / simplex
+      curve: '#F133C7', // curved manifolds
+      duo:   '#915A01', // duoprisms
+      rot:   '#D67924', // rotations
+      phys:  '#A46490', // spacetime / lattices
+      prism: '#E40C4D', // 5D prisms & products
+      star:  '#1E52FE', // regular star polychora
+      comb:  '#A815CC', // honeycombs
     };
 
     // small helper to keep entries compact
@@ -1815,13 +2278,604 @@
    lattice in a higher-dimensional space — here, an 8-cube lattice projected down to the plane.</p>`,
       refs:['penrose', 'shechtman'] },
 
+    // ===== ROW 11 — Ten-dimensional regulars, 5-cell truncations, antiprismatic prisms =====
+    { id:'10-cube', name:'10-cube', tag:'Regular 10-polytope', schlafli:'{4,3⁸}', family:'ncube', dim:10,
+      gen:()=>nCube(10), rot:[P(0,9,.26),P(1,8,.18),P(2,7,.12),P(3,6,.08)],
+      facts:{Vertices:1024, Edges:5120, '9-faces':'20 9-cubes', Dimension:'10D'},
+      blurb:'The ten-dimensional hypercube: 1024 corners, 5120 edges.',
+      article:`<p>The <b>10-cube</b> (dekeract) continues the doubling pattern of the hypercubes: 2¹⁰ = 1024 vertices
+   at every combination of ±1 in ten coordinates, and 10·2⁹ = 5120 edges joining vertices that differ in one
+   coordinate. Its boundary is twenty 9-cubes, two for each axis.</p>
+   <p>Every vertex has ten edges, one per direction, and the long diagonal is √10 times the edge. What you see
+   is the shadow left after seven successive perspective projections, each one folding a dimension away.</p>`,
+      refs:['coxeter', 'manning'] },
+
+    { id:'10-simplex', name:'10-simplex', tag:'Regular 10-polytope', schlafli:'{3⁹}', family:'ncube', dim:10,
+      gen:()=>nSimplex(10), rot:[P(0,9,.28),P(1,8,.2),P(2,7,.12)],
+      facts:{Vertices:11, Edges:55, '9-faces':'11 9-simplices', Dimension:'10D'},
+      blurb:'Eleven points, every pair joined, the simplest 10D solid.',
+      article:`<p>The <b>10-simplex</b> (decayotton) is the minimal polytope of ten dimensions: eleven mutually
+   equidistant vertices with every pair joined, 55 edges in all. Remove any one vertex and the other ten span
+   a 9-simplex, so its boundary is eleven of those.</p>
+   <p>An n-simplex has n + 1 vertices and C(n+1, k+1) faces of dimension k, so its face counts are a row of
+   Pascal's triangle. It is self-dual, like every simplex.</p>`,
+      refs:['coxeter', 'schlafli'] },
+
+    { id:'8-orthoplex', name:'8-orthoplex', tag:'Regular 8-polytope', schlafli:'{3⁶,4}', family:'ncube', dim:8,
+      gen:()=>nOrthoplex(8), rot:[P(0,7,.3),P(1,6,.22),P(2,5,.14)],
+      facts:{Vertices:16, Edges:112, '7-faces':'256 7-simplices', Dimension:'8D'},
+      blurb:'The eight-dimensional cross-polytope, dual of the 8-cube.',
+      article:`<p>The <b>8-orthoplex</b> (octacross) puts a vertex at ±1 on each of eight axes. Every vertex is joined
+   to every other except its opposite, giving 112 edges, and its boundary is 2⁸ = 256 seven-dimensional
+   simplices, one in each orthant.</p>
+   <p>It is the dual of the 8-cube: the cube's 16 facets become the orthoplex's 16 vertices, and the cube's 256
+   vertices become its 256 facets.</p>`,
+      refs:['coxeter', 'schlafli'] },
+
+    { id:'9-orthoplex', name:'9-orthoplex', tag:'Regular 9-polytope', schlafli:'{3⁷,4}', family:'ncube', dim:9,
+      gen:()=>nOrthoplex(9), rot:[P(0,8,.28),P(1,7,.2),P(2,6,.13)],
+      facts:{Vertices:18, Edges:144, '8-faces':'512 8-simplices', Dimension:'9D'},
+      blurb:'Eighteen vertices on nine axes, almost every pair joined.',
+      article:`<p>The <b>9-orthoplex</b> (enneacross) has eighteen vertices, ±1 on nine axes. Each is joined to the
+   sixteen that are not its antipode, for 144 edges, and 2⁹ = 512 eight-dimensional simplices make up its
+   boundary.</p>
+   <p>Orthoplexes grow slowly, 2n vertices in n dimensions, while their duals, the hypercubes, grow
+   exponentially. That contrast is what makes the cross-polytope the unit ball of the taxicab norm.</p>`,
+      refs:['coxeter', 'schlafli'] },
+
+    { id:'bitruncated-5-cell', name:'Bitruncated 5-cell', tag:'Uniform 4-polytope', schlafli:'t₁,₂{3,3,3}', family:'unif', dim:4,
+      gen:()=>wythoff(4,A4,ring(4,1,2)), rot:[P(0,3,.42),P(1,2,.28)],
+      facts:{Cells:'10 truncated tetrahedra', Vertices:30, Edges:60, Faces:'20 triangles + 20 hexagons'},
+      blurb:'Ten truncated tetrahedra, the 5-cell cut halfway to its dual.',
+      article:`<p>The <b>bitruncated 5-cell</b> (decachoron) is truncated so deeply that the 5-cell and its dual
+   meet in the middle. All ten cells are truncated tetrahedra, five from the original cells and five from the
+   original vertices, and it is cell-transitive: every cell is like every other.</p>
+   <p>The frame drawn here is the true one, built by Wythoff's construction: a point is reflected through the
+   four mirrors of the 5-cell's symmetry group until it has visited all 30 positions.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'cantitruncated-5-cell', name:'Cantitruncated 5-cell', tag:'Uniform 4-polytope', schlafli:'t₀,₁,₂{3,3,3}', family:'unif', dim:4,
+      gen:()=>wythoff(4,A4,ring(4,0,1,2)), rot:[P(0,3,.38),P(1,3,.26)],
+      facts:{Cells:'5 truncated octahedra + 10 triangular prisms + 5 truncated tetrahedra', Vertices:60, Edges:120},
+      blurb:'Truncated and bevelled: three mirrors active at once.',
+      article:`<p>The <b>cantitruncated 5-cell</b> rings three of the four nodes of the 5-cell's Coxeter diagram:
+   vertices and edges are both cut back, and the truncation is deep enough that the original cells become
+   truncated octahedra. Sixty vertices, each meeting four edges.</p>
+   <p>In three dimensions the same operation turns a cube into a truncated cuboctahedron.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'runcitruncated-5-cell', name:'Runcitruncated 5-cell', tag:'Uniform 4-polytope', schlafli:'t₀,₁,₃{3,3,3}', family:'unif', dim:4,
+      gen:()=>wythoff(4,A4,ring(4,0,1,3)), rot:[P(0,3,.36),P(1,2,.26),P(2,3,.14)],
+      facts:{Cells:'5 truncated tetrahedra + 5 cuboctahedra + 10 triangular prisms + 10 hexagonal prisms', Vertices:60, Edges:150},
+      blurb:'Truncation combined with the purely four-dimensional runcination.',
+      article:`<p>The <b>runcitruncated 5-cell</b> combines truncation with runcination, the expansion that pulls
+   the cells of a 4-polytope apart. Thirty cells of four kinds fill the gaps, and every vertex meets five
+   edges.</p>
+   <p>Runcination has no analogue in three dimensions, so the shapes it produces are the first genuinely
+   four-dimensional members of the Wythoff family.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'omnitruncated-5-cell', name:'Omnitruncated 5-cell', tag:'Uniform 4-polytope', schlafli:'t₀,₁,₂,₃{3,3,3}', family:'unif', dim:4,
+      gen:()=>wythoff(4,A4,ring(4,0,1,2,3)), rot:[P(0,3,.34),P(1,2,.24),P(2,3,.14)],
+      facts:{Cells:'10 truncated octahedra + 20 hexagonal prisms', Vertices:120, Edges:240},
+      blurb:'Every mirror active: the permutohedron of five elements.',
+      article:`<p>The <b>omnitruncated 5-cell</b> rings every node of the diagram, so it has one vertex for each of the
+   120 elements of the 5-cell's symmetry group. Its vertices are the permutations of (0, 1, 2, 3, 4): it is the
+   4D permutohedron, and its edges swap two adjacent values.</p>
+   <p>It tiles 4-space by translation alone, the four-dimensional analogue of the truncated octahedron filling
+   3-space.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'square-antiprismatic-prism', name:'Square antiprismatic prism', tag:'Uniform prism', schlafli:'s{2,8}×{ }', family:'unif', dim:4,
+      gen:()=>prism4D(antiprism3D(4)), rot:[P(0,3,.42),P(1,2,.3)],
+      facts:{Cells:'2 square antiprisms + 2 cubes + 8 triangular prisms', Vertices:16, Edges:40},
+      blurb:'A square antiprism extruded along a fourth axis.',
+      article:`<p>The <b>square antiprismatic prism</b> extrudes a square antiprism, two squares twisted 45° and
+   joined by a band of triangles, into the fourth dimension. Its cells are the two antiprisms at the ends, two
+   cubes and eight triangular prisms around the sides.</p>
+   <p>It belongs to an infinite family, one for every antiprism, which together with the duoprisms are the only
+   infinite families of convex uniform 4-polytopes.</p>`,
+      refs:['coxeter', 'conwayguy'] },
+
+    { id:'pentagonal-antiprismatic-prism', name:'Pentagonal antiprismatic prism', tag:'Uniform prism', schlafli:'s{2,10}×{ }', family:'unif', dim:4,
+      gen:()=>prism4D(antiprism3D(5)), rot:[P(0,3,.4),P(1,2,.28)],
+      facts:{Cells:'2 pentagonal antiprisms + 2 pentagonal prisms + 10 triangular prisms', Vertices:20, Edges:50},
+      blurb:'A pentagonal antiprism extruded into the fourth dimension.',
+      article:`<p>The <b>pentagonal antiprismatic prism</b> extrudes a pentagonal antiprism, the cap-less middle of an
+   icosahedron, along a fourth axis. Two antiprisms close the ends and twelve prisms join them.</p>
+   <p>The same antiprism, twenty of them stacked in rings, makes the walls of the grand antiprism elsewhere in
+   this hall.</p>`,
+      refs:['coxeter', 'conwayguy'] },
+
+    // ===== ROW 12 — Tesseract and 24-cell truncations, and the grand antiprism ============
+    { id:'bitruncated-tesseract', name:'Bitruncated tesseract', tag:'Uniform 4-polytope', schlafli:'t₁,₂{4,3,3}', family:'unif', dim:4,
+      gen:()=>wythoff(4,B4,ring(4,1,2)), rot:[P(0,3,.38),P(1,2,.26)],
+      facts:{Cells:'8 truncated octahedra + 16 truncated tetrahedra', Vertices:96, Edges:192},
+      blurb:'The tesseract truncated halfway to the 16-cell.',
+      article:`<p>The <b>bitruncated tesseract</b> (also the bitruncated 16-cell) sits exactly halfway between the
+   tesseract and its dual. The cubes have become truncated octahedra and the 16-cell's tetrahedra have become
+   truncated tetrahedra; 96 vertices in all.</p>
+   <p>Its vertices are the permutations of (0, ±1, ±2, ±2) up to scale.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'cantitruncated-tesseract', name:'Cantitruncated tesseract', tag:'Uniform 4-polytope', schlafli:'t₀,₁,₂{4,3,3}', family:'unif', dim:4,
+      gen:()=>wythoff(4,B4,ring(4,0,1,2)), rot:[P(0,3,.36),P(1,3,.24)],
+      facts:{Cells:'8 truncated cuboctahedra + 16 truncated tetrahedra + 32 triangular prisms', Vertices:192, Edges:384},
+      blurb:'Cubes become great rhombicuboctahedra.',
+      article:`<p>The <b>cantitruncated tesseract</b> rings the first three nodes of the tesseract's diagram. Each cube
+   becomes a truncated cuboctahedron, the largest Archimedean cell available, and 192 vertices result.</p>
+   <p>It keeps the full order-384 symmetry of the tesseract.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'runcitruncated-tesseract', name:'Runcitruncated tesseract', tag:'Uniform 4-polytope', schlafli:'t₀,₁,₃{4,3,3}', family:'unif', dim:4,
+      gen:()=>wythoff(4,B4,ring(4,0,1,3)), rot:[P(0,3,.34),P(1,2,.24),P(2,3,.16)],
+      facts:{Cells:'8 truncated cubes + 16 cuboctahedra + 24 octagonal prisms + 32 triangular prisms', Vertices:192, Edges:480},
+      blurb:'Truncated cubes pulled apart by octagonal prisms.',
+      article:`<p>The <b>runcitruncated tesseract</b> truncates the tesseract and runcinates it at once: the cubes become
+   truncated cubes and drift apart, and octagonal prisms fill the space between them. Every vertex meets five
+   edges.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'omnitruncated-tesseract', name:'Omnitruncated tesseract', tag:'Uniform 4-polytope', schlafli:'t₀,₁,₂,₃{4,3,3}', family:'unif', dim:4,
+      gen:()=>wythoff(4,B4,ring(4,0,1,2,3)), rot:[P(0,3,.32),P(1,2,.24),P(2,3,.14)],
+      facts:{Cells:'8 truncated cuboctahedra + 16 truncated octahedra + 24 octagonal prisms + 32 hexagonal prisms', Vertices:384, Edges:768},
+      blurb:'One vertex for every symmetry of the tesseract: 384.',
+      article:`<p>The <b>omnitruncated tesseract</b> rings all four nodes, so it has one vertex for each of the 384
+   symmetries of the tesseract. Its vertices are the permutations of (±1, ±(1+√2), ±(1+2√2), ±(1+3√2)).</p>
+   <p>It is the largest uniform polytope in the tesseract family.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'truncated-24-cell', name:'Truncated 24-cell', tag:'Uniform 4-polytope', schlafli:'t₀,₁{3,4,3}', family:'unif', dim:4,
+      gen:()=>wythoff(4,F4,ring(4,0,1)), rot:[P(0,3,.36),P(1,2,.26),P(2,3,.14)],
+      facts:{Cells:'24 cubes + 24 truncated octahedra', Vertices:192, Edges:384},
+      blurb:'The 24-cell with its corners cut off into cubes.',
+      article:`<p>The <b>truncated 24-cell</b> cuts each of the 24-cell's vertices, whose figure is a cube, so 24 new cubic
+   cells appear while the 24 octahedra become truncated octahedra. Its vertices are the permutations of
+   (0, ±1, ±2, ±3).</p>
+   <p>Every vertex is surrounded by the same cells as in the cantitruncated 16-cell: the two are the same
+   polytope, reached from two different symmetry groups.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'bitruncated-24-cell', name:'Bitruncated 24-cell', tag:'Uniform 4-polytope', schlafli:'t₁,₂{3,4,3}', family:'unif', dim:4,
+      gen:()=>wythoff(4,F4,ring(4,1,2)), rot:[P(0,3,.34),P(1,2,.26),P(2,3,.16)],
+      facts:{Cells:'48 truncated cubes', Vertices:288, Edges:576},
+      blurb:'Forty-eight identical truncated cubes, cell-transitive.',
+      article:`<p>The <b>bitruncated 24-cell</b> (tetracontoctachoron) truncates the self-dual 24-cell halfway to its
+   dual. Because the 24-cell is self-dual, the result has only one kind of cell: 48 truncated cubes, every one
+   alike.</p>
+   <p>With the bitruncated 5-cell it is one of only two non-regular convex uniform polychora that are
+   cell-transitive.</p>`,
+      refs:['coxeter', 'conway'] },
+
+    { id:'cantitruncated-24-cell', name:'Cantitruncated 24-cell', tag:'Uniform 4-polytope', schlafli:'t₀,₁,₂{3,4,3}', family:'unif', dim:4,
+      gen:()=>wythoff(4,F4,ring(4,0,1,2)), rot:[P(0,3,.32),P(1,2,.24),P(2,3,.14)],
+      facts:{Cells:'24 truncated cuboctahedra + 24 truncated cubes + 96 triangular prisms', Vertices:576, Edges:1152},
+      blurb:'Three of four mirrors active in the 24-cell family.',
+      article:`<p>The <b>cantitruncated 24-cell</b> truncates and bevels the 24-cell. Its 576 vertices carry the full F₄
+   symmetry of order 1152, each vertex image fixed by a single reflection.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'runcitruncated-24-cell', name:'Runcitruncated 24-cell', tag:'Uniform 4-polytope', schlafli:'t₀,₁,₃{3,4,3}', family:'unif', dim:4,
+      gen:()=>wythoff(4,F4,ring(4,0,1,3)), rot:[P(0,3,.32),P(1,2,.22),P(2,3,.14)],
+      facts:{Vertices:576, Edges:1440, Symmetry:'F₄, order 1152'},
+      blurb:'The 24-cell truncated and pulled apart along its cells.',
+      article:`<p>The <b>runcitruncated 24-cell</b> combines truncation with runcination in the 24-cell family: truncated
+   octahedra drift apart and prisms open between them. 576 vertices, five edges at each.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'omnitruncated-24-cell', name:'Omnitruncated 24-cell', tag:'Uniform 4-polytope', schlafli:'t₀,₁,₂,₃{3,4,3}', family:'unif', dim:4,
+      gen:()=>wythoff(4,F4,ring(4,0,1,2,3)), rot:[P(0,3,.3),P(1,2,.22),P(2,3,.12)],
+      facts:{Cells:'48 truncated cuboctahedra + 192 hexagonal prisms', Vertices:1152, Edges:2304},
+      blurb:'1152 vertices: one for each symmetry of the 24-cell.',
+      article:`<p>The <b>omnitruncated 24-cell</b> rings every node of the F₄ diagram, giving one vertex per symmetry of
+   the 24-cell: 1152 of them. Its 240 cells are truncated cuboctahedra and hexagonal prisms.</p>
+   <p>It is the largest uniform polytope with the 24-cell's symmetry.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'grand-antiprism', name:'Grand antiprism', tag:'Uniform 4-polytope', schlafli:'non-Wythoffian', family:'unif', dim:4,
+      gen:grandAntiprism, rot:[P(0,1,.3),P(2,3,.3),P(0,3,.12)],
+      facts:{Cells:'20 pentagonal antiprisms + 300 tetrahedra', Vertices:100, Edges:500, Faces:'20 pentagons + 700 triangles'},
+      blurb:'The one convex uniform 4-polytope Wythoff could not build.',
+      article:`<p>The <b>grand antiprism</b> was found by John Conway and Michael Guy in 1965 by computer search, the only
+   convex uniform 4-polytope that is neither a prism nor a product of a Wythoff construction. Take the 600-cell
+   and delete the twenty vertices on two completely orthogonal great decagons: what remains is 100 vertices and
+   500 edges.</p>
+   <p>Its twenty pentagonal antiprisms stack into two linked rings of ten, one around each missing decagon, with
+   300 tetrahedra filling the space between them.</p>`,
+      refs:['conwayguy', 'coxeter'] },
+
+    // ===== ROW 13 — The ten regular star polychora ======================================
+    { id:'icosahedral-120-cell', name:'Icosahedral 120-cell', tag:'Regular star polychoron', schlafli:'{3,5,5/2}', family:'star', dim:4,
+      gen:()=>starPolychoron('3',12,5,120,false), rot:[P(0,3,.34),P(1,2,.24)],
+      facts:{Cells:'120 icosahedra', Faces:'1200 triangles', Edges:720, Vertices:120},
+      blurb:'120 icosahedra, five around every edge, passing through one another.',
+      article:`<p>The <b>icosahedral 120-cell</b> (faceted 600-cell) is one of the ten regular star polychora described by
+   Schläfli and Hess. Its cells are 120 icosahedra, but five meet at each edge and they interpenetrate, so the
+   figure winds around its centre more than once.</p>
+   <p>All ten star polychora use the vertices of the 600-cell or the 120-cell. This one also keeps the
+   600-cell's 720 edges, so its wireframe is the 600-cell's; only its faces and cells differ.</p>`,
+      refs:['hess', 'coxeter'] },
+
+    { id:'small-stellated-120-cell', name:'Small stellated 120-cell', tag:'Regular star polychoron', schlafli:'{5/2,5,3}', family:'star', dim:4,
+      gen:()=>starPolychoron('5/2',20,3,120,false), rot:[P(0,3,.32),P(1,2,.24)],
+      facts:{Cells:'120 small stellated dodecahedra', Faces:'720 pentagrams', Edges:1200, Vertices:120},
+      blurb:'The 120-cell stellated: pentagram faces on 120 spiked cells.',
+      article:`<p>The <b>small stellated 120-cell</b> replaces each dodecahedral cell of the 120-cell with a small
+   stellated dodecahedron. Its 720 faces are pentagrams and its 1200 edges join each vertex to twenty
+   others.</p>
+   <p>It shares that edge arrangement with the great grand 120-cell: drawn as wireframes the two are
+   identical.</p>`,
+      refs:['hess', 'coxeter'] },
+
+    { id:'great-120-cell', name:'Great 120-cell', tag:'Regular star polychoron', schlafli:'{5,5/2,5}', family:'star', dim:4,
+      gen:()=>starPolychoron('5',12,5,120,true), rot:[P(0,1,.32),P(2,3,.22)],
+      facts:{Cells:'120 great dodecahedra', Faces:'720 pentagons', Edges:720, Vertices:120},
+      blurb:'Self-dual: great dodecahedra, five around every edge.',
+      article:`<p>The <b>great 120-cell</b> has 120 great dodecahedra for cells, meeting five at an edge. It is self-dual,
+   its Schläfli symbol a palindrome, and its Euler characteristic is zero.</p>
+   <p>Its edges are those of the 600-cell, so its wireframe matches the 600-cell's exactly.</p>`,
+      refs:['hess', 'coxeter'] },
+
+    { id:'grand-120-cell', name:'Grand 120-cell', tag:'Regular star polychoron', schlafli:'{5,3,5/2}', family:'star', dim:4,
+      gen:()=>starPolychoron('5',12,5,120,true), rot:[P(0,2,.32),P(1,3,.22)],
+      facts:{Cells:'120 dodecahedra', Faces:'720 pentagons', Edges:720, Vertices:120},
+      blurb:'Ordinary dodecahedra arranged to wrap 4-space many times over.',
+      article:`<p>The <b>grand 120-cell</b> is built from 120 perfectly ordinary dodecahedra, but they meet with a great
+   icosahedron as the vertex figure, so the whole figure is a star. It is the dual of the great stellated
+   120-cell.</p>
+   <p>It too uses the 600-cell's edges.</p>`,
+      refs:['hess', 'coxeter'] },
+
+    { id:'great-stellated-120-cell', name:'Great stellated 120-cell', tag:'Regular star polychoron', schlafli:'{5/2,3,5}', family:'star', dim:4,
+      gen:()=>starPolychoron('5/2',12,5,120,false), rot:[P(0,3,.3),P(1,2,.22)],
+      facts:{Cells:'120 great stellated dodecahedra', Faces:'720 pentagrams', Edges:720, Vertices:120},
+      blurb:'The most spiked cells there are, three around every edge.',
+      article:`<p>The <b>great stellated 120-cell</b> uses the great stellated dodecahedron, the most stellated of the
+   Kepler–Poinsot solids, as its cell, with an icosahedral vertex figure. Each edge is φ times the
+   circumradius, the golden ratio again.</p>
+   <p>Four star polychora share this edge arrangement.</p>`,
+      refs:['hess', 'coxeter'] },
+
+    { id:'grand-stellated-120-cell', name:'Grand stellated 120-cell', tag:'Regular star polychoron', schlafli:'{5/2,5,5/2}', family:'star', dim:4,
+      gen:()=>starPolychoron('5/2',12,5,120,false), rot:[P(0,1,.3),P(2,3,.24)],
+      facts:{Cells:'120 small stellated dodecahedra', Faces:'720 pentagrams', Edges:720, Vertices:120},
+      blurb:'Self-dual, pentagrams everywhere, the densest regular star.',
+      article:`<p>The <b>grand stellated 120-cell</b> is self-dual and has the highest density of any regular polychoron:
+   its cells wrap around the centre 66 times. Its cells are small stellated dodecahedra and its vertex figure is
+   the great dodecahedron.</p>`,
+      refs:['hess', 'coxeter'] },
+
+    { id:'great-grand-120-cell', name:'Great grand 120-cell', tag:'Regular star polychoron', schlafli:'{5,5/2,3}', family:'star', dim:4,
+      gen:()=>starPolychoron('5',20,3,120,true), rot:[P(0,2,.3),P(1,3,.24)],
+      facts:{Cells:'120 great dodecahedra', Faces:'720 pentagons', Edges:1200, Vertices:120},
+      blurb:'Great dodecahedra meeting three at an edge.',
+      article:`<p>The <b>great grand 120-cell</b> has great dodecahedra for cells, three around each edge, and the great
+   stellated dodecahedron as its vertex figure. It is the dual of the great icosahedral 120-cell.</p>
+   <p>It shares its 1200 edges with the small stellated 120-cell.</p>`,
+      refs:['hess', 'coxeter'] },
+
+    { id:'great-icosahedral-120-cell', name:'Great icosahedral 120-cell', tag:'Regular star polychoron', schlafli:'{3,5/2,5}', family:'star', dim:4,
+      gen:()=>starPolychoron('3',12,5,120,true), rot:[P(0,3,.3),P(1,2,.26)],
+      facts:{Cells:'120 great icosahedra', Faces:'1200 triangles', Edges:720, Vertices:120},
+      blurb:'Great icosahedra for cells, triangles for faces.',
+      article:`<p>The <b>great icosahedral 120-cell</b> (great faceted 600-cell) is made of 120 great icosahedra with a
+   small stellated dodecahedron as vertex figure. Each edge is φ times the circumradius.</p>`,
+      refs:['hess', 'coxeter'] },
+
+    { id:'grand-600-cell', name:'Grand 600-cell', tag:'Regular star polychoron', schlafli:'{3,3,5/2}', family:'star', dim:4,
+      gen:()=>starPolychoron('3',12,5,120,true), rot:[P(0,3,.32),P(1,2,.22),P(2,3,.14)],
+      facts:{Cells:'600 tetrahedra', Faces:'1200 triangles', Edges:720, Vertices:120},
+      blurb:'600 tetrahedra again, but now arranged as a star.',
+      article:`<p>The <b>grand 600-cell</b> has the same cell count as the 600-cell, 600 regular tetrahedra, but its vertex
+   figure is the great icosahedron, so twenty tetrahedra wind around each vertex several times. It is the only
+   star polychoron with simplex cells.</p>`,
+      refs:['hess', 'coxeter'] },
+
+    { id:'great-grand-stellated-120-cell', name:'Great grand stellated 120-cell', tag:'Regular star polychoron', schlafli:'{5/2,3,3}', family:'star', dim:4,
+      gen:()=>starPolychoron('5/2',4,3,600,false), rot:[P(0,3,.28),P(1,2,.2)],
+      facts:{Cells:'120 great stellated dodecahedra', Faces:'720 pentagrams', Edges:1200, Vertices:600},
+      blurb:'The final stellation of the 120-cell, on its 600 vertices.',
+      article:`<p>The <b>great grand stellated 120-cell</b> is the final stellation of the 120-cell and the only star
+   polychoron with 600 vertices: it uses the 120-cell's vertex set, with a tetrahedron as vertex figure, and
+   joins each vertex to four others by a chord about 1.85 times the circumradius.</p>
+   <p>Its dual is the grand 600-cell. Schläfli found four of the star polychora; Hess completed the list of ten
+   in 1883, and with the six convex ones they are all the regular polytopes of four dimensions.</p>`,
+      refs:['hess', 'coxeter'] },
+
+    // ===== ROW 14 — Gosset polytopes of E₆, E₇, E₈ and their lattices ====================
+    { id:'e6-polytope-221', name:'E₆ polytope (2₂₁)', tag:'Gosset polytope', schlafli:'2₂₁', family:'ncube', dim:6,
+      gen:()=>wythoff(6,E6,ring(6,0)), rot:[P(0,5,.32),P(1,4,.24),P(2,3,.16)],
+      facts:{Vertices:27, Edges:216, '5-faces':'27 5-orthoplexes + 72 5-simplices', Symmetry:'E₆, order 51,840'},
+      blurb:'Twenty-seven vertices, one for each line on a cubic surface.',
+      article:`<p>The <b>2₂₁ polytope</b> was found by Thorold Gosset in 1900. Its 27 vertices correspond to the 27 straight
+   lines that lie on any smooth cubic surface, and two vertices are joined exactly when their lines do not
+   meet; its symmetry group, the Weyl group of E₆, is the symmetry group of that configuration.</p>
+   <p>Drawn here by Wythoff's construction from the E₆ Coxeter diagram, ringed at the end of a long arm.</p>`,
+      refs:['gosset', 'coxeter'] },
+
+    { id:'e6-polytope-122', name:'E₆ polytope (1₂₂)', tag:'Gosset polytope', schlafli:'1₂₂', family:'ncube', dim:6,
+      gen:()=>wythoff(6,E6,ring(6,5)), rot:[P(0,5,.3),P(1,4,.22),P(2,3,.14)],
+      facts:{Vertices:72, Edges:720, '5-faces':'54 5-demicubes', Symmetry:'E₆ with central inversion, order 103,680'},
+      blurb:'The 72 roots of E₆ as the corners of one polytope.',
+      article:`<p>The <b>1₂₂ polytope</b> has the 72 roots of the exceptional Lie algebra E₆ for vertices. Each joins twenty
+   others, and its facets are 54 five-dimensional demicubes. Ringing the short arm of the E₆ diagram gives it.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'e7-polytope-321', name:'E₇ polytope (3₂₁)', tag:'Gosset polytope', schlafli:'3₂₁', family:'ncube', dim:7,
+      gen:()=>wythoff(7,E7,ring(7,5)), rot:[P(0,6,.3),P(1,5,.22),P(2,4,.14)],
+      facts:{Vertices:56, Edges:756, '6-faces':'126 6-orthoplexes + 576 6-simplices', Symmetry:'E₇, order 2,903,040'},
+      blurb:'Fifty-six vertices: the smallest picture of E₇.',
+      article:`<p>The <b>3₂₁ polytope</b>, another of Gosset's, has 56 vertices, the weights of the smallest representation of
+   E₇, and they pair up into the 28 bitangents of a plane quartic curve. Each vertex is joined to 27 others.</p>`,
+      refs:['gosset', 'coxeter'] },
+
+    { id:'e7-polytope-231', name:'E₇ polytope (2₃₁)', tag:'Gosset polytope', schlafli:'2₃₁', family:'ncube', dim:7,
+      gen:()=>wythoff(7,E7,ring(7,0)), rot:[P(0,6,.28),P(1,5,.2),P(2,4,.14)],
+      facts:{Vertices:126, Edges:2016, '6-faces':'56 2₂₁ + 576 6-simplices', Symmetry:'E₇, order 2,903,040'},
+      blurb:'The 126 roots of E₇, each touching 32 others.',
+      article:`<p>The <b>2₃₁ polytope</b> has the 126 roots of E₇ for vertices, and its facets include 56 copies of the E₆
+   polytope 2₂₁. It is the kissing configuration of the E₇ lattice made solid.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'e7-polytope-132', name:'E₇ polytope (1₃₂)', tag:'Gosset polytope', schlafli:'1₃₂', family:'ncube', dim:7,
+      gen:()=>wythoff(7,E7,ring(7,6)), rot:[P(0,6,.26),P(1,5,.2),P(2,4,.12)],
+      facts:{Vertices:576, Edges:10080, '6-faces':'126 1₂₂ + 56 6-demicubes', Symmetry:'E₇, order 2,903,040'},
+      blurb:'576 vertices, 35 edges at every one.',
+      article:`<p>The <b>1₃₂ polytope</b> rings the short arm of the E₇ diagram. Its 576 vertices each meet 35 edges, and
+   its facets are 126 copies of 1₂₂ and 56 six-dimensional demicubes.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'e8-polytope-241', name:'E₈ polytope (2₄₁)', tag:'Gosset polytope', schlafli:'2₄₁', family:'ncube', dim:8,
+      gen:()=>{ const g = wythoff(8,E8,ring(8,0)); return { verts:g.verts, edges:capEdges(g.edges,6000) }; },
+      rot:[P(0,7,.24),P(1,6,.18),P(2,5,.12),P(3,4,.08)],
+      facts:{Vertices:2160, Edges:69120, '7-faces':'240 2₃₁ + 17280 7-simplices', Frame:'all 2160 vertices, 6000 of the edges'},
+      blurb:'2160 vertices of E₈; too many edges to draw, so a sample.',
+      article:`<p>The <b>2₄₁ polytope</b> has 2160 vertices, the vectors of the second shell of the E₈ lattice, and 69,120
+   edges, 64 at every vertex. The frame shows every vertex but only an evenly spaced sample of 6000 edges.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'e8-polytope-142', name:'E₈ polytope (1₄₂)', tag:'Gosset polytope', schlafli:'1₄₂', family:'ncube', dim:8,
+      gen:()=>{ const verts = polarCap(wythoffVerts(8,E8,ring(8,7)),1400); return { verts, edges:capEdges(edgesByShortest(verts),6000) }; },
+      rot:[P(0,7,.22),P(1,6,.16),P(2,5,.1),P(3,4,.07)],
+      facts:{Vertices:17280, Edges:483840, '7-faces':'2160 1₃₂ + 240 7-demicubes', Frame:'the 953 vertices nearest one pole'},
+      blurb:'17,280 vertices; the frame is the cap around one of them.',
+      article:`<p>The <b>1₄₂ polytope</b> is the largest of the E₈ family: 17,280 vertices and 483,840 edges, 56 at each
+   vertex. Far too large to animate whole, it is drawn as a cap: the whole shells of vertices nearest one
+   vertex, 953 of them, with a sample of the edges between them.</p>`,
+      refs:['coxeter', 'elte'] },
+
+    { id:'e6-lattice', name:'E₆ lattice', tag:'Sphere packing', schlafli:'E₆', family:'phys', dim:6,
+      gen:()=>kissing(rootSystem(6,E6),6000), rot:[P(0,5,.3),P(1,4,.22),P(2,3,.14)],
+      facts:{'Kissing number':72, 'Minimal vectors':'the 72 roots of E₆', Packing:'densest lattice in 6D'},
+      blurb:'One sphere and the 72 that touch it in six dimensions.',
+      article:`<p>The <b>E₆ lattice</b> gives the densest lattice packing of spheres in six dimensions, as Blichfeldt proved. Each sphere
+   touches 72 others, centred on the roots of E₆. The frame shows that kissing configuration: spokes from the
+   central sphere, and the contacts between touching neighbours, which meet at 60°.</p>`,
+      refs:['conway', 'coxeter'] },
+
+    { id:'e7-lattice', name:'E₇ lattice', tag:'Sphere packing', schlafli:'E₇', family:'phys', dim:7,
+      gen:()=>kissing(rootSystem(7,E7),6000), rot:[P(0,6,.28),P(1,5,.2),P(2,4,.14)],
+      facts:{'Kissing number':126, 'Minimal vectors':'the 126 roots of E₇', Packing:'densest lattice in 7D'},
+      blurb:'In seven dimensions each sphere touches 126.',
+      article:`<p>The <b>E₇ lattice</b> is the densest lattice packing in seven dimensions, proven optimal among lattices
+   by Blichfeldt. Its 126 minimal vectors are the roots of E₇; drawn as a kissing configuration they are the
+   2₃₁ polytope with spokes to its centre.</p>`,
+      refs:['conway', 'coxeter'] },
+
+    { id:'coxeter-todd-lattice', name:'Coxeter–Todd lattice', tag:'Sphere packing', schlafli:'K₁₂', family:'phys', dim:12,
+      gen:()=>kissing(coxeterToddMinimal(),6000), rot:[P(0,11,.24),P(1,10,.18),P(2,9,.12)],
+      facts:{'Kissing number':756, Construction:'Eisenstein 6-vectors, congruent mod √−3', Frame:'all 756 contacts, 6000 edges'},
+      blurb:'756 spheres around one: the densest known 12D packing.',
+      article:`<p>The <b>Coxeter–Todd lattice</b> K₁₂ gives the densest known packing of spheres in twelve dimensions, each
+   touching 756 others. Over the Eisenstein integers it is six-dimensional: the vectors whose coordinates are
+   all congruent modulo √−3 and whose sum is divisible by 3. Its minimal vectors fall into 270 of one shape and
+   486 of another.</p>`,
+      refs:['coxetertodd', 'conway'] },
+
+    // ===== ROW 15 — Barnes–Wall, quasicrystals, higher Hopf maps, knotted spheres ===========
+    { id:'barnes-wall-lattice', name:'Barnes–Wall lattice', tag:'Sphere packing', schlafli:'Λ₁₆', family:'phys', dim:16,
+      gen:()=>kissing(polarCap(barnesWallMinimal(),700),6000), rot:[P(0,15,.22),P(1,14,.16),P(2,13,.1)],
+      facts:{'Kissing number':4320, Construction:'Reed–Muller code RM(1,4)', Frame:'one sphere, one contact and the 280 touching both'},
+      blurb:'4320 spheres around each one in sixteen dimensions.',
+      article:`<p>The <b>Barnes–Wall lattice</b> Λ₁₆ is the densest known packing in sixteen dimensions. Its vectors are the
+   integer 16-tuples that reduce modulo 2 to a word of the Reed–Muller code RM(1,4) and whose sum is divisible
+   by 4; the shortest are (±2, ±2, 0¹⁴) and ±1 on the eight positions of a codeword.</p>
+   <p>Each sphere touches 4320 others. The frame shows the central sphere, one of its neighbours and the 280
+   spheres that touch them both.</p>`,
+      refs:['barneswall', 'conway'] },
+
+    { id:'elser-sloane-quasicrystal', name:'Elser–Sloane quasicrystal', tag:'Aperiodic order', schlafli:'8D→4D cut', family:'phys', dim:8,
+      gen:()=>elserSloane(2,1), rot:[P(0,3,.24),P(1,2,.18),P(3,7,.08)],
+      facts:{Symmetry:'H₄, order 14,400', Origin:'E₈ lattice as the icosian ring', Frame:'241 points within radius 2'},
+      blurb:'A four-dimensional quasicrystal cut from the E₈ lattice.',
+      article:`<p>The <b>Elser–Sloane quasicrystal</b> is the four-dimensional analogue of the Penrose tiling. The E₈ lattice
+   can be written as the icosians, quaternions with coordinates in ℤ[φ]; splitting each coordinate by the two
+   values of √5 sends it to two copies of 4-space. Keep the points whose second image falls in a ball, and the
+   first images form an aperiodic pattern with the 600-cell's symmetry.</p>
+   <p>Every point within radius 2 of the origin is shown, joined by unit icosian steps.</p>`,
+      refs:['elsersloane', 'conway'] },
+
+    { id:'icosahedral-quasicrystal', name:'Icosahedral quasicrystal', tag:'Aperiodic order', schlafli:'6D→3D cut', family:'phys', dim:6,
+      gen:()=>icosahedralQuasicrystal(2.6), rot:[P(0,1,.2),P(0,2,.14),P(2,5,.08)],
+      facts:{Symmetry:'icosahedral, with forbidden 5-fold axes', Origin:'Z⁶ cut by a rhombic triacontahedron', Frame:'111 points, 240 edges'},
+      blurb:'The 3D Penrose tiling: a cut through the 6-cube lattice.',
+      article:`<p>The <b>icosahedral quasicrystal</b> models Shechtman's alloy, whose diffraction showed the five-fold symmetry
+   no crystal can have. Map the six axes of ℤ⁶ to the six five-fold axes of an icosahedron and, separately, to
+   their Galois conjugates; keep the lattice points whose conjugate image falls in the rhombic triacontahedron the
+   unit cube projects to. The result is the three-dimensional Penrose tiling, its edges in six directions.</p>
+   <p>The window is shifted a hair off-centre so no lattice point sits on its boundary. The slow rotation that
+   mixes physical and internal axes is a phason: the cut itself moving.</p>`,
+      refs:['levine', 'shechtman'] },
+
+    { id:'quaternionic-hopf-fibration', name:'Quaternionic Hopf fibration', tag:'Fibered 7-sphere', schlafli:'S⁷→S⁴', family:'curve', dim:8,
+      gen:()=>hopfHigher(4), rot:[P(0,4,.3),P(1,5,.22),P(2,6,.14)],
+      facts:{Fibre:'S³', Base:'S⁴', Frame:'9 fibres, 3 great circles each'},
+      blurb:'The 7-sphere filled with linked 3-spheres.',
+      article:`<p>The <b>quaternionic Hopf fibration</b> repeats Hopf's construction with quaternions in place of complex
+   numbers. A point (a, b) of the unit 7-sphere in ℍ² maps to a·b⁻¹, a point of the quaternionic line, which is
+   a 4-sphere; every fibre is a round 3-sphere, and any two are linked.</p>
+   <p>Each fibre is drawn as three of its great circles.</p>`,
+      refs:['hopf', 'adams'] },
+
+    { id:'octonionic-hopf-fibration', name:'Octonionic Hopf fibration', tag:'Fibered 15-sphere', schlafli:'S¹⁵→S⁸', family:'curve', dim:16,
+      gen:()=>hopfHigher(8), rot:[P(0,8,.26),P(1,9,.18),P(2,10,.12),P(3,15,.08)],
+      facts:{Fibre:'S⁷', Base:'S⁸', Frame:'9 fibres, 3 great circles each'},
+      blurb:'The last Hopf fibration: 7-spheres filling a 15-sphere.',
+      article:`<p>The <b>octonionic Hopf fibration</b> uses the octonions, the largest normed division algebra. They are not
+   associative, but they are alternative, which is enough: the fibre over m is {(m·y, y)}, an 8-dimensional plane
+   meeting the 15-sphere in a 7-sphere.</p>
+   <p>Adams proved in 1960 that there are no more: the fibrations S¹→S¹, S³→S², S⁷→S⁴ and S¹⁵→S⁸ are the only
+   ones of their kind, a shadow of there being only four normed division algebras.</p>`,
+      refs:['adams', 'baez'] },
+
+    { id:'simple-rotation', name:'Simple rotation', tag:'Rotation in one plane', schlafli:'SO(4), one angle', family:'rot', dim:4,
+      gen:rotTesseract, rot:[P(0,3,.4)],
+      facts:{'Fixed set':'a whole plane', 'Rotating plane':'x₁x₄', Contrast:'a double rotation fixes only the centre'},
+      blurb:'A 4D rotation that leaves an entire plane untouched.',
+      article:`<p>In three dimensions every rotation turns about an axis. In four, a <b>simple rotation</b> turns one plane
+   and leaves the completely orthogonal plane fixed point by point: here the x₁x₄ plane turns while x₂ and x₃
+   never move.</p>
+   <p>Compare the isoclinic and double rotations, which turn two planes at once and fix nothing but the
+   centre.</p>`,
+      refs:['manning', 'banchoff'] },
+
+    { id:'spun-trefoil', name:'Spun trefoil', tag:'Knotted 2-sphere', schlafli:'S²⊂R⁴', family:'rot', dim:4,
+      gen:()=>spunKnot(trefoilCurve), rot:[P(2,3,.36),P(0,3,.16)],
+      facts:{Construction:'Artin spinning', Group:'same as the trefoil’s', Frame:'10 copies of the arc + spin circles'},
+      blurb:'A trefoil arc spun around a plane: a knotted sphere.',
+      article:`<p>Knots in 3-space fall open in 4-space, but 2-spheres can knot there. Emil Artin's <b>spinning</b> builds
+   one: cut a trefoil open into an arc with both ends on a plane, then spin the arc around that plane through the
+   fourth dimension. The swept surface is a 2-sphere, knotted, with the trefoil's knot group.</p>
+   <p>The frame shows the arc at ten spin angles and the circles its points trace.</p>`,
+      refs:['artin', 'banchoff'] },
+
+    { id:'spun-figure-eight-knot', name:'Spun figure-eight knot', tag:'Knotted 2-sphere', schlafli:'S²⊂R⁴', family:'rot', dim:4,
+      gen:()=>spunKnot(figureEightCurve), rot:[P(2,3,.34),P(1,3,.16)],
+      facts:{Construction:'Artin spinning', Group:'same as the figure-eight’s', Frame:'10 copies of the arc + spin circles'},
+      blurb:'The figure-eight knot spun into a knotted 2-sphere.',
+      article:`<p>The <b>spun figure-eight knot</b> applies Artin's construction to the figure-eight knot. Spinning preserves
+   the knot group, so this 2-sphere is knotted in 4-space for the same algebraic reason the figure-eight is
+   knotted in 3-space.</p>`,
+      refs:['artin', 'banchoff'] },
+
+    { id:'trefoil-seifert-surface', name:'Seifert surface of the trefoil', tag:'Milnor fibre', schlafli:'z² − w³ > 0', family:'rot', dim:4,
+      gen:()=>trefoilSeifert(), rot:[P(0,1,.3),P(2,3,.2)],
+      facts:{Genus:1, Boundary:'the trefoil, z² = w³ on S³', Fibration:'one page of the open book'},
+      blurb:'A punctured torus in the 3-sphere whose edge is the trefoil.',
+      article:`<p>Every knot bounds an orientable surface, its <b>Seifert surface</b>. For the trefoil there is a beautiful
+   one: the trefoil is where z² = w³ on the unit 3-sphere in ℂ², and the points where z² − w³ is a positive real
+   form a punctured torus with exactly the trefoil as its boundary.</p>
+   <p>Rotating the phase sweeps that surface round the knot, filling the rest of the 3-sphere: Milnor's fibration.
+   The frame draws the surface over a polar grid of w, in four sheets, with the trefoil itself as a closed curve.</p>`,
+      refs:['seifert', 'milnorsing'] },
+
+    { id:'roman-surface', name:'Roman surface', tag:'Immersed RP²', schlafli:'RP²', family:'curve', dim:4,
+      gen:()=>romanSurface(), rot:[P(0,3,.3),P(1,2,.22)],
+      facts:{'Triple points':1, 'Double curves':3, 'Pinch points':6},
+      blurb:'Steiner’s projective plane, unpinched in the fourth dimension.',
+      article:`<p>Jakob Steiner found the <b>Roman surface</b> while in Rome in 1844: the image of the sphere under
+   (x, y, z) ↦ (yz, xz, xy). Antipodal points map together, so it is a projective plane, squeezed into 3-space with
+   three double lines meeting at a triple point and six pinch points.</p>
+   <p>Add a fourth coordinate, (x² − y²)/2, and the map becomes one-to-one on the projective plane: a clean
+   embedding in 4-space, a projection of the Veronese surface. The rotation into that axis opens the
+   self-intersections.</p>`,
+      refs:['apery', 'boy'] },
+
+    // ===== ROW 16 — CP², Kuen, honeycombs, triaprisms and higher spheres ==================
+    { id:'complex-projective-plane', name:'Complex projective plane', tag:'Closed 4-manifold', schlafli:'CP²', family:'curve', dim:8,
+      gen:()=>cp2(), rot:[P(0,7,.24),P(1,6,.18),P(2,5,.12)],
+      facts:{'Real dimension':4, Embedding:'rank-one projectors in R⁸', 'Euler characteristic':3},
+      blurb:'Complex lines through the origin of C³, drawn by their tori.',
+      article:`<p>The <b>complex projective plane</b> is the set of complex lines through the origin of ℂ³, a closed
+   four-dimensional manifold. Sending each line to the matrix that projects onto it embeds it smoothly in eight
+   dimensions.</p>
+   <p>Its torus action gives a picture: the moment map sends CP² onto a triangle, and over each interior point sits
+   a 2-torus, over each edge a circle and over each corner a single point. The frame draws those circles over a
+   grid of the triangle.</p>`,
+      refs:['atiyah'] },
+
+    { id:'kuen-surface', name:'Kuen surface', tag:'Constant negative curvature', schlafli:'K = −1', family:'curve', dim:3,
+      gen:()=>kuenSurface(22,22), rot:[P(0,3,.28),P(1,2,.2)],
+      facts:{Curvature:'K = −1 everywhere', Discovered:'Theodor Kuen, 1884', Relation:'pseudosphere, Dini'},
+      blurb:'A sheet of constant negative curvature folded into a flower.',
+      article:`<p>The <b>Kuen surface</b> is, like the pseudosphere and Dini's surface, a surface of constant curvature −1,
+   found by Theodor Kuen in 1884. It can be built from the pseudosphere by a Bäcklund transformation and
+   pinches to cusps along its edges.</p>
+   <p>Hilbert proved that no complete surface of constant negative curvature fits in 3-space without such
+   singularities.</p>`,
+      refs:['stillwell'] },
+
+    { id:'tesseractic-honeycomb', name:'Tesseractic honeycomb', tag:'Regular honeycomb', schlafli:'{4,3,3,4}', family:'comb', dim:4,
+      gen:tesseractHoneycomb, rot:[P(0,3,.3),P(1,2,.22)],
+      facts:{Cells:'tesseracts, 8 at each vertex', Frame:'a 2×2×2×2 block: 16 tesseracts, 81 vertices', Dual:'itself'},
+      blurb:'Four-space packed with tesseracts, sixteen shown.',
+      article:`<p>The <b>tesseractic honeycomb</b> fills 4-space with tesseracts, four around every square face and sixteen
+   at every vertex, just as cubes fill 3-space. It is self-dual. A finite block of 2 × 2 × 2 × 2 cells is shown;
+   the pattern continues forever.</p>`,
+      refs:['coxeter'] },
+
+    { id:'16-cell-honeycomb', name:'16-cell honeycomb', tag:'Regular honeycomb', schlafli:'{3,3,4,3}', family:'comb', dim:4,
+      gen:cell16Honeycomb, rot:[P(0,3,.3),P(1,2,.24),P(2,3,.12)],
+      facts:{Vertices:'the D₄ lattice', 'Vertex figure':'24-cell', Frame:'145 vertices within √6 of one'},
+      blurb:'Sixteen-cells tiling 4-space on the D₄ lattice.',
+      article:`<p>The <b>16-cell honeycomb</b> tiles 4-space with 16-cells. Its vertices are the D₄ lattice, the integer points
+   with even coordinate sum, and the 24 neighbours of each vertex form a 24-cell. It is one of only three regular
+   honeycombs of Euclidean 4-space, the most of any dimension above two.</p>`,
+      refs:['coxeter', 'conway'] },
+
+    { id:'24-cell-honeycomb', name:'24-cell honeycomb', tag:'Regular honeycomb', schlafli:'{3,4,3,3}', family:'comb', dim:4,
+      gen:cell24Honeycomb, rot:[P(0,3,.28),P(1,2,.22),P(2,3,.12)],
+      facts:{Cells:'24-cells centred on D₄', 'Vertex figure':'tesseract', Frame:'120 vertices within 1.75 of the centre'},
+      blurb:'24-cells, the Voronoi cells of D₄, filling 4-space.',
+      article:`<p>The <b>24-cell honeycomb</b> fills 4-space with 24-cells, the Voronoi cells of the D₄ lattice. It is dual
+   to the 16-cell honeycomb: its vertices are D₄'s deep holes, and each meets sixteen edges whose far ends form a
+   tesseract.</p>`,
+      refs:['coxeter', 'conway'] },
+
+    { id:'3x4x5-triaprism', name:'{3}×{4}×{5} triaprism', tag:'Triaprism', schlafli:'{3}×{4}×{5}', family:'duo', dim:6,
+      gen:()=>polyprism(3,4,5), rot:[P(0,2,.36),P(1,4,.28),P(3,5,.2)],
+      facts:{Vertices:60, Edges:180, '5-faces':12, Dimension:'6D'},
+      blurb:'A triangle, a square and a pentagon multiplied in 6-space.',
+      article:`<p>A <b>triaprism</b> is the product of three polygons, each in its own plane of 6-space. This one takes a
+   triangle, a square and a pentagon: 3 × 4 × 5 = 60 vertices, each joined to its neighbours around all three
+   polygons.</p>
+   <p>Duoprisms multiply two polygons in 4D; the pattern continues in every even dimension.</p>`,
+      refs:['coxeter', 'manning'] },
+
+    { id:'3x3x3x3-tetraprism', name:'{3}×{3}×{3}×{3} tetraprism', tag:'Tetraprism', schlafli:'{3}⁴', family:'duo', dim:8,
+      gen:()=>polyprism(3,3,3,3), rot:[P(0,2,.32),P(1,4,.24),P(3,6,.16),P(5,7,.1)],
+      facts:{Vertices:81, Edges:324, '7-faces':12, Dimension:'8D'},
+      blurb:'Four triangles multiplied together in eight dimensions.',
+      article:`<p>The <b>{3}⁴ tetraprism</b> is the product of four triangles, one in each of four mutually orthogonal planes
+   of 8-space. Its 81 vertices form a 3 × 3 × 3 × 3 grid wrapped into tori, eight edges at each.</p>`,
+      refs:['coxeter', 'manning'] },
+
+    { id:'5-sphere-s5', name:'5-sphere (S⁵)', tag:'Curved 6-manifold', schlafli:'S⁵', family:'curve', dim:6,
+      gen:()=>sphereNet(6), rot:[P(0,5,.3),P(1,4,.22),P(2,3,.14)],
+      facts:{'Embedded in':'R⁶', Volume:'π³ r⁵', Frame:'7 latitude circles'},
+      blurb:'The round sphere of six-dimensional space.',
+      article:`<p>The <b>5-sphere</b> is the set of points at distance r from a centre in six dimensions. Its volume is
+   π³r⁵, and like every odd sphere it carries a nowhere-vanishing tangent field. The frame is a net of latitude
+   circles.</p>`,
+      refs:['manning', 'banchoff'] },
+
+    { id:'6-sphere-s6', name:'6-sphere (S⁶)', tag:'Curved 7-manifold', schlafli:'S⁶', family:'curve', dim:7,
+      gen:()=>sphereNet(7), rot:[P(0,6,.3),P(1,5,.22),P(2,4,.14)],
+      facts:{'Embedded in':'R⁷', Volume:'16π³ r⁶ / 15', Frame:'7 latitude circles'},
+      blurb:'The 6-sphere, whose complex structure is still an open question.',
+      article:`<p>The <b>6-sphere</b> sits in seven dimensions, inside the imaginary octonions, which give it an almost
+   complex structure. Whether it admits a genuine complex structure is one of the oldest open problems in
+   geometry. Its volume, 16π³r⁶/15, makes the unit 6-sphere the largest unit sphere of any dimension: the volumes
+   rise to it and then fall towards zero.</p>`,
+      refs:['baez', 'manning'] },
+
     ];
 
     // =====================================================================================
     // Catalog assembly
     // =====================================================================================
 
-    // Family labels are the palette comments of the Hyperspace page, verbatim.
+    // Family labels: the plaque's family line and the Hyperspace page's legend.
     var FAMILY_LABELS = {
         reg:   'Regular 4-polytopes',
         unif:  'Uniform polytopes',
@@ -1831,7 +2885,9 @@
         duo:   'Duoprisms',
         rot:   'Rotations',
         phys:  'Spacetime / lattices',
-        prism: '5D prisms & products'
+        prism: '5D prisms & products',
+        star:  'Star polychora',
+        comb:  'Honeycombs'
     };
     var FAMILIES = {};
     Object.keys(C).forEach(function (k) {
@@ -1962,7 +3018,8 @@
         opts = opts || {};
         var s = get(ref);
         var P = projectTo3D(pose(s, t), opts.dist || 3.2);
-        var m = extent(s), k = (opts.radius || 1) / (m > 1e-6 ? m : 1);
+        // a 16D shadow is ~1e-7 across after thirteen perspective divides, so only zero is degenerate
+        var m = extent(s), k = (opts.radius || 1) / (m > 0 ? m : 1);
         return P.map(function (p) { return [p[0] * k, p[1] * k, p[2] * k]; });
     }
 
@@ -2094,7 +3151,15 @@
             kuenSurface: kuenSurface, e8Roots: e8Roots, lightCone: lightCone, deSitter: deSitter,
             antiDeSitter: antiDeSitter, calabiYau: calabiYau, penrose: penrose, leech: leech,
             octonions: octonions, cyclic5D: cyclic5D, d4Lattice: d4Lattice, d5Lattice: d5Lattice,
-            aRoots: aRoots, ammannBeenker: ammannBeenker, edgesByShortest: edgesByShortest
+            aRoots: aRoots, ammannBeenker: ammannBeenker, edgesByShortest: edgesByShortest,
+            coxeterRoots: coxeterRoots, wythoff: wythoff, wythoffVerts: wythoffVerts, rootSystem: rootSystem,
+            diagrams: Object.freeze({ A4: A4, B4: B4, F4: F4, H4: H4, E6: E6, E7: E7, E8: E8 }),
+            grandAntiprism: grandAntiprism, antiprism3D: antiprism3D, starPolychoron: starPolychoron,
+            kissing: kissing, barnesWallMinimal: barnesWallMinimal, coxeterToddMinimal: coxeterToddMinimal,
+            elserSloane: elserSloane, icosahedralQuasicrystal: icosahedralQuasicrystal, hopfHigher: hopfHigher,
+            spunKnot: spunKnot, trefoilSeifert: trefoilSeifert, romanSurface: romanSurface, cp2: cp2,
+            tesseractHoneycomb: tesseractHoneycomb, cell16Honeycomb: cell16Honeycomb, cell24Honeycomb: cell24Honeycomb,
+            polyprism: polyprism, sphereNet: sphereNet, capEdges: capEdges, polarCap: polarCap
         })
     });
 });

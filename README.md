@@ -24,7 +24,7 @@ Try it: [mindattic.com](https://mindattic.com), [ryandebraal.com](https://ryande
 | [mindattic.com](mindattic.com/README.md) | Ryan DeBraal's front door: the MindAttic wordmark, three links and a tap-to-play Cyberspace backdrop | [mindattic.com](https://mindattic.com) |
 | [ryandebraal.com](ryandebraal.com/README.md) | A resume that is its own work sample: 16 animated themes, 3 profiles, Markdown, HTML and PDF export | [ryandebraal.com](https://ryandebraal.com) |
 | [mindatticcares.com](mindatticcares.com/README.md) | MindAttic Cares, the charity arm: open fundraising-event playbooks | [mindatticcares.com](https://mindatticcares.com/) |
-| [Hyperspace](Hyperspace/README.md) | A field guide to five-dimensional objects: hypercube explorers and a 3D gallery of 100 exhibits | [mindattic.com/hyperspace](https://mindattic.com/hyperspace/) |
+| [Hyperspace](Hyperspace/README.md) | A field guide to five-dimensional objects: hypercube explorers and a 3D gallery of 159 exhibits | [mindattic.com/hyperspace](https://mindattic.com/hyperspace/) |
 
 ## Quick start
 

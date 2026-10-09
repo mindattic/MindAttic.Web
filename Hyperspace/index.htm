@@ -1022,10 +1022,10 @@
   <!-- start / loading -->
   <div id="start">
     <h1>The Hyperspace Gallery</h1>
-    <p class="sub">A walk-through hall of <b>100 higher-dimensional objects</b> — regular polytopes,
-       uniform polytopes, 5D prisms, curved manifolds, duoprisms, isoclinic rotations, lattices, and the
-       geometry of spacetime. Each stands in its own cage. Walk up to a plaque and read the verified
-       science.</p>
+    <p class="sub">A walk-through hall of <b>159 higher-dimensional objects</b> — regular and star polytopes,
+       uniform polytopes, 5D prisms, curved manifolds, duoprisms, isoclinic rotations, lattices, honeycombs,
+       quasicrystals and the geometry of spacetime. Each stands in its own cage. Walk up to a plaque and read
+       the verified science.</p>
     <div id="booting">
       <canvas id="spinCanvas" width="128" height="128"></canvas>
       <div class="bootlabel" id="bootLabel">Loading WebGL engine…</div>
@@ -1033,17 +1033,7 @@
       <div class="bootpct" id="bootPct">0%</div>
     </div>
     <button class="enter" id="enterBtn" hidden>Enter the gallery</button>
-    <div class="legend">
-      <span><i style="background:#A78BFA"></i> Regular 4-polytopes</span>
-      <span><i style="background:#60A5FA"></i> Uniform polytopes</span>
-      <span><i style="background:#34D399"></i> 5-cube family</span>
-      <span><i style="background:#FB7185"></i> 5D prisms &amp; products</span>
-      <span><i style="background:#2DD4BF"></i> n-cube · simplex</span>
-      <span><i style="background:#F472B6"></i> Curved manifolds</span>
-      <span><i style="background:#FCD34D"></i> Duoprisms</span>
-      <span><i style="background:#FB923C"></i> Rotations</span>
-      <span><i style="background:#86EFAC"></i> Spacetime · lattices</span>
-    </div>
+    <div class="legend" id="legend"></div>
   </div>
 
   <div id="err"><div>This gallery needs WebGL and an internet connection to load Three.js.<br>
@@ -1227,19 +1217,30 @@ window.PointerLockControls = PointerLockControls;
 <script defer>
 /* The exhibits are the MindAttic.Web.Shared Hyperspace shape library (window.Hyperspace): geometry, rotation
    planes, plaque facts, articles and references. This block is the gallery engine. Each exhibit is a
-   copy of its library record (row and col place it in the 10 x 10 hall) with gen() returning its
+   copy of its library record (row and col place it in the hall, ten to a row) with gen() returning its
    cached geometry. */
 const { rotate, projectTo3D } = Hyperspace;
 const { nCube } = Hyperspace.gen;
 const EXHIBITS = Hyperspace.shapes.map(s => Object.assign({}, s, { gen: () => Hyperspace.geometry(s.id) }));
 
+for (const f of Object.values(Hyperspace.families)) {
+  const span = document.createElement('span'), sw = document.createElement('i');
+  sw.style.background = f.color;
+  span.append(sw, ' ' + f.label);
+  document.getElementById('legend').appendChild(span);
+}
+
 /* ===== main.js ===== */
-// main.js — the gallery engine. Three.js scene, first-person controls, a 10×10
-// hall of transparent columns, frustum-only animation of each higher-dimensional
+// main.js — the gallery engine. Three.js scene, first-person controls, a hall of
+// transparent columns ten wide, frustum-only animation of each higher-dimensional
 // shape, plaque ray-picking, and the confirm-to-close article modal.
 
 
 const SPACING = 11;       // distance between columns
+const HALL_COLS = 10, HALL_ROWS = Math.ceil(EXHIBITS.length / HALL_COLS);
+const HALL_SPAN = Math.max(HALL_COLS, HALL_ROWS) + 2;   // floor/grid size in cells, one cell of margin all round
+const rowZ = row => (row - (HALL_ROWS - 1) / 2) * SPACING;
+const colX = col => (col - (HALL_COLS - 1) / 2) * SPACING;
 const TARGET_R = 1.5;        // worst-case shape radius (fits inside the cage)
 const CAGE_R = 1.75, CAGE_H = 5.2;   // cylindrical cage radius + height
 const ANIM_DIST2 = 80 * 80; // only re-project shapes within this distance (perf)
@@ -1383,7 +1384,7 @@ function setupRenderer() {
   scene.fog = new THREE.Fog(0x06061A, 16, 140);
 
   camera = new THREE.PerspectiveCamera(70, innerWidth / innerHeight, 0.05, 400);
-  camera.position.set(0, 1.6, -SPACING * 5 - 8);
+  camera.position.set(0, 1.6, rowZ(0) - SPACING * 2.2);
 
   controls = new PointerLockControls(camera, renderer.domElement);
   scene.add(controls.getObject());
@@ -1399,16 +1400,16 @@ function setupRenderer() {
   const key = new THREE.DirectionalLight(0xA78BFA, 0.5); key.position.set(5, 12, 2); scene.add(key);
 
   // floor
-  const floorGeo = new THREE.PlaneGeometry(SPACING * 12, SPACING * 12);
+  const floorGeo = new THREE.PlaneGeometry(SPACING * HALL_SPAN, SPACING * HALL_SPAN);
   const floorMat = new THREE.MeshStandardMaterial({ color: 0x0A0A1E, roughness: 0.9, metalness: 0.1 });
   const floor = new THREE.Mesh(floorGeo, floorMat);
   floor.rotation.x = -Math.PI / 2; floor.position.y = 0; scene.add(floor);
 
-  const grid = new THREE.GridHelper(SPACING * 12, 24, 0x2a2850, 0x16142e);
+  const grid = new THREE.GridHelper(SPACING * HALL_SPAN, HALL_SPAN * 2, 0x2a2850, 0x16142e);
   grid.position.y = 0.01; scene.add(grid);
 }
 
-// ---- build the 10×10 hall (chunked, so the loader can show real progress) -----
+// ---- build the hall (chunked, so the loader can show real progress) -----------
 async function buildWorldChunked() {
   const total = EXHIBITS.length;
   for (let i = 0; i < total; i++) {
@@ -1422,8 +1423,8 @@ async function buildWorldChunked() {
 }
 
 function buildColumn(data) {
-  const x = (data.col - 3.5) * SPACING;
-  const z = (data.row - 3.5) * SPACING;
+  const x = colX(data.col);
+  const z = rowZ(data.row);
   const group = new THREE.Group();
   group.position.set(x, 0, z);
 
@@ -1454,7 +1455,7 @@ function buildColumn(data) {
   const plaque = makePlaque(data);
   plaque.position.set(0, 1.25, -CAGE_R - 0.1);
   plaque.rotation.y = Math.PI;
-  plaque.userData.exhibitIndex = data.row * 8 + data.col;
+  plaque.userData.exhibitIndex = data.index;
   group.add(plaque);
   plaqueMeshes.push(plaque);
 
@@ -1540,7 +1541,7 @@ function ensureBuilt(rt) {
   // THAT to TARGET_R. Since horizontal (x,z) and vertical (y) reach are both ≤ the 3D
   // radius, this guarantees the shape never pokes through the cage on any axis.
   const maxR = Hyperspace.extent(rt.data.id);
-  rt.invScale = maxR > 1e-6 ? TARGET_R / maxR : 1;
+  rt.invScale = maxR > 0 ? TARGET_R / maxR : 1;
 
   const positions = new Float32Array(rt.edgeList.length * 2 * 3);
   const g = new THREE.BufferGeometry();
@@ -1676,7 +1677,7 @@ function updateMovement(dt) {
 
   const o = controls.getObject();
   o.position.y = 1.6;
-  const lim = SPACING * 7.2;
+  const lim = SPACING * (HALL_SPAN / 2 + 1.2);
   o.position.x = Math.max(-lim, Math.min(lim, o.position.x));
   o.position.z = Math.max(-lim, Math.min(lim, o.position.z));
 }

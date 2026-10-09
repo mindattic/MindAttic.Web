@@ -31,7 +31,7 @@
       "type": "js-umd",
       "folder": "Components/Hyperspace",
       "doc": "Components/Hyperspace/Hyperspace.md",
-      "summary": "Standard library of the 100 Hyperspace exhibits (stable ids, plaque metadata, geometry, pure projection for Three.js and 2D canvas) plus the Hyperspace Reader scanner window.",
+      "summary": "Standard library of the 159 Hyperspace exhibits (stable ids, plaque metadata, geometry, pure projection for Three.js and 2D canvas) plus the Hyperspace Reader scanner window.",
       "feeds": []
     },
     {

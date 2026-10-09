@@ -18,6 +18,7 @@ const LIB = path.join(COMPONENT, 'hyperspace.js');
 const HARNESS = pathToFileURL(path.join(COMPONENT, 'index.htm')).href;
 const PAGE_DIR = path.join(SITES_ROOT, 'Hyperspace');
 const PAGE = path.join(PAGE_DIR, 'index.htm');
+const COUNT = 159;   // shapes in the library; update when exhibits are added
 
 // The gallery is WebGL; make sure headless Chrome has a software GL to give it.
 test.use({ launchOptions: { ignoreDefaultArgs: ['--hide-scrollbars'], args: ['--enable-unsafe-swiftshader', '--use-angle=swiftshader'] } });
@@ -33,10 +34,10 @@ test.describe('shape library', () => {
   const H = require(LIB);
 
   test('loads every shape with a complete record and a unique stable id', () => {
-    expect(H.count).toBe(100);
-    expect(H.shapes).toHaveLength(100);
+    expect(H.count).toBe(COUNT);
+    expect(H.shapes).toHaveLength(COUNT);
     const ids = H.ids();
-    expect(new Set(ids).size).toBe(100);
+    expect(new Set(ids).size).toBe(COUNT);
     for (const s of H.shapes) {
       expect(s.id, s.name).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
       expect(H.get(s.id)).toBe(s);
@@ -53,7 +54,7 @@ test.describe('shape library', () => {
       expect(s.row * 10 + s.col).toBe(s.index);
     }
     expect(() => H.get('no-such-shape')).toThrow(RangeError);
-    expect(() => H.get(100)).toThrow(RangeError);
+    expect(() => H.get(COUNT)).toThrow(RangeError);
   });
 
   test('every shape has geometry and projects to finite 2D and 3D coordinates', () => {
@@ -79,6 +80,53 @@ test.describe('shape library', () => {
     expect(problems).toEqual([]);
   });
 
+  test('constructed exhibits draw exactly the vertices and edges their plaques state', () => {
+    const exact = [
+      '10-cube', '10-simplex', '8-orthoplex', '9-orthoplex',
+      'bitruncated-5-cell', 'cantitruncated-5-cell', 'runcitruncated-5-cell', 'omnitruncated-5-cell',
+      'bitruncated-tesseract', 'cantitruncated-tesseract', 'runcitruncated-tesseract', 'omnitruncated-tesseract',
+      'truncated-24-cell', 'bitruncated-24-cell', 'cantitruncated-24-cell', 'runcitruncated-24-cell', 'omnitruncated-24-cell',
+      'grand-antiprism', 'square-antiprismatic-prism', 'pentagonal-antiprismatic-prism',
+      'icosahedral-120-cell', 'small-stellated-120-cell', 'great-120-cell', 'grand-120-cell', 'great-stellated-120-cell',
+      'grand-stellated-120-cell', 'great-grand-120-cell', 'great-icosahedral-120-cell', 'grand-600-cell',
+      'great-grand-stellated-120-cell',
+      'e6-polytope-221', 'e6-polytope-122', 'e7-polytope-321', 'e7-polytope-231', 'e7-polytope-132',
+      '3x4x5-triaprism', '3x3x3x3-tetraprism',
+    ];
+    const wrong = exact.map((id) => {
+      const s = H.get(id), st = H.stats(id);
+      return st.vertices === s.stated.vertices && st.edges === s.stated.edges ? null : `${id}: drew ${st.vertices}V ${st.edges}E, plaque ${s.stated.vertices}V ${s.stated.edges}E`;
+    }).filter(Boolean);
+    expect(wrong).toEqual([]);
+    // the star polychora fall into the four known edge arrangements
+    const edge = (id) => { const g = H.geometry(id), [a, b] = g.edges[0]; return Math.hypot(...g.verts[a].map((x, k) => x - g.verts[b][k])).toFixed(4); };
+    expect(['icosahedral-120-cell', 'great-120-cell', 'grand-120-cell'].map(edge)).toEqual(['0.6180', '0.6180', '0.6180']);
+    expect(['small-stellated-120-cell', 'great-grand-120-cell'].map(edge)).toEqual(['1.0000', '1.0000']);
+    expect(['great-stellated-120-cell', 'grand-stellated-120-cell', 'great-icosahedral-120-cell', 'grand-600-cell'].map(edge))
+      .toEqual(['1.6180', '1.6180', '1.6180', '1.6180']);
+    // E8 Gosset vertex counts from the full Wythoff orbit, before the frame is cut down
+    const { wythoffVerts, diagrams } = H.gen;
+    expect(wythoffVerts(8, diagrams.E8, [1, 0, 0, 0, 0, 0, 0, 0]).length).toBe(2160);
+    expect(wythoffVerts(8, diagrams.E8, [0, 0, 0, 0, 0, 0, 0, 1]).length).toBe(17280);
+  });
+
+  test('family colours stay distinct for normal and red-green colour-blind vision', () => {
+    // OKLab ΔE×100 with the Machado (2009) severity-1 protan/deutan transforms
+    const lin = (h) => [1, 3, 5].map((i) => { const s = parseInt(h.slice(i, i + 2), 16) / 255; return s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4; });
+    const M = { protan: [[0.152286, 1.052583, -0.204868], [0.114503, 0.786281, 0.099216], [-0.003882, -0.048116, 1.051998]],
+      deutan: [[0.367322, 0.860646, -0.227968], [0.280085, 0.672501, 0.047413], [-0.01182, 0.04294, 0.968881]] };
+    const lab = ([r, g, b]) => { const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b), m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b), s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+      return [0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s, 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s, 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s]; };
+    const sim = (h, k) => { const c = lin(h); return k ? M[k].map((row) => Math.min(1, Math.max(0, row[0] * c[0] + row[1] * c[1] + row[2] * c[2]))) : c; };
+    const dE = (a, b, k) => { const p = lab(sim(a, k)), q = lab(sim(b, k)); return 100 * Math.hypot(p[0] - q[0], p[1] - q[1], p[2] - q[2]); };
+    const cols = Object.values(H.families).map((f) => f.color), close = [];
+    for (let i = 0; i < cols.length; i++) for (let j = i + 1; j < cols.length; j++) {
+      if (dE(cols[i], cols[j]) < 15) close.push(`${cols[i]}/${cols[j]} normal`);
+      for (const k of ['protan', 'deutan']) if (dE(cols[i], cols[j], k) < 8) close.push(`${cols[i]}/${cols[j]} ${k}`);
+    }
+    expect(close).toEqual([]);
+  });
+
   test('loads in a browser and draws every shape onto a canvas', async ({ page }) => {
     const errors = trackErrors(page);
     await page.goto(HARNESS);
@@ -95,7 +143,7 @@ test.describe('shape library', () => {
       }
       return { count: H.count, blank };
     });
-    expect(res.count).toBe(100);
+    expect(res.count).toBe(COUNT);
     expect(res.blank).toEqual([]);
     expect(errors).toEqual([]);
   });
@@ -254,7 +302,7 @@ test.describe('Hyperspace page', () => {
     test(`renders its explorers and gallery from the library (${cdn ? 'pinned CDN file' : 'local ../MindAttic.Web.Shared fallback'})`, async ({ browser }) => {
       test.setTimeout(120_000);
       const { ctx, page, errors } = await openPage(browser, { cdn });
-      expect(await page.evaluate(() => [window.Hyperspace && window.Hyperspace.count, typeof window.HyperGallery])).toEqual([100, 'object']);
+      expect(await page.evaluate(() => [window.Hyperspace && window.Hyperspace.count, typeof window.HyperGallery])).toEqual([COUNT, 'object']);
 
       // the field-guide canvases draw
       for (const id of ['heroCanvas', 'sliceCanvas', 'projCanvas', 'ladder2']) {
@@ -266,7 +314,7 @@ test.describe('Hyperspace page', () => {
       }
       expect(await page.locator('#pVtx').textContent()).toBe('32');
 
-      // the gallery boots: all 100 exhibits built, then the Enter button
+      // the gallery boots: every exhibit built, then the Enter button
       await page.evaluate(() => window.HyperGallery.enter());
       await expect(page.locator('#enterBtn')).toBeVisible({ timeout: 90_000 });
       await expect(page.locator('#bootLabel')).toHaveText('Ready');

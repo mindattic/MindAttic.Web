@@ -224,7 +224,7 @@ Status legend: ✅ done (verified) · 🟡 partial · ⬜ planned · living.
   pooled, click-through canvas whose loop stops at idle (flash only under reduced motion). Verified 2026-10-03:
   `tests/specs/sites/mindattic.spec.mjs` (stories MAU-US-E1 to E4) in `npm run test:local`.
 - ✅ **Hyperspace shape library and Hyperspace Reader (`Components/Hyperspace/`).** `hyperspace.js` holds
-  the 100 exhibits of the Hyperspace page (stable ids, plaque metadata, geometry, pure projection for
+  the 159 exhibits of the Hyperspace page (stable ids, plaque metadata, geometry, pure projection for
   Three.js and 2D canvas); the page builds its gallery and explorers from it at a pinned tag, with a
   `../MindAttic.Web.Shared/` fallback when opened from disk. `hyperspace-reader.js` is the scanner window (`HyperspaceReader.show` /
   `close`). It is also the Cyberspace READER effect: `spawnHyperspaceReader(origin)` in `console-bg.js`
