@@ -41,6 +41,17 @@ npm run test:local                     # package + all sites, CDN answered from 
 
 You should see the page with its backdrop and fonts, and the test run end with every test passed.
 
+### Record or screenshot a site
+
+`capture.ps1` opens a site in MindAttic Browser (from [MindAttic.Capture](../MindAttic.Capture/README.md)), served from this folder at `https://<site>.local/`:
+
+```powershell
+.\capture.ps1 ryandebraal.com -capture video          # film from open to close
+.\capture.ps1 Hyperspace -capture screen 5             # a PNG every 5 seconds
+```
+
+Output goes to `R:\MindAttic\Capture\MindAttic.Web\<timestamp>.<ext>`. Page script can also call `window.mindattic.capture.raise('name')` to mark moments.
+
 ## Project layout
 
 ```text
