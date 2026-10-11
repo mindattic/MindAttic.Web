@@ -50,7 +50,7 @@ You should see the page with its backdrop and fonts, and the test run end with e
 .\capture.ps1 Hyperspace -capture screen 5             # a PNG every 5 seconds
 ```
 
-Output goes to `R:\MindAttic\Capture\MindAttic.Web\MindAttic.Web_<timestamp>.<ext>`. Page script can also call `window.mindattic.capture.raise('name')` to mark moments.
+Output goes to `R:\MindAttic\Capture\<site>\<site>_<timestamp>.<ext>` (for example `mindattic.com\mindattic.com_2026-10-11T18.05.00.000.mkv`). Add a duration to cap a run (`-capture video 8h`); disk, memory and encoder limits stop long runs automatically. Page script can also call `window.mindattic.capture.raise('name')` to mark moments.
 
 ## Project layout
 
