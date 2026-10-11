@@ -50,7 +50,7 @@ You should see the page with its backdrop and fonts, and the test run end with e
 .\capture.ps1 Hyperspace -capture screen 5             # a PNG every 5 seconds
 ```
 
-Output goes to `R:\MindAttic\Capture\MindAttic.Web\<timestamp>.<ext>`. Page script can also call `window.mindattic.capture.raise('name')` to mark moments.
+Output goes to `R:\MindAttic\Capture\MindAttic.Web\MindAttic.Web_<timestamp>.<ext>`. Page script can also call `window.mindattic.capture.raise('name')` to mark moments.
 
 ## Project layout
 
