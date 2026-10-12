@@ -7,12 +7,15 @@
 #   .\capture.ps1 mindattic.com -capture video screen 5
 #
 # Output: R:\MindAttic\Capture\<site>\<site>_<timestamp>.<ext> (ISO 8601, ':' as '.'). Pages can also call window.mindattic.capture.raise(...).
-# MindAttic Browser comes from D:\Projects\MindAttic\MindAttic.Capture\tools\install.ps1.
+# MindAttic Browser comes from D:\Projects\MindAttic\MindAttic.Browser\tools\install.ps1.
 param([string]$Site = 'mindattic.com')
 
-$browser = Join-Path $env:LOCALAPPDATA 'MindAttic\Capture\bin\MindAttic.Browser.exe'
-if (-not (Test-Path $browser)) {
-    throw "MindAttic Browser is not installed. Run ..\MindAttic.Capture\tools\install.ps1 first."
+$browser = @(
+    (Join-Path $env:LOCALAPPDATA 'MindAttic\Browser\bin\MindAttic.Browser.exe'),
+    (Join-Path $env:LOCALAPPDATA 'MindAttic\Capture\bin\MindAttic.Browser.exe')   # installs from before the browser had its own repo
+) | Where-Object { Test-Path $_ } | Select-Object -First 1
+if (-not $browser) {
+    throw "MindAttic Browser is not installed. Run ..\MindAttic.Browser\tools\install.ps1 first."
 }
 $folder = Join-Path $PSScriptRoot $Site
 if (-not (Test-Path (Join-Path $folder 'index.htm')) -and -not (Test-Path (Join-Path $folder 'index.html'))) {

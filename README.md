@@ -43,7 +43,7 @@ You should see the page with its backdrop and fonts, and the test run end with e
 
 ### Record or screenshot a site
 
-`capture.ps1` opens a site in MindAttic Browser (from [MindAttic.Capture](../MindAttic.Capture/README.md)), served from this folder at `https://<site>.local/`:
+`capture.ps1` opens a site in [MindAttic Browser](https://github.com/mindattic/MindAttic.Browser), served from this folder at `https://<site>.local/`:
 
 ```powershell
 .\capture.ps1 ryandebraal.com -capture video          # film from open to close
