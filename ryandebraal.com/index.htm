@@ -2271,6 +2271,55 @@ function applyTheme(t) {
   updateThemeSwatch(t);
 }
 
+// Capture demo mode: cycle every theme every 15s with a scroll-down/scroll-up read-through,
+// so a recording of this page shows all of them without anyone touching it.
+(function () {
+  function forced() { return /(?:^|[?&])demo=1(?:&|$)/.test(location.search); }
+  function armed(go) {
+    if (forced()) { go(); return; }
+    var bridge = window.mindattic && window.mindattic.capture;
+    if (!bridge || typeof bridge.status !== 'function') return;
+    // `recording` is the StartRecording/StopRecording on-demand clip toggle, not whether
+    // `-capture video` is actually filming the session — that's `tapeRunning`. The capture
+    // engine also starts asynchronously (window must appear, then hardware encoder probing),
+    // so poll instead of checking once, or a slow-starting recorder means the demo never runs.
+    var tries = 0;
+    (function poll() {
+      bridge.status().then(function (s) {
+        if (s && (s.tapeRunning || s.recording)) { go(); return; }
+        if (++tries < 40) setTimeout(poll, 500);
+      }).catch(function () { if (++tries < 40) setTimeout(poll, 500); });
+    })();
+  }
+  function easeInOutSine(t) { return -(Math.cos(Math.PI * t) - 1) / 2; }
+  var scrollGen = 0;
+  function scrollLeg(from, to, ms) {
+    var gen = ++scrollGen;
+    var start = performance.now();
+    (function step(now) {
+      if (gen !== scrollGen) return;
+      var t = Math.min(1, (now - start) / ms);
+      window.scrollTo(0, from + (to - from) * easeInOutSine(t));
+      if (t < 1) requestAnimationFrame(step);
+    })(start);
+  }
+  function readThrough() {
+    var bottom = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    if (bottom <= 0) return;
+    var leg = themeRotationDuration * 0.4;
+    scrollLeg(0, bottom, leg);
+    setTimeout(function () { scrollLeg(bottom, 0, leg); }, themeRotationDuration * 0.55);
+  }
+  function startDemo() {
+    new MutationObserver(readThrough).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    themeRotationDuration = 15000;
+    setTheme(THEME_ORDER[0]);
+    startThemeRotation();
+    readThrough();
+  }
+  armed(startDemo);
+})();
+
 
 function resetDefaults() {
   try{ localStorage.removeItem('resume-theme'); localStorage.removeItem('resume-profile'); localStorage.removeItem('neko-color'); }catch(e){}

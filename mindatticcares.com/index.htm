@@ -1061,6 +1061,54 @@ hr { border:none; border-top:1px solid #e7e7e7; margin: 28px 0; }
   window.addEventListener('hashchange', fromHash);
   fromHash();
 
+  // Capture demo mode: slowly scroll through each of the 3 pages in turn so a
+  // recording can be read top to bottom, then loop back to the start.
+  (function () {
+    function forced() { return /(?:^|[?&])demo=1(?:&|$)/.test(location.search); }
+    function armed(go) {
+      if (forced()) { go(); return; }
+      var bridge = window.mindattic && window.mindattic.capture;
+      if (!bridge || typeof bridge.status !== 'function') return;
+      // `recording` is the StartRecording/StopRecording on-demand clip toggle, not whether
+      // `-capture video` is actually filming the session — that's `tapeRunning`. The capture
+      // engine also starts asynchronously (window must appear, then hardware encoder probing),
+      // so poll instead of checking once, or a slow-starting recorder means the demo never runs.
+      var tries = 0;
+      (function poll() {
+        bridge.status().then(function (s) {
+          if (s && (s.tapeRunning || s.recording)) { go(); return; }
+          if (++tries < 40) setTimeout(poll, 500);
+        }).catch(function () { if (++tries < 40) setTimeout(poll, 500); });
+      })();
+    }
+    function easeInOutSine(t) { return -(Math.cos(Math.PI * t) - 1) / 2; }
+    function scrollToBottom(ms) {
+      return new Promise(function (resolve) {
+        var doc = document.documentElement;
+        var to = Math.max(0, doc.scrollHeight - window.innerHeight);
+        if (to <= 0) { resolve(); return; }
+        var start = performance.now();
+        (function step(now) {
+          var t = Math.min(1, (now - start) / ms);
+          window.scrollTo(0, to * easeInOutSine(t));
+          if (t < 1) requestAnimationFrame(step); else resolve();
+        })(start);
+      });
+    }
+    function wait(ms) { return new Promise(function (resolve) { setTimeout(resolve, ms); }); }
+    async function runTour() {
+      for (;;) {
+        for (var i = 0; i < pages.length; i++) {
+          show(pages[i]);
+          await wait(800);
+          await scrollToBottom(9000);
+          await wait(1500);
+        }
+      }
+    }
+    armed(runTour);
+  })();
+
   // Lite YouTube: click poster -> swap to iframe (or open YouTube if blocked, e.g. file://)
   document.querySelectorAll('.video[data-yt]').forEach(function(box){
     function play(){

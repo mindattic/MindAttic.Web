@@ -2076,12 +2076,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function (o) { return fx.spawnHyperspaceReader(o); }   // READER    — Hyperspace Reader
   ];
 
-  document.addEventListener('pointerdown', function (e) {
-    if (e.button > 0) return;   // right/middle click: leave the context menu alone
-    if (e.target.closest && e.target.closest('a')) return;
-    var o = { x: e.clientX / window.innerWidth  * 100,
-              y: e.clientY / window.innerHeight * 100 };
-    if (cb.inKeepout && cb.inKeepout(o.x, o.y)) return;
+  function fireRandomEffect(o) {
     try { if (cb.spawnSparkBurst) cb.spawnSparkBurst(o.x, o.y); } catch (err) {}
     // Try the effects in a random order until one spawns.
     var order = effects.slice();
@@ -2092,7 +2087,44 @@ document.addEventListener('DOMContentLoaded', function () {
     for (var k = 0; k < order.length; k++) {
       try { if (order[k](o) !== false) break; } catch (err) {}
     }
+  }
+
+  document.addEventListener('pointerdown', function (e) {
+    if (e.button > 0) return;   // right/middle click: leave the context menu alone
+    if (e.target.closest && e.target.closest('a')) return;
+    var o = { x: e.clientX / window.innerWidth  * 100,
+              y: e.clientY / window.innerHeight * 100 };
+    if (cb.inKeepout && cb.inKeepout(o.x, o.y)) return;
+    fireRandomEffect(o);
   });
+
+  // Capture demo mode: the backdrop already runs itself; just add the occasional
+  // programmatic burst so a recording shows the same variety a real visitor's taps would.
+  (function () {
+    function forced() { return /(?:^|[?&])demo=1(?:&|$)/.test(location.search); }
+    function armed(go) {
+      if (forced()) { go(); return; }
+      var bridge = window.mindattic && window.mindattic.capture;
+      if (!bridge || typeof bridge.status !== 'function') return;
+      // `recording` is the StartRecording/StopRecording on-demand clip toggle, not whether
+      // `-capture video` is actually filming the session — that's `tapeRunning`. The capture
+      // engine also starts asynchronously (window must appear, then hardware encoder probing),
+      // so poll instead of checking once, or a slow-starting recorder means the demo never runs.
+      var tries = 0;
+      (function poll() {
+        bridge.status().then(function (s) {
+          if (s && (s.tapeRunning || s.recording)) { go(); return; }
+          if (++tries < 40) setTimeout(poll, 500);
+        }).catch(function () { if (++tries < 40) setTimeout(poll, 500); });
+      })();
+    }
+    function loop() {
+      var o = { x: 10 + Math.random() * 80, y: 10 + Math.random() * 80 };
+      if (!cb.inKeepout || !cb.inKeepout(o.x, o.y)) fireRandomEffect(o);
+      setTimeout(loop, 4000 + Math.random() * 5000);
+    }
+    armed(loop);
+  })();
 });
 </script>
 

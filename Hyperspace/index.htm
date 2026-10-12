@@ -1271,6 +1271,7 @@ let modalOpen = false;
 let currentExhibit = -1;
 let inited = false, galleryActive = false, running = false;
 let breached = false, breachAlpha = 0; // containment-breach state
+let onGalleryReady = () => {};   // demo mode hooks this to start the autotour once the hall is built
 
 // ---- DOM refs ---------------------------------------------------------------
 const $ = id => document.getElementById(id);
@@ -1364,6 +1365,7 @@ async function init() {
     stopSpinner();
     bootEl.hidden = true;
     enterBtn.hidden = false;
+    onGalleryReady();
   } catch (e) {
     console.error(e);
     stopSpinner();
@@ -1574,6 +1576,7 @@ function animate() {
   const t = clock.elapsedTime;
 
   if (mode === 'fps') updateMovement(dt);
+  else if (mode === 'tour') Autotour.update(t);
 
   // build frustum from current camera
   camera.updateMatrixWorld();
@@ -1862,6 +1865,185 @@ function closeModal() {
   // we're inside a click handler (valid gesture), so try to drop back into first-person
   try { controls.lock(); } catch (_) {}
 }
+
+// ===== Autotour: a visitor walking the gallery, for MindAttic.Capture demo mode =====
+// This is not a camera crane — it is what a person actually does here: walk at eye
+// height from one cage to a nearby one, stop, look at the shape and the plaque, read
+// some of them, occasionally step sideways to see a piece from another angle, move on.
+// Position and gaze are pure functions of each shot's own progress (0..1), eased, never
+// damped or noise-driven, so the motion holds still and reads cleanly on camera. What's
+// different every run is the *route* — which exhibits, which order, who gets read,
+// chosen fresh every time the walker runs out of plan — so no two recordings match.
+const Autotour = (function () {
+  let shots = [], shotIndex = 0, shotStartT = 0, active = false;
+  const tmpMat = new THREE.Matrix4();
+  const EYE_Y = 1.6;        // exactly the real player's eye height — no floating, no craning up
+  const WALK_SPEED = 3.2;   // units/s: a deliberate, watchable walking pace
+
+  function easeInOutCubic(u) { return u < 0.5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2; }
+  function rand(min, max) { return min + Math.random() * (max - min); }
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function vec(x, y, z) { return new THREE.Vector3(x, y, z); }
+  function lookPoint(rt) { return vec(rt.center2d.x, 1.9, rt.center2d.z); }   // between plaque and shape
+  function standPoint(rt) { return vec(rt.center2d.x, EYE_Y, rt.center2d.z - CAGE_R - rand(2.2, 3.0)); }
+  function aim(pos, look) {
+    camera.position.copy(pos);
+    tmpMat.lookAt(pos, look, camera.up);
+    camera.quaternion.setFromRotationMatrix(tmpMat);
+  }
+  function neighborsOf(rt, visited) {
+    return exhibits.filter(o => o !== rt && !visited.has(o) &&
+      Math.abs(o.data.row - rt.data.row) <= 1 && Math.abs(o.data.col - rt.data.col) <= 1);
+  }
+
+  // Walk from one spot to the next at a steady human pace, looking toward whatever is
+  // being approached the whole way — exactly how a person actually crosses a room.
+  // A very slight natural waver in the path; nothing like a sweeping arc.
+  function walkShot(fromVec, toVec, lookVec) {
+    const dist = fromVec.distanceTo(toVec);
+    const duration = Math.max(1.6, dist / WALK_SPEED);
+    const mid = fromVec.clone().lerp(toVec, 0.5);
+    const perp = vec(-(toVec.z - fromVec.z), 0, toVec.x - fromVec.x).normalize().multiplyScalar(rand(-0.6, 0.6));
+    mid.add(perp);
+    mid.y = EYE_Y;
+    const curve = new THREE.CatmullRomCurve3([fromVec, mid, toVec]);
+    return {
+      duration,
+      run(u) {
+        const pos = curve.getPoint(easeInOutCubic(u));
+        pos.y = EYE_Y;
+        aim(pos, lookVec);
+      },
+    };
+  }
+
+  // Stand in front of an exhibit and look at it — the "visitor reading a plaque" beat.
+  // Sometimes opens the article partway through, the way actually clicking it would,
+  // and closes it again before moving on.
+  function readShot(rt, duration, openArticle) {
+    const pos = standPoint(rt);
+    const look = lookPoint(rt);
+    const openAt = duration * rand(0.3, 0.45), closeAt = duration * rand(0.75, 0.9);
+    let opened = false, closed = false;
+    return {
+      duration,
+      run(u, elapsed) {
+        aim(pos, look);
+        if (!openArticle) return;
+        if (!opened && elapsed >= openAt) { opened = true; openModal(rt.data.index); }
+        if (opened && !closed && elapsed >= closeAt) { closed = true; closeModalForTour(); }
+      },
+    };
+  }
+
+  // A couple of sideways steps while still facing the exhibit — sizing it up from a
+  // slightly different angle, the way a person actually strafes to peek around
+  // something. Not a camera orbiting it.
+  function strafeShot(rt, duration) {
+    const base = standPoint(rt);
+    const side = pick([-1, 1]) * rand(1.1, 1.8);
+    const look = lookPoint(rt);
+    return {
+      duration,
+      run(u) { aim(vec(base.x + side * Math.sin(u * Math.PI), EYE_Y, base.z), look); },
+    };
+  }
+
+  // Like closeModal(), but never requests pointer lock — the tour is never locked.
+  function closeModalForTour() {
+    confirmEl.classList.remove('show');
+    modalEl.classList.remove('show');
+    modalOpen = false;
+    currentExhibit = -1;
+  }
+
+  // A different walk through the hall every time: start where the camera actually is,
+  // then wander to nearby exhibits (occasionally a longer walk to a fresh area once the
+  // neighborhood is explored), stopping to look — and often read — at most of them.
+  function buildRoute(fromPos) {
+    const route = [];
+    const visited = new Set();
+    let current = exhibits.reduce((best, rt) => {
+      const d = standPoint(rt).distanceTo(fromPos);
+      return (!best || d < best.d) ? { rt, d } : best;
+    }, null).rt;
+    let pos = fromPos;
+    const stops = Math.floor(rand(10, 16));
+    for (let i = 0; i < stops; i++) {
+      visited.add(current);
+      const stand = standPoint(current), look = lookPoint(current);
+      route.push(walkShot(pos, stand, look));
+      const behavior = Math.random();
+      if (behavior < 0.15) {
+        route.push(readShot(current, rand(1.5, 2.5), false));             // a brief glance in passing
+      } else if (behavior < 0.45) {
+        route.push(readShot(current, rand(4, 6.5), true));                // stop and actually read it
+        if (Math.random() < 0.4) route.push(strafeShot(current, rand(2.5, 3.5)));
+      } else {
+        route.push(readShot(current, rand(3, 5), false));                 // stop and look, don't open it
+      }
+      pos = stand;
+      const near = neighborsOf(current, visited);
+      current = (near.length && Math.random() < 0.8) ? pick(near) : (pick(exhibits.filter(o => !visited.has(o))) || pick(exhibits));
+    }
+    return route;
+  }
+
+  function start() {
+    mode = 'tour';
+    startEl.classList.add('hide');
+    hideMenu();
+    crossEl.classList.remove('show');
+    if (touchUIEl) touchUIEl.classList.remove('show');
+    hudName.textContent = '';
+    shots = buildRoute(vec(0, EYE_Y, rowZ(0) - SPACING * 2.2));   // the real spawn point
+    shotIndex = 0;
+    shotStartT = clock.elapsedTime;
+    active = true;
+  }
+
+  function update(t) {
+    if (!active) return;
+    // Accumulate shotStartT by whole elapsed shots rather than resetting it to "now": if a
+    // slow frame lets real time run past more than one shot's duration, this walks through
+    // them in order (skipping a beat's visuals, never its position), so the camera is always
+    // exactly where that much walking time puts it — never a position jump.
+    while (t - shotStartT >= shots[shotIndex].duration) {
+      shotStartT += shots[shotIndex].duration;
+      shotIndex++;
+      if (shotIndex >= shots.length) { shots = buildRoute(camera.position.clone()); shotIndex = 0; }   // keep walking from here, no teleport
+    }
+    const elapsed = t - shotStartT;
+    shots[shotIndex].run(Math.min(1, elapsed / shots[shotIndex].duration), elapsed);
+  }
+
+  return { start, update };
+})();
+
+// Capture demo mode: walk the gallery like a visitor, differently every time.
+(function () {
+  function forced() { return /(?:^|[?&])demo=1(?:&|$)/.test(location.search); }
+  function armed(go) {
+    if (forced()) { go(); return; }
+    var bridge = window.mindattic && window.mindattic.capture;
+    if (!bridge || typeof bridge.status !== 'function') return;
+    // `recording` is the StartRecording/StopRecording on-demand clip toggle, not whether
+    // `-capture video` is actually filming the session — that's `tapeRunning`. The capture
+    // engine also starts asynchronously (window must appear, then hardware encoder probing),
+    // so poll instead of checking once, or a slow-starting recorder means the demo never runs.
+    var tries = 0;
+    (function poll() {
+      bridge.status().then(function (s) {
+        if (s && (s.tapeRunning || s.recording)) { go(); return; }
+        if (++tries < 40) setTimeout(poll, 500);
+      }).catch(function () { if (++tries < 40) setTimeout(poll, 500); });
+    })();
+  }
+  armed(function () {
+    onGalleryReady = function () { Autotour.start(); };
+    setTimeout(function () { HyperGallery.enter(); }, 1800);
+  });
+})();
 
 </script>
 </body>
