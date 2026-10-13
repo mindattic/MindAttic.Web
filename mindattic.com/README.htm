@@ -6,7 +6,7 @@
 <title>mindattic.com</title>
 <meta name="description" content="Ryan DeBraal's front door: one hand-authored HTML page with the MindAttic wordmark, three links and a tap-to-play Cyberspace backdrop, with no build step, no framework and no tracking.">
 <meta name="generator" content="MindAttic Codex build-readme.ps1">
-<meta name="generated" content="2026-10-07">
+<meta name="generated" content="2026-10-13">
 <style>:root{
   --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
   --border:#30363d;
@@ -112,7 +112,7 @@ pre:hover .cpbtn{opacity:1}
   <main id="content">
 <h1 id="mindatticcom">mindattic.com</h1>
 <p>Ryan DeBraal's front door: one hand-authored HTML page with the MindAttic wordmark, three links and a tap-to-play Cyberspace backdrop, with no build step, no framework and no tracking.</p>
-<p><a href="index.htm"><img src="https://img.shields.io/badge/HTML5-hand--authored-e34f26" alt="HTML5"></a> <a href="index.htm"><img src="https://img.shields.io/badge/CSS3-custom%20properties-1572b6" alt="CSS3"></a> <a href="index.htm"><img src="https://img.shields.io/badge/JavaScript-vanilla-f7df1e" alt="JavaScript"></a> <a href="https://github.com/mindattic/MindAttic.Web/tree/main/MindAttic.Web.Shared"><img src="https://img.shields.io/badge/assets-MindAttic.Web.Shared-6c5ce7" alt="Assets"></a> <a href="https://mindattic.com"><img src="https://img.shields.io/badge/status-live-2ea043" alt="Status"></a></p>
+<p><a href="index.htm"><img src="https://img.shields.io/badge/HTML5-hand--authored-e34f26" alt="HTML5"></a> <a href="index.htm"><img src="https://img.shields.io/badge/CSS3-custom%20properties-1572b6" alt="CSS3"></a> <a href="index.htm"><img src="https://img.shields.io/badge/JavaScript-vanilla-f7df1e" alt="JavaScript"></a> <a href="https://github.com/mindattic/MindAttic.Components/tree/main/web"><img src="https://img.shields.io/badge/assets-MindAttic.Components-6c5ce7" alt="Assets"></a> <a href="https://mindattic.com"><img src="https://img.shields.io/badge/status-live-2ea043" alt="Status"></a></p>
 <p><img src="docs/images/home-cyberspace.png" alt="The mindattic.com home page: the MindAttic wordmark above three red-outlined buttons (Résumé, GitHub, MindAttic Cares) on the dark Cyberspace backdrop, with two faint console windows drifting behind them"></p>
 <p>Try it: <a href="https://mindattic.com">mindattic.com</a></p>
 <h2 id="why">Why</h2>
@@ -149,8 +149,8 @@ pre:hover .cpbtn{opacity:1}
 <td>Text can't be highlighted (<code>user-select: none</code>), long-press shows no iOS copy bubble and taps don't flash a highlight box. Links and keyboard focus still work</td>
 </tr>
 <tr>
-<td>Cyberspace block</td>
-<td>The backdrop (circuit-board parallax, scanlines, console windows), spliced in by the MindAttic.Web.Shared sync</td>
+<td>Component blocks</td>
+<td>The fonts, the button style, the capture demo and the Cyberspace backdrop (circuit-board parallax, scanlines, console windows), spliced in from MindAttic.Components by its <code>build-sites</code> build</td>
 </tr>
 <tr>
 <td>Tap script</td>
@@ -173,18 +173,18 @@ start http://localhost:3457/index.htm</code></pre>
 <p>You should see the wordmark and three buttons over the dark Cyberspace backdrop. Tap the background to set off a quiet tap hint and an effect at that spot. The <code>/run</code> Claude Code skill does the same thing.</p>
 <p>The page fetches no local data, so opening <code>index.htm</code> directly works too.</p>
 <h2 id="stack">Stack</h2>
-<p><code>HTML5</code>, <code>CSS3</code> (custom properties, <code>dvmin</code>-based sizing, dark "Cyberspace" palette only, see <a href="docs/BIBLE.md#MAC-LAW-5">LAW-5</a>), one small vanilla JavaScript snippet, and the shared Cyberspace bundle from <code>MindAttic.Web.Shared</code>.</p>
-<p>No React. No Vite. No npm. No analytics, tracking pixels or third-party fonts. The only external host is <code>cdn.jsdelivr.net</code>, serving the <code>MindAttic.Web.Shared</code> repo (<a href="docs/BIBLE.md#MAC-LAW-6">LAW-6</a>).</p>
+<p><code>HTML5</code>, <code>CSS3</code> (custom properties, <code>dvmin</code>-based sizing, dark "Cyberspace" palette only, see <a href="docs/BIBLE.md#MAC-LAW-5">LAW-5</a>), one small vanilla JavaScript snippet, and the shared Cyberspace bundle from <code>MindAttic.Components</code>.</p>
+<p>No React. No Vite. No npm. No analytics, tracking pixels or third-party fonts. The only external host is <code>cdn.jsdelivr.net</code>, serving the <code>MindAttic.Components</code> repo (<a href="docs/BIBLE.md#MAC-LAW-6">LAW-6</a>).</p>
 <h2 id="where-the-assets-live">Where the assets live</h2>
-<p>The assets are not in this folder and not in the HTML. Fonts (Outfit, Attic), the logo PNGs, the Cyberspace effects engine and its parallax textures are plain static files in <code>MindAttic.Web.Shared</code>, the shared package folder next to this one in the <a href="https://github.com/mindattic/MindAttic.Web">MindAttic.Web</a> monorepo, served over jsDelivr at a tag-pinned URL:</p>
-<pre><code class="language-text">https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V&lt;n&gt;/MindAttic.Web.Shared/&lt;path&gt;</code></pre>
+<p>The assets are not in this folder and not in the HTML. Fonts (Outfit, Attic), the logo PNGs, the Cyberspace effects engine and its parallax textures are plain static files in the <code>web/</code> folder of <a href="https://github.com/mindattic/MindAttic.Components">MindAttic.Components</a>, a sibling repo of MindAttic.Web, served over jsDelivr at a tag-pinned URL:</p>
+<pre><code class="language-text">https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V&lt;n&gt;/web/&lt;path&gt;</code></pre>
 <p><code>&lt;head&gt;</code> opens the connection early (<code>preconnect</code>) and preloads the first-paint fonts. The two big engine scripts are <code>defer</code>red so they never block the first paint.</p>
-<p>Release tags on MindAttic.Web are immutable whole numbers (<code>V12</code>, <code>V13</code>, and so on). The page pins the release tag the linked deploy sets: the deploy rewrites every <code>MindAttic.Web@V…/MindAttic.Web.Shared/</code> URL in <code>index.htm</code> to that tag, and passes the same tag to the sync script's <code>-CyberspaceCdnTag</code> for the Cyberspace block (run by hand, the script defaults to the latest <code>V*</code> tag in the MindAttic.Web checkout). Never point the page at <code>@main</code>.</p>
-<p>Layout of the package (full rules in <code>MindAttic.Web.Shared/docs/ASSETS.md</code>):</p>
+<p>Release tags on MindAttic.Components are immutable whole numbers (<code>V1</code>, <code>V2</code>, <code>V3</code>, and so on). The page pins the release tag the linked deploy sets: the deploy rewrites every <code>MindAttic.Components@V…/web/</code> URL in <code>index.htm</code> to that tag, and passes the same tag to <code>build-sites.ps1 -Tag</code> for the component blocks (run by hand, the build uses <code>cdnTag</code> from <code>web/sites.json</code>). Never point the page at <code>@main</code>.</p>
+<p>Layout of the package (full rules in <code>MindAttic.Components/docs/web/ASSETS.md</code>):</p>
 <ul>
-<li>Shared fonts at the package root: <code>fonts/outfit/</code>, <code>fonts/attic/</code>.</li>
-<li>Site-specific files directly under the domain folder as <code>&lt;domain&gt;/&lt;category&gt;/</code> (this site: <code>mindattic.com/logos/</code>).</li>
-<li>Cyberspace textures at <code>Components/Cyberspace/assets/</code>.</li>
+<li>Fonts live with their font components: <code>components/OutfitFont/fonts/</code>, <code>components/AtticFont/fonts/</code>.</li>
+<li>Site-specific files under <code>assets/&lt;domain&gt;/&lt;category&gt;/</code> (this site: <code>assets/mindattic.com/logos/</code>).</li>
+<li>Cyberspace textures at <code>components/Cyberspace/assets/</code>.</li>
 <li>Filenames are lowercase kebab-case.</li>
 </ul>
 <h2 id="project-layout">Project layout</h2>
@@ -204,15 +204,15 @@ start http://localhost:3457/index.htm</code></pre>
 │                              #   quickload-on-do)
 ├── .prose/                    # Provider-neutral aliases of the same commands
 └── README.md                  # This file</code></pre>
-<p>This folder sits in the <a href="https://github.com/mindattic/MindAttic.Web">MindAttic.Web</a> monorepo next to <code>MindAttic.Web.Shared</code>, <code>ryandebraal.com</code>, <code>mindatticcares.com</code> and <code>Hyperspace</code>. It has no deploy script and no FTP settings. Deployment lives in the sibling MindAttic.Deploy repo (see <a href="#deployment">Deployment</a>).</p>
+<p>This folder sits in the <a href="https://github.com/mindattic/MindAttic.Web">MindAttic.Web</a> repo next to <code>ryandebraal.com</code>, <code>mindatticcares.com</code> and <code>Hyperspace</code>; its shared assets come from the sibling MindAttic.Components repo. It has no deploy script and no FTP settings. Deployment lives in the sibling MindAttic.Deploy repo (see <a href="#deployment">Deployment</a>).</p>
 <h2 id="editing-the-page">Editing the page</h2>
-<p>The only region you must not hand-edit is the <code>BEGIN/END MINDATTIC.UIUX:CYBERSPACE</code> block: the next MindAttic.Web.Shared sync overwrites it (<a href="docs/BIBLE.md#MAC-LAW-2">LAW-2</a>).</p>
+<p>The regions you must not hand-edit are the <code>BEGIN/END MINDATTIC.COMPONENTS:&lt;X&gt;</code> blocks (<code>FONTS</code>, <code>BUTTON</code>, <code>CAPTUREDEMO</code>, <code>CYBERSPACE</code>): the next MindAttic.Components build overwrites them (<a href="docs/BIBLE.md#MAC-LAW-2">LAW-2</a>).</p>
 <h3 id="change-a-link-or-the-wordmark">Change a link or the wordmark</h3>
 <p>Edit the three <code>&lt;a class="link-btn"&gt;</code> anchors (or the <code>&lt;h1 id="site-name"&gt;</code>) near the end of <code>index.htm</code>. Keep <code>target="_blank" rel="noopener noreferrer"</code> on the links. The layout adapts on its own: the buttons are equal width and span exactly the wordmark's width.</p>
 <h3 id="take-a-new-asset-release">Take a new asset release</h3>
-<p>Add or change the file in <code>MindAttic.Web.Shared</code>, commit it, then run the linked deploy (see <a href="#deployment">Deployment</a>): it tags the next whole-number release, rewrites every pin in <code>index.htm</code> to it, re-runs the Cyberspace sync with that tag and checks every URL is live on jsDelivr before anything is uploaded. Do not hand-edit the tag numbers.</p>
-<h3 id="cyberspace-the-only-synced-component">Cyberspace, the only synced component</h3>
-<p>The sync is not run on its own from this folder. It happens during a deploy, through <code>MindAttic.Web.Shared/sync/sync-mindattic-com.ps1</code> (in the same monorepo), which rewrites only the <code>CYBERSPACE</code> marker block. Cyberspace is the only MindAttic.Web.Shared component this site subscribes to: the fonts and logo load straight from the CDN.</p>
+<p>Add or change the file in <code>MindAttic.Components/web</code>, commit it, then run the linked deploy (see <a href="#deployment">Deployment</a>): it tags the next whole-number release, rewrites every pin in <code>index.htm</code> to it, re-runs the component build with that tag and checks every URL is live on jsDelivr before anything is uploaded. Do not hand-edit the tag numbers.</p>
+<h3 id="the-spliced-component-blocks">The spliced component blocks</h3>
+<p>The build is not run on its own from this folder. It happens during a deploy, through <code>MindAttic.Components/web/build/build-sites.ps1 -Site mindattic.com</code> (configured in that repo's <code>web/sites.json</code>), which rewrites only the <code>MINDATTIC.COMPONENTS</code> marker blocks. The font files, the logo and the large Cyberspace scripts load straight from the CDN; the blocks reference them by tag-pinned URL.</p>
 <h2 id="the-idiotproof-folder">The idiotproof folder</h2>
 <p><a href="https://github.com/mindattic/IdiotProof">IdiotProof</a> is one of the <code>MindAttic.*</code> ecosystem software projects: a tool that connects to a brokerage account (Alpaca) to author and evaluate trading strategies and, optionally, place orders. Its project page is its GitHub README.</p>
 <p>What does live in this folder, under <code>idiotproof/</code>, is the small set of static support pages that ship to <code>/idiotproof/</code> on the same domain:</p>
@@ -248,12 +248,12 @@ start http://localhost:3457/index.htm</code></pre>
 <pre><code class="language-powershell">cd D:\Projects\MindAttic\MindAttic.Deploy
 npm run deploy -- --site mindattic.com</code></pre>
 <p>The pipeline is owned entirely by the sibling MindAttic.Deploy repo (<a href="docs/BIBLE.md#MAC-LAW-4">LAW-4</a>).</p>
-<p>It is a linked deploy: the shared package and all four sites live in one git repo, MindAttic.Web, so deploying this site also publishes <code>MindAttic.Web.Shared</code> and deploys <code>ryandebraal.com</code>, <code>mindatticcares.com</code> and <code>Hyperspace</code> (see <code>MindAttic.Deploy/README.md</code>, "Linked deploy"):</p>
+<p>It is a linked deploy: the four sites live in MindAttic.Web and the shared package in MindAttic.Components, so deploying this site also publishes <code>MindAttic.Components</code> and deploys <code>ryandebraal.com</code>, <code>mindatticcares.com</code> and <code>Hyperspace</code> (see <code>MindAttic.Deploy/README.md</code>, "Linked deploy"):</p>
 <ol>
-<li>Preflight: MindAttic.Web must be clean, on <code>main</code> and not behind origin, with a current asset manifest.</li>
-<li>Works out the next whole-number tag (<code>V&lt;n&gt;</code>).</li>
-<li>Rewrites the pins in every site page to that tag, runs this site's hook <code>sync-mindattic-com.ps1 -CyberspaceCdnTag &lt;tag&gt;</code> to splice the Cyberspace block, and stamps the <code>Last Updated</code> comment at the top of each page.</li>
-<li>Commits those changes as "Pin MindAttic.Web.Shared V&lt;n&gt;", tags that commit, and pushes <code>main</code> and the tag.</li>
+<li>Preflight: MindAttic.Components and MindAttic.Web must be clean, on <code>main</code> and not behind origin, with a current asset manifest.</li>
+<li>Works out the next whole-number tag (<code>V&lt;n&gt;</code>) of MindAttic.Components.</li>
+<li>Rewrites the pins in every site page to that tag, runs this site's hook <code>build-sites.ps1 -Site mindattic.com -Tag &lt;tag&gt;</code> to splice the component blocks, and stamps the <code>Last Updated</code> comment at the top of each page.</li>
+<li>Commits those changes in MindAttic.Web as "Pin MindAttic.Components V&lt;n&gt;", tags MindAttic.Components' <code>HEAD</code>, and pushes both repos' <code>main</code> and the tag.</li>
 <li>Verifies every asset the sites use is live on jsDelivr at that tag, byte-exact, before anything is uploaded.</li>
 <li>FTPS-uploads the sites in order: <code>ryandebraal.com</code>, <code>mindatticcares.com</code>, <code>Hyperspace</code> (to <code>/mindattic.com/hyperspace/</code>), then this site's <code>index.htm</code> to <code>/mindattic.com/</code>.</li>
 </ol>
@@ -265,13 +265,13 @@ npm run deploy -- --site mindattic.com</code></pre>
 <p>The server holds static files only. Its <code>/mindattic.com/</code> folder is the docroot: <code>index.htm</code> and <code>idiotproof/</code> from this folder, <code>hyperspace/</code> from the <code>Hyperspace</code> folder of MindAttic.Web (all uploaded by MindAttic.Deploy), and a hand-placed <code>.htaccess</code> that is not in the repo. That <code>.htaccess</code> forces HTTPS, redirects <code>www.mindattic.com</code> to <code>mindattic.com</code>, and 301-redirects project URLs of the form <code>/&lt;slug&gt;.htm</code> to the matching GitHub repo, so each project's page is its GitHub README. Details: <a href="docs/BIBLE.md#MAC-§4.4">BIBLE §4.4</a>.</p>
 <h2 id="conventions">Conventions</h2>
 <ul>
-<li>Asset URLs: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V&lt;n&gt;/MindAttic.Web.Shared/&lt;path&gt;</code>, tag-pinned, whole-number tags, never <code>@main</code>.</li>
-<li>Asset layout in <code>MindAttic.Web.Shared</code>: shared fonts at the root (<code>fonts/&lt;family&gt;/</code>), per-site files at <code>&lt;domain&gt;/&lt;category&gt;/</code> (no <code>assets/</code> level), kebab-case filenames, variant last (<code>m-monogram-transparent.png</code>).</li>
+<li>Asset URLs: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V&lt;n&gt;/web/&lt;path&gt;</code>, tag-pinned, whole-number tags, never <code>@main</code>.</li>
+<li>Asset layout in <code>MindAttic.Components/web</code>: fonts with their components (<code>components/&lt;Font&gt;/fonts/</code>), per-site files at <code>assets/&lt;domain&gt;/&lt;category&gt;/</code>, kebab-case filenames, variant last (<code>m-monogram-transparent.png</code>).</li>
 <li>Page CSS: IDs for singletons (<code>#content</code>, <code>#site-name</code>, <code>#site-footer</code>); classes for reusable pieces (<code>.lockup</code>, <code>.link-row</code>, <code>.link-btn</code>); sizing chain <code>--u</code> to <code>--wm</code> to <code>--btn-u</code>; lengths in <code>rem</code> or <code>dvmin</code>, or multiples of those variables.</li>
 </ul>
 <p>The full list is <a href="docs/BIBLE.md#MAC-§10">BIBLE §10</a>.</p>
 <h2 id="testing">Testing</h2>
-<p>There is no compiler or unit-test suite in this folder: it is a static HTML page. "Verified" here means the file loads as HTML, the page's markup is present as documented, and <code>codex doctor</code> passes clean. The shared Playwright suite in <code>MindAttic.Web.Shared/tests</code> (same monorepo; <code>npm run test:local</code> there) loads this page in Chrome and covers the linked sites.</p>
+<p>There is no compiler or unit-test suite in this folder: it is a static HTML page. "Verified" here means the file loads as HTML, the page's markup is present as documented, and <code>codex doctor</code> passes clean. The shared Playwright suite in <code>MindAttic.Components/web/tests/package</code> (sibling repo; <code>npm run test:local</code> there) loads this page in Chrome and covers the linked sites.</p>
 <pre><code class="language-powershell">powershell -NoProfile -ExecutionPolicy Bypass -File tools\codex.ps1 doctor   # validate docs/
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\codex.ps1 digest   # regenerate the digest
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1   # regenerate README.htm</code></pre>
@@ -312,9 +312,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1   # r
 <h2 id="license">License</h2>
 <p>This folder has no LICENSE file. All rights reserved.</p>
 <hr>
-<p>Part of <a href="https://mindattic.com">MindAttic</a> — see more projects at <a href="https://github.com/mindattic">github.com/mindattic</a>. Lives in <a href="https://github.com/mindattic/MindAttic.Web">MindAttic.Web</a> with <a href="https://github.com/mindattic/MindAttic.Web/tree/main/ryandebraal.com">ryandebraal.com</a>, <a href="https://github.com/mindattic/MindAttic.Web/tree/main/mindatticcares.com">mindatticcares.com</a>, <a href="https://github.com/mindattic/MindAttic.Web/tree/main/Hyperspace">Hyperspace</a> and <a href="https://github.com/mindattic/MindAttic.Web/tree/main/MindAttic.Web.Shared">MindAttic.Web.Shared</a>. Deployed by <a href="https://github.com/mindattic/MindAttic.Deploy">MindAttic.Deploy</a>.</p>
+<p>Part of <a href="https://mindattic.com">MindAttic</a> — see more projects at <a href="https://github.com/mindattic">github.com/mindattic</a>. Lives in <a href="https://github.com/mindattic/MindAttic.Web">MindAttic.Web</a> with <a href="https://github.com/mindattic/MindAttic.Web/tree/main/ryandebraal.com">ryandebraal.com</a>, <a href="https://github.com/mindattic/MindAttic.Web/tree/main/mindatticcares.com">mindatticcares.com</a> and <a href="https://github.com/mindattic/MindAttic.Web/tree/main/Hyperspace">Hyperspace</a>; its shared assets come from <a href="https://github.com/mindattic/MindAttic.Components">MindAttic.Components</a>. Deployed by <a href="https://github.com/mindattic/MindAttic.Deploy">MindAttic.Deploy</a>.</p>
 
-    <p class="codex-footer">Generated 2026-10-07 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
+    <p class="codex-footer">Generated 2026-10-13 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
   </main>
 </div>
 <script>(function(){

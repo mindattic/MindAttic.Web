@@ -2,7 +2,7 @@
 
 A single-page field guide to what a hyperdimensional object would look like passing through our world: interactive hypercube slices and projections, then a walkable 3D gallery of 159 higher-dimensional exhibits.
 
-![HTML](https://img.shields.io/badge/HTML-single%20file-E34F26) ![Three.js 0.160.0](https://img.shields.io/badge/Three.js-0.160.0-black) ![Shapes MindAttic.Web.Shared](https://img.shields.io/badge/shapes-MindAttic.Web.Shared-E84D3D) ![Status live](https://img.shields.io/badge/status-live-brightgreen)
+![HTML](https://img.shields.io/badge/HTML-single%20file-E34F26) ![Three.js 0.160.0](https://img.shields.io/badge/Three.js-0.160.0-black) ![Shapes MindAttic.Components](https://img.shields.io/badge/shapes-MindAttic.Components-E84D3D) ![Status live](https://img.shields.io/badge/status-live-brightgreen)
 
 ![Hyperspace landing screen: What a Hyperdimensional object looks like passing through our world, with an Enter the Gallery button](docs/images/hero.png)
 
@@ -15,7 +15,7 @@ Try it: [mindattic.com/hyperspace](https://mindattic.com/hyperspace/)
 - Watch a penteract's 32 vertices and 80 edges crowd into our space, and toggle its ten independent planes of rotation.
 - Walk through 159 higher-dimensional objects in a 3D gallery, each with a plaque to read.
 - Open one file in any browser: no build, no install, no account.
-- Reuse the same 159 shapes anywhere: they live in a standard shape library in [MindAttic.Web.Shared](https://github.com/mindattic/MindAttic.Web/tree/main/MindAttic.Web.Shared), the shared package next to this folder in the MindAttic.Web repo, which the Cyberspace backdrop's Hyperspace Reader also draws from.
+- Reuse the same 159 shapes anywhere: they live in a standard shape library in [MindAttic.Components](https://github.com/mindattic/MindAttic.Components/tree/main/web/components/Hyperspace), the shared package in the sibling MindAttic.Components repo, which the Cyberspace backdrop's Hyperspace Reader also draws from.
 
 ## Features
 
@@ -42,7 +42,7 @@ python -m http.server 8000
 
 Then open `http://localhost:8000/Hyperspace/index.htm`. You should see the landing screen above; scroll down for the explorers, or click Enter the Gallery.
 
-Opening `index.htm` straight from disk also works. The shapes load from the CDN; if that file cannot be fetched (offline, or the pinned tag is not published yet), the page loads them from `../MindAttic.Web.Shared/Components/Hyperspace/hyperspace.js`, which every MindAttic.Web checkout has next to this folder.
+Opening `index.htm` straight from disk also works. The shapes load from the CDN; if that file cannot be fetched (offline, or the pinned tag is not published yet), the page loads them from `../../MindAttic.Components/web/components/Hyperspace/hyperspace.js`, which a MindAttic.Components checkout next to your MindAttic.Web checkout provides.
 
 Gallery controls:
 
@@ -61,41 +61,41 @@ Gallery controls:
 index.htm  (the only file in this folder: HTML, CSS and JavaScript)
   |-- Field guide: hero canvas, slice explorer, projection explorer, witness notes
   |-- Gallery: Three.js scene, pointer-lock controls (inlined), touch sticks
-  |-- hyperspace.js from MindAttic.Web@V<n>/MindAttic.Web.Shared on jsDelivr (fallback: ../MindAttic.Web.Shared/...)
+  |-- hyperspace.js from MindAttic.Components@V<n>/web on jsDelivr (fallback: ../../MindAttic.Components/web/...)
   |     `-- window.Hyperspace: the 159 exhibits as data (id, geometry generator, rotation planes,
   |         plaque facts, article, references) plus pure nD rotation and projection
   `-- three.min.js 0.160.0 from jsDelivr; Google Fonts (Space Grotesk, Space Mono, Inter)
 ```
 
 The page keeps the engine: the explorers' cross-section maths, the Three.js hall, the controls and the
-article modal. The shapes are the [Hyperspace component](https://github.com/mindattic/MindAttic.Web/blob/main/MindAttic.Web.Shared/Components/Hyperspace/Hyperspace.md)
-of MindAttic.Web.Shared. The gallery takes each exhibit from `Hyperspace.shapes` (in order, 10 per row), gets
+article modal. The shapes are the [Hyperspace component](https://github.com/mindattic/MindAttic.Components/blob/main/web/components/Hyperspace/Hyperspace.md)
+of MindAttic.Components. The gallery takes each exhibit from `Hyperspace.shapes` (in order, 10 per row), gets
 its wireframe from `Hyperspace.geometry(id)`, its cage-fitting scale from `Hyperspace.extent(id)` and each
 frame's pose from `Hyperspace.pose(id, t)`; the explorers take their n-cubes from `Hyperspace.gen.nCube`
 and project with `Hyperspace.projectDown`. To change a shape, its facts or its article, edit
-`hyperspace.js` in MindAttic.Web.Shared and run the linked deploy, which tags the release and repins it here.
+`hyperspace.js` in MindAttic.Components and run the linked deploy, which tags the release and repins it here.
 
 ## Deployment
 
 The page is published at [mindattic.com/hyperspace](https://mindattic.com/hyperspace/). `index.htm` is the whole site; there is no build step. It pins the shape library to the release tag the linked deploy sets.
 
-Hyperspace is a member of MindAttic.Deploy's permanently linked group `mindattic-web` (MindAttic.Web.Shared, ryandebraal.com, mindatticcares.com, Hyperspace and mindattic.com, all in the MindAttic.Web repo). Deploy it with:
+Hyperspace is a member of MindAttic.Deploy's permanently linked group `mindattic-web` (the MindAttic.Components package, plus ryandebraal.com, mindatticcares.com, Hyperspace and mindattic.com in the MindAttic.Web repo). Deploy it with:
 
 ```powershell
 cd D:\Projects\MindAttic\MindAttic.Deploy
 npm run deploy -- --site hyperspace
 ```
 
-That deploys every site in the group: it pins the next MindAttic.Web tag in every site page, stamps the pages, commits `Pin MindAttic.Web.Shared V<n>`, tags and pushes it, checks every asset is live on jsDelivr at that tag, then FTPS-uploads ryandebraal.com, mindatticcares.com, this page (`index.htm` to `/mindattic.com/hyperspace/`) and mindattic.com. `--dry-run` previews; `--no-link` deploys this page alone.
+That deploys every site in the group: it pins the next MindAttic.Components tag in every site page, runs each site's `build-sites.ps1 -Tag` hook, stamps the pages, commits `Pin MindAttic.Components V<n>` in MindAttic.Web, tags MindAttic.Components, pushes both, checks every asset is live on jsDelivr at that tag, then FTPS-uploads ryandebraal.com, mindatticcares.com, this page (`index.htm` to `/mindattic.com/hyperspace/`) and mindattic.com. `--dry-run` previews; `--no-link` deploys this page alone.
 
 ## Documentation
 
 - [AGENTS.md](AGENTS.md): instructions for AI agents working in this folder
-- [Hyperspace component](https://github.com/mindattic/MindAttic.Web/blob/main/MindAttic.Web.Shared/Components/Hyperspace/Hyperspace.md): the shape library's schema and API, and the Hyperspace Reader
-- Tests: `MindAttic.Web.Shared/tests/specs/components/hyperspace.spec.mjs` (same repo; `npm run test:local` there) opens this page from disk and checks that the explorers draw and the gallery boots, from the pinned CDN file and from the local fallback
+- [Hyperspace component](https://github.com/mindattic/MindAttic.Components/blob/main/web/components/Hyperspace/Hyperspace.md): the shape library's schema and API, and the Hyperspace Reader
+- Tests: `MindAttic.Components/web/tests/package/specs/components/hyperspace.spec.mjs` (sibling MindAttic.Components repo; `npm run test:local` in `web/tests/package`) opens this page from disk and checks that the explorers draw and the gallery boots, from the pinned CDN file and from the local fallback
 
 ## License
 
 This folder has no LICENSE file. All rights reserved.
 
-Part of [MindAttic](https://mindattic.com) — see more projects at [github.com/mindattic](https://github.com/mindattic). Lives in [MindAttic.Web](https://github.com/mindattic/MindAttic.Web) with [mindattic.com](https://github.com/mindattic/MindAttic.Web/tree/main/mindattic.com), [ryandebraal.com](https://github.com/mindattic/MindAttic.Web/tree/main/ryandebraal.com), [mindatticcares.com](https://github.com/mindattic/MindAttic.Web/tree/main/mindatticcares.com) and [MindAttic.Web.Shared](https://github.com/mindattic/MindAttic.Web/tree/main/MindAttic.Web.Shared).
+Part of [MindAttic](https://mindattic.com) — see more projects at [github.com/mindattic](https://github.com/mindattic). Lives in [MindAttic.Web](https://github.com/mindattic/MindAttic.Web) with [mindattic.com](https://github.com/mindattic/MindAttic.Web/tree/main/mindattic.com), [ryandebraal.com](https://github.com/mindattic/MindAttic.Web/tree/main/ryandebraal.com) and [mindatticcares.com](https://github.com/mindattic/MindAttic.Web/tree/main/mindatticcares.com); its shapes come from [MindAttic.Components](https://github.com/mindattic/MindAttic.Components).

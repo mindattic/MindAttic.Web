@@ -27,7 +27,7 @@ tag-pinned jsDelivr package instead of being embedded in the page.
   (fonts, logo, effect engine, textures) are *not* in the file — they are plain files on a CDN, pinned
   to an immutable release tag, so they are cached and shared with the other MindAttic sites.
 - **No tracking.** No analytics, no tracking pixels, no third-party fonts. The only external host is
-  the jsDelivr CDN (cdn.jsdelivr.net) serving the `MindAttic.Web.Shared` package. Privacy is the default.
+  the jsDelivr CDN (cdn.jsdelivr.net) serving the `MindAttic.Components` package. Privacy is the default.
 - **Fast and proportional.** `<head>` opens the CDN connection early and preloads the first-paint
   fonts; the ~560 KB effects engine is `defer`red so it never blocks the first paint. Everything on the
   page is a multiple of one viewport-relative unit, so the layout is the same shape on every screen and
@@ -37,11 +37,11 @@ tag-pinned jsDelivr package instead of being embedded in the page.
   wordmark exactly); without JavaScript it is justified to the same width.
 - **Findable and shareable.** `<head>` carries a `meta description`, a canonical URL
   (`https://mindattic.com/`), `theme-color`, and Open Graph / Twitter "summary" card tags whose image is
-  the M monogram (`mindattic.com/logos/m-monogram.png`, 320×320) from the same pinned package.
+  the M monogram (`MindAttic.Components/web/assets/mindattic.com/logos/m-monogram.png`, 320×320) from the same pinned package.
 - **View-source as a feature.** The file opens with an ASCII banner and a guided table of contents
   for anyone who reads the markup; the code is meant to be a conversation, not a puzzle.
 - **Cyberpunk house style, and it reacts.** The shared Cyberspace look (circuit-board backdrop,
-  scanlines, floating console windows) is spliced in from `MindAttic.Web.Shared`; tapping or left-clicking
+  scanlines, floating console windows) is spliced in from `MindAttic.Components`; tapping or left-clicking
   anywhere around the lockup sets off a short spark surge and spawns one random Cyberspace effect that
   starts at the tap point. Locked to a dark palette.
 
@@ -57,7 +57,7 @@ tag-pinned jsDelivr package instead of being embedded in the page.
 - **NOT a light/dark toggle site.** The site is locked to the dark Cyberspace palette
   ([LAW-5](#MAC-LAW-5)).
 - **NOT the home of its own assets.** Fonts, logos, textures and the effects engine live in the
-  `MindAttic.Web.Shared` package folder of the MindAttic.Web monorepo (`MindAttic.Web.Shared/fonts/`, `MindAttic.Web.Shared/mindattic.com/`, `MindAttic.Web.Shared/Components/Cyberspace/`) and are loaded
+  `MindAttic.Components/web/` folder of the sibling repo (`MindAttic.Components/web/components/OutfitFont/`, `MindAttic.Components/web/components/AtticFont/`, `MindAttic.Components/web/assets/mindattic.com/`, `MindAttic.Components/web/components/Cyberspace/`) and are loaded
   from jsDelivr. Edit them there and ship them with the next linked deploy; do not paste binaries back into `index.htm`.
 - **NOT self-deploying.** Deployment is owned by the sibling `MindAttic.Deploy` repo; this folder has no
   deploy script or FTP settings. (See [LAW-4](#MAC-LAW-4).)
@@ -67,11 +67,11 @@ tag-pinned jsDelivr package instead of being embedded in the page.
 ## 4. Architecture canon {#MAC-§4}
 
 ```
-  MindAttic.Web repo (GitHub)  ──tag V<n>──▶  jsDelivr CDN  ◀──────────────  visitor's browser
-    MindAttic.Web.Shared/: fonts/,                 ▲                              ▲
-    mindattic.com/logos/, Components/Cyberspace/   │ <link>/<script>/@font-face   │ GET /
+  MindAttic.Components repo ───tag V<n>──▶  jsDelivr CDN  ◀──────────────  visitor's browser
+    web/components/{OutfitFont,AtticFont,         ▲                              ▲
+    Cyberspace,…}, web/assets/mindattic.com/       │ <link>/<script>/@font-face   │ GET /
                                                    │ URLs, pinned to @V<n>        │ (.htaccess: HTTPS,
-  MindAttic.Web.Shared/sync/sync-mindattic-com.ps1 ──splice (CYBERSPACE block only)──▶  index.htm   www→bare)
+  web/build/build-sites.mjs ──splice (MINDATTIC.COMPONENTS blocks)──────────▶  index.htm   www→bare)
   PostToolUse hook stamps <!-- Last Updated: ... --> on every Edit/Write of index.htm ──▶  (authored page)
                                                                                     ▲
                       MindAttic.Deploy (sibling repo) ──FTPS (index.htm only)─────┘  /mindattic.com/
@@ -81,14 +81,14 @@ tag-pinned jsDelivr package instead of being embedded in the page.
 
 - **`index.htm`** — the entire authored page (~90 KB): the View Source banner, a `<head>` with the
   meta/link-preview tags and `preconnect`/`preload` hints, the font `@font-face` rules, the page CSS, the
-  Cyberspace block (sync-owned), and a `<div id="content" role="main">` holding
+  `MINDATTIC.COMPONENTS` blocks (build-owned: fonts, button, capture demo, Cyberspace), and a `<div id="content" role="main">` holding
   `.lockup.cyberspace-keepout` (the `#site-name` wordmark and the `.link-row` of three `.link-btn`
   anchors), a fixed `#site-footer`, the motto fitter and a small tap-to-spawn script. It is a `<div role="main">`, not a
   `<main>`, because Cyberspace treats every `<main>` as a keepout zone and a full-screen one would block
   every effect. Its sections are numbered in the file's own table of contents (§ 1 Fonts … § 12
   Cyberspace).
-- **Assets (not in this folder).** Everything binary comes from `MindAttic.Web.Shared` over jsDelivr at a
-  tag-pinned URL — see [§10 Conventions](#MAC-§10) and `MindAttic.Web.Shared/docs/ASSETS.md`.
+- **Assets (not in this folder).** Everything binary comes from `MindAttic.Components/web/` over jsDelivr at a
+  tag-pinned URL — see [§10 Conventions](#MAC-§10) and `MindAttic.Components/docs/web/ASSETS.md`.
 - **`idiotproof/`** — static support pages (`privacy-policy.htm`, `terms-of-use.htm`) and the
   `dataset/` export for the IdiotProof project, plus a gitignored, generated `replays/` archive.
   `MindAttic.Deploy` uploads the folder as its `idiotproof-replays` site.
@@ -115,23 +115,23 @@ tag-pinned jsDelivr package instead of being embedded in the page.
 - **Link button (`.link-btn`)** — one of the three equal-width anchors (`target="_blank"`,
   `rel="noopener noreferrer"`, `aria-describedby` pointing at a hidden "Opens in a new window." note);
   red outline, red fill and glow on hover/focus.
-- **Asset package** — the `MindAttic.Web.Shared` folder of the MindAttic.Web repo seen as a runtime CDN package, addressed as
-  `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/<path>`.
-- **Generated region** — a block owned by a generator, not by hand-editing. On the page that is only
-  the `CYBERSPACE` marker block.
+- **Asset package** — the `MindAttic.Components/web/` folder seen as a runtime CDN package, addressed as
+  `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V<n>/web/<path>`.
+- **Generated region** — a block owned by a generator, not by hand-editing. On the page those are
+  the `MINDATTIC.COMPONENTS` marker blocks (`FONTS`, `BUTTON`, `CAPTUREDEMO`, `CYBERSPACE`).
 - **Theme tokens** — CSS custom properties on `:root`; dark palette only.
 
 ### 4.3 Key services / flows (VERBS) {#MAC-§4.3}
 
-- **sync** (`MindAttic.Web.Shared/sync/sync-mindattic-com.ps1`, run during deploy) — splice the `CYBERSPACE`
-  block into `index.htm` (inline CSS and small scripts; the two big scripts and three textures as
-  tag-pinned CDN URLs, scripts `defer`red, textures preloaded). Cyberspace is the only MindAttic.Web.Shared component
-  this site subscribes to.
+- **build** (`MindAttic.Components/web/build/build-sites.ps1 -Site mindattic.com`, run during deploy) — splice the
+  `MINDATTIC.COMPONENTS` blocks into `index.htm`: the `@font-face` rules, the button style, the capture demo and
+  the `CYBERSPACE` block (inline CSS and small scripts; the big scripts and three textures as
+  tag-pinned CDN URLs, scripts `defer`red, textures preloaded). Configured in `MindAttic.Components/web/sites.json`.
 - **stamp** (PostToolUse hook in `.claude/settings.json`) — write the UTC `<!-- Last Updated: ... -->`
   comment on every Edit/Write of `index.htm`.
-- **deploy** (`/deploy` → `MindAttic.Deploy`) — the linked deploy of the whole MindAttic.Web repo: work out
-  the next tag, pin it in all four site pages, run this site's hooks (`package-pull`, skipped in linked mode,
-  then the sync above with that tag), stamp, commit `Pin MindAttic.Web.Shared V<n>`, tag and push it, verify
+- **deploy** (`/deploy` → `MindAttic.Deploy`) — the linked deploy of the MindAttic.Web sites and MindAttic.Components: work out
+  the next Components tag, pin it in all four site pages, run this site's hooks (`package-pull`, skipped in linked mode,
+  then the build above with that tag), stamp, commit `Pin MindAttic.Components V<n>` in MindAttic.Web, tag MindAttic.Components, push both, verify
   the CDN, then FTPS-upload `index.htm` only (after ryandebraal.com, mindatticcares.com and Hyperspace).
   Assets need no upload: they are already on the CDN.
 - **tap-to-spawn** — in-page script: on a primary-button `pointerdown` that is not on a link and not in
@@ -167,12 +167,12 @@ rules, which are **inherited** here, not restated:
 
 - **{#MAC-LAW-1} One authored page, no build step, no framework.** `index.htm` is the only
   hand-authored page, with no bundler, no transpiler and no framework. Heavy static assets are served
-  from the tag-pinned `MindAttic.Web.Shared` jsDelivr package, never embedded; `<link rel=…>`, `preconnect`,
+  from the tag-pinned `MindAttic.Components` jsDelivr package, never embedded; `<link rel=…>`, `preconnect`,
   `preload` and `defer` are allowed. A build pipeline would need an RFC and a bible change first.
-- **{#MAC-LAW-2} Generated regions are not hand-edited.** The only generated region in `index.htm` is
-  the `BEGIN/END MINDATTIC.UIUX:CYBERSPACE` block, owned by
-  `MindAttic.Web.Shared/sync/sync-mindattic-com.ps1`; edit the source in `MindAttic.Web.Shared` and re-run the
-  sync.
+- **{#MAC-LAW-2} Generated regions are not hand-edited.** The generated regions in `index.htm` are
+  the `BEGIN/END MINDATTIC.COMPONENTS:<X>` blocks, owned by
+  `MindAttic.Components/web/build/build-sites.mjs`; edit the source in `MindAttic.Components/web` and re-run the
+  build.
 - **{#MAC-LAW-4} Deployment is centralized.** Deploys go through the sibling `MindAttic.Deploy`
   pipeline (`npm run deploy -- --site mindattic.com`). This folder keeps no deploy script and no FTP
   credentials (a stray `settings.json` is gitignored).
@@ -180,7 +180,7 @@ rules, which are **inherited** here, not restated:
   no theme toggle, no theme picker.
 - **{#MAC-LAW-6} Privacy by default.** No analytics, tracking pixels, third-party fonts, or third-party
   network requests may be added to `index.htm`. The one allowed external host is the jsDelivr CDN
-  (cdn.jsdelivr.net), serving the `MindAttic.Web.Shared` package at a pinned tag.
+  (cdn.jsdelivr.net), serving the `MindAttic.Components` package at a pinned tag.
 - **{#MAC-LAW-7} View-source stays welcoming.** Preserve the opening banner, the section table of
   contents, and explanatory comments, and keep them accurate. Code here is documentation for the
   curious reader.
@@ -191,7 +191,7 @@ Status legend: ✅ done (verified) · 🟡 partial · ⬜ planned · living.
 
 There is **no compiler or unit-test suite** in this folder — it is a static HTML page. "Verification"
 here means: the page's markup/CSS/script is present as described, the shared Playwright suite in
-`MindAttic.Web.Shared/tests` covers the linked sites, and `codex doctor` passes. Evidence below was checked on
+`MindAttic.Components/web/tests/package` covers the linked sites, and `codex doctor` passes. Evidence below was checked on
 disk on 2026-10-03 unless stated otherwise.
 
 - ✅ **The page.** `index.htm` contains `<div id="content" role="main">` →
@@ -201,7 +201,7 @@ disk on 2026-10-03 unless stated otherwise.
   *(Evidence: grep of `index.htm`; file is ~90 KB.)*
 - ✅ **Assets served from the tag-pinned jsDelivr package.** Fonts, logo variables, favicon, preview
   image, the two engine scripts and the three textures are referenced as
-  `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/…` (18 URLs, all on one tag); `<head>` has
+  `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V<n>/web/…` (all on one tag); `<head>` has
   `preconnect` and font `preload`; engine scripts carry `defer`. *(Evidence: grep of `index.htm`; no
   `base64` font or image data in it.)*
 - ✅ **Meta and link-preview tags.** `meta description`, `link rel="canonical"`, `theme-color`, `og:*`
@@ -213,7 +213,7 @@ disk on 2026-10-03 unless stated otherwise.
   earlier session — reported, not re-run here.)*
 - ✅ **Tap response.** A tap outside the buffer zone starts an effect within 30px of the tap point and
   bursts sparks that animate and then go idle; taps in the zone or on a link spawn nothing; reduced
-  motion gets a flash only. *(Evidence: `MindAttic.Web.Shared/tests/specs/sites/mindattic.spec.mjs`, run with
+  motion gets a flash only. *(Evidence: `MindAttic.Components/web/tests/package/specs/sites/mindattic.spec.mjs`, run with
   `npm run test:local` on 2026-10-03.)*
 - ✅ **Last-updated stamp automated.** PostToolUse hook stamps `<!-- Last Updated: ... -->`; the
   current stamp is line 1 of `index.htm`. *(Evidence: hook in `.claude/settings.json`; stamp on line 1.)*
@@ -224,17 +224,17 @@ disk on 2026-10-03 unless stated otherwise.
 - There are no open RFCs; new design notes go in docs/rfc.
 - Backlog and shipped capabilities live in [`docs/USER_STORIES.md`](USER_STORIES.md). Open: an
   HTML-validity / link-check step the doctor can run ([MAC-US-D3](USER_STORIES.md#MAC-US-D3)).
-- Each change to `MindAttic.Web.Shared` ships through the linked deploy, which tags MindAttic.Web and re-pins every asset URL.
+- Each change to `MindAttic.Components/web` ships through the linked deploy, which tags MindAttic.Components and re-pins every asset URL.
 
 ## 8. Quality bar {#MAC-§8}
 
 A change to mindattic.com is "done" when:
 
 1. `index.htm` is still the only hand-authored page, with no build step or framework, and no binary
-   asset has been embedded into it — heavy assets come from the pinned `MindAttic.Web.Shared` CDN
+   asset has been embedded into it — heavy assets come from the pinned `MindAttic.Components` CDN
    package — [LAW-1](#MAC-LAW-1), [LAW-6](#MAC-LAW-6).
-2. It edits the **source of truth**, not a generated region (the `CYBERSPACE` block is edited in
-   `MindAttic.Web.Shared`) — [LAW-2](#MAC-LAW-2).
+2. It edits the **source of truth**, not a generated region (the `MINDATTIC.COMPONENTS` blocks are edited in
+   `MindAttic.Components/web`) — [LAW-2](#MAC-LAW-2).
 3. Every asset URL is tag-pinned (`@V<n>`, never `@main`) and the tag actually serves the file.
 4. The page loads in a browser with no console errors, the dark Cyberspace styling intact, no
    scrollbar, and the three buttons exactly as wide as the wordmark — [LAW-5](#MAC-LAW-5).
@@ -249,33 +249,34 @@ A change to mindattic.com is "done" when:
   shrink-wrapped to the wordmark's width. The only Cyberspace keepout.
 - **Unit (`--u`)** — 1% of the smaller visible viewport side (`dvmin`), capped at 0.7273 rem; every
   size on the page is a multiple of it.
-- **Asset package** — the `MindAttic.Web.Shared` folder of MindAttic.Web served over jsDelivr at `…@V<n>/MindAttic.Web.Shared/<path>`; tags are
+- **Asset package** — the `MindAttic.Components/web/` folder served over jsDelivr at `…/MindAttic.Components@V<n>/web/<path>`; tags are
   immutable whole numbers.
-- **Generated region** — a block owned by a generator and never hand-edited; on the page, only the
-  `CYBERSPACE` marker block. See [LAW-2](#MAC-LAW-2).
-- **Cyberspace** — the shared MindAttic.Web.Shared visual bundle (circuit-board backdrop, scanlines, console
+- **Generated region** — a block owned by a generator and never hand-edited; on the page, the
+  `MINDATTIC.COMPONENTS` marker blocks. See [LAW-2](#MAC-LAW-2).
+- **Cyberspace** — the shared MindAttic.Components visual bundle (circuit-board backdrop, scanlines, console
   windows). Its CSS and small scripts are spliced inline; its engine and textures load from the CDN.
-- **Sync** — splicing the subscribed MindAttic.Web.Shared component (Cyberspace) into `index.htm` during deploy.
+- **Build** — splicing this site's MindAttic.Components blocks into `index.htm` with `build-sites` during deploy
+  (formerly the MindAttic.Web.Shared subscriber sync, now retired).
 - **Stamp** — the automated `<!-- Last Updated: ... -->` UTC comment.
-- **Linked deploy** — `MindAttic.Deploy`'s flow for the MindAttic.Web repo: deploying any of
-  `MindAttic.Web.Shared`, mindattic.com, ryandebraal.com, mindatticcares.com or Hyperspace tags the repo, pins
+- **Linked deploy** — `MindAttic.Deploy`'s flow for the MindAttic.Web sites: deploying any of
+  mindattic.com, ryandebraal.com, mindatticcares.com or Hyperspace tags MindAttic.Components, pins
   the tag and deploys all four sites.
 - **House rules** — the shared [`MindAttic.HouseRules.md`](../../../MindAttic.HouseRules.md), inherited
   by [§5](#MAC-§5).
 
 ## 10. Conventions {#MAC-§10}
 
-- **Asset URL pattern.** `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/<path>` — always
+- **Asset URL pattern.** `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V<n>/web/<path>` — always
   pinned to a tag, never `@main`.
-- **Release tags** on MindAttic.Web are whole numbers (`V12`, `V13`, …), immutable once published (house rule:
+- **Release tags** on MindAttic.Components are whole numbers (`V1`, `V2`, `V3`, …), immutable once published (house rule:
   no SemVer). The page pins the release tag the linked deploy sets: it rewrites every
-  `MindAttic.Web@V…/MindAttic.Web.Shared/` URL in `index.htm` to that tag (the `CYBERSPACE` block's tag comes from
-  the sync script's `-CyberspaceCdnTag`, which the deploy passes).
-- **Asset layout in `MindAttic.Web.Shared`.** Global/shared assets sit at the package root (`fonts/<family>/`:
-  `MindAttic.Web.Shared/fonts/outfit/`, `MindAttic.Web.Shared/fonts/attic/`); site-specific assets sit directly under the domain folder as
-  `<domain>/<category>/` — there is no assets level (`MindAttic.Web.Shared/mindattic.com/logos/`,
-  `MindAttic.Web.Shared/mindatticcares.com/logos/`, `MindAttic.Web.Shared/ryandebraal.com/{themes/<name>,icons,images}/`); component-owned
-  textures stay at `MindAttic.Web.Shared/Components/Cyberspace/assets/` (that folder keeps its own name). Category folders are
+  `MindAttic.Components@V…/web/` URL in `index.htm` to that tag (the component blocks' tag comes from
+  `build-sites.ps1 -Tag`, which the deploy passes).
+- **Asset layout in `MindAttic.Components/web`.** Fonts live with their font components
+  (`MindAttic.Components/web/components/OutfitFont/fonts/`, `MindAttic.Components/web/components/AtticFont/fonts/`); site-specific assets sit under
+  `MindAttic.Components/web/assets/<domain>/<category>/` (`MindAttic.Components/web/assets/mindattic.com/logos/`, `MindAttic.Components/web/assets/mindatticcares.com/logos/`,
+  `MindAttic.Components/web/assets/ryandebraal.com/images/`); theme images live with their themes (`MindAttic.Components/web/themes/<Name>/`); component-owned
+  textures stay at `MindAttic.Components/web/components/Cyberspace/assets/`. Category folders are
   named for what the files are, not for the page that uses them.
 - **Asset filenames** are lowercase kebab-case, variant last (for example m-monogram-transparent.png,
   outfit-latin-ext.woff2).

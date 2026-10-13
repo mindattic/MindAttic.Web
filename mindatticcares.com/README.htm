@@ -6,7 +6,7 @@
 <title>mindatticcares.com</title>
 <meta name="description" content="MindAttic Cares, the charity arm of MindAttic LLC: one static page that publishes full fundraising-event playbooks in the open, starting with a Y2K party benefiting Child's Play.">
 <meta name="generator" content="MindAttic Codex build-readme.ps1">
-<meta name="generated" content="2026-10-03">
+<meta name="generated" content="2026-10-13">
 <style>:root{
   --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
   --border:#30363d;
@@ -112,7 +112,7 @@ pre:hover .cpbtn{opacity:1}
   <main id="content">
 <h1 id="mindatticcarescom">mindatticcares.com</h1>
 <p>MindAttic Cares, the charity arm of MindAttic LLC: one static page that publishes full fundraising-event playbooks in the open, starting with a Y2K party benefiting Child's Play.</p>
-<p><a href="index.htm"><img src="https://img.shields.io/badge/HTML5-one%20page-e34f26" alt="HTML5"></a> <a href="index.htm"><img src="https://img.shields.io/badge/JavaScript-vanilla-f7df1e" alt="JavaScript"></a> <a href="https://github.com/mindattic/MindAttic.Web/tree/main/MindAttic.Web.Shared"><img src="https://img.shields.io/badge/assets-MindAttic.Web.Shared-6c5ce7" alt="Assets"></a> <a href="docs/BIBLE.md"><img src="https://img.shields.io/badge/build%20step-none-555555" alt="Build"></a> <a href="https://mindatticcares.com"><img src="https://img.shields.io/badge/status-live-2ea043" alt="Status"></a></p>
+<p><a href="index.htm"><img src="https://img.shields.io/badge/HTML5-one%20page-e34f26" alt="HTML5"></a> <a href="index.htm"><img src="https://img.shields.io/badge/JavaScript-vanilla-f7df1e" alt="JavaScript"></a> <a href="https://github.com/mindattic/MindAttic.Components/tree/main/web"><img src="https://img.shields.io/badge/assets-MindAttic.Components-6c5ce7" alt="Assets"></a> <a href="docs/BIBLE.md"><img src="https://img.shields.io/badge/build%20step-none-555555" alt="Build"></a> <a href="https://mindatticcares.com"><img src="https://img.shields.io/badge/status-live-2ea043" alt="Status"></a></p>
 <p><img src="docs/images/home.png" alt="The MindAttic Cares home page: a large black M with a red brush-stroke heart above the MindAttic Cares heading and introduction, with navigation for Child's Play and Y2K: End of the World Party"></p>
 <p>Try it: <a href="https://mindatticcares.com/">mindatticcares.com</a></p>
 <h2 id="why">Why</h2>
@@ -193,7 +193,7 @@ start index.htm</code></pre>
 </tr>
 <tr>
 <td>Assets</td>
-<td>Fonts (Outfit), logos, icons and photos are static files in MindAttic.Web.Shared (the shared package folder of the MindAttic.Web repo), served by jsDelivr and pinned to the release tag the linked deploy sets (<code>@V&lt;n&gt;</code>). The page uses <code>preconnect</code> and <code>preload</code> for the CDN and the body font, <code>loading="lazy"</code> for below-the-fold images, and <code>srcset</code> for the large Y2K photo</td>
+<td>Fonts (Outfit), logos, icons and photos are static files in MindAttic.Components (the <code>web/</code> folder of that sibling repo), served by jsDelivr and pinned to the release tag the linked deploy sets (<code>@V&lt;n&gt;</code>). The page uses <code>preconnect</code> and <code>preload</code> for the CDN and the body font, <code>loading="lazy"</code> for below-the-fold images, and <code>srcset</code> for the large Y2K photo</td>
 </tr>
 <tr>
 <td>Hosting</td>
@@ -216,20 +216,20 @@ start index.htm</code></pre>
 <li>Copy the section template (<code>&lt;h2 id="sec-..."&gt;</code> cards) from the Y2K playbook.</li>
 <li>Update the in-page table of contents (<code>&lt;nav class="toc"&gt;</code>) and the top navigation (<code>&lt;header class="topbar"&gt;&lt;nav&gt;</code>).</li>
 <li>Namespace the new <code>sec-*</code> IDs per event to avoid anchor collisions with the Y2K playbook (see <a href="docs/rfc/0001-multi-event-playbooks.md">RFC 0001</a> for the agreed approach once a second event lands).</li>
-<li>Put any new image in <code>MindAttic.Web.Shared/mindatticcares.com/&lt;category&gt;/</code> (see <a href="#assets">Assets</a>) and commit it; the linked deploy tags the release and points the page at it.</li>
+<li>Put any new image in <code>MindAttic.Components/web/assets/mindatticcares.com/&lt;category&gt;/</code> (see <a href="#assets">Assets</a>) and commit it; the linked deploy tags the release and points the page at it.</li>
 <li>Deploy through MindAttic.Deploy (see <a href="#deployment">Deployment</a>).</li>
 </ol>
 <h2 id="assets">Assets</h2>
-<p>Binary assets are not embedded in <code>index.htm</code>. They are plain static files in MindAttic.Web.Shared, the shared package folder next to this one in the <a href="https://github.com/mindattic/MindAttic.Web">MindAttic.Web</a> monorepo, organised by domain, and served at runtime by jsDelivr so the browser caches them and they are shared across MindAttic sites:</p>
-<pre><code class="language-text">MindAttic.Web.Shared/
-├── fonts/outfit/            # shared Outfit woff2 (Latin + Latin-Extended)
-└── mindatticcares.com/
+<p>Binary assets are not embedded in <code>index.htm</code>. They are plain static files in the <code>web/</code> folder of <a href="https://github.com/mindattic/MindAttic.Components">MindAttic.Components</a>, a sibling repo of MindAttic.Web, organised by domain, and served at runtime by jsDelivr so the browser caches them and they are shared across MindAttic sites:</p>
+<pre><code class="language-text">MindAttic.Components/web/
+├── components/OutfitFont/fonts/   # shared Outfit woff2 (Latin + Latin-Extended)
+└── assets/mindatticcares.com/
     ├── logos/               # M-Cares art (300/720 px web sizes) + the Child's Play logo
     ├── icons/               # favicon / apple-touch icon
     └── images/              # photos, video poster, page background</code></pre>
 <ul>
-<li>URL pattern: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V&lt;n&gt;/MindAttic.Web.Shared/mindatticcares.com/&lt;category&gt;/&lt;file&gt;</code>, for example <code>.../logos/m-cares-black-red-transparent-720.png</code>. Fonts: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V&lt;n&gt;/MindAttic.Web.Shared/fonts/outfit/outfit-latin.woff2</code>.</li>
-<li>Pinned to a tag. <code>@V&lt;n&gt;</code> is a whole-number release tag of MindAttic.Web (HOUSE-LAW-1). Tags are immutable on jsDelivr, so what the page loads today is exactly what it loads tomorrow. To change an asset, add or replace the file in MindAttic.Web.Shared and commit it; the linked deploy cuts the next tag and re-pins <code>index.htm</code>.</li>
+<li>URL pattern: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V&lt;n&gt;/web/assets/mindatticcares.com/&lt;category&gt;/&lt;file&gt;</code>, for example <code>.../logos/m-cares-black-red-transparent-720.png</code>. Fonts: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V&lt;n&gt;/web/components/OutfitFont/fonts/outfit-latin.woff2</code>.</li>
+<li>Pinned to a tag. <code>@V&lt;n&gt;</code> is a whole-number release tag of MindAttic.Components (HOUSE-LAW-1). Tags are immutable on jsDelivr, so what the page loads today is exactly what it loads tomorrow. To change an asset, add or replace the file in MindAttic.Components and commit it; the linked deploy cuts the next tag and re-pins <code>index.htm</code>.</li>
 <li>Naming: lowercase kebab-case, descriptive, with the pixel width as a suffix for resized web variants (<code>-300.png</code>, <code>-720.png</code>, <code>-960.jpg</code>).</li>
 <li>Full resolution: JPEGs are stored byte-identical at full resolution. The Y2K photo is the original 1920 by 1200, with a 960 px variant offered through <code>srcset</code>. PNGs may be recompressed only losslessly.</li>
 <li>What may be external: only static files from this package, plus the click-to-load YouTube embed (<a href="docs/BIBLE.md#MAC-LAW-1">MAC-LAW-1</a>). No analytics, trackers or third-party fonts (no Google Fonts requests).</li>
@@ -263,7 +263,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1</code
 <pre><code class="language-powershell">cd D:\Projects\MindAttic\MindAttic.Deploy
 npm run deploy -- --site mindatticcares.com</code></pre>
 <p>This site is registered as a verbatim root-site FTP upload in <code>MindAttic.Deploy/projects.json</code> under <code>sites[]</code>, with <code>sourceDir: "../MindAttic.Web/mindatticcares.com"</code>, <code>ftpRemotePath: "/mindatticcares.com"</code> and <code>files: ["index.htm"]</code>. The pipeline stamps the <code>Last Updated</code> comment in <code>index.htm</code> (committed with the release pin) and FTPS-uploads it. FTP credentials are centralised in MindAttic.Deploy and never read from this folder.</p>
-<p>Linked deploy: this site is permanently linked with MindAttic.Web.Shared, ryandebraal.com, Hyperspace and mindattic.com, all in the one MindAttic.Web repo. The command above deploys every site: it pins the next MindAttic.Web tag in every site page, runs the hooks and stamps the pages, commits <code>Pin MindAttic.Web.Shared V&lt;n&gt;</code>, tags and pushes it, checks every asset is live on jsDelivr at that tag, then uploads ryandebraal.com, this site, Hyperspace and mindattic.com. If <code>HEAD</code> already carries the latest tag and the pins match, that tag is reused. <code>--dry-run</code> previews; <code>--no-link</code> deploys this site alone. Details: <a href=".claude/commands/deploy.md">.claude/commands/deploy.md</a> and the MindAttic.Deploy README ("Linked deploy").</p>
+<p>Linked deploy: this site is permanently linked with ryandebraal.com, Hyperspace and mindattic.com (all in the MindAttic.Web repo) and with the MindAttic.Components asset package. The command above deploys every site: it pins the next MindAttic.Components tag in every site page, runs each site's <code>build-sites</code> hook with that tag and stamps the pages, commits <code>Pin MindAttic.Components V&lt;n&gt;</code> in MindAttic.Web, tags MindAttic.Components, pushes both, checks every asset is live on jsDelivr at that tag, then uploads ryandebraal.com, this site, Hyperspace and mindattic.com. If <code>HEAD</code> already carries the latest tag and the pins match, that tag is reused. <code>--dry-run</code> previews; <code>--no-link</code> deploys this site alone. Details: <a href=".claude/commands/deploy.md">.claude/commands/deploy.md</a> and the MindAttic.Deploy README ("Linked deploy").</p>
 <p>Where it is served: the FTP path <code>/mindatticcares.com/</code> is served at <code>https://ryandebraal.com/mindatticcares.com/</code>. The domain <code>https://mindatticcares.com/</code> is a registrar masked forward: a frameset whose single frame loads that URL, so the address bar keeps showing mindatticcares.com. Two consequences:</p>
 <ul>
 <li>The page always runs inside a frame, so external links open in a new tab.</li>
@@ -323,9 +323,9 @@ npm run deploy -- --site mindatticcares.com</code></pre>
 <p>This folder has no LICENSE file. All rights reserved.</p>
 <p>Related: <a href="https://childsplaycharity.org/">Child's Play</a>, the children's-hospital charity that receives the Y2K event's proceeds.</p>
 <hr>
-<p>Part of <a href="https://mindattic.com">MindAttic</a> — see more projects at <a href="https://github.com/mindattic">github.com/mindattic</a>. Lives in <a href="https://github.com/mindattic/MindAttic.Web">MindAttic.Web</a> with <a href="https://github.com/mindattic/MindAttic.Web/tree/main/mindattic.com">mindattic.com</a>, <a href="https://github.com/mindattic/MindAttic.Web/tree/main/ryandebraal.com">ryandebraal.com</a>, <a href="https://github.com/mindattic/MindAttic.Web/tree/main/Hyperspace">Hyperspace</a> and <a href="https://github.com/mindattic/MindAttic.Web/tree/main/MindAttic.Web.Shared">MindAttic.Web.Shared</a>. Deployed by <a href="https://github.com/mindattic/MindAttic.Deploy">MindAttic.Deploy</a>.</p>
+<p>Part of <a href="https://mindattic.com">MindAttic</a> — see more projects at <a href="https://github.com/mindattic">github.com/mindattic</a>. Lives in <a href="https://github.com/mindattic/MindAttic.Web">MindAttic.Web</a> with <a href="https://github.com/mindattic/MindAttic.Web/tree/main/mindattic.com">mindattic.com</a>, <a href="https://github.com/mindattic/MindAttic.Web/tree/main/ryandebraal.com">ryandebraal.com</a> and <a href="https://github.com/mindattic/MindAttic.Web/tree/main/Hyperspace">Hyperspace</a>; its shared assets come from <a href="https://github.com/mindattic/MindAttic.Components">MindAttic.Components</a>. Deployed by <a href="https://github.com/mindattic/MindAttic.Deploy">MindAttic.Deploy</a>.</p>
 
-    <p class="codex-footer">Generated 2026-10-03 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
+    <p class="codex-footer">Generated 2026-10-13 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
   </main>
 </div>
 <script>(function(){

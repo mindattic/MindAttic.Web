@@ -16,7 +16,7 @@ for facts a test or build proves, and this project deliberately has neither
 ([BIBLE §6](../BIBLE.md#RDC-§6), [RDC-LAW-2](../BIBLE.md#RDC-LAW-2)). We want real regression
 coverage — "all 16 themes mount, all 3 profiles render, export is non-empty, no request leaves the
 [RDC-LAW-3](../BIBLE.md#RDC-LAW-3) allow-list" — without betraying the one-page / zero-dependency /
-no-build promise. The MindAttic.Web.Shared Playwright suite (`MindAttic.Web.Shared/tests`, next to this folder in MindAttic.Web) already
+no-build promise. The MindAttic.Components Playwright suite (`MindAttic.Components/web/tests/package`, in the sibling MindAttic.Components repo) already
 covers asset loading, the host allow-list at page load, three themes, the lightbox and on-demand PDF
 loading; it does not cover every theme, every profile or export output.
 
@@ -25,7 +25,7 @@ loading; it does not cover every theme, every profile or export output.
 1. **Headless test runner (Playwright/Vitest + npm).** Mature, but introduces `package.json`,
    `node_modules`, and a toolchain — a direct violation of [RDC-LAW-2](../BIBLE.md#RDC-LAW-2). The
    harness would weigh more than the product. Rejected in this site's folder; acceptable outside it,
-   which is where the MindAttic.Web.Shared suite lives.
+   which is where the MindAttic.Components suite lives.
 2. **In-page self-test block (dev-only, behind `?selftest=1`).** A small inline IIFE that, when the
    query flag is present, drives `setTheme`/`setProfile`/`exportMD` and asserts invariants to the
    console / a results panel. Zero new files, zero dependencies, runs in any browser. Touches
@@ -36,7 +36,7 @@ loading; it does not cover every theme, every profile or export output.
 
 ## Decision
 
-Not yet decided. Lean toward **Option 3** — extend the MindAttic.Web.Shared Playwright suite to cover all
+Not yet decided. Lean toward **Option 3** — extend the MindAttic.Components Playwright suite to cover all
 16 themes, all 3 profiles and export output — with Option 2 as the fallback.
 
 ## What NOT to do

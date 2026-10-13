@@ -6,7 +6,7 @@
 <title>ryandebraal.com</title>
 <meta name="description" content="A resume that is its own work sample: one hand-authored HTML page with 16 animated themes, 3 profiles, hover tooltips for 447 technologies, and Markdown, HTML and PDF export, with no build step.">
 <meta name="generator" content="MindAttic Codex build-readme.ps1">
-<meta name="generated" content="2026-10-03">
+<meta name="generated" content="2026-10-13">
 <style>:root{
   --bg:#0d1117;--bg2:#161b22;--bg3:#21262d;
   --border:#30363d;
@@ -154,7 +154,7 @@ pre:hover .cpbtn{opacity:1}
 </ul>
 <h3 id="everything-else">Everything else</h3>
 <ul>
-<li>The Outfit typeface from the CDN: weights 100 to 900 as two woff2 subsets (latin and latin-ext) hosted in MindAttic.Web.Shared and served by jsDelivr at a pinned tag. The latin file is preloaded. No Google Fonts request.</li>
+<li>The Outfit typeface from the CDN: weights 100 to 900 as two woff2 subsets (latin and latin-ext) hosted in MindAttic.Components (<code>web/components/OutfitFont/fonts/</code>) and served by jsDelivr at a pinned tag. The latin file is preloaded. No Google Fonts request.</li>
 <li>Preferences persist in <code>localStorage</code>: theme, profile, font choice, theme timeout and transition, and per-skill familiarity.</li>
 <li>A mobile-first toolbar that adapts between desktop and portrait orientations.</li>
 <li>A DevTools easter egg: an ASCII banner printed to the console.</li>
@@ -166,7 +166,7 @@ cd MindAttic.Web\ryandebraal.com
 start index.htm</code></pre>
 <p>That's it. There is no dev server, because there is nothing to compile. You should see the resume with the theme player running in the toolbar. Use the player buttons to step through themes; profiles, settings and export are in the toolbar menus.</p>
 <h2 id="how-it-works">How it works</h2>
-<p><code>index.htm</code> is a single hand-authored page (about 7,000 lines, about 0.47 MB on disk). Fonts, the portrait, the theme backgrounds and the PDF library are not embedded; they load from jsDelivr at a pinned MindAttic.Web.Shared tag (<a href="docs/BIBLE.md#RDC-LAW-1">RDC-LAW-1</a>).</p>
+<p><code>index.htm</code> is a single hand-authored page (about 7,000 lines, about 0.47 MB on disk). Fonts, the portrait, the theme backgrounds and the PDF library are not embedded; they load from jsDelivr at a pinned MindAttic.Components tag (<a href="docs/BIBLE.md#RDC-LAW-1">RDC-LAW-1</a>).</p>
 <pre><code class="language-text">index.htm  (one page)
 ├── &lt;!-- Last Updated: &lt;UTC&gt; --&gt;     stamped by the deploy pipeline (MindAttic.Deploy)
 ├── &lt;head&gt;
@@ -235,17 +235,18 @@ start index.htm</code></pre>
 <li><code>localStorage</code> keys: <code>resume-settings</code> (all Settings-panel values, including theme timeout and transition), <code>resume-theme</code>, <code>tag-familiarity</code>, <code>neko-color</code> and <code>fx-quality-level</code>. Theme-rotation pause lasts for one visit and is not saved.</li>
 </ul>
 <h2 id="assets-and-cdn">Assets and CDN</h2>
-<p>Static assets live in <code>MindAttic.Web.Shared</code>, the shared package folder next to this one in the <a href="https://github.com/mindattic/MindAttic.Web">MindAttic.Web</a> monorepo, and are served by jsDelivr at a whole-number tag of MindAttic.Web. The page pins the release tag the linked deploy sets.</p>
+<p>Static assets live in the <code>web/</code> folder of <a href="https://github.com/mindattic/MindAttic.Components">MindAttic.Components</a>, a sibling repo of MindAttic.Web, and are served by jsDelivr at a whole-number tag of MindAttic.Components. The page pins the release tag the linked deploy sets.</p>
 <ul>
-<li>Page art: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V&lt;n&gt;/MindAttic.Web.Shared/ryandebraal.com/&lt;category&gt;/&lt;file&gt;</code> (<code>themes/&lt;name&gt;/&lt;name&gt;-NN.jpg</code>, <code>images/</code>, <code>icons/</code>).</li>
-<li>Shared fonts: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V&lt;n&gt;/MindAttic.Web.Shared/fonts/outfit/outfit-latin.woff2</code> (and <code>outfit-latin-ext.woff2</code>).</li>
+<li>Page art: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V&lt;n&gt;/web/assets/ryandebraal.com/images/&lt;file&gt;</code> (portrait, avatar).</li>
+<li>Theme art: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V&lt;n&gt;/web/themes/&lt;Theme&gt;/&lt;theme&gt;-NN.jpg</code>, next to each theme's CSS and effect code.</li>
+<li>Shared fonts: <code>https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V&lt;n&gt;/web/components/OutfitFont/fonts/outfit-latin.woff2</code> (and <code>outfit-latin-ext.woff2</code>).</li>
 <li>PDF export: html2pdf.js 0.10.2 from jsDelivr npm, loaded on first export.</li>
 </ul>
 <p>Names are lowercase kebab-case; JPEGs are never re-encoded. To add or change an asset:</p>
 <ol>
-<li>Put it in MindAttic.Web.Shared under <code>ryandebraal.com/&lt;category&gt;/</code>.</li>
-<li>Regenerate <code>MindAttic.Web.Shared/assets-manifest.json</code> with <code>MindAttic.Web.Shared\tools\build-asset-manifest.ps1</code>, and commit.</li>
-<li>Run the linked <code>/deploy</code>: it rewrites the <code>@V&lt;n&gt;</code> pins in <code>index.htm</code> to the next whole-number release, commits and tags that, pushes it and checks the CDN before uploading.</li>
+<li>Put it in MindAttic.Components under <code>web/assets/ryandebraal.com/&lt;category&gt;/</code> (theme art: <code>web/themes/&lt;Theme&gt;/</code>).</li>
+<li>Regenerate <code>MindAttic.Components/web/assets-manifest.json</code> with <code>MindAttic.Components\web\tools\build-asset-manifest.ps1</code>, and commit.</li>
+<li>Run the linked <code>/deploy</code>: it rewrites the <code>@V&lt;n&gt;</code> pins in <code>index.htm</code> to the next whole-number release, commits the pins and tags MindAttic.Components, pushes it and checks the CDN before uploading.</li>
 </ol>
 <p>Full conventions: <a href="docs/BIBLE.md#RDC-§10">docs/BIBLE.md §10</a>.</p>
 <h2 id="not-in-this-folder">Not in this folder</h2>
@@ -253,7 +254,7 @@ start index.htm</code></pre>
 <p>No per-project <code>deploy.ps1</code>, <code>deploy.bat</code> or <code>settings.json</code>: deploy is centralised in the sibling MindAttic.Deploy repo (<a href="docs/BIBLE.md#RDC-LAW-6">RDC-LAW-6</a>).</p>
 <h2 id="project-layout">Project layout</h2>
 <pre><code class="language-text">ryandebraal.com/
-├── index.htm              The entire hand-authored page (assets are hosted in MindAttic.Web.Shared)
+├── index.htm              The entire hand-authored page (assets are hosted in MindAttic.Components)
 ├── README.md              This file
 ├── README.htm             Generated from README.md by tools/build-readme.ps1
 ├── AGENTS.md              Project agent entrypoint
@@ -293,13 +294,13 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\codex.ps1 digest
 powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1</code></pre>
 <p><code>doctor</code> must exit 0 after any change under <code>docs/</code>. <code>README.htm</code> is a generated, developer-facing rendering of this file and is unrelated to the site's <code>index.htm</code>, which is the shipped product.</p>
 <h2 id="deployment">Deployment</h2>
-<p>Deploy with the <code>/deploy</code> command (<code>.claude/commands/deploy.md</code>), which shells out to the sibling MindAttic.Deploy repo. This site is part of the permanently linked group <code>mindattic-web</code> (MindAttic.Web.Shared, ryandebraal.com, mindatticcares.com, Hyperspace and mindattic.com, all in the one MindAttic.Web repo): deploying any one of them deploys every site, in one run.</p>
+<p>Deploy with the <code>/deploy</code> command (<code>.claude/commands/deploy.md</code>), which shells out to the sibling MindAttic.Deploy repo. This site is part of the permanently linked group <code>mindattic-web</code> (the MindAttic.Components package, plus ryandebraal.com, mindatticcares.com, Hyperspace and mindattic.com in the MindAttic.Web repo): deploying any one of them deploys every site, in one run.</p>
 <pre><code class="language-powershell">powershell -NoProfile -ExecutionPolicy Bypass -Command "cd D:\Projects\MindAttic\MindAttic.Deploy; npm run deploy -- --site ryandebraal.com"</code></pre>
 <p>The run:</p>
 <ol>
-<li>Checks MindAttic.Web is clean, on <code>main</code>, not behind origin, with a current asset manifest, and works out the next tag <code>V&lt;n&gt;</code>.</li>
-<li>Pins that tag in every site page, runs the sites' hooks and stamps each page's <code>Last Updated</code> comment.</li>
-<li>Commits that as <code>Pin MindAttic.Web.Shared V&lt;n&gt;</code>, tags the commit and pushes <code>main</code> and the tag.</li>
+<li>Checks MindAttic.Components and MindAttic.Web are clean, on <code>main</code>, not behind origin, with a current asset manifest, and works out the next MindAttic.Components tag <code>V&lt;n&gt;</code>.</li>
+<li>Pins that tag in every site page, runs the sites' <code>build-sites.ps1 -Tag V&lt;n&gt;</code> hooks (re-splicing each page's <code>MINDATTIC.COMPONENTS</code> blocks) and stamps each page's <code>Last Updated</code> comment.</li>
+<li>Commits that in MindAttic.Web as <code>Pin MindAttic.Components V&lt;n&gt;</code>, tags MindAttic.Components' <code>HEAD</code>, and pushes both repos' <code>main</code> and the tag.</li>
 <li>Verifies every asset is live on jsDelivr at that tag, byte for byte.</li>
 <li>Only then FTPS-uploads <code>index.htm</code> to the site root, followed by mindatticcares.com, Hyperspace and mindattic.com.</li>
 </ol>
@@ -307,8 +308,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1</code
 <p><code>--dry-run</code> previews the whole run without changing anything; <code>--no-link</code> deploys this site alone. This site's profile lives in <code>MindAttic.Deploy/projects.json</code> under <code>sites[]</code>; FTP credentials are centralised in MindAttic.Deploy.</p>
 <h2 id="limitations">Limitations</h2>
 <ul>
-<li>No automated test suite in this folder; the shared <code>MindAttic.Web.Shared/tests</code> Playwright suite covers the page's asset loading, themes, lightbox and PDF loading. Other user stories are held at "shipped, manually verified" because this project has no build step by design (<a href="docs/BIBLE.md#RDC-LAW-2">RDC-LAW-2</a>).</li>
-<li><a href="docs/rfc/0001-in-browser-smoke-harness.md">RFC 0001</a> proposes a dependency-free in-browser smoke harness covering every theme, profile and export (extending the MindAttic.Web.Shared Playwright suite, or an in-page <code>?selftest=1</code> block). It is planned, not built.</li>
+<li>No automated test suite in this folder; the shared <code>MindAttic.Components/web/tests/package</code> Playwright suite covers the page's asset loading, themes, lightbox and PDF loading. Other user stories are held at "shipped, manually verified" because this project has no build step by design (<a href="docs/BIBLE.md#RDC-LAW-2">RDC-LAW-2</a>).</li>
+<li><a href="docs/rfc/0001-in-browser-smoke-harness.md">RFC 0001</a> proposes a dependency-free in-browser smoke harness covering every theme, profile and export (extending the MindAttic.Components Playwright suite, or an in-page <code>?selftest=1</code> block). It is planned, not built.</li>
 </ul>
 <h2 id="documentation">Documentation</h2>
 <p>This folder follows the MindAttic Codex documentation standard (project code RDC). A fact lives in exactly one layer; deeper detail is linked by stable ID, never duplicated here.</p>
@@ -324,9 +325,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File tools\build-readme.ps1</code
 <h2 id="license">License</h2>
 <p>This folder has no LICENSE file. All rights reserved. Built and maintained by <a href="https://ryandebraal.com">Ryan DeBraal</a>.</p>
 <hr>
-<p>Part of <a href="https://mindattic.com">MindAttic</a> — see more projects at <a href="https://github.com/mindattic">github.com/mindattic</a>. Lives in <a href="https://github.com/mindattic/MindAttic.Web">MindAttic.Web</a> with <a href="https://github.com/mindattic/MindAttic.Web/tree/main/mindattic.com">mindattic.com</a>, <a href="https://github.com/mindattic/MindAttic.Web/tree/main/mindatticcares.com">mindatticcares.com</a>, <a href="https://github.com/mindattic/MindAttic.Web/tree/main/Hyperspace">Hyperspace</a> and <a href="https://github.com/mindattic/MindAttic.Web/tree/main/MindAttic.Web.Shared">MindAttic.Web.Shared</a>. Deployed by <a href="https://github.com/mindattic/MindAttic.Deploy">MindAttic.Deploy</a>.</p>
+<p>Part of <a href="https://mindattic.com">MindAttic</a> — see more projects at <a href="https://github.com/mindattic">github.com/mindattic</a>. Lives in <a href="https://github.com/mindattic/MindAttic.Web">MindAttic.Web</a> with <a href="https://github.com/mindattic/MindAttic.Web/tree/main/mindattic.com">mindattic.com</a>, <a href="https://github.com/mindattic/MindAttic.Web/tree/main/mindatticcares.com">mindatticcares.com</a> and <a href="https://github.com/mindattic/MindAttic.Web/tree/main/Hyperspace">Hyperspace</a>; its shared assets come from <a href="https://github.com/mindattic/MindAttic.Components">MindAttic.Components</a>. Deployed by <a href="https://github.com/mindattic/MindAttic.Deploy">MindAttic.Deploy</a>.</p>
 
-    <p class="codex-footer">Generated 2026-10-03 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
+    <p class="codex-footer">Generated 2026-10-13 by the shared MindAttic Codex engine (<code>codex-standard/build-readme.ps1</code>) from <code>README.md</code>. Edit the Markdown source, not this file.</p>
   </main>
 </div>
 <script>(function(){

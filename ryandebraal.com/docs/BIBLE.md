@@ -17,7 +17,7 @@ updated: 2026-10-03
 ryandebraal.com is a single hand-authored `index.htm` — pure HTML, CSS, and vanilla
 JavaScript with **no build step and no framework** — that renders Ryan DeBraal's fully
 interactive, themeable, animated resume in any modern browser. Its static assets (fonts, images,
-theme art) are served from the jsDelivr CDN at a pinned MindAttic.Web.Shared tag ([RDC-LAW-1](#RDC-LAW-1)).
+theme art) are served from the jsDelivr CDN at a pinned MindAttic.Components tag ([RDC-LAW-1](#RDC-LAW-1)).
 
 ## 2. The product promise {#RDC-§2}
 
@@ -40,7 +40,7 @@ theme art) are served from the jsDelivr CDN at a pinned MindAttic.Web.Shared tag
   no webpack/vite/rollup, no TypeScript, no transpiler, no minifier, no polyfills.
 - **NOT a multi-page site.** One hand-authored `index.htm`: no separate `.css`/`.js` source files,
   no service worker, no SPA router. Static assets (fonts, images, one library) are files hosted in
-  MindAttic.Web.Shared and loaded by URL ([RDC-LAW-1](#RDC-LAW-1)).
+  MindAttic.Components and loaded by URL ([RDC-LAW-1](#RDC-LAW-1)).
 - **NOT instrumented.** No analytics SDK, no tracking pixels, no telemetry, no third-party fonts.
   The only external hosts are the two jsDelivr paths listed in [RDC-LAW-3](#RDC-LAW-3).
 - **NOT a CMS / not data-driven from a backend.** Resume content is an in-file JS object literal
@@ -74,9 +74,9 @@ theme art) are served from the jsDelivr CDN at a pinned MindAttic.Web.Shared tag
 
 ### 4.1 "Projects" (the single deliverable)
 There is exactly one artifact: **`index.htm`**, in the `ryandebraal.com` folder of the MindAttic.Web repo
-(next to `MindAttic.Web.Shared`, `mindattic.com`, `mindatticcares.com` and `Hyperspace`). There is no build
+(next to `mindattic.com`, `mindatticcares.com` and `Hyperspace`; the shared assets are in the sibling MindAttic.Components repo). There is no build
 output, no compilation unit, and no auxiliary file shipped to the browser. The only sibling tooling is the
-**MindAttic.Deploy** repo (out of tree), which pins and stamps the page, commits and tags MindAttic.Web, and
+**MindAttic.Deploy** repo (out of tree), which pins and stamps the page, commits the pins in MindAttic.Web, tags MindAttic.Components, and
 FTPS-uploads the file.
 
 ### 4.2 Domain model (NOUNS)
@@ -121,8 +121,8 @@ Project-specific laws below.
 
 ### {#RDC-LAW-1} One hand-authored page; static assets by pinned CDN URL
 `index.htm` is the only hand-authored page. Static assets (fonts, images, theme art, large libraries)
-are real files hosted in **MindAttic.Web.Shared** (the shared package folder of the MindAttic.Web repo) and
-served by **jsDelivr** at an immutable whole-number tag of MindAttic.Web (the release tag the linked deploy
+are real files hosted in **MindAttic.Components** (the `web/` folder of that sibling repo) and
+served by **jsDelivr** at an immutable whole-number tag of MindAttic.Components (the release tag the linked deploy
 pins), referenced by URL. Do not inline large assets. Tiny assets stay inline on purpose:
 the 32 Neko sprite frames (~1 KB each) and the 864-byte link icon. `<link rel="preconnect|preload">`,
 `loading="lazy"` and `decoding="async"` are allowed and used. Trade-offs accepted: without the CDN the
@@ -138,7 +138,7 @@ installing or building one is not.
 ### {#RDC-LAW-3} No tracking; external hosts are an allow-list
 No analytics, tracking pixels, telemetry, third-party fonts (Google Fonts etc.), or phoning-home
 scripts — ever. The page may request static assets only from this exhaustive list:
-- `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/...` — our own assets (Outfit fonts at
+- `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V<n>/web/...` — our own assets (Outfit fonts at
   `fonts/outfit/`; page art at `ryandebraal.com/`).
 - `https://cdn.jsdelivr.net/npm/html2pdf.js@0.10.2/dist/html2pdf.bundle.min.js` — the PDF export
   library, loaded on demand the first time a PDF is exported.
@@ -165,14 +165,14 @@ manual in-browser inspection. Therefore no story below is marked `✅` (which Co
 test- or build-proven facts); shipped-and-manually-confirmed work is marked `🟡`.
 
 Confirmed by direct inspection of `index.htm`:
-- 🟡 Asset delivery — `index.htm` (~7K lines, ~0.47 MB) references fonts, images and theme art on the jsDelivr CDN (one pinned MindAttic.Web tag); Neko frames stay inline base64 ([RDC-LAW-1](#RDC-LAW-1)). The live site's asset loading is checked by the MindAttic.Web.Shared Playwright suite in local and live mode (`MindAttic.Web.Shared/tests`, `specs/sites/ryandebraal.spec.mjs` + `specs/sites/common.spec.mjs` + `specs/cdn/cdn.live.spec.mjs`).
+- 🟡 Asset delivery — `index.htm` (~7K lines, ~0.47 MB) references fonts, images and theme art on the jsDelivr CDN (one pinned MindAttic.Components tag); Neko frames stay inline base64 ([RDC-LAW-1](#RDC-LAW-1)). The live site's asset loading is checked by the MindAttic.Components Playwright suite in local and live mode (`MindAttic.Components/web/tests/package`, `specs/sites/ryandebraal.spec.mjs` + `specs/sites/common.spec.mjs` + `specs/cdn/cdn.live.spec.mjs`).
 - 🟡 16 themes present as `[data-theme]` blocks (`light`, `dark` and `noir` are CSS-only, with no bespoke canvas animation); 3 profiles via `[data-profile]`.
-- 🟡 `<head>` carries a meta description, canonical URL (`https://ryandebraal.com/`), `theme-color`, and Open Graph (`og:type` = `profile`) / Twitter "summary" card tags; the preview image is `ryandebraal.com/images/ryan-portrait.png` (400×400) from the MindAttic.Web.Shared package.
+- 🟡 `<head>` carries a meta description, canonical URL (`https://ryandebraal.com/`), `theme-color`, and Open Graph (`og:type` = `profile`) / Twitter "summary" card tags; the preview image is `assets/ryandebraal.com/images/ryan-portrait.png` (400×400) from the MindAttic.Components package.
 - 🟡 Render engine, FX engine, export functions present (function inventory in [§4.3](#RDC-§4)).
 - 🟡 `localStorage` persistence wired for settings (incl. font size and theme timeout), theme, skill familiarity, Neko colour and FX quality. Theme rotation defaults to 60 seconds per theme (`theme_timeout`); only settings the visitor changed are stored in `resume-settings`, so a saved slider value wins over the default.
 - 🟡 Deploy delegated to MindAttic.Deploy as part of the linked `mindattic-web` group (per `.claude/commands/deploy.md`).
 
-Automated evidence lives next to this folder in the MindAttic.Web repo: the MindAttic.Web.Shared Playwright suite (`MindAttic.Web.Shared/tests`) loads this page in Chrome locally and live and checks asset loading, the host allow-list, theme switching (sunset, sakura, noir), the lightbox, on-demand PDF loading and horizontal overflow. Items it does not cover remain inspection-level.
+Automated evidence lives in the sibling MindAttic.Components repo: its Playwright suite (`MindAttic.Components/web/tests/package`) loads this page in Chrome locally and live and checks asset loading, the host allow-list, theme switching (sunset, sakura, noir), the lightbox, on-demand PDF loading and horizontal overflow. Items it does not cover remain inspection-level.
 
 ## 7. Active frontier {#RDC-§7}
 
@@ -183,7 +183,7 @@ Automated evidence lives next to this folder in the MindAttic.Web repo: the Mind
 ## 8. Quality bar {#RDC-§8}
 
 A change is done when:
-- Page changes live in `index.htm` (or docs/tooling); new static assets go to MindAttic.Web.Shared under the
+- Page changes live in `index.htm` (or docs/tooling); new static assets go to MindAttic.Components under the
   conventions in [§10](#RDC-§10), and no package/build dependency is added
   ([RDC-LAW-2](#RDC-LAW-2)).
 - Opening `index.htm` in a current Chromium/Firefox/Safari shows the change with no console errors
@@ -203,17 +203,17 @@ A change is done when:
   `requestAnimationFrame`.
 - **Tooltip map** — the `tooltips` object mapping a technology name to its hover description.
 - **Profile / render projection** — read-only views derived from `D`; never a second content copy.
-- **MindAttic.Deploy** — the sibling repo that pins, stamps and FTPS-uploads `index.htm` (linked deploy of MindAttic.Web).
-- **MindAttic.Web.Shared** — the shared package folder of the MindAttic.Web repo that hosts this site's static assets (and the shared Outfit/Attic fonts); served by jsDelivr at whole-number tags of MindAttic.Web.
+- **MindAttic.Deploy** — the sibling repo that pins, stamps and FTPS-uploads `index.htm` (linked deploy of MindAttic.Web and MindAttic.Components).
+- **MindAttic.Components** — the sibling repo whose `web/` folder (formerly MindAttic.Web.Shared) hosts this site's static assets, theme art and the shared Outfit/Attic fonts; served by jsDelivr at whole-number tags of MindAttic.Components.
 - **Skill familiarity** — per-tag familiarity level the reader can cycle; persisted in
   `localStorage` (`tag-familiarity`).
 
 ## 10. Conventions {#RDC-§10}
 
-- **Asset URL pattern:** `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/ryandebraal.com/<category>/<file>` — always tag-pinned (`@V<n>`), never `@latest` or a branch.
-- **Shared fonts** live at the MindAttic.Web.Shared top level: `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/fonts/outfit/outfit-latin.woff2` (and `outfit-latin-ext.woff2`; Attic at `fonts/attic/attic.woff2`).
-- **Categories under `ryandebraal.com/`:** `themes/<theme-name>/` (per-theme art), `images/` (portrait, avatar), `icons/` (small UI icons, Neko frames), `logos/` if any.
-- **File names:** lowercase kebab-case; numbered series are zero-padded and 1-based — `themes/sakura/sakura-01.jpg` … `sakura-20.jpg`, `themes/sunset/sunset-01.jpg` … `sunset-20.jpg`. The page builds these URLs with `bgSet(theme, count)`; adding a background means adding the file and bumping the count.
+- **Asset URL pattern:** `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V<n>/web/assets/ryandebraal.com/<category>/<file>` — always tag-pinned (`@V<n>`), never `@latest` or a branch.
+- **Shared fonts** live with their font components: `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V<n>/web/components/OutfitFont/fonts/outfit-latin.woff2` (and `outfit-latin-ext.woff2`; Attic at `components/AtticFont/fonts/attic.woff2`).
+- **Where files go:** `assets/ryandebraal.com/images/` (portrait, avatar); per-theme art in `themes/<Theme>/` next to the theme's CSS and effect code; retired files (e.g. the Neko `.ico` frames) in `assets/archive/ryandebraal.com/`.
+- **File names:** lowercase kebab-case; numbered series are zero-padded and 1-based — `themes/Sakura/sakura-01.jpg` … `sakura-20.jpg`, `themes/Sunset/sunset-01.jpg` … `sunset-20.jpg`. The page builds these URLs with `bgSet(theme, count)` from `ASSET_BASE` (`…/web/themes/`); adding a background means adding the file and bumping the count.
 - **Lossy art is never re-encoded** between the original and the CDN file; PNGs may only be recompressed losslessly.
-- **Releasing assets:** copy the files into MindAttic.Web.Shared, regenerate `assets-manifest.json`, commit, then run the linked deploy (`.claude/commands/deploy.md`): it rewrites the `@V<n>` pins in `index.htm` to the next whole-number tag, commits, tags and pushes that, verifies the CDN and uploads. Old tags stay valid.
+- **Releasing assets:** copy the files into MindAttic.Components (`web/`), regenerate `web/assets-manifest.json`, commit, then run the linked deploy (`.claude/commands/deploy.md`): it rewrites the `@V<n>` pins in `index.htm` to the next whole-number tag, commits the pins, tags MindAttic.Components and pushes both, verifies the CDN and uploads. Old tags stay valid.
 - **Preloads:** only above-the-fold assets are preloaded (latin font, toolbar avatar); backgrounds and the lightbox portrait load on demand.

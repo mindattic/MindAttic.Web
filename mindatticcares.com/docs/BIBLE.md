@@ -27,7 +27,7 @@ in full public detail so any sibling charity can fork and reuse them.
   ([childsplaycharity.org](https://childsplaycharity.org)); MindAttic LLC covers operations so
   donors do not pay overhead.
 - **One page, no CMS.** The whole site is `index.htm` — inline CSS and JS. Fonts and images are
-  static files served from the shared MindAttic.Web.Shared package on jsDelivr, pinned to a release tag
+  static files served from the shared MindAttic.Components package on jsDelivr, pinned to a release tag
   ([MAC-LAW-1](#MAC-LAW-1)). No database, no static-site generator, no analytics. Fork it,
   edit in a text editor, host your own copy.
 - **Reusable templates.** The 12-week timeline, budget worksheet, sponsorship pitch, and
@@ -38,7 +38,7 @@ in full public detail so any sibling charity can fork and reuse them.
 - **NOT a web application.** No accounts, no server-side code, no database, no API. It is a static
   document with a thin client-side navigation/lightbox script.
 - **NOT a build pipeline.** No `npm install`, no bundler, no SSG. There is no build step; the
-  deliverable file IS the source. (Its assets are separate static files in MindAttic.Web.Shared — they
+  deliverable file IS the source. (Its assets are separate static files in MindAttic.Components — they
   are served, not built.)
 - **NOT a donation processor.** It links out to the partner charity; it does not collect money.
 - **NOT self-deploying.** Deployment is owned by the central **MindAttic.Deploy** pipeline (sibling
@@ -73,21 +73,21 @@ in full public detail so any sibling charity can fork and reuse them.
                                          │ at runtime, the browser fetches
                                          ▼ fonts / logos / photos
                  ┌─────────────────────────────────────────────┐
-                 │ jsDelivr CDN → MindAttic.Web@V<n>/MindAttic.Web.Shared │
-                 │ fonts/outfit · mindatticcares.com/...       │
+                 │ jsDelivr CDN → MindAttic.Components@V<n>/web│
+                 │ OutfitFont/fonts · assets/mindatticcares.com│
                  └─────────────────────────────────────────────┘
 ```
 
 ### 4.1 Projects / files
 - **`index.htm`** — the entire deliverable: `<head>` (meta description, canonical URL
   `https://mindatticcares.com/`, Open Graph / Twitter "summary" card tags whose image is the M-Cares
-  logo from the MindAttic.Web.Shared package, resource hints, `@font-face` rules pointing at CDN woff2 files,
+  logo from the MindAttic.Components package, resource hints, `@font-face` rules pointing at CDN woff2 files,
   `<style>`), `<header class="topbar">` nav, `<main>` with three
   `<section class="page">` blocks, and a single trailing `<script>`. (~60 KB; fonts and images are
   referenced by URL, not embedded.)
-- **Assets (external, not in this folder)** — `MindAttic.Web.Shared/fonts/outfit/` and
-  `MindAttic.Web.Shared/mindatticcares.com/{logos,icons,images}/`, served by jsDelivr at
-  `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<tag>/MindAttic.Web.Shared/…` ([MAC-LAW-1](#MAC-LAW-1)); the
+- **Assets (external, not in this folder)** — `MindAttic.Components/web/components/OutfitFont/fonts/` and
+  `MindAttic.Components/web/assets/mindatticcares.com/{logos,icons,images}/`, served by jsDelivr at
+  `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@<tag>/web/…` ([MAC-LAW-1](#MAC-LAW-1)); the
   page pins the release tag the linked deploy sets.
 - **`README.md`** — how to build/run/deploy and edit.
 - **`docs/`** — this Codex canon (BIBLE, AMENDMENTS, USER_STORIES, rfc).
@@ -115,10 +115,11 @@ in full public detail so any sibling charity can fork and reuse them.
   anchor (`#sec-budget`, `#contents`) opens the page that contains it and scrolls it into view.
 - **lite-YT `play()`** — replaces the poster with a `youtube-nocookie` iframe (or opens YouTube in a
   new tab under the `file:` protocol).
-- **deploy** (external) — MindAttic.Deploy's permanently linked group `mindattic-web` (MindAttic.Web.Shared +
-  ryandebraal.com + this site + Hyperspace + mindattic.com, one git repo): deploying any one deploys every
-  site — pin the next MindAttic.Web tag in every site page, stamp the Last-Updated comments, commit, tag and
-  push, verify every asset on jsDelivr byte-exact, then FTPS-upload `index.htm` to `/mindatticcares.com/`. `--no-link` deploys this site alone.
+- **deploy** (external) — MindAttic.Deploy's permanently linked group `mindattic-web` (the MindAttic.Components
+  package + ryandebraal.com, this site, Hyperspace and mindattic.com in the MindAttic.Web repo): deploying any one deploys every
+  site — pin the next MindAttic.Components tag in every site page, re-splice each page's `MINDATTIC.COMPONENTS` blocks
+  (`build-sites.ps1 -Tag`), stamp the Last-Updated comments, commit the pins in MindAttic.Web, tag MindAttic.Components,
+  push both, verify every asset on jsDelivr byte-exact, then FTPS-upload `index.htm` to `/mindatticcares.com/`. `--no-link` deploys this site alone.
 
 ## 5. The Laws {#MAC-§5}
 
@@ -132,16 +133,16 @@ Relevant inherited laws:
 
 Project-specific laws:
 
-### MAC-LAW-1 — One file, no build step; assets from the pinned MindAttic.Web.Shared package {#MAC-LAW-1}
+### MAC-LAW-1 — One file, no build step; assets from the pinned MindAttic.Components package {#MAC-LAW-1}
 The entire site ships as a single `index.htm` with inline CSS and JS. No database, no bundler, no SSG,
 no framework, no `npm install`. The file you edit is the file you deploy.
 
-Fonts and images are not embedded: they are static files in the shared **MindAttic.Web.Shared** package (a folder of the MindAttic.Web repo),
+Fonts and images are not embedded: they are static files in the shared **MindAttic.Components** package (the `web/` folder of that repo),
 loaded at runtime from jsDelivr pinned to a whole-number release tag:
 
 ```
-https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/mindatticcares.com/<category>/<file>
-https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V<n>/MindAttic.Web.Shared/fonts/outfit/<file>
+https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V<n>/web/assets/mindatticcares.com/<category>/<file>
+https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V<n>/web/components/OutfitFont/fonts/<file>
 ```
 
 `<category>` is `logos`, `icons` or `images`; file names are lowercase kebab-case (pixel-width suffix
@@ -151,7 +152,7 @@ resolution; PNGs may only be recompressed losslessly. The page uses `preconnect`
 lazy-loads below-the-fold images.
 
 **Allowed external hosts (the full list):**
-- `cdn.jsdelivr.net` — static assets from MindAttic.Web.Shared only, pinned to a tag.
+- `cdn.jsdelivr.net` — static assets from MindAttic.Components only, pinned to a tag.
 - `www.youtube-nocookie.com` — only after the visitor clicks the Child's Play video poster
   (`www.youtube.com` is used only for the `file://` open-in-new-tab fallback).
 - Plain outbound links (e.g. childsplaycharity.org) are navigation, not dependencies.
@@ -191,10 +192,10 @@ Evidence:
 - ✅ 19 playbook `sec-*` anchors exist and match the 19 TOC links.
 - ✅ Centralized deploy wired: `.claude/commands/deploy.md` targets `MindAttic.Deploy --site
   mindatticcares.com`.
-- ✅ `index.htm` is ~63 KB with no embedded base64 assets (MindAttic.Web.Shared `tests/specs/sites/common.spec.mjs`).
-- ✅ Every MindAttic.Web.Shared file the live page at `https://ryandebraal.com/mindatticcares.com/` references is
-  served byte-exact at the pinned tag (MindAttic.Web.Shared `tests/specs/cdn/cdn.live.spec.mjs`, live mode).
-- ✅ Automated browser tests for this site live in the shared suite `MindAttic.Web.Shared/tests`
+- ✅ `index.htm` is ~63 KB with no embedded base64 assets (MindAttic.Components `web/tests/package/specs/sites/common.spec.mjs`).
+- ✅ Every MindAttic.Components file the live page at `https://ryandebraal.com/mindatticcares.com/` references is
+  served byte-exact at the pinned tag (MindAttic.Components `web/tests/package/specs/cdn/cdn.live.spec.mjs`, live mode).
+- ✅ Automated browser tests for this site live in the shared suite `MindAttic.Components/web/tests/package`
   (`specs/sites/mindatticcares.spec.mjs` + `common.spec.mjs`): first-paint requests, navigation, deep
   links, click-to-play video, image dimensions/alt/lazy, allowed hosts, no console errors, no
   horizontal scrollbar, pinned tag.
@@ -205,7 +206,7 @@ Evidence:
 
 Build command: **none** (`MAC-LAW-1`). This folder carries one automated check of its own,
 `tools/codex.ps1 doctor` (it validates the Codex docs, not the site); the site itself is tested by the
-shared Playwright suite in `MindAttic.Web.Shared/tests` (`npm run test:local`, `TEST_MODE=live npx playwright test`).
+shared Playwright suite in `MindAttic.Components/web/tests/package` (`npm run test:local`, `TEST_MODE=live npx playwright test`).
 
 ## 7. Active frontier {#MAC-§7}
 
@@ -221,7 +222,7 @@ A change to MindAttic Cares is "done" when:
    anchors jump; the lite-YT box plays).
 2. Every `sec-*` anchor referenced by the TOC still exists
    (no dangling in-page links).
-3. No new external runtime dependency (beyond the pinned MindAttic.Web.Shared jsDelivr package and the
+3. No new external runtime dependency (beyond the pinned MindAttic.Components jsDelivr package and the
    click-to-load YouTube embed), build step, or CMS was introduced ([MAC-LAW-1](#MAC-LAW-1)). No analytics
    or third-party fonts.
 4. New events follow the existing section template and update the in-page TOC.
@@ -241,7 +242,7 @@ A change to MindAttic Cares is "done" when:
   receiving Y2K proceeds.
 - **MindAttic.Deploy** — the central sibling repo that owns the FTPS deploy pipeline (MAC-LAW-5).
 - **Pass-through giving** — donations route entirely to the partner charity (MAC-LAW-2).
-- **MindAttic.Web.Shared package** — the shared folder of the MindAttic.Web repo that holds MindAttic's runtime assets (fonts, logos,
+- **MindAttic.Components package** — the `web/` folder of the MindAttic.Components repo (formerly MindAttic.Web.Shared) that holds MindAttic's runtime assets (fonts, logos,
   photos, effects) organised by domain and served by jsDelivr; sites load from it at runtime (MAC-LAW-1).
-- **Asset URL** — `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@<tag>/MindAttic.Web.Shared/mindatticcares.com/<category>/<file>`;
-  `<tag>` is a whole-number release tag of MindAttic.Web, lowercase kebab-case file names.
+- **Asset URL** — `https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@<tag>/web/assets/mindatticcares.com/<category>/<file>`;
+  `<tag>` is a whole-number release tag of MindAttic.Components, lowercase kebab-case file names.
