@@ -63,6 +63,7 @@ if (-not $CyberspaceCdnTag) {
 
 $utf8 =[System.Text.UTF8Encoding]::new($false)
 $sub  = Get-Subscriber -Name 'mindattic.com' -ContentRoot $ContentRoot
+if (Test-SubscriberRetired -Subscriber $sub) { return }
 
 if (-not $TargetIndex) { $TargetIndex = $sub.target }
 if (-not (Test-Path $TargetIndex)) { throw "Target not found: $TargetIndex" }

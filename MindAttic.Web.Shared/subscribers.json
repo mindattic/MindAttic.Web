@@ -15,6 +15,7 @@
 
   "subscribers": {
     "mindattic.com": {
+      "retired":   "2026-10-13: mindattic.com now splices its components from MindAttic.Components (web/build/build-sites.mjs, configured in web/sites.json); MindAttic.Deploy runs that build as the site's preDeploy hook.",
       "kind":       "html-inline",
       "target":     "../mindattic.com/index.htm",
       "syncScript": "sync-mindattic-com.ps1",

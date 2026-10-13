@@ -14,7 +14,7 @@ The linked flow (`MindAttic.Deploy/src/linked.js`):
 
 1. **Preflight** — MindAttic.Web must be on `main` with a clean working tree, not behind origin, with `MindAttic.Web.Shared/assets-manifest.json` current.
 2. **Next tag** — the next whole-number tag on MindAttic.Web (`V<n+1>`; the series starts at `V12`).
-3. **Pin and prepare** — every `MindAttic.Web@V<n>/MindAttic.Web.Shared/` URL in the four site pages is rewritten to that tag; this site's hooks run (`package-pull` is skipped in linked mode, then `MindAttic.Web.Shared/sync/sync-mindattic-com.ps1 -CyberspaceCdnTag <tag>` splices **only the CYBERSPACE block**; the fonts, logo and effects engine load from jsDelivr); each page's `<!-- Last Updated: ... -->` comment is stamped.
+3. **Pin and prepare** — every `MindAttic.Web@V<n>/MindAttic.Web.Shared/` URL in the four site pages is rewritten to that tag; this site's hooks run (`package-pull` is skipped in linked mode, then `MindAttic.Components/web/build/build-sites.ps1 -Site mindattic.com` re-splices the page's component blocks (fonts, button, capture demo, Cyberspace) from MindAttic.Components at the Components tag pinned in its `web/sites.json`; the logo and favicon still load from MindAttic.Web.Shared at the release tag); each page's `<!-- Last Updated: ... -->` comment is stamped.
 4. **Commit** — those changes are committed as `Pin MindAttic.Web.Shared V<n>`.
 5. **Tag** — that commit is tagged `V<n>`.
 6. **Push** — `main` and the tag are pushed to origin.

@@ -96,8 +96,8 @@
      downloaded twice. -->
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="icon" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/mindattic.com/logos/favicon.ico" sizes="48x48">
-<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/fonts/attic/attic.woff2">
-<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/fonts/outfit/outfit-latin.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/AtticFont/fonts/attic.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/OutfitFont/fonts/outfit-latin.woff2">
 
 <!-- ═══════════════════════════════════════════════════════════════════════
      §  STYLESHEET
@@ -136,6 +136,7 @@
 
 </style>
 
+<!-- BEGIN MINDATTIC.COMPONENTS:FONTS -->
 <style id="mindattic-fonts-css">
 /* Outfit — Google Fonts, variable weight axis 100-900, split by unicode-range.
    Use the quoted stack ('Outfit', system-ui, sans-serif) or var(--font-outfit);
@@ -145,7 +146,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/fonts/outfit/outfit-latin-ext.woff2') format('woff2');
+  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/OutfitFont/fonts/outfit-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
@@ -153,7 +154,7 @@
   font-style: normal;
   font-weight: 100 900;
   font-display: swap;
-  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/fonts/outfit/outfit-latin.woff2') format('woff2');
+  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/OutfitFont/fonts/outfit-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
@@ -163,7 +164,7 @@
   font-style: normal;
   font-weight: normal;
   font-display: block;
-  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/fonts/attic/attic.woff2') format('woff2');
+  src: url('https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/AtticFont/fonts/attic.woff2') format('woff2');
 }
 
 /* Ergonomic reuse: var(--font-outfit) / var(--font-attic) instead of
@@ -173,6 +174,87 @@
 html, body { font-family: 'Outfit', system-ui, sans-serif; }
 .site-name { font-family: 'Attic', serif; }
 </style>
+<!-- END MINDATTIC.COMPONENTS:FONTS -->
+
+<!-- BEGIN MINDATTIC.COMPONENTS:BUTTON -->
+<style id="mindattic-components-button-css">
+/* MindAttic.Components - Button/button.css
+   The base MindAttic button. Opt in with class="ma-btn" on an <a> or <button>; everything scales
+   off one unit, --ma-btn-u, so a site sizes it with a single variable. Theme it by setting the
+   --ma-btn-* variables, and add anything site-specific (a lift, a glow, a grid order) in the
+   site's own CSS on top of this. */
+.ma-btn {
+  --ma-btn-u: 1rem;
+  --ma-btn-fg: #fff;
+  --ma-btn-bg: #13161b;
+  --ma-btn-border: #e5484d;
+  --ma-btn-hover-bg: #e5484d;
+  --ma-btn-hover-border: #ff6b70;
+  display: inline-block;
+  padding: calc(var(--ma-btn-u) * 0.3) calc(var(--ma-btn-u) * 0.6);
+  border: max(0.0625rem, calc(var(--ma-btn-u) * 0.12)) solid var(--ma-btn-border);
+  border-radius: calc(var(--ma-btn-u) * 0.5);
+  background: var(--ma-btn-bg);
+  color: var(--ma-btn-fg);
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: var(--ma-btn-u);
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  /* Smooth in/out interpolation between rest and hover states. */
+  transition: background-color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* The label stays --ma-btn-fg in every link state (a page's global a:hover would otherwise recolor it). */
+.ma-btn:link,
+.ma-btn:visited,
+.ma-btn:hover,
+.ma-btn:focus,
+.ma-btn:active { color: var(--ma-btn-fg); }
+
+.ma-btn:hover,
+.ma-btn:focus-visible {
+  background: var(--ma-btn-hover-bg);
+  border-color: var(--ma-btn-hover-border);
+}
+</style>
+<!-- END MINDATTIC.COMPONENTS:BUTTON -->
+
+<!-- BEGIN MINDATTIC.COMPONENTS:CAPTUREDEMO -->
+<script id="mindattic-components-capture-demo-js">
+/* MindAttic.Components - CaptureDemo/capture-demo.js
+   When should a page run its hands-free demo? When ?demo=1 is in the URL, or when the
+   MindAttic.Capture bridge (window.mindattic.capture) says the session is being filmed.
+   The tour itself belongs to each page; this only decides when to start it:
+
+     MindAtticCaptureDemo.armed(function startMyTour() { ... });  */
+window.MindAtticCaptureDemo = (function () {
+  function forced() { return /(?:^|[?&])demo=1(?:&|$)/.test(location.search); }
+  function armed(go) {
+    if (forced()) { go(); return; }
+    var bridge = window.mindattic && window.mindattic.capture;
+    if (!bridge || typeof bridge.status !== 'function') return;
+    // `recording` is the StartRecording/StopRecording on-demand clip toggle, not whether
+    // `-capture video` is actually filming the session — that's `tapeRunning`. The capture
+    // engine also starts asynchronously (window must appear, then hardware encoder probing),
+    // so poll instead of checking once, or a slow-starting recorder means the demo never runs.
+    var tries = 0;
+    (function poll() {
+      bridge.status().then(function (s) {
+        if (s && (s.tapeRunning || s.recording)) { go(); return; }
+        if (++tries < 40) setTimeout(poll, 500);
+      }).catch(function () { if (++tries < 40) setTimeout(poll, 500); });
+    })();
+  }
+  return { forced: forced, armed: armed };
+})();
+</script>
+<!-- END MINDATTIC.COMPONENTS:CAPTUREDEMO -->
 
 <style>
 
@@ -480,35 +562,16 @@ a:hover {
   gap: calc(var(--btn-u) * 0.6);
 }
 
+/* The base button (MindAttic.Components Button, .ma-btn) sized off the
+   wordmark and filled with this page's --bg2.  On top of the base hover,
+   these three add a soft red glow and a small lift. */
 .link-btn {
-  padding: calc(var(--btn-u) * 0.3) calc(var(--btn-u) * 0.6);
-  border: max(0.0625rem, calc(var(--btn-u) * 0.12)) solid #e5484d;
-  border-radius: calc(var(--btn-u) * 0.5);
-  background: var(--bg2);
-  color: #fff;
-  font-family: 'Outfit', system-ui, sans-serif;
-  font-size: var(--btn-u);
-  font-weight: 600;
-  text-align: center;
-  white-space: nowrap;
-  cursor: pointer;
-  /* Smooth in/out interpolation between rest and hover states. */
-  transition: background-color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  --ma-btn-u: var(--btn-u);
+  --ma-btn-bg: var(--bg2);
 }
-
-.link-btn:link,
-.link-btn:visited,
-.link-btn:hover,
-.link-btn:focus,
-.link-btn:active { color: #fff; }
 
 .link-btn:hover,
 .link-btn:focus-visible {
-  background: #e5484d;
-  border-color: #ff6b70;
   box-shadow: 0 0 calc(var(--btn-u) * 0.9) rgba(229, 72, 77, 0.55);
   transform: translateY(calc(var(--btn-u) * -0.12));
 }
@@ -540,10 +603,10 @@ a:hover {
 </head>
 <body>
 
-<!-- BEGIN MINDATTIC.UIUX:CYBERSPACE -->
-<!-- Generated by MindAttic.Web.Shared/sync/sync-mindattic-com.ps1. Do not edit by hand.
-     Edit MindAttic.Web.Shared/Components/Cyberspace/* and re-run the sync.
-     console-bg.js and its libraries load from jsDelivr (pinned tag); bump -CyberspaceCdnTag to ship a new build. -->
+<!-- BEGIN MINDATTIC.COMPONENTS:CYBERSPACE -->
+<!-- Generated by MindAttic.Components/web/build/build-sites.mjs. Do not edit by hand.
+     Edit MindAttic.Components/web/components/Cyberspace/* and re-run the build.
+     console-bg.js and its libraries load from jsDelivr (pinned tag); bump cdnTag in web/sites.json to ship a new build. -->
 <!-- ════════════════════════════════════════════════════════════════════════
      MindAttic.Web.Shared - cyberspace/frontpage.html
      The DOM scaffolding the CYBERSPACE effects expect.
@@ -559,9 +622,9 @@ a:hover {
 <div class="cyberspace-sl-coarse"   aria-hidden="true"></div>
 <div class="console-bg-host" aria-hidden="true"></div>
 
-<link rel="preload" as="image" fetchpriority="low" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/Components/Cyberspace/assets/circuitboard.00.png">
-<link rel="preload" as="image" fetchpriority="low" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/Components/Cyberspace/assets/circuitboard.01.png">
-<link rel="preload" as="image" fetchpriority="low" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/Components/Cyberspace/assets/circuitboard.02.png">
+<link rel="preload" as="image" fetchpriority="low" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/Cyberspace/assets/circuitboard.00.png">
+<link rel="preload" as="image" fetchpriority="low" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/Cyberspace/assets/circuitboard.01.png">
+<link rel="preload" as="image" fetchpriority="low" href="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/Cyberspace/assets/circuitboard.02.png">
 <style id="mindattic-components-cyberspace-css">
 /* ====================================================================
  * MindAttic.Web.Shared - cyberspace/frontpage.css
@@ -1300,11 +1363,11 @@ hr {
 }
 </style>
 <script id="mindattic-components-cyberspace-js">
-/* ---- circuitboard textures (jsDelivr URLs @V16) ---- */
+/* ---- circuitboard textures (jsDelivr URLs @V1) ---- */
 window.__cyberspaceCircuitboardSrcs = [
-  'https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/Components/Cyberspace/assets/circuitboard.00.png',
-  'https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/Components/Cyberspace/assets/circuitboard.01.png',
-  'https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/Components/Cyberspace/assets/circuitboard.02.png'
+  'https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/Cyberspace/assets/circuitboard.00.png',
+  'https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/Cyberspace/assets/circuitboard.01.png',
+  'https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/Cyberspace/assets/circuitboard.02.png'
 ];
 
 /* ---- loader.js ---- */
@@ -1850,11 +1913,11 @@ window.homeBg = (function () {
 })();
 
 </script>
-<script id="mindattic-components-cyberspace-sacred-geometry-js" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/Components/SacredGeometry/sacred-geometry.js" defer></script>
-<script id="mindattic-components-cyberspace-hyperspace-js" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/Components/Hyperspace/hyperspace.js" defer></script>
-<script id="mindattic-components-cyberspace-hyperspace-reader-js" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/Components/Hyperspace/hyperspace-reader.js" defer></script>
-<script id="mindattic-components-cyberspace-console-bg-js" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/Components/Cyberspace/console-bg.js" defer></script>
-<!-- END MINDATTIC.UIUX:CYBERSPACE -->
+<script id="mindattic-components-cyberspace-sacred-geometry-js" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/SacredGeometry/sacred-geometry.js" defer></script>
+<script id="mindattic-components-cyberspace-hyperspace-js" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/Hyperspace/hyperspace.js" defer></script>
+<script id="mindattic-components-cyberspace-hyperspace-reader-js" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/Hyperspace/hyperspace-reader.js" defer></script>
+<script id="mindattic-components-cyberspace-console-bg-js" src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V1/web/components/Cyberspace/console-bg.js" defer></script>
+<!-- END MINDATTIC.COMPONENTS:CYBERSPACE -->
 
 <!-- ═════════════════════════════════════════════
      §  11  BODY
@@ -1885,9 +1948,9 @@ window.homeBg = (function () {
     <h1 id="site-name" class="site-name">MindAttic</h1>
     <p id="site-motto">A distributed software development company specializing in interactive media.</p>
     <nav class="link-row" aria-label="Links">
-      <a class="link-btn" href="https://ryandebraal.com" target="_blank" rel="noopener noreferrer" aria-describedby="new-window-note">R&eacute;sum&eacute;</a>
-      <a class="link-btn" href="https://github.com/mindattic" target="_blank" rel="noopener noreferrer" aria-describedby="new-window-note">GitHub</a>
-      <a class="link-btn" href="https://mindatticcares.com" target="_blank" rel="noopener noreferrer" aria-describedby="new-window-note">MindAttic Cares</a>
+      <a class="ma-btn link-btn" href="https://ryandebraal.com" target="_blank" rel="noopener noreferrer" aria-describedby="new-window-note">R&eacute;sum&eacute;</a>
+      <a class="ma-btn link-btn" href="https://github.com/mindattic" target="_blank" rel="noopener noreferrer" aria-describedby="new-window-note">GitHub</a>
+      <a class="ma-btn link-btn" href="https://mindatticcares.com" target="_blank" rel="noopener noreferrer" aria-describedby="new-window-note">MindAttic Cares</a>
     </nav>
     <span id="new-window-note" hidden>Opens in a new window.</span>
   </div>
@@ -2101,23 +2164,7 @@ document.addEventListener('DOMContentLoaded', function () {
   // Capture demo mode: the backdrop already runs itself; just add the occasional
   // programmatic burst so a recording shows the same variety a real visitor's taps would.
   (function () {
-    function forced() { return /(?:^|[?&])demo=1(?:&|$)/.test(location.search); }
-    function armed(go) {
-      if (forced()) { go(); return; }
-      var bridge = window.mindattic && window.mindattic.capture;
-      if (!bridge || typeof bridge.status !== 'function') return;
-      // `recording` is the StartRecording/StopRecording on-demand clip toggle, not whether
-      // `-capture video` is actually filming the session — that's `tapeRunning`. The capture
-      // engine also starts asynchronously (window must appear, then hardware encoder probing),
-      // so poll instead of checking once, or a slow-starting recorder means the demo never runs.
-      var tries = 0;
-      (function poll() {
-        bridge.status().then(function (s) {
-          if (s && (s.tapeRunning || s.recording)) { go(); return; }
-          if (++tries < 40) setTimeout(poll, 500);
-        }).catch(function () { if (++tries < 40) setTimeout(poll, 500); });
-      })();
-    }
+    var armed = window.MindAtticCaptureDemo.armed;
     function loop() {
       var o = { x: 10 + Math.random() * 80, y: 10 + Math.random() * 80 };
       if (!cb.inKeepout || !cb.inKeepout(o.x, o.y)) fireRandomEffect(o);
