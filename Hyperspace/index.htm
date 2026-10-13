@@ -8,6 +8,54 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<!-- BEGIN MINDATTIC.COMPONENTS:BUTTON -->
+<style id="mindattic-components-button-css">
+/* MindAttic.Components - Button/button.css
+   The base MindAttic button. Opt in with class="ma-btn" on an <a> or <button>; everything scales
+   off one unit, --ma-btn-u, so a site sizes it with a single variable. Theme it by setting the
+   --ma-btn-* variables, and add anything site-specific (a lift, a glow, a grid order) in the
+   site's own CSS on top of this. */
+.ma-btn {
+  --ma-btn-u: 1rem;
+  --ma-btn-fg: #fff;
+  --ma-btn-bg: #13161b;
+  --ma-btn-border: #e5484d;
+  --ma-btn-hover-bg: #e5484d;
+  --ma-btn-hover-border: #ff6b70;
+  display: inline-block;
+  padding: calc(var(--ma-btn-u) * 0.3) calc(var(--ma-btn-u) * 0.6);
+  border: max(0.0625rem, calc(var(--ma-btn-u) * 0.12)) solid var(--ma-btn-border);
+  border-radius: calc(var(--ma-btn-u) * 0.5);
+  background: var(--ma-btn-bg);
+  color: var(--ma-btn-fg);
+  font-family: 'Outfit', system-ui, sans-serif;
+  font-size: var(--ma-btn-u);
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  /* Smooth in/out interpolation between rest and hover states. */
+  transition: background-color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* The label stays --ma-btn-fg in every link state (a page's global a:hover would otherwise recolor it). */
+.ma-btn:link,
+.ma-btn:visited,
+.ma-btn:hover,
+.ma-btn:focus,
+.ma-btn:active { color: var(--ma-btn-fg); }
+
+.ma-btn:hover,
+.ma-btn:focus-visible {
+  background: var(--ma-btn-hover-bg);
+  border-color: var(--ma-btn-hover-border);
+}
+</style>
+<!-- END MINDATTIC.COMPONENTS:BUTTON -->
 <style>
   :root{
     --void:#07071A;
@@ -403,14 +451,18 @@
   #rotateHint .icon{font-size:46px; animation:rot 2s ease-in-out infinite;}
   @keyframes rot{0%,100%{transform:rotate(0)}50%{transform:rotate(90deg)}}
   @media (orientation:portrait){ body.in-gallery #rotateHint{display:flex;} }
+
+  /* "Enter the Gallery": the base button (MindAttic.Components .ma-btn) in this page's purple pill,
+     pinned top-right. It keeps one look on hover and focus, so the base's red hover is undone here. */
+  #enterGalleryBtn{position:fixed;top:16px;right:18px;z-index:100;
+    --ma-btn-u:13px;--ma-btn-fg:#06061A;--ma-btn-bg:#A78BFA;--ma-btn-hover-bg:#A78BFA;
+    font-family:'Space Mono',monospace;border:none;padding:10px 17px;border-radius:9px;font-weight:700;
+    box-shadow:0 8px 30px -8px rgba(167,139,250,.6);white-space:normal;transition:all 0s;}
 </style>
 </head>
 <body>
 
-<button id="enterGalleryBtn" onclick="HyperGallery.enter()" style="position:fixed;top:16px;right:18px;z-index:100;
-   font-family:'Space Mono',monospace;font-size:13px;border:none;cursor:pointer;color:#06061A;
-   background:#A78BFA;padding:10px 17px;border-radius:9px;font-weight:700;
-   box-shadow:0 8px 30px -8px rgba(167,139,250,.6);">Enter the Gallery →</button>
+<button id="enterGalleryBtn" class="ma-btn" onclick="HyperGallery.enter()">Enter the Gallery →</button>
 
 <!-- ============ HERO ============ -->
 <header class="hero">
@@ -539,12 +591,12 @@
   </div>
 </footer>
 
-<!-- The shapes come from the MindAttic.Web.Shared Hyperspace component (window.Hyperspace), pinned to a release
+<!-- The shapes come from the MindAttic.Components Hyperspace component (window.Hyperspace), pinned to a release
      tag. The second script is the development fallback: when the pinned file cannot be fetched (for example
-     the page is opened as a local file before that tag is published), load it from the MindAttic.Web.Shared
-     folder next to this one in the MindAttic.Web checkout. -->
-<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/Components/Hyperspace/hyperspace.js"></script>
-<script>window.Hyperspace || document.write('<script src="../MindAttic.Web.Shared/Components/Hyperspace/hyperspace.js"><\/script>');</script>
+     the page is opened as a local file before that tag is published), load it from a MindAttic.Components
+     checkout next to the MindAttic.Web one. -->
+<script src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Components@V2/web/components/Hyperspace/hyperspace.js"></script>
+<script>window.Hyperspace || document.write('<script src="../../MindAttic.Components/web/components/Hyperspace/hyperspace.js"><\/script>');</script>
 
 <script>
 "use strict";
