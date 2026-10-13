@@ -8,11 +8,11 @@
 #
 # Output: R:\MindAttic\Capture\<site>\<site>_<timestamp>.<ext> (ISO 8601, ':' as '.'). Pages can also call window.mindattic.capture.raise(...).
 # MindAttic Browser deploys fresh from D:\Projects\MindAttic\MindAttic.Browser\tools\deploy.ps1 to
-# C:\Apps\MindAttic.Browser\; launch.bat there redeploys from source every time it runs, so this
+# C:\Apps\MindAttic.Browser\; deploy.bat there redeploys from source every time it runs, so this
 # always drives the current build, never a stale install.
 param([string]$Site = 'mindattic.com')
 
-$browser = 'C:\Apps\MindAttic.Browser\launch.bat'
+$browser = 'C:\Apps\MindAttic.Browser\deploy.bat'
 if (-not (Test-Path $browser)) {
     throw "MindAttic Browser is not deployed. Run ..\MindAttic.Browser\tools\deploy.ps1 first."
 }
