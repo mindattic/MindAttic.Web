@@ -118,6 +118,215 @@
 }
 </style>
 <!-- END MINDATTIC.COMPONENTS:FONTS -->
+<!-- BEGIN MINDATTIC.COMPONENTS:SKIPLINK -->
+<style id="mindattic-components-skip-link-css">
+/* MindAttic.Components - SkipLink/skip-link.css
+   Themed by the shared tokens every web/themes palette defines (--bg, --bg2, --bg3, --border,
+   --accent, --text, --text2, --text3, --font-resume); a page sets anything it does differently in its
+   own CSS on top. */
+.ma-skip-link{position:fixed;top:-40px;left:8px;background:var(--accent);color:var(--bg);padding:8px 14px;border-radius:6px;font-family:var(--font-resume);font-size:13px;font-weight:600;text-decoration:none;z-index:10000;transition:top 0.15s;}
+.ma-skip-link:focus{top:8px;outline:2px solid var(--bg);outline-offset:2px;}
+</style>
+<!-- END MINDATTIC.COMPONENTS:SKIPLINK -->
+<!-- BEGIN MINDATTIC.COMPONENTS:TOOLBAR -->
+<style id="mindattic-components-toolbar-css">
+/* MindAttic.Components - Toolbar/toolbar.css
+   Themed by the shared tokens every web/themes palette defines (--bg, --bg2, --bg3, --border,
+   --accent, --text, --text2, --text3, --font-resume); a page sets anything it does differently in its
+   own CSS on top. */
+.ma-toolbar{position:sticky;top:0;z-index:200;background:var(--bg);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;}
+.ma-toolbar__label{font-size:11px;color:var(--text3);white-space:nowrap;}
+</style>
+<!-- END MINDATTIC.COMPONENTS:TOOLBAR -->
+<!-- BEGIN MINDATTIC.COMPONENTS:TOOLBUTTON -->
+<style id="mindattic-components-tool-button-css">
+/* MindAttic.Components - ToolButton/tool-button.css
+   Themed by the shared tokens every web/themes palette defines (--bg, --bg2, --bg3, --border,
+   --accent, --text, --text2, --text3, --font-resume); a page sets anything it does differently in its
+   own CSS on top. */
+.ma-tool-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--text2);font-family:var(--font-resume);font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.ma-tool-btn:hover{background:var(--bg3);color:var(--text);border-color:var(--accent);}
+/* Two classes so it outranks .ma-tool-btn:hover: a hovered primary keeps its fill and only fades. */
+.ma-tool-btn.ma-tool-btn--primary{background:var(--accent);color:var(--bg);border-color:var(--accent);}
+.ma-tool-btn.ma-tool-btn--primary:hover{opacity:0.85;}
+.ma-tool-btn svg{width:13px;height:13px;fill:currentColor;flex-shrink:0;}
+/* Full-width, for a column of actions in a menu. */
+.ma-tool-btn--block{width:100%;padding:6px 10px;font-size:12px;text-align:center;}
+/* An icon + label link styled to sit in a toolbar. */
+.ma-tool-link{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border-radius:5px;color:var(--text2);text-decoration:none;font-family:var(--font-resume);font-size:11px;font-weight:500;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
+.ma-tool-link:hover{background:var(--bg3);color:var(--accent);}
+.ma-tool-link svg{width:14px;height:14px;fill:currentColor;flex-shrink:0;}
+.ma-tool-link img{width:14px;height:14px;border-radius:2px;object-fit:contain;flex-shrink:0;}
+</style>
+<!-- END MINDATTIC.COMPONENTS:TOOLBUTTON -->
+<!-- BEGIN MINDATTIC.COMPONENTS:ICONBUTTON -->
+<style id="mindattic-components-icon-button-css">
+/* MindAttic.Components - IconButton/icon-button.css
+   Themed by the shared tokens every web/themes palette defines (--bg, --bg2, --bg3, --border,
+   --accent, --text, --text2, --text3, --font-resume); a page sets anything it does differently in its
+   own CSS on top. */
+.ma-icon-btn{width:32px;height:32px;box-sizing:border-box;border-radius:6px;border:2px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;padding:0;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;transition:border-color 0.15s;}
+.ma-icon-btn:hover{border-color:var(--accent);}
+.ma-icon-btn svg{width:12px;height:12px;fill:currentColor;}
+/* Never squeezed or stretched by a flex row. */
+.ma-icon-btn--fixed{min-width:32px;min-height:32px;max-width:32px;max-height:32px;flex-grow:0;}
+</style>
+<!-- END MINDATTIC.COMPONENTS:ICONBUTTON -->
+<!-- BEGIN MINDATTIC.COMPONENTS:SELECT -->
+<style id="mindattic-components-select-css">
+/* MindAttic.Components - Select/select.css
+   Themed by the shared tokens every web/themes palette defines (--bg, --bg2, --bg3, --border,
+   --accent, --text, --text2, --text3, --font-resume); a page sets anything it does differently in its
+   own CSS on top. */
+.ma-select{font-family:var(--font-resume);font-size:12px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--text);cursor:pointer;outline:none;transition:all 0.15s;}
+.ma-select:hover{border-color:var(--accent);}
+</style>
+<!-- END MINDATTIC.COMPONENTS:SELECT -->
+<!-- BEGIN MINDATTIC.COMPONENTS:MENU -->
+<style id="mindattic-components-menu-css">
+/* MindAttic.Components - Menu/menu.css
+   Themed by the shared tokens every web/themes palette defines (--bg, --bg2, --bg3, --border,
+   --accent, --text, --text2, --text3, --font-resume); a page sets anything it does differently in its
+   own CSS on top. */
+/* A dropdown panel, positioned under its (position:relative) wrapper; shown with display:block. */
+.ma-menu{display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--bg);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 18px rgba(0,0,0,0.22);z-index:999;padding:6px 0;min-width:120px;}
+.ma-menu.is-open{display:block;}
+.ma-menu__group{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:8px 14px 3px;font-weight:600;}
+.ma-menu__group:first-child{padding-top:2px;}
+.ma-menu__item{display:block;padding:5px 14px;font-size:12px;color:var(--text2);text-decoration:none;cursor:pointer;font-family:var(--font-resume);white-space:nowrap;transition:color 0.15s,background 0.15s,padding-left 0.15s;}
+.ma-menu__item:hover{color:var(--accent);background:var(--bg3);padding-left:18px;}
+.ma-menu__item--active{color:var(--accent);font-weight:600;}
+</style>
+<!-- END MINDATTIC.COMPONENTS:MENU -->
+<!-- BEGIN MINDATTIC.COMPONENTS:MODAL -->
+<style id="mindattic-components-modal-css">
+/* MindAttic.Components - Modal/modal.css
+   Themed by the shared tokens every web/themes palette defines (--bg, --bg2, --bg3, --border,
+   --accent, --text, --text2, --text3, --font-resume); a page sets anything it does differently in its
+   own CSS on top. */
+/* Full-screen dimmed overlay; show it with display:flex. The dialog's size is the page's call. */
+.ma-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;}
+.ma-modal__dialog{background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.4);}
+.ma-modal__header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.ma-modal__title{font-family:var(--font-resume);font-size:15px;font-weight:600;color:var(--text);}
+.ma-modal__close{background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:0 4px;line-height:1;}
+.ma-modal__footer{display:flex;justify-content:flex-end;padding:12px 20px;border-top:1px solid var(--border);}
+.ma-modal__footer .ma-tool-btn{padding:7px 14px;font-size:12px;}
+</style>
+<!-- END MINDATTIC.COMPONENTS:MODAL -->
+<!-- BEGIN MINDATTIC.COMPONENTS:LIGHTBOX -->
+<style id="mindattic-components-lightbox-css">
+/* MindAttic.Components - Lightbox/lightbox.css
+   Themed by the shared tokens every web/themes palette defines (--bg, --bg2, --bg3, --border,
+   --accent, --text, --text2, --text3, --font-resume); a page sets anything it does differently in its
+   own CSS on top. */
+.ma-lightbox{display:none;position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);}
+.ma-lightbox.is-open{display:flex;}
+.ma-lightbox__inner{display:flex;flex-direction:column;align-items:center;gap:20px;cursor:default;}
+.ma-lightbox__links{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;}
+.ma-lightbox__links a{color:rgba(255,255,255,0.75);font-size:13px;text-decoration:none;letter-spacing:0.03em;padding:5px 14px;border:1px solid rgba(255,255,255,0.2);border-radius:20px;transition:color 0.15s,border-color 0.15s,text-shadow 0.15s;white-space:nowrap;}
+.ma-lightbox__links a:hover{color:var(--accent);border-color:var(--accent);text-shadow:0 0 8px var(--accent);}
+.ma-lightbox__img{width:400px;height:400px;border-radius:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);animation:ma-lightbox-in 0.25s ease-out;}
+@keyframes ma-lightbox-in{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
+</style>
+<!-- END MINDATTIC.COMPONENTS:LIGHTBOX -->
+<!-- BEGIN MINDATTIC.COMPONENTS:TAG -->
+<style id="mindattic-components-tag-css">
+/* MindAttic.Components - Tag/tag.css
+   Themed by the shared tokens every web/themes palette defines; a page sets anything it does
+   differently in its own CSS on top. */
+/* A pill. With a .ma-tag__tip inside, hovering the pill shows the tip above it (or below, with
+   .ma-tag__tip--below, when there is no room above). --tt-arrow-x moves the arrow when the tip has
+   been shifted to stay on screen. The tip's content is the page's. */
+.ma-tag{display:inline-flex;align-items:center;font-family:var(--font-resume);font-size:11px;padding:2px 9px;background:var(--tag-bg);color:var(--tag-text);border:1px solid var(--tag-border);border-radius:20px;cursor:default;transition:all 0.12s;position:relative;white-space:nowrap;}
+/* Narrow screens: a long label wraps inside its pill instead of forcing a horizontal scrollbar. */
+@media(max-width:600px){.ma-tag{white-space:normal;max-width:100%;}}
+.ma-tag:hover{background:var(--tag-hover-bg);color:var(--tag-hover-text);border-color:var(--tag-hover-bg);transform:translateY(-1px);z-index:20;}
+.ma-tag__tip{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:11px;padding:8px 12px;border-radius:6px;pointer-events:auto;z-index:999;font-family:var(--font-resume);width:280px;white-space:normal;line-height:1.5;box-shadow:0 4px 12px rgba(0,0,0,0.25);}
+.ma-tag__tip::after{content:'';position:absolute;top:100%;left:var(--tt-arrow-x,50%);transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--text);}
+.ma-tag__tip--below{bottom:auto;top:calc(100% + 8px);}
+.ma-tag__tip--below::after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:var(--text);}
+.ma-tag:hover .ma-tag__tip{display:block;}
+</style>
+<!-- END MINDATTIC.COMPONENTS:TAG -->
+<!-- BEGIN MINDATTIC.COMPONENTS:PROGRESSBAR -->
+<style id="mindattic-components-progress-bar-css">
+/* MindAttic.Components - ProgressBar/progress-bar.css
+   Themed by the shared tokens every web/themes palette defines; a page sets anything it does
+   differently in its own CSS on top. */
+/* A track and its fill; set the fill's width (0-100%). */
+.ma-progress{display:block;flex:1;height:5px;background:rgba(128,128,128,0.2);border-radius:3px;overflow:hidden;}
+.ma-progress__fill{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#5b8dee 0%,#00c9a7 100%);}
+
+/* Edge: a thin accent bar along the bottom edge of its (position:relative) container, e.g. a
+   countdown under a toolbar. The track is a taller, invisible hit area for clicking it. */
+.ma-progress--edge{position:absolute;left:0;right:0;bottom:-1px;height:7px;z-index:1;cursor:pointer;flex:0 1 auto;background:none;border-radius:0;overflow:visible;}
+.ma-progress--edge .ma-progress__fill{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--accent);border-radius:0;pointer-events:none;}
+@media print{.ma-progress--edge{display:none;}}
+</style>
+<!-- END MINDATTIC.COMPONENTS:PROGRESSBAR -->
+<!-- BEGIN MINDATTIC.COMPONENTS:FORMROW -->
+<style id="mindattic-components-form-row-css">
+/* MindAttic.Components - FormRow/form-row.css
+   Themed by the shared tokens every web/themes palette defines; a page sets anything it does
+   differently in its own CSS on top. */
+/* A titled group of labelled controls: section > title + rows; row = label, control, optional value. */
+.ma-form-section__title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--accent);border-bottom:1px solid var(--rule);padding-bottom:5px;margin-bottom:14px;}
+.ma-form-section__rows{display:flex;flex-direction:column;gap:12px;}
+.ma-form-row{display:flex;align-items:center;gap:12px;}
+.ma-form-row__label{min-width:200px;font-size:12px;color:var(--text2);}
+/* A live readout beside a slider. */
+.ma-form-row__value{min-width:56px;text-align:right;font-size:12px;color:var(--text);font-variant-numeric:tabular-nums;}
+</style>
+<!-- END MINDATTIC.COMPONENTS:FORMROW -->
+<!-- BEGIN MINDATTIC.COMPONENTS:RANGE -->
+<style id="mindattic-components-range-css">
+/* MindAttic.Components - Range/range.css
+   Themed by the shared tokens every web/themes palette defines; a page sets anything it does
+   differently in its own CSS on top. */
+/* A slider in the theme's accent colour that takes the rest of its row. */
+.ma-range{flex:1;accent-color:var(--accent);cursor:pointer;}
+</style>
+<!-- END MINDATTIC.COMPONENTS:RANGE -->
+<!-- BEGIN MINDATTIC.COMPONENTS:AVATAR -->
+<style id="mindattic-components-avatar-css">
+/* MindAttic.Components - Avatar/avatar.css
+   Themed by the shared tokens every web/themes palette defines; a page sets anything it does
+   differently in its own CSS on top. */
+/* A round photo; size it with --ma-avatar-size. */
+.ma-avatar{width:var(--ma-avatar-size,28px);height:var(--ma-avatar-size,28px);border-radius:50%;object-fit:cover;flex-shrink:0;}
+</style>
+<!-- END MINDATTIC.COMPONENTS:AVATAR -->
+<!-- BEGIN MINDATTIC.COMPONENTS:CAPTUREDEMO -->
+<script id="mindattic-components-capture-demo-js">
+/* MindAttic.Components - CaptureDemo/capture-demo.js
+   When should a page run its hands-free demo? When ?demo=1 is in the URL, or when the
+   MindAttic.Capture bridge (window.mindattic.capture) says the session is being filmed.
+   The tour itself belongs to each page; this only decides when to start it:
+
+     MindAtticCaptureDemo.armed(function startMyTour() { ... });  */
+window.MindAtticCaptureDemo = (function () {
+  function forced() { return /(?:^|[?&])demo=1(?:&|$)/.test(location.search); }
+  function armed(go) {
+    if (forced()) { go(); return; }
+    var bridge = window.mindattic && window.mindattic.capture;
+    if (!bridge || typeof bridge.status !== 'function') return;
+    // `recording` is the StartRecording/StopRecording on-demand clip toggle, not whether
+    // `-capture video` is actually filming the session — that's `tapeRunning`. The capture
+    // engine also starts asynchronously (window must appear, then hardware encoder probing),
+    // so poll instead of checking once, or a slow-starting recorder means the demo never runs.
+    var tries = 0;
+    (function poll() {
+      bridge.status().then(function (s) {
+        if (s && (s.tapeRunning || s.recording)) { go(); return; }
+        if (++tries < 40) setTimeout(poll, 500);
+      }).catch(function () { if (++tries < 40) setTimeout(poll, 500); });
+    })();
+  }
+  return { forced: forced, armed: armed };
+})();
+</script>
+<!-- END MINDATTIC.COMPONENTS:CAPTUREDEMO -->
 <style>
 /*
  * ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -407,28 +616,19 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{font-size:14px;-webkit-font-smoothing:antialiased;scroll-behavior:smooth;}
 body{font-family:var(--font-resume);background:var(--bg2);color:var(--text);min-height:100vh;transition:background 0.3s,color 0.3s;position:relative;overflow-x:hidden;}
-.skip-link{position:fixed;top:-40px;left:8px;background:var(--accent);color:var(--bg);padding:8px 14px;border-radius:6px;font-family:var(--font-resume);font-size:13px;font-weight:600;text-decoration:none;z-index:10000;transition:top 0.15s;}
-.skip-link:focus{top:8px;outline:2px solid var(--bg);outline-offset:2px;}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 
 /* ── CANVAS (animations live here, behind everything) ── */
 #fx-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
 
 /* ── TOOLBAR ── */
-#toolbar{position:sticky;top:0;z-index:200;background:var(--bg);border-bottom:1px solid var(--border);padding:10px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center;}
 #toolbar-identity{display:inline-flex;align-items:center;gap:8px;cursor:pointer;margin-right:auto;}
 #toolbar-identity img{transition:box-shadow 0.2s;}
 #toolbar-name{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;transition:color 0.2s,text-shadow 0.2s;}
 #toolbar-identity:hover #toolbar-name{color:var(--accent);text-shadow:0 0 6px var(--accent);}
 #toolbar-identity:hover img{box-shadow:0 0 8px var(--accent);}
 .tb-sep{width:1px;height:24px;background:var(--border);flex-shrink:0;}
-.tb-label{font-size:11px;color:var(--text3);white-space:nowrap;}
-select.tb-sel{font-family:var(--font-resume);font-size:12px;padding:5px 8px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--text);cursor:pointer;outline:none;transition:all 0.15s;}
-select.tb-sel:hover{border-color:var(--accent);}
 #transport{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;display:flex;align-items:center;gap:8px;}
-.tp-btn{width:32px;height:32px;box-sizing:border-box;border-radius:6px;border:2px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;padding:0;flex-shrink:0;display:inline-flex;align-items:center;justify-content:center;transition:border-color 0.15s;}
-.tp-btn:hover{border-color:var(--accent);}
-.tp-btn svg{width:12px;height:12px;fill:currentColor;}
 #station{display:flex;align-items:center;min-width:190px;margin-right:6px;justify-content:flex-end;pointer-events:none;white-space:nowrap;font-family:'Courier New',monospace;}
 #station-lines{display:grid;grid-template-columns:auto 14px minmax(9ch,max-content);column-gap:6px;row-gap:3px;align-items:center;}
 .st-line{display:contents;}
@@ -453,35 +653,32 @@ select.tb-sel:hover{border-color:var(--accent);}
 .dice-face{display:inline-block;}
 ::view-transition-group(dice),::view-transition-new(dice){animation:none;}
 ::view-transition-old(dice){display:none;}
-#rotate-track{position:absolute;left:0;right:0;bottom:-1px;height:7px;z-index:1;cursor:pointer;}
-#rotate-bar{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--accent);pointer-events:none;}
-@media print{#rotate-track{display:none;}}
-.tb-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg2);color:var(--text2);font-family:var(--font-resume);font-size:12px;font-weight:500;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
-.tb-btn:hover{background:var(--bg3);color:var(--text);border-color:var(--accent);}
-.tb-btn.primary{background:var(--accent);color:var(--bg);border-color:var(--accent);}
-.tb-btn.primary:hover{opacity:0.85;}
-.tb-btn svg{width:13px;height:13px;fill:currentColor;flex-shrink:0;}
-.tb-link{display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border-radius:5px;color:var(--text2);text-decoration:none;font-family:var(--font-resume);font-size:11px;font-weight:500;transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
-.tb-link:hover{background:var(--bg3);color:var(--accent);}
-.tb-link svg{width:14px;height:14px;fill:currentColor;flex-shrink:0;}
-.tb-link img{width:14px;height:14px;border-radius:2px;object-fit:contain;flex-shrink:0;}
 
 
 /* ── RESUME HAMBURGER NAV ── */
 #resume-nav-btn{position:absolute;top:14px;left:16px;background:none;border:none;color:var(--text3);font-size:19px;line-height:1;cursor:pointer;padding:4px 7px;border-radius:6px;transition:color 0.15s,background 0.15s;z-index:20;font-family:inherit;}
 #resume-nav-btn:hover{color:var(--accent);background:var(--bg3);}
-#resume-nav-menu{display:none;position:absolute;top:46px;left:8px;background:var(--bg);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.22);z-index:300;min-width:195px;padding:6px 0;}
+/* Menu (MindAttic.Components) opened from the top-left of the résumé card. */
+#resume-nav-menu{top:46px;left:8px;right:auto;box-shadow:0 4px 20px rgba(0,0,0,0.22);z-index:300;min-width:195px;}
+#more-menu{box-shadow:0 4px 16px rgba(0,0,0,0.15);padding:12px 14px;white-space:nowrap;min-width:auto;}
+#more-menu .ma-menu__group{font-size:10px;padding:2px 0;font-weight:400;}
+/* IconButtons whose looks differ from the base. */
+#random-theme-btn{font-size:16px;}
+#more-btn{font-size:16px;font-weight:700;letter-spacing:1px;line-height:1;position:relative;}
+#theme-rotate-btn{position:relative;}
+#theme-swatch{overflow:hidden;position:relative;}
+/* These two draw their own content and never set a text colour: keep the browser's button default. */
+#theme-rotate-btn,#theme-swatch{color:buttontext;}
+/* The settings dialog fills the screen; its header is a touch tighter and its footer never shrinks. */
+#settings-modal .ma-modal__dialog{width:95%;height:95%;}
+#settings-modal .ma-modal__header{padding:14px 20px;flex-shrink:0;}
+#settings-modal .ma-modal__footer{gap:8px;flex-shrink:0;}
+#attr-modal .ma-modal__dialog{max-width:560px;width:92%;}
 #resume-nav-menu a{display:block;padding:9px 20px;font-size:12px;font-family:var(--font-resume);color:var(--text2);text-decoration:none;transition:color 0.15s,text-shadow 0.15s,padding-left 0.15s;white-space:nowrap;}
-#resume-nav-menu.open{display:block;}
 #resume-nav-menu a:hover{color:var(--accent);text-shadow:0 0 8px var(--accent);padding-left:28px;}
 @media print{#resume-nav-btn,#resume-nav-menu{display:none!important;}}
 
 /* ── THEME SWATCH DROPDOWN ── */
-#theme-swatch-menu .ts-group{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:8px 14px 3px;font-weight:600;}
-#theme-swatch-menu .ts-group:first-child{padding-top:2px;}
-#theme-swatch-menu .ts-opt{display:block;padding:5px 14px;font-size:12px;color:var(--text2);text-decoration:none;cursor:pointer;font-family:var(--font-resume);white-space:nowrap;transition:color 0.15s,background 0.15s,padding-left 0.15s;}
-#theme-swatch-menu .ts-opt:hover{color:var(--accent);background:var(--bg3);padding-left:18px;}
-#theme-swatch-menu .ts-opt.active{color:var(--accent);font-weight:600;}
 @media print{#theme-swatch-wrap{display:none!important;}}
 
 /* ── RESUME DOC ── */
@@ -509,14 +706,7 @@ select.tb-sel:hover{border-color:var(--accent);}
 .r-skill-tags{display:flex;flex-wrap:wrap;gap:4px;}
 
 /* ── TAG ── */
-.tag{display:inline-flex;align-items:center;font-family:var(--font-resume);font-size:11px;padding:2px 9px;background:var(--tag-bg);color:var(--tag-text);border:1px solid var(--tag-border);border-radius:20px;cursor:default;transition:all 0.12s;position:relative;white-space:nowrap;}
 /* Narrow screens: a long tag label wraps inside its pill instead of forcing a horizontal scrollbar. */
-@media(max-width:600px){.tag{white-space:normal;max-width:100%;}}
-.tag:hover{background:var(--tag-hover-bg);color:var(--tag-hover-text);border-color:var(--tag-hover-bg);transform:translateY(-1px);z-index:20;}
-.tag-tooltip{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);font-size:11px;padding:8px 12px;border-radius:6px;pointer-events:auto;z-index:999;font-family:var(--font-resume);width:280px;white-space:normal;line-height:1.5;box-shadow:0 4px 12px rgba(0,0,0,0.25);}
-.tag-tooltip::after{content:'';position:absolute;top:100%;left:var(--tt-arrow-x,50%);transform:translateX(-50%);border:5px solid transparent;border-top-color:var(--text);}
-.tag-tooltip.tt-below{bottom:auto;top:calc(100% + 8px);}
-.tag-tooltip.tt-below::after{top:auto;bottom:100%;border-top-color:transparent;border-bottom-color:var(--text);}
 .tag-tooltip .tip-label{display:block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:0.07em;opacity:0.55;margin-bottom:2px;}
 .tag-tooltip .tip-desc{display:block;font-weight:400;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid rgba(128,128,128,0.3);}
 .tag-tooltip .tip-ryan{display:block;font-style:italic;opacity:0.85;}
@@ -528,7 +718,6 @@ select.tb-sel:hover{border-color:var(--accent);}
 .tip-bar-track{display:block;flex:1;height:5px;background:rgba(128,128,128,0.2);border-radius:3px;overflow:hidden;}
 .tip-bar-fill{display:block;height:100%;border-radius:3px;background:linear-gradient(90deg,#5b8dee 0%,#00c9a7 100%);}
 .tip-bar-pct{font-size:9px;opacity:0.65;white-space:nowrap;flex-shrink:0;}
-.tag:hover .tag-tooltip{display:block;}
 
 /* ── EXPERIENCE ── */
 .r-job{margin-bottom:20px;}
@@ -603,14 +792,6 @@ select.tb-sel:hover{border-color:var(--accent);}
 .ryan-full{background-image:url("https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/ryandebraal.com/images/ryan-portrait.png");background-size:cover;background-position:center;}
 
 /* ── LIGHTBOX ── */
-#avatar-lightbox{display:none;position:fixed;inset:0;z-index:2147483647;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;cursor:pointer;backdrop-filter:blur(4px);}
-#avatar-lightbox.active{display:flex;}
-#avatar-lightbox .lb-inner{display:flex;flex-direction:column;align-items:center;gap:20px;cursor:default;}
-#avatar-lightbox .lb-links{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;}
-#avatar-lightbox .lb-links a{color:rgba(255,255,255,0.75);font-size:13px;text-decoration:none;letter-spacing:0.03em;padding:5px 14px;border:1px solid rgba(255,255,255,0.2);border-radius:20px;transition:color 0.15s,border-color 0.15s,text-shadow 0.15s;white-space:nowrap;}
-#avatar-lightbox .lb-links a:hover{color:var(--accent);border-color:var(--accent);text-shadow:0 0 8px var(--accent);}
-#avatar-lightbox .lb-img{width:400px;height:400px;border-radius:100%;box-shadow:0 20px 60px rgba(0,0,0,0.6);animation:lb-in 0.25s ease-out;}
-@keyframes lb-in{from{opacity:0;transform:scale(0.85)}to{opacity:1;transform:scale(1)}}
 @keyframes dice-spin{from{transform:rotate(0deg) scale(1)}50%{transform:rotate(360deg) scale(1.2)}to{transform:rotate(720deg) scale(1)}}
 
 /* ── PRINT MODES (drive Export → Print Page / Print Document / Print CV) ──
@@ -691,7 +872,7 @@ select.tb-sel:hover{border-color:var(--accent);}
 </style>
 </head>
 <body style="">
-<a href="#resume" class="skip-link">Skip to resume content</a>
+<a href="#resume" class="ma-skip-link">Skip to resume content</a>
 <canvas id="fx-canvas" aria-hidden="true" role="presentation" width="1919" height="638"></canvas>
 
 <!--
@@ -705,45 +886,45 @@ select.tb-sel:hover{border-color:var(--accent);}
 ║  self-documenting — you can read the HTML and know exactly what fires.        ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 -->
-<div id="toolbar" role="toolbar" aria-label="Resume controls">
-  <img src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/ryandebraal.com/images/ryan-avatar.png" width="28" height="28" decoding="async" alt="Ryan DeBraal — open profile photo" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openAvatarLightbox();}" onclick="openAvatarLightbox()" style="width:28px;height:28px;border-radius:50%;object-fit:cover;flex-shrink:0;cursor:pointer;" title="View photo">
+<div id="toolbar" class="ma-toolbar" role="toolbar" aria-label="Resume controls">
+  <img src="https://cdn.jsdelivr.net/gh/mindattic/MindAttic.Web@V16/MindAttic.Web.Shared/ryandebraal.com/images/ryan-avatar.png" width="28" height="28" decoding="async" alt="Ryan DeBraal — open profile photo" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openAvatarLightbox();}" onclick="openAvatarLightbox()" class="ma-avatar" style="cursor:pointer;" title="View photo">
   <span id="toolbar-name">Ryan DeBraal</span>
   <div id="transport" role="group" aria-label="Theme station">
     <div id="station" aria-live="polite"><div id="station-lines"><div class="st-line" id="station-now"><span class="st-label">Playing:</span><span class="st-icon" id="station-now-icon"></span><span class="st-name" id="station-now-name"></span></div><div class="st-line" id="station-next"><span class="st-label">Up Next:</span><span class="st-icon" id="station-next-icon"></span><span class="st-name" id="station-next-name"></span></div></div></div>
-    <button class="tp-btn" onclick="stepTheme(-1)" title="Previous theme" aria-label="Previous theme"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3h2v10H3zM14 3v10L6 8z"/></svg></button>
-    <button id="theme-rotate-btn" onclick="toggleThemeRotation()" title="Auto-rotate themes" aria-label="Toggle automatic theme rotation" aria-pressed="true" style="width:32px;height:32px;min-width:32px;min-height:32px;max-width:32px;max-height:32px;box-sizing:border-box;border-radius:6px;border:2px solid var(--border);background:var(--bg2);cursor:pointer;flex-shrink:0;flex-grow:0;padding:0;position:relative;display:inline-flex;align-items:center;justify-content:center;transition:border-color 0.15s;" onmouseover="this.dataset.hover='1';if(themeRotationPaused)this.style.borderColor='var(--accent)'" onmouseout="this.dataset.hover='';if(themeRotationPaused)this.style.borderColor='var(--border)'">
+    <button class="ma-icon-btn tp-btn" onclick="stepTheme(-1)" title="Previous theme" aria-label="Previous theme"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 3h2v10H3zM14 3v10L6 8z"/></svg></button>
+    <button id="theme-rotate-btn" onclick="toggleThemeRotation()" title="Auto-rotate themes" aria-label="Toggle automatic theme rotation" aria-pressed="true" class="ma-icon-btn ma-icon-btn--fixed" onmouseover="this.dataset.hover='1';if(themeRotationPaused)this.style.borderColor='var(--accent)'" onmouseout="this.dataset.hover='';if(themeRotationPaused)this.style.borderColor='var(--border)'">
       <span id="rotate-icon" aria-hidden="true" style="font-size:12px;z-index:1;pointer-events:none;color:var(--text);position:absolute;top:50%;left:50%;transform:translate(-55%,-48%);">&#10074;&#10074;</span>
     </button>
-    <button class="tp-btn" onclick="stepTheme(1)" title="Next theme" aria-label="Next theme"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11 3h2v10h-2zM2 3v10l8-5z"/></svg></button>
-    <button onclick="randomTheme()" id="random-theme-btn" title="Random theme" aria-label="Apply a random theme" style="width:32px;height:32px;min-width:32px;min-height:32px;max-width:32px;max-height:32px;box-sizing:border-box;border-radius:6px;border:2px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;font-size:16px;display:inline-flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;flex-grow:0;transition:border-color 0.15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'"><span class="dice-face">🎲</span></button>
+    <button class="ma-icon-btn tp-btn" onclick="stepTheme(1)" title="Next theme" aria-label="Next theme"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M11 3h2v10h-2zM2 3v10l8-5z"/></svg></button>
+    <button onclick="randomTheme()" id="random-theme-btn" title="Random theme" aria-label="Apply a random theme" class="ma-icon-btn ma-icon-btn--fixed"><span class="dice-face">🎲</span></button>
     <div id="theme-swatch-wrap" style="position:relative;display:inline-flex;align-items:flex-end;flex-shrink:0;">
-      <button id="theme-swatch" onclick="toggleThemeMenu(event)" title="Choose theme" aria-label="Choose theme" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-swatch-menu" style="width:32px;height:32px;min-width:32px;min-height:32px;max-width:32px;max-height:32px;box-sizing:border-box;border-radius:6px;border:2px solid var(--border);background:var(--bg2);cursor:pointer;flex-shrink:0;flex-grow:0;padding:0;overflow:hidden;position:relative;display:inline-flex;align-items:center;justify-content:center;transition:border-color 0.15s;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'"></button>
+      <button id="theme-swatch" onclick="toggleThemeMenu(event)" title="Choose theme" aria-label="Choose theme" aria-haspopup="menu" aria-expanded="false" aria-controls="theme-swatch-menu" class="ma-icon-btn ma-icon-btn--fixed" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'"></button>
       <span id="theme-swatch-caret" aria-hidden="true" onclick="toggleThemeMenu(event)" onmouseover="document.getElementById('theme-swatch').style.borderColor='var(--accent)'" onmouseout="document.getElementById('theme-swatch').style.borderColor='var(--border)'"></span>
-      <div id="theme-swatch-menu" role="menu" aria-label="Theme picker" style="display:none;position:absolute;top:calc(100% + 4px);right:0;background:var(--bg);border:1px solid var(--border);border-radius:8px;box-shadow:0 4px 18px rgba(0,0,0,0.22);z-index:999;padding:6px 0;min-width:120px;">
-        <div class="ts-group" role="presentation">Moods</div>
-        <a class="ts-opt" data-theme="light" role="menuitem" tabindex="0" onclick="pickTheme('light')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('light');}">☀ Light</a>
-        <a class="ts-opt" data-theme="dark" role="menuitem" tabindex="0" onclick="pickTheme('dark')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('dark');}">☽ Dark</a>
-        <a class="ts-opt" data-theme="sakura" role="menuitem" tabindex="0" onclick="pickTheme('sakura')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('sakura');}">🌸 Sakura</a>
-        <a class="ts-opt" data-theme="sand" role="menuitem" tabindex="0" onclick="pickTheme('sand')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('sand');}">🏜 Sand</a>
-        <a class="ts-opt" data-theme="cyberpunk" role="menuitem" tabindex="0" onclick="pickTheme('cyberpunk')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('cyberpunk');}">⎔ Cyberpunk</a>
-        <a class="ts-opt" data-theme="noir" role="menuitem" tabindex="0" onclick="pickTheme('noir')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('noir');}">🎬 Noir</a>
-        <a class="ts-opt" data-theme="synthwave" role="menuitem" tabindex="0" onclick="pickTheme('synthwave')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('synthwave');}">🌴 Synthwave</a>
-        <a class="ts-opt" data-theme="matrix" role="menuitem" tabindex="0" onclick="pickTheme('matrix')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('matrix');}">⌨ Matrix</a>
-        <a class="ts-opt" data-theme="neko" role="menuitem" tabindex="0" onclick="pickTheme('neko')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('neko');}">🐱 Neko</a>
-        <div class="ts-group" role="presentation">Seasons</div>
-        <a class="ts-opt" data-theme="spring" role="menuitem" tabindex="0" onclick="pickTheme('spring')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('spring');}">🌱 Spring</a>
-        <a class="ts-opt" data-theme="summer" role="menuitem" tabindex="0" onclick="pickTheme('summer')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('summer');}">🌻 Summer</a>
-        <a class="ts-opt" data-theme="autumn" role="menuitem" tabindex="0" onclick="pickTheme('autumn')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('autumn');}">❧ Autumn</a>
-        <a class="ts-opt" data-theme="winter" role="menuitem" tabindex="0" onclick="pickTheme('winter')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('winter');}">❄ Winter</a>
-        <div class="ts-group" role="presentation">Nature</div>
-        <a class="ts-opt" data-theme="ocean" role="menuitem" tabindex="0" onclick="pickTheme('ocean')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('ocean');}">🌊 Ocean</a>
-        <a class="ts-opt" data-theme="sunset" role="menuitem" tabindex="0" onclick="pickTheme('sunset')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('sunset');}">🌅 Sunset</a>
-        <a class="ts-opt" data-theme="forest" role="menuitem" tabindex="0" onclick="pickTheme('forest')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('forest');}">🌲 Forest</a>
+      <div id="theme-swatch-menu" class="ma-menu" role="menu" aria-label="Theme picker" style="display:none;">
+        <div class="ma-menu__group ts-group" role="presentation">Moods</div>
+        <a class="ma-menu__item ts-opt" data-theme="light" role="menuitem" tabindex="0" onclick="pickTheme('light')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('light');}">☀ Light</a>
+        <a class="ma-menu__item ts-opt" data-theme="dark" role="menuitem" tabindex="0" onclick="pickTheme('dark')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('dark');}">☽ Dark</a>
+        <a class="ma-menu__item ts-opt" data-theme="sakura" role="menuitem" tabindex="0" onclick="pickTheme('sakura')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('sakura');}">🌸 Sakura</a>
+        <a class="ma-menu__item ts-opt" data-theme="sand" role="menuitem" tabindex="0" onclick="pickTheme('sand')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('sand');}">🏜 Sand</a>
+        <a class="ma-menu__item ts-opt" data-theme="cyberpunk" role="menuitem" tabindex="0" onclick="pickTheme('cyberpunk')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('cyberpunk');}">⎔ Cyberpunk</a>
+        <a class="ma-menu__item ts-opt" data-theme="noir" role="menuitem" tabindex="0" onclick="pickTheme('noir')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('noir');}">🎬 Noir</a>
+        <a class="ma-menu__item ts-opt" data-theme="synthwave" role="menuitem" tabindex="0" onclick="pickTheme('synthwave')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('synthwave');}">🌴 Synthwave</a>
+        <a class="ma-menu__item ts-opt" data-theme="matrix" role="menuitem" tabindex="0" onclick="pickTheme('matrix')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('matrix');}">⌨ Matrix</a>
+        <a class="ma-menu__item ts-opt" data-theme="neko" role="menuitem" tabindex="0" onclick="pickTheme('neko')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('neko');}">🐱 Neko</a>
+        <div class="ma-menu__group ts-group" role="presentation">Seasons</div>
+        <a class="ma-menu__item ts-opt" data-theme="spring" role="menuitem" tabindex="0" onclick="pickTheme('spring')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('spring');}">🌱 Spring</a>
+        <a class="ma-menu__item ts-opt" data-theme="summer" role="menuitem" tabindex="0" onclick="pickTheme('summer')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('summer');}">🌻 Summer</a>
+        <a class="ma-menu__item ts-opt" data-theme="autumn" role="menuitem" tabindex="0" onclick="pickTheme('autumn')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('autumn');}">❧ Autumn</a>
+        <a class="ma-menu__item ts-opt" data-theme="winter" role="menuitem" tabindex="0" onclick="pickTheme('winter')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('winter');}">❄ Winter</a>
+        <div class="ma-menu__group ts-group" role="presentation">Nature</div>
+        <a class="ma-menu__item ts-opt" data-theme="ocean" role="menuitem" tabindex="0" onclick="pickTheme('ocean')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('ocean');}">🌊 Ocean</a>
+        <a class="ma-menu__item ts-opt" data-theme="sunset" role="menuitem" tabindex="0" onclick="pickTheme('sunset')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('sunset');}">🌅 Sunset</a>
+        <a class="ma-menu__item ts-opt" data-theme="forest" role="menuitem" tabindex="0" onclick="pickTheme('forest')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();pickTheme('forest');}">🌲 Forest</a>
       </div>
     </div>
   </div>
 
-  <select class="tb-sel" id="theme-picker" onchange="setTheme(this.value)" aria-hidden="true" tabindex="-1" style="display:none;">
+  <select class="ma-select tb-sel" id="theme-picker" onchange="setTheme(this.value)" aria-hidden="true" tabindex="-1" style="display:none;">
     <option value="light" selected="">☀ Light</option>
     <option value="dark">☽ Dark</option>
     <option value="sakura">🌸 Sakura</option>
@@ -763,12 +944,12 @@ select.tb-sel:hover{border-color:var(--accent);}
   </select>
 
   <div style="position:relative;display:inline-block;" id="more-wrap">
-    <button onclick="toggleMoreMenu()" id="more-btn" title="More options" aria-label="More options" aria-haspopup="menu" aria-expanded="false" aria-controls="more-menu" style="width:32px;height:32px;min-width:32px;min-height:32px;max-width:32px;max-height:32px;box-sizing:border-box;border-radius:6px;border:2px solid var(--border);background:var(--bg2);color:var(--text);cursor:pointer;font-size:16px;font-weight:700;letter-spacing:1px;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0;flex-shrink:0;flex-grow:0;transition:border-color 0.15s;position:relative;" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'"><span aria-hidden="true" style="position:absolute;top:50%;left:50%;transform:translate(-48%,-75%);">…</span></button>
-    <div id="more-menu" role="menu" aria-label="Application options" style="display: none; position: absolute; top: calc(100% + 4px); right: 0px; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; box-shadow: rgba(0, 0, 0, 0.15) 0px 4px 16px; padding: 12px 14px; z-index: 999; white-space: nowrap;">
+    <button onclick="toggleMoreMenu()" id="more-btn" title="More options" aria-label="More options" aria-haspopup="menu" aria-expanded="false" aria-controls="more-menu" class="ma-icon-btn ma-icon-btn--fixed"><span aria-hidden="true" style="position:absolute;top:50%;left:50%;transform:translate(-48%,-75%);">…</span></button>
+    <div id="more-menu" class="ma-menu" role="menu" aria-label="Application options" style="display:none;">
       <div class="tb-mobile-only" style="display:none;flex-direction:column;gap:8px;margin-bottom:10px;border-bottom:1px solid var(--border);padding-bottom:10px;">
         <div style="display:flex;align-items:center;gap:8px;width:100%;">
-          <span class="tb-label">Export</span>
-          <select class="tb-sel" onchange="if(this.value){window[this.value]();this.value='';}" style="flex:1;">
+          <span class="ma-toolbar__label tb-label">Export</span>
+          <select class="ma-select tb-sel" onchange="if(this.value){window[this.value]();this.value='';}" style="flex:1;">
             <option value="">Choose…</option>
             <option value="exportMD">Markdown</option>
             <option value="exportHTML">HTML</option>
@@ -780,44 +961,44 @@ select.tb-sel:hover{border-color:var(--accent);}
         </div>
       </div>
       <div style="display:flex;flex-direction:column;gap:6px;">
-        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:2px 0;">Export</div>
-        <button class="tb-btn" onclick="exportMD();toggleMoreMenu();" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">📝 Markdown</button>
-        <button class="tb-btn" onclick="exportHTML();toggleMoreMenu();" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">🌐 HTML</button>
-        <button class="tb-btn" onclick="exportPrintPage();toggleMoreMenu();" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">📃 Print Page</button>
-        <button class="tb-btn" onclick="exportPrintDocument();toggleMoreMenu();" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">📄 Print Document</button>
-        <button class="tb-btn" onclick="exportPrintCV();toggleMoreMenu();" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">📋 Print CV</button>
-        <!-- <button class="tb-btn" onclick="exportPDF();toggleMoreMenu();" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">📄 PDF</button> -->
-        <div style="font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:1px;padding:2px 0;">Miscellaneous</div>
-        <button class="tb-btn" onclick="openSettings()" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">⚙ Settings</button>
-        <button class="tb-btn" onclick="openAttributions()" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">📜 Attributions</button>
-        <button class="tb-btn" onclick="resetDefaults()" style="width:100%;padding:6px 10px;font-size:12px;text-align:center;">🔄 Reset to Defaults</button>
+        <div class="ma-menu__group">Export</div>
+        <button class="ma-tool-btn ma-tool-btn--block tb-btn" onclick="exportMD();toggleMoreMenu();">📝 Markdown</button>
+        <button class="ma-tool-btn ma-tool-btn--block tb-btn" onclick="exportHTML();toggleMoreMenu();">🌐 HTML</button>
+        <button class="ma-tool-btn ma-tool-btn--block tb-btn" onclick="exportPrintPage();toggleMoreMenu();">📃 Print Page</button>
+        <button class="ma-tool-btn ma-tool-btn--block tb-btn" onclick="exportPrintDocument();toggleMoreMenu();">📄 Print Document</button>
+        <button class="ma-tool-btn ma-tool-btn--block tb-btn" onclick="exportPrintCV();toggleMoreMenu();">📋 Print CV</button>
+        <!-- <button class="ma-tool-btn ma-tool-btn--block tb-btn" onclick="exportPDF();toggleMoreMenu();">📄 PDF</button> -->
+        <div class="ma-menu__group">Miscellaneous</div>
+        <button class="ma-tool-btn ma-tool-btn--block tb-btn" onclick="openSettings()">⚙ Settings</button>
+        <button class="ma-tool-btn ma-tool-btn--block tb-btn" onclick="openAttributions()">📜 Attributions</button>
+        <button class="ma-tool-btn ma-tool-btn--block tb-btn" onclick="resetDefaults()">🔄 Reset to Defaults</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- Settings Modal -->
-<div id="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title" aria-hidden="true" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
-  <div style="width:95%;height:95%;background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.4);">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 20px;border-bottom:1px solid var(--border);flex-shrink:0;">
-      <span id="settings-title" style="font-family:var(--font-resume);font-size:15px;font-weight:600;color:var(--text);">Settings</span>
-      <button onclick="closeSettings()" aria-label="Close settings" style="background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:0 4px;line-height:1;"><span aria-hidden="true">✕</span></button>
+<div id="settings-modal" class="ma-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title" aria-hidden="true">
+  <div class="ma-modal__dialog">
+    <div class="ma-modal__header">
+      <span id="settings-title" class="ma-modal__title">Settings</span>
+      <button class="ma-modal__close" onclick="closeSettings()" aria-label="Close settings"><span aria-hidden="true">✕</span></button>
     </div>
     <div id="settings-body" style="flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:24px;font-family:var(--font-resume);">
     </div>
-    <div style="padding:12px 20px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0;">
-      <button class="tb-btn" onclick="resetAllSettings()" style="padding:7px 14px;font-size:12px;">Reset to Defaults</button>
-      <button class="tb-btn primary" onclick="closeSettings()" style="padding:7px 14px;font-size:12px;">Done</button>
+    <div class="ma-modal__footer">
+      <button class="ma-tool-btn tb-btn" onclick="resetAllSettings()">Reset to Defaults</button>
+      <button class="ma-tool-btn ma-tool-btn--primary tb-btn" onclick="closeSettings()">Done</button>
     </div>
   </div>
 </div>
 
 <!-- Attributions Modal -->
-<div id="attr-modal" role="dialog" aria-modal="true" aria-labelledby="attr-title" aria-hidden="true" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.7);align-items:center;justify-content:center;">
-  <div style="max-width:560px;width:92%;background:var(--bg);border:1px solid var(--border);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 8px 40px rgba(0,0,0,0.4);">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);">
-      <span id="attr-title" style="font-family:var(--font-resume);font-size:15px;font-weight:600;color:var(--text);">Licenses & Attributions</span>
-      <button onclick="closeAttributions()" aria-label="Close attributions" style="background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:0 4px;line-height:1;"><span aria-hidden="true">✕</span></button>
+<div id="attr-modal" class="ma-modal" role="dialog" aria-modal="true" aria-labelledby="attr-title" aria-hidden="true">
+  <div class="ma-modal__dialog">
+    <div class="ma-modal__header">
+      <span id="attr-title" class="ma-modal__title">Licenses & Attributions</span>
+      <button class="ma-modal__close" onclick="closeAttributions()" aria-label="Close attributions"><span aria-hidden="true">✕</span></button>
     </div>
     <div style="padding:20px;overflow-y:auto;max-height:70vh;font-family:var(--font-resume);font-size:13px;color:var(--text2);line-height:1.7;">
       <div style="margin-bottom:18px;">
@@ -843,8 +1024,8 @@ select.tb-sel:hover{border-color:var(--accent);}
         <div style="color:var(--text3);font-size:12px;">Original artwork — public domain</div>
       </div>
     </div>
-    <div style="display:flex;justify-content:flex-end;padding:12px 20px;border-top:1px solid var(--border);">
-      <button class="tb-btn primary" onclick="closeAttributions()" style="padding:7px 14px;font-size:12px;">Done</button>
+    <div class="ma-modal__footer">
+      <button class="ma-tool-btn ma-tool-btn--primary tb-btn" onclick="closeAttributions()">Done</button>
     </div>
   </div>
 </div>
@@ -862,27 +1043,27 @@ select.tb-sel:hover{border-color:var(--accent);}
 -->
 <div id="resume" role="main" aria-label="Resume content" tabindex="-1">
   <button id="resume-nav-btn" onclick="toggleResumeNav()" title="Jump to section" aria-label="Jump to resume section" aria-haspopup="menu" aria-expanded="false" aria-controls="resume-nav-menu"><span aria-hidden="true">☰</span></button>
-  <div id="resume-nav-menu" role="menu" aria-label="Resume section navigation"></div>
+  <div id="resume-nav-menu" class="ma-menu" role="menu" aria-label="Resume section navigation"></div>
   <div class="r-name">Ryan DeBraal</div>
   <div class="r-title">Principal Full-Stack Software Engineer · CEO, MindAttic LLC · President, MindAttic Cares</div>
   <div class="r-contact">
-    <a class="tb-link" href="https://mindattic.com/" target="_blank" rel="noopener" title="mindattic.com">
+    <a class="ma-tool-link tb-link" href="https://mindattic.com/" target="_blank" rel="noopener" title="mindattic.com">
       <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIbSURBVDhPpZMxSyNxEMV/m81qDEhC3CYBFUV0C8uASLCxSGGRIq0g6DcQO1GCH8HKVrRIG+zEJqRIp5I2RRAhJIWaKBgW1t13zeV/Kngc3CvfvPeGGWYsSeI/EPtOfMY4O4qi7yUDq9ls6vj4mI+PD1ZWVtjY2CCZTFIul78I7+7uqNfrvL6+cnt7SxiGnJycwMPDgw4PD7W8vCxAiURCgOr1uj6jWCwK0OTkpFzXVaVSUb/fF2PBcDjU3Nyc4vG4EomEKpWKMQ8GA2WzWbmuq+npae3s7Jia2UEqleL09JT19XUcx6FareL7PgCDwQDbtkkmk4RhiOd5ZjQTMBqNyGQyNBoNcrkc7XabRqMBwMLCAq1Wi/n5eUajkTHzOWBqaoqrqysASqUSAGdnZwRBQBRFZDIZXNcFwHGcse1PgGVZDIdDOp0Oe3t7pNNpbm5u2NzcJAxDY+B3szG+3MHz8zO+7+N5Hmtra7y/v+N5nun48vIC3+7CBDw9PXF/f08qlQJga2uLWCzGwcGBEVuWBUA6nTacCbi8vKTb7WLbNgCFQoEoigiCwIh7vR4AnU7HcNRqNS0tLQkQoO3tbUnS29ubVldX9fj4KEna398XoImJCcXjcR0dHSkIAlnX19c6Pz8nm82yuLjI7Ows+XyeXC5HEAQ4joPv+1xcXBCGIbZt0263mZmZYXd3F0s/fKMkM/Pf8OM3/osZ4BeNOBOfvUnXuwAAAABJRU5ErkJggg==" alt="mindattic">
       MindAttic
     </a>
-    <a class="tb-link" href="mailto:ryandebraal@mindattic.com" title="ryandebraal@mindattic.com">
+    <a class="ma-tool-link tb-link" href="mailto:ryandebraal@mindattic.com" title="ryandebraal@mindattic.com">
       <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
       Email
     </a>
-    <a class="tb-link" href="https://www.linkedin.com/in/ryandebraal/" target="_blank" rel="noopener" title="LinkedIn">
+    <a class="ma-tool-link tb-link" href="https://www.linkedin.com/in/ryandebraal/" target="_blank" rel="noopener" title="LinkedIn">
       <svg viewBox="0 0 24 24"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
       LinkedIn
     </a>
-    <a class="tb-link" href="https://github.com/mindattic" target="_blank" rel="noopener" title="GitHub">
+    <a class="ma-tool-link tb-link" href="https://github.com/mindattic" target="_blank" rel="noopener" title="GitHub">
       <svg viewBox="0 0 24 24"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.603-3.369-1.342-3.369-1.342-.454-1.155-1.11-1.463-1.11-1.463-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.202 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
       GitHub
     </a>
-    <a class="tb-link" href="https://www.ryandebraal.com/youtube" target="_blank" rel="noopener" title="YouTube">
+    <a class="ma-tool-link tb-link" href="https://www.ryandebraal.com/youtube" target="_blank" rel="noopener" title="YouTube">
       <svg viewBox="0 0 24 24"><path d="M21.58 7.19c-.23-.86-.91-1.54-1.77-1.77C18.25 5 12 5 12 5s-6.25 0-7.81.42c-.86.23-1.54.91-1.77 1.77C2 8.75 2 12 2 12s0 3.25.42 4.81c.23.86.91 1.54 1.77 1.77C5.75 19 12 19 12 19s6.25 0 7.81-.42c.86-.23 1.54-.91 1.77-1.77C22 15.25 22 12 22 12s0-3.25-.42-4.81zM10 15V9l5.2 3-5.2 3z"/></svg>
       YouTube
     </a>
@@ -1754,7 +1935,7 @@ function buildTooltip(key) {
   const implBlock = s.impl
     ? `<span class="tip-label">Experience</span><span class="tip-ryan">${s.impl}</span>`
     : '';
-  return `<span class="tag-tooltip">`
+  return `<span class="ma-tag__tip tag-tooltip">`
     + `<span class="tip-label">Overview</span><span class="tip-desc">${s.desc}</span>`
     + implBlock
     // Familiarity bar disabled — needs revisit/reassessment.
@@ -1786,8 +1967,8 @@ function cycleTagLevel(el, key) {
 // With ~200 skills across 3 profiles, eager rendering would produce ~60KB of DOM
 // for content the user never sees unless they hover a specific tag. Lazy wins.
 function tag(text) {
-  if (!SKILLS[text]) return `<span class="tag">${text}</span>`;
-  return `<span class="tag" data-skill="${text.replace(/"/g,'&quot;')}">${text}</span>`;
+  if (!SKILLS[text]) return `<span class="ma-tag tag">${text}</span>`;
+  return `<span class="ma-tag tag" data-skill="${text.replace(/"/g,'&quot;')}">${text}</span>`;
 }
 
 function secHTML(label){
@@ -1987,10 +2168,12 @@ function getRotateBar() {
   if (!bar) {
     var track = document.createElement('div');
     track.id = 'rotate-track';
+    track.className = 'ma-progress ma-progress--edge';
     track.title = 'Click to pause/resume theme rotation';
     track.onclick = toggleThemeRotation;
     bar = document.createElement('div');
     bar.id = 'rotate-bar';
+    bar.className = 'ma-progress__fill';
     track.appendChild(bar);
     document.getElementById('toolbar').appendChild(track);
   }
@@ -2104,11 +2287,11 @@ function toggleThemeMenu(e) {
   if (trigger) trigger.setAttribute('aria-expanded', String(!isOpen));
   if (!isOpen) {
     m.querySelectorAll('.ts-opt').forEach(a => {
-      a.classList.toggle('active', a.dataset.theme === currentTheme);
+      a.classList.toggle('ma-menu__item--active', a.dataset.theme === currentTheme);
       a.setAttribute('aria-current', a.dataset.theme === currentTheme ? 'true' : 'false');
     });
     // Move focus to the active option for keyboard users
-    const active = m.querySelector('.ts-opt.active') || m.querySelector('.ts-opt');
+    const active = m.querySelector('.ts-opt.ma-menu__item--active') || m.querySelector('.ts-opt');
     if (active) active.focus();
   }
 }
@@ -2158,87 +2341,6 @@ function initProfileButtons() {}
 // competing animation loops at 60fps would fight over the canvas anyway.
 //
 // Could this be driven by a state machine? Probably. Worth it? You tell me.
-function crtChannelChange() {
-  var overlay = document.getElementById('crt-overlay');
-  if (!overlay) {
-    overlay = document.createElement('canvas');
-    overlay.id = 'crt-overlay';
-    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9998;pointer-events:none;opacity:1;';
-    document.body.appendChild(overlay);
-  }
-  overlay.width = Math.round(window.innerWidth * fxScale());
-  overlay.height = Math.round(window.innerHeight * fxScale());
-  overlay.style.display = 'block';
-  overlay.style.opacity = '1';
-  var ctx = overlay.getContext('2d');
-  var w = overlay.width, h = overlay.height;
-  var start = performance.now();
-  var duration = 300 + Math.floor(Math.random() * 150);
-  var squeezeSpeed = 2 + Math.random() * 2;
-  var tintR = Math.floor(Math.random() * 40);
-  var tintG = Math.floor(Math.random() * 40);
-  var tintB = Math.floor(Math.random() * 40);
-  var hShiftChance = 0.02 + Math.random() * 0.06;
-  var hShiftMax = 10 + Math.floor(Math.random() * 30);
-
-  function drawStatic() {
-    var elapsed = performance.now() - start;
-    var pct = elapsed / duration;
-    if (pct >= 1) {
-      overlay.style.display = 'none';
-      return;
-    }
-    var imgData = ctx.createImageData(w, h);
-    var d = imgData.data;
-    var fade = 1 - pct;
-    var squeeze = Math.max(0, 1 - pct * squeezeSpeed);
-    var barTop = Math.floor((1 - squeeze) * h * 0.5);
-    var barBot = h - barTop;
-    // random horizontal shift bands
-    var shiftY = -1, shiftH = 0, shiftX = 0;
-    if (Math.random() < hShiftChance) {
-      shiftY = Math.floor(Math.random() * h);
-      shiftH = 5 + Math.floor(Math.random() * 40);
-      shiftX = Math.floor((Math.random() - 0.5) * hShiftMax * 2);
-    }
-    for (var i = 0; i < d.length; i += 4) {
-      var px = (i / 4) | 0;
-      var y = (px / w) | 0;
-      if (y < barTop || y > barBot) {
-        d[i] = d[i+1] = d[i+2] = 0;
-        d[i+3] = Math.floor(255 * fade);
-      } else {
-        var v = (Math.random() * 255) | 0;
-        d[i] = Math.min(255, v + tintR);
-        d[i+1] = Math.min(255, v + tintG);
-        d[i+2] = Math.min(255, v + tintB);
-        var opacity = y >= shiftY && y < shiftY + shiftH ? 240 : 200;
-        d[i+3] = Math.floor(opacity * fade);
-      }
-    }
-    ctx.putImageData(imgData, 0, 0);
-    // horizontal distortion lines
-    var lineCount = 2 + Math.floor(Math.random() * 8);
-    for (var l = 0; l < lineCount; l++) {
-      var ly = Math.floor(Math.random() * h);
-      var lh = 1 + Math.floor(Math.random() * 4);
-      var lop = (0.15 + Math.random() * 0.35) * fade;
-      ctx.fillStyle = 'rgba(255,255,255,' + lop + ')';
-      ctx.fillRect(0, ly, w, lh);
-    }
-    // occasional color flash band
-    if (Math.random() < 0.15) {
-      var bandY = Math.floor(Math.random() * h);
-      var bandH = 2 + Math.floor(Math.random() * 8);
-      var colors = ['rgba(255,0,0,','rgba(0,255,0,','rgba(0,0,255,','rgba(255,255,0,'];
-      ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)] + (0.2 * fade) + ')';
-      ctx.fillRect(0, bandY, w, bandH);
-    }
-    requestAnimationFrame(drawStatic);
-  }
-  drawStatic();
-}
-
 function setTheme(t) {
   var isInit = !currentTheme || currentTheme === t;
   currentTheme = t;
@@ -2281,23 +2383,7 @@ function applyTheme(t) {
 // Capture demo mode: cycle every theme every 15s with a scroll-down/scroll-up read-through,
 // so a recording of this page shows all of them without anyone touching it.
 (function () {
-  function forced() { return /(?:^|[?&])demo=1(?:&|$)/.test(location.search); }
-  function armed(go) {
-    if (forced()) { go(); return; }
-    var bridge = window.mindattic && window.mindattic.capture;
-    if (!bridge || typeof bridge.status !== 'function') return;
-    // `recording` is the StartRecording/StopRecording on-demand clip toggle, not whether
-    // `-capture video` is actually filming the session — that's `tapeRunning`. The capture
-    // engine also starts asynchronously (window must appear, then hardware encoder probing),
-    // so poll instead of checking once, or a slow-starting recorder means the demo never runs.
-    var tries = 0;
-    (function poll() {
-      bridge.status().then(function (s) {
-        if (s && (s.tapeRunning || s.recording)) { go(); return; }
-        if (++tries < 40) setTimeout(poll, 500);
-      }).catch(function () { if (++tries < 40) setTimeout(poll, 500); });
-    })();
-  }
+  var armed = window.MindAtticCaptureDemo.armed;
   function easeInOutSine(t) { return -(Math.cos(Math.PI * t) - 1) / 2; }
   var scrollGen = 0;
   function scrollLeg(from, to, ms) {
@@ -2486,6 +2572,90 @@ function pickUnusedIdx(arr, seen, label) {
   const idx = available[Math.floor(Math.random() * available.length)];
   seen.push(idx);
   return idx;
+}
+
+// ── THEME TRANSITION: CHANNEL CHANGE ───────────────────────────────
+// CRT static over the page while the theme switches (Settings -> Theme Transition -> Channel
+// Change). Draws on its own full-screen canvas, scaled by ThemeFx's adaptive quality (fxScale).
+function crtChannelChange() {
+  var overlay = document.getElementById('crt-overlay');
+  if (!overlay) {
+    overlay = document.createElement('canvas');
+    overlay.id = 'crt-overlay';
+    overlay.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:9998;pointer-events:none;opacity:1;';
+    document.body.appendChild(overlay);
+  }
+  overlay.width = Math.round(window.innerWidth * fxScale());
+  overlay.height = Math.round(window.innerHeight * fxScale());
+  overlay.style.display = 'block';
+  overlay.style.opacity = '1';
+  var ctx = overlay.getContext('2d');
+  var w = overlay.width, h = overlay.height;
+  var start = performance.now();
+  var duration = 300 + Math.floor(Math.random() * 150);
+  var squeezeSpeed = 2 + Math.random() * 2;
+  var tintR = Math.floor(Math.random() * 40);
+  var tintG = Math.floor(Math.random() * 40);
+  var tintB = Math.floor(Math.random() * 40);
+  var hShiftChance = 0.02 + Math.random() * 0.06;
+  var hShiftMax = 10 + Math.floor(Math.random() * 30);
+
+  function drawStatic() {
+    var elapsed = performance.now() - start;
+    var pct = elapsed / duration;
+    if (pct >= 1) {
+      overlay.style.display = 'none';
+      return;
+    }
+    var imgData = ctx.createImageData(w, h);
+    var d = imgData.data;
+    var fade = 1 - pct;
+    var squeeze = Math.max(0, 1 - pct * squeezeSpeed);
+    var barTop = Math.floor((1 - squeeze) * h * 0.5);
+    var barBot = h - barTop;
+    // random horizontal shift bands
+    var shiftY = -1, shiftH = 0, shiftX = 0;
+    if (Math.random() < hShiftChance) {
+      shiftY = Math.floor(Math.random() * h);
+      shiftH = 5 + Math.floor(Math.random() * 40);
+      shiftX = Math.floor((Math.random() - 0.5) * hShiftMax * 2);
+    }
+    for (var i = 0; i < d.length; i += 4) {
+      var px = (i / 4) | 0;
+      var y = (px / w) | 0;
+      if (y < barTop || y > barBot) {
+        d[i] = d[i+1] = d[i+2] = 0;
+        d[i+3] = Math.floor(255 * fade);
+      } else {
+        var v = (Math.random() * 255) | 0;
+        d[i] = Math.min(255, v + tintR);
+        d[i+1] = Math.min(255, v + tintG);
+        d[i+2] = Math.min(255, v + tintB);
+        var opacity = y >= shiftY && y < shiftY + shiftH ? 240 : 200;
+        d[i+3] = Math.floor(opacity * fade);
+      }
+    }
+    ctx.putImageData(imgData, 0, 0);
+    // horizontal distortion lines
+    var lineCount = 2 + Math.floor(Math.random() * 8);
+    for (var l = 0; l < lineCount; l++) {
+      var ly = Math.floor(Math.random() * h);
+      var lh = 1 + Math.floor(Math.random() * 4);
+      var lop = (0.15 + Math.random() * 0.35) * fade;
+      ctx.fillStyle = 'rgba(255,255,255,' + lop + ')';
+      ctx.fillRect(0, ly, w, lh);
+    }
+    // occasional color flash band
+    if (Math.random() < 0.15) {
+      var bandY = Math.floor(Math.random() * h);
+      var bandH = 2 + Math.floor(Math.random() * 8);
+      var colors = ['rgba(255,0,0,','rgba(0,255,0,','rgba(0,0,255,','rgba(255,255,0,'];
+      ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)] + (0.2 * fade) + ')';
+      ctx.fillRect(0, bandY, w, bandH);
+    }
+    requestAnimationFrame(drawStatic);
+  }
+  drawStatic();
 }
 
 // ╔═══════════════════════════════════════════════════════════════════════════════╗
@@ -6653,11 +6823,11 @@ function init() {
     const r = tagEl.getBoundingClientRect();
     const vw = window.innerWidth;
     // Reset to CSS defaults (centered above, arrow at 50%)
-    tt.classList.remove('tt-below');
+    tt.classList.remove('ma-tag__tip--below');
     tt.style.left = ''; tt.style.transform = '';
     tt.style.removeProperty('--tt-arrow-x');
     // Vertical: above by default, flip below only if not enough room above
-    if (r.top < TT_H + MARGIN) tt.classList.add('tt-below');
+    if (r.top < TT_H + MARGIN) tt.classList.add('ma-tag__tip--below');
     // Horizontal: default CSS (left:50% + translateX(-50%)) centers on tag perfectly.
     // Only override when centered tooltip would overflow the viewport edge.
     const tagCx = r.left + r.width / 2;
@@ -6729,13 +6899,13 @@ init();
 
 // Avatar lightbox
 function openAvatarLightbox() {
-  document.getElementById('avatar-lightbox').classList.add('active');
+  document.getElementById('avatar-lightbox').classList.add('is-open');
 
   const _d_avatar_lightbox = document.getElementById('avatar-lightbox');
   if (_d_avatar_lightbox) _d_avatar_lightbox.setAttribute('aria-hidden', 'false');
 }
 function closeAvatarLightbox() {
-  document.getElementById('avatar-lightbox').classList.remove('active');
+  document.getElementById('avatar-lightbox').classList.remove('is-open');
 
   const _dc_avatar_lightbox = document.getElementById('avatar-lightbox');
   if (_dc_avatar_lightbox) _dc_avatar_lightbox.setAttribute('aria-hidden', 'true');
@@ -6754,14 +6924,14 @@ function buildNavLinks() {
   ).join('');
 }
 function toggleResumeNav() {
-  document.getElementById('resume-nav-menu')?.classList.toggle('open');
+  document.getElementById('resume-nav-menu')?.classList.toggle('is-open');
 
   const _rb = document.getElementById('resume-nav-btn');
   const _rm = document.getElementById('resume-nav-menu');
   if (_rb && _rm) _rb.setAttribute('aria-expanded', String(_rm.classList.contains('open')));
 }
 function closeResumeNav() {
-  document.getElementById('resume-nav-menu')?.classList.remove('open');
+  document.getElementById('resume-nav-menu')?.classList.remove('is-open');
 
   const _rb2 = document.getElementById('resume-nav-btn');
   if (_rb2) _rb2.setAttribute('aria-expanded', 'false');
@@ -6832,21 +7002,21 @@ function openSettings() {
   const body = document.getElementById('settings-body');
   body.innerHTML = SETTINGS_SCHEMA.map(({group, items}) => `
     <div>
-      <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.12em;color:var(--accent);border-bottom:1px solid var(--rule);padding-bottom:5px;margin-bottom:14px;">${group}</div>
-      <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="ma-form-section__title">${group}</div>
+      <div class="ma-form-section__rows">
         ${items.map(s => {
           const val = AppSettings[s.key];
-          if (s.options) return `<div style="display:flex;align-items:center;gap:12px;">
-            <span style="min-width:200px;font-size:12px;color:var(--text2);">${s.label}</span>
-            <select class="tb-sel" data-key="${s.key}" onchange="onSettingSelect(this)">${s.options.map(([v, l]) => `<option value="${v}"${v === val ? ' selected' : ''}>${l}</option>`).join('')}</select>
+          if (s.options) return `<div class="ma-form-row">
+            <span class="ma-form-row__label">${s.label}</span>
+            <select class="ma-select tb-sel" data-key="${s.key}" onchange="onSettingSelect(this)">${s.options.map(([v, l]) => `<option value="${v}"${v === val ? ' selected' : ''}>${l}</option>`).join('')}</select>
           </div>`;
           const disp = s.step < 0.01 ? val.toFixed(3) : s.step < 0.1 ? val.toFixed(2) : s.step < 1 ? val.toFixed(1) : String(val);
-          return `<div style="display:flex;align-items:center;gap:12px;">
-            <span style="min-width:200px;font-size:12px;color:var(--text2);">${s.label}</span>
+          return `<div class="ma-form-row">
+            <span class="ma-form-row__label">${s.label}</span>
             <input type="range" min="${s.min}" max="${s.max}" step="${s.step}" value="${val}" data-key="${s.key}" data-step="${s.step}"
-              style="flex:1;accent-color:var(--accent);cursor:pointer;"
+              class="ma-range"
               oninput="onSettingSlider(this)">
-            <span id="sv-${s.key}" style="min-width:56px;text-align:right;font-size:12px;color:var(--text);font-variant-numeric:tabular-nums;">${disp}</span>
+            <span id="sv-${s.key}" class="ma-form-row__value">${disp}</span>
           </div>`;
         }).join('')}
       </div>
@@ -6957,7 +7127,7 @@ document.addEventListener('keydown', function(e) {
   const lb = document.getElementById('avatar-lightbox');
   if (settings && settings.style.display === 'flex') { closeSettings(); return; }
   if (attr && attr.style.display === 'flex') { closeAttributions(); return; }
-  if (lb && lb.classList.contains('active')) { closeAvatarLightbox(); return; }
+  if (lb && lb.classList.contains('is-open')) { closeAvatarLightbox(); return; }
   // The theme menu moves focus into itself when it opens; hand it back to the swatch when Escape closes it.
   const themeMenu = document.getElementById('theme-swatch-menu');
   if (themeMenu && themeMenu.style.display === 'block') {
@@ -7017,12 +7187,12 @@ Object.assign(window, {
 </script>
 
 <!-- ── AVATAR LIGHTBOX ── -->
-<div id="avatar-lightbox" role="dialog" aria-modal="true" aria-label="Profile photo and links" onclick="closeAvatarLightbox()">
-  <div class="lb-inner" onclick="event.stopPropagation()">
-    <div class="lb-links">
+<div id="avatar-lightbox" class="ma-lightbox" role="dialog" aria-modal="true" aria-label="Profile photo and links" onclick="closeAvatarLightbox()">
+  <div class="ma-lightbox__inner lb-inner" onclick="event.stopPropagation()">
+    <div class="ma-lightbox__links lb-links">
       <a href="https://mindattic.com/" target="_blank">mindattic.com</a>
     </div>
-    <div class="lb-img ryan-full"></div>
+    <div class="ma-lightbox__img lb-img ryan-full"></div>
   </div>
 </div>
 
