@@ -26,3 +26,4 @@ _Nothing recorded yet._
 | M.WEB-T3 | 2026-10-13 | chore | closed | Pages rebuilt with the default-tag site build: stamp lines take the page's line endings, Cyberspace banner no longer mentions cdnTag | MindAttic.Components build-sites.mjs |
 | M.WEB-T4 | 2026-10-13 | feature | open | ryandebraal.com: replace the toolbar buttons' native title tooltips with the MindAttic.Components Tooltip component | web/components/Tooltip |
 | M.WEB-T5 | 2026-10-15 | chore | closed | Remove duplicate command copies (/quickload, /quicksave) from all four sites, now centralized at the user level (~/.claude/commands) | M.FLOW-T14 |
+| M.WEB-T6 | 2026-10-16 | chore | closed | install.ps1 adds this repo's 15 .prose/commands stubs for the shared global commands, so any LLM client finds them | mindattic-agent-standard/install.ps1 run 2026-10-16 |
