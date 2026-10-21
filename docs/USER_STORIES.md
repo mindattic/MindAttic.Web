@@ -6,7 +6,7 @@ layer: stories
 status: living
 updated: 2026-10-12
 ---
-<!-- GENERATED from MindAttic.Workflow/data/workflow.db by `workflow db render`. Do not edit: this file is rewritten from the database; change stories and tickets with the workflow CLI. -->
+<!-- GENERATED from MindAttic.Tickets/data/Tickets.db by `tickets db render`. Do not edit: this file is rewritten from the database; change stories and tickets with the tickets CLI. -->
 
 # MindAttic.Web — User Stories
 > ✅ done (shipped & tested) · 🟡 partial · ⬜ planned. Every ✅ cites the test.
@@ -32,3 +32,6 @@ _Nothing recorded yet._
 | M.WEB-T9 | 2026-10-16 | chore | open | Clean up code and docs: remove dead code, stale comments and outdated or duplicated docs, and simplify where behaviour doesn't change (/simplify); tests stay green | user request 2026-10-16: approved repo sweep |
 | M.WEB-T10 | 2026-10-16 | docs | open | Bring README.md up to date with the code as it is now (what it is, setup, usage, commands, current state), following codex-standard/README-STYLE.md; README.htm regenerated if the repo has one | user request 2026-10-16: approved repo sweep |
 | M.WEB-T11 | 2026-10-18 | docs | closed | Update USER_STORIES.md | — |
+| M.WEB-T12 | 2026-10-19 | chore | open | Convert tracked source files to LF line endings via .gitattributes, per HOUSE-LAW-13 (low priority) | — |
+| M.WEB-T13 | 2026-10-20 | chore | open | ryandebraal.com: use the Tag component's tip script. After the next MindAttic.Components tag, rebuild (build-sites ryandebraal.com) so the TAG block carries tag.js, then replace the hand-written skill-tooltip placement in init() (lazy inject + flip below + clamp + --tt-arrow-x) with MindAtticTag.init({ selector: '.tag', tip: el => inner HTML of buildTooltip(el.dataset.skill), tipClass: 'tag-tooltip', onShow: the familiarity-bar lerp }); buildTooltip returns only the inner spans. Keep the mouseleave lerp cancel. (from M.COMP-T4) | — |
+| M.WEB-T14 | 2026-10-20 | docs | open | Publish MindAttic.Web docs to GitHub Pages via the shared Toolkit DocFX pipeline: run adopt-docs-site.ps1 (README.md as home page, docs/*.md as articles, API reference only where the code builds in CI), enable Pages with build_type=workflow, set the repo homepage URL, retire tools/build-readme.ps1 and README.htm, confirm the docs Actions run is green and https://mindattic.github.io/MindAttic.Web/ returns 200. Depends on MAT-T8. This is a static site: the Pages site is docs only and must not replace or clash with its real hosting (check MindAttic.Deploy first). | — |
