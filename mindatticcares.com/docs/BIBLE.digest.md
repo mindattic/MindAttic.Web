@@ -4,7 +4,7 @@ project: MindAttic Cares
 code: MAC
 layer: digest
 status: living
-updated: 2026-10-13
+updated: 2026-11-02
 generatedFrom: MAC-bible
 ---
 
