@@ -2101,6 +2101,9 @@ function startThemeRotation() {
   ri.innerHTML = '&#10074;&#10074;';
   ri.style.transform = 'translate(-55%,-48%)';
   scheduleNextRotation();
+  // Restarting while already running (demo mode, the timeout slider) must not leave a second
+  // progress loop behind.
+  if (themeRotationRAF) { cancelAnimationFrame(themeRotationRAF); themeRotationRAF = null; }
   updateRotateProgress();
   updateStation();
 }
@@ -6570,6 +6573,11 @@ function runPdfExport(opts) {
   var resumeBody = document.getElementById('resume-body');
   var savedResumeBodyHTML = null;
 
+  // Hold theme rotation for the export: a rotation firing mid-capture would repaint the
+  // snapshot in another theme, and restore() would then put back the old theme's attribute
+  // while the new theme's FX keeps running.
+  if (themeRotationTimer) { clearTimeout(themeRotationTimer); themeRotationTimer = null; }
+
   // Hide animated chrome so it doesn't bleed into the snapshot.
   if (fx) fx.style.display = 'none';
   if (sp) sp.style.display = 'none';
@@ -6592,6 +6600,7 @@ function runPdfExport(opts) {
       var searchInput = document.getElementById('skill-search');
       if (searchInput && searchInput.value) filterSkills(searchInput.value);
     }
+    if (!themeRotationPaused) scheduleNextRotation();
   }
 
   var fontsReady = (document.fonts && document.fonts.ready) || Promise.resolve();
@@ -6774,6 +6783,8 @@ function init() {
   }
   let t='light';
   try{ t=localStorage.getItem('resume-theme')||'light'; }catch(e){}
+  // A theme saved by an earlier visit may since have been retired (horror, vaporwave...).
+  if (THEME_ORDER.indexOf(t) === -1) t = 'light';
 
   document.getElementById('theme-picker').value = t;
 
@@ -6928,7 +6939,7 @@ function toggleResumeNav() {
 
   const _rb = document.getElementById('resume-nav-btn');
   const _rm = document.getElementById('resume-nav-menu');
-  if (_rb && _rm) _rb.setAttribute('aria-expanded', String(_rm.classList.contains('open')));
+  if (_rb && _rm) _rb.setAttribute('aria-expanded', String(_rm.classList.contains('is-open')));
 }
 function closeResumeNav() {
   document.getElementById('resume-nav-menu')?.classList.remove('is-open');
@@ -6938,7 +6949,7 @@ function closeResumeNav() {
 }
 document.addEventListener('click', function(e) {
   const menu = document.getElementById('resume-nav-menu');
-  if (!menu?.classList.contains('open')) return;
+  if (!menu?.classList.contains('is-open')) return;
   if (!e.target.closest('#resume-nav-menu') && !e.target.closest('#resume-nav-btn')) closeResumeNav();
 });
 
@@ -7083,6 +7094,8 @@ function closeAttributions() {
 function resetAllSettings() {
   Object.assign(AppSettings, SETTINGS_DEFAULTS);
   try { localStorage.removeItem('resume-settings'); } catch(e){}
+  themeRotationDuration = AppSettings.theme_timeout * 1000;
+  if (!themeRotationPaused) startThemeRotation();
   openSettings();
 }
 
