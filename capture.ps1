@@ -7,14 +7,13 @@
 #   .\capture.ps1 mindattic.com -capture video screen 5
 #
 # Output: R:\MindAttic\Media\Capture\<site>\<site>_<timestamp>.<ext> (ISO 8601, ':' as '.'). Pages can also call window.mindattic.capture.raise(...).
-# MindAttic Browser deploys fresh from D:\Projects\MindAttic\MindAttic.Browser\run.ps1 to
-# C:\Apps\MindAttic.Browser\; run.bat there asks first: 1) Deploy & Run redeploys from source (the
-# current build, never a stale install), 2) Run opens the installed copy.
+# Opens the Browser's Release deploy, R:\MindAttic\Apps\MindAttic.Browser\Release; rebuild it with
+# ..\MindAttic.Browser\run.ps1 -Redeploy (or its run.bat, 1) Redeploy).
 param([string]$Site = 'mindattic.com')
 
-$browser = 'C:\Apps\MindAttic.Browser\run.bat'
+$browser = 'R:\MindAttic\Apps\MindAttic.Browser\Release\MindAttic.Browser.exe'
 if (-not (Test-Path $browser)) {
-    throw "MindAttic Browser is not deployed. Run ..\MindAttic.Browser\run.ps1 first."
+    throw "MindAttic Browser is not deployed at $browser. Run ..\MindAttic.Browser\run.ps1 -Redeploy first."
 }
 $folder = Join-Path $PSScriptRoot $Site
 if (-not (Test-Path (Join-Path $folder 'index.htm')) -and -not (Test-Path (Join-Path $folder 'index.html'))) {
