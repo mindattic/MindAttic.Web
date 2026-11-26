@@ -6,7 +6,7 @@
 #   .\capture.ps1 Hyperspace -capture screen 5      # a PNG every 5 seconds
 #   .\capture.ps1 mindattic.com -capture video screen 5
 #
-# Output: R:\MindAttic\Capture\<site>\<site>_<timestamp>.<ext> (ISO 8601, ':' as '.'). Pages can also call window.mindattic.capture.raise(...).
+# Output: R:\MindAttic\Media\Capture\<site>\<site>_<timestamp>.<ext> (ISO 8601, ':' as '.'). Pages can also call window.mindattic.capture.raise(...).
 # MindAttic Browser deploys fresh from D:\Projects\MindAttic\MindAttic.Browser\run.ps1 to
 # C:\Apps\MindAttic.Browser\; run.bat there asks first: 1) Deploy & Run redeploys from source (the
 # current build, never a stale install), 2) Run opens the installed copy.
