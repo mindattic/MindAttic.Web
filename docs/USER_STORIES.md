@@ -27,10 +27,10 @@ _Nothing recorded yet._
 | M.WEB-T4 | 2026-10-13 | feature | open | ryandebraal.com: replace the toolbar buttons' native title tooltips with the MindAttic.Components Tooltip component | web/components/Tooltip |
 | M.WEB-T5 | 2026-10-15 | chore | closed | Remove duplicate command copies (/quickload, /quicksave) from all four sites, now centralized at the user level (~/.claude/commands) | M.FLOW-T14 |
 | M.WEB-T6 | 2026-10-16 | chore | closed | install.ps1 adds this repo's 15 .prose/commands stubs for the shared global commands, so any LLM client finds them | mindattic-agent-standard/install.ps1 run 2026-10-16 |
-| M.WEB-T7 | 2026-10-16 | chore | open | Bug hunt: run an exhaustive /bughunt over the whole repo and fix every real bug found (each fix under its own fix ticket), then hunt again; close this only when a full pass finds nothing | user request 2026-10-16: approved repo sweep |
-| M.WEB-T8 | 2026-10-16 | chore | open | Run the full unit test suite and fix every failure (each under its own fix ticket) until it passes; put the passing run in --ref. No test project: close this wont-do saying so | user request 2026-10-16: approved repo sweep |
-| M.WEB-T9 | 2026-10-16 | chore | open | Clean up code and docs: remove dead code, stale comments and outdated or duplicated docs, and simplify where behaviour doesn't change (/simplify); tests stay green | user request 2026-10-16: approved repo sweep |
-| M.WEB-T10 | 2026-10-16 | docs | open | Bring README.md up to date with the code as it is now (what it is, setup, usage, commands, current state), following codex-standard/README-STYLE.md; README.htm regenerated if the repo has one | user request 2026-10-16: approved repo sweep |
+| M.WEB-T7 | 2026-10-16 | chore | closed | Bug hunt: run an exhaustive /bughunt over the whole repo and fix every real bug found (each fix under its own fix ticket), then hunt again; close this only when a full pass finds nothing | 47f4a9c83d718388388b22546534b7ce49a2f3ac |
+| M.WEB-T8 | 2026-10-16 | chore | wont-do | Run the full unit test suite and fix every failure (each under its own fix ticket) until it passes; put the passing run in --ref. No test project: close this wont-do saying so | portfolio reset: repo-sweep test loop; tests live in MindAttic.Components |
+| M.WEB-T9 | 2026-10-16 | chore | wont-do | Clean up code and docs: remove dead code, stale comments and outdated or duplicated docs, and simplify where behaviour doesn't change (/simplify); tests stay green | portfolio reset: generic cleanup, audit nice-to-have |
+| M.WEB-T10 | 2026-10-16 | docs | closed | Bring README.md up to date with the code as it is now (what it is, setup, usage, commands, current state), following codex-standard/README-STYLE.md; README.htm regenerated if the repo has one | already done: README.md current (c9def19, 258fcca) |
 | M.WEB-T11 | 2026-10-18 | docs | closed | Update USER_STORIES.md | — |
 | M.WEB-T12 | 2026-10-19 | chore | wont-do | Convert tracked source files to LF line endings via .gitattributes, per HOUSE-LAW-13 (low priority) | — |
 | M.WEB-T13 | 2026-10-20 | chore | open | ryandebraal.com: use the Tag component's tip script. After the next MindAttic.Components tag, rebuild (build-sites ryandebraal.com) so the TAG block carries tag.js, then replace the hand-written skill-tooltip placement in init() (lazy inject + flip below + clamp + --tt-arrow-x) with MindAtticTag.init({ selector: '.tag', tip: el => inner HTML of buildTooltip(el.dataset.skill), tipClass: 'tag-tooltip', onShow: the familiarity-bar lerp }); buildTooltip returns only the inner spans. Keep the mouseleave lerp cancel. (from M.COMP-T4) | — |
@@ -43,3 +43,13 @@ _Nothing recorded yet._
 | M.WEB-T20 | 2026-11-10 | chore | closed | Crash recovery: commit the command-catalog sync (.agent/commands/*.md) and regenerated docs/USER_STORIES.md left uncommitted by the session crash | — |
 | M.WEB-T21 | 2026-11-10 | chore | closed | Adopt the shared docs-site pipeline: turn on GitHub Pages | — |
 | M.WEB-T22 | 2026-11-17 | docs | closed | Update USER_STORIES.md | — |
+| M.WEB-T23 | 2026-11-24 | fix | wont-do | Hunt the whole repo for real bugs with no time limit and fix every confirmed one | portfolio reset: open-ended bughunt with no concrete defect |
+| M.WEB-T24 | 2026-11-24 | chore | closed | MindAttic.Web pages name the MindAttic.Media.Capture bridge in their capture-demo comments | children done |
+| M.WEB-T25 | 2026-11-24 | chore | closed | MindAttic.Web: the capture-demo comment blocks in Hyperspace/index.htm (~1921), mindattic.com/index.htm (~232), mindatticcares.com/index.htm (~116) and ryandebraal.com/index.htm (~304) say MindAttic.Media.Capture; window.mindattic.capture unchanged | 47f4a9c |
+| M.WEB-T26 | 2026-11-24 | docs | closed | capture.ps1 and README say output goes to R:\MindAttic\Media\Capture\<site> | 258fcca |
+| M.WEB-T27 | 2026-11-27 | feature | open | ryandebraal.com drops its hand-written tooltip code for the shared Components widgets (portfolio reset, M.EXPT-T48) | — |
+| M.WEB-T28 | 2026-11-27 | feature | open | Toolbar buttons use the Components Tooltip | — |
+| M.WEB-T29 | 2026-11-27 | feature | open | Skill tags use the Components Tag tip script | — |
+| M.WEB-T30 | 2026-11-27 | feature | open | All four sites ship from one Components tag (portfolio reset, M.EXPT-T48) | — |
+| M.WEB-T31 | 2026-11-27 | feature | open | Every site redeployed and checked live | — |
+| M.WEB-T32 | 2026-11-27 | chore | open | After M.WEB-T4 and M.WEB-T13, rebuild all four sites against one MindAttic.Components tag, deploy them, and verify mindattic.com, ryandebraal.com, mindatticcares.com and mindattic.com/hyperspace load with their fonts, backdrop and widgets | — |
